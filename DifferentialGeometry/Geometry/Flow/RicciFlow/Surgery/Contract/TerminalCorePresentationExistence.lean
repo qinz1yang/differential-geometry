@@ -1,14 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
-import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
-import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Topology.Manifold.OpenSubsetImage
 import DifferentialGeometry.Topology.ProperMap.HalfCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentEnds
@@ -602,7 +592,7 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_nec
   obtain ⟨εcan, hεcan, hsmall, hproduce⟩ :=
     exists_neckRadius_terminalCorePresentation_with_base_necks_of_canonical_neighborhoods.{u} hε
   obtain ⟨C2, hC2, hcanonical⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u} hεcan hsmall
+    OrientedThreeStage.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u} hεcan hsmall
   obtain ⟨C, Λ, hC, hΛ, hproduce⟩ := hproduce C2 C2 hC2
   refine ⟨C, Λ, hC, hΛ, ?_⟩
   intro D

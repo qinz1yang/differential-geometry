@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SummandAbsorption
+import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapEventSumRealizationAssembly
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceSpanningTree
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutCappingRealization
@@ -136,3 +136,32 @@ theorem sphericalGraphSumRealization_of_cutComponentGluing_of_cutCapSummandCount
 end FiniteCutCapTrace
 
 end DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery
+
+universe u
+
+open DifferentialGeometry.Topology (SphericalCutCapTransition)
+
+theorem metricCutCapEvent_hsum_of_cutComponentGluing_of_cutCapSummandCountDetermined
+    {M Q : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3} {a s : ℝ}
+    (E : MetricCutCapEvent M Q a s)
+    (S : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
+    (hS : DifferentialGeometry.Topology.isSphereTwoTimesCircleFactor S)
+    (hglue : E.transition.cutComponentGluing)
+    (hcount : E.transition.cutCapSummandCountDetermined) :
+    E.transition.sphericalGraphSumRealization S :=
+  SphericalCutCapTransition.sphericalGraphSumRealization_of_cutComponentGluing_of_cutCapSummandCountDetermined
+    E.transition S hS hglue hcount
+
+theorem finiteSurgeryHistory_event_hsum_of_cutComponentGluing_of_cutCapSummandCountDetermined
+    (H : FiniteSurgeryHistory.{u})
+    (S : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
+    (hS : DifferentialGeometry.Topology.isSphereTwoTimesCircleFactor S)
+    (hglue : ∀ i : Fin H.eventCount, (H.event i).transition.cutComponentGluing)
+    (hcount : ∀ i : Fin H.eventCount, (H.event i).transition.cutCapSummandCountDetermined) :
+    ∀ i : Fin H.eventCount, (H.cutCapTrace.transition i).sphericalGraphSumRealization S :=
+  fun i => metricCutCapEvent_hsum_of_cutComponentGluing_of_cutCapSummandCountDetermined
+    (H.event i) S hS (hglue i) (hcount i)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery

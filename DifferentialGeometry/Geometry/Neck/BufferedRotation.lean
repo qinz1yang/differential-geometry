@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
-import DifferentialGeometry.Geometry.Metric.Cylinder.Rotation
+import DifferentialGeometry.Geometry.Metric.CylinderRotation
 
 noncomputable section
 open Set Function TopologicalSpace Manifold DifferentialGeometry

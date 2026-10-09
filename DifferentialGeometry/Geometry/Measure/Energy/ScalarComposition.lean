@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskDifferential
-import DifferentialGeometry.Geometry.Metric.Distance.Infinitesimal
+import DifferentialGeometry.Geometry.Metric.InfinitesimalDistance
 import DifferentialGeometry.Geometry.Metric.Euclidean
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldRademacherSource
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
 import Mathlib.Analysis.InnerProductSpace.Dual

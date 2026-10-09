@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.NormalBundle
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.NormalSplitting
+import DifferentialGeometry.Geometry.Comparison.Soul.NormalSplitting
 import DifferentialGeometry.Geometry.Comparison.Soul.NormalExpDerivative
 import DifferentialGeometry.Geometry.Comparison.Soul.SmoothLocalInverse
 

@@ -96,7 +96,7 @@ theorem compact_ricciFlow_volumeVariation_on_regular
       exact hdiff.hasDerivAt
     · rw [continuous_iff_continuousAt]
       intro p
-      exact (DifferentialGeometry.contMDiffAt_partial_deriv_fst (I := I)
+      exact (DifferentialGeometry.timeDeriv_smoothAt (I := I)
         (F := fun q : ℝ × M => f' q.1 q.2) (p0 := p)
         (m := (0 : WithTop ℕ∞)) (n := (1 : WithTop ℕ∞))
         hf'smooth.contMDiffAt (by simp)).continuousAt

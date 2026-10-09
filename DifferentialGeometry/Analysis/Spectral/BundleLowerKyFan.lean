@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.LowerKyFan
 import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
-import DifferentialGeometry.Geometry.Metric.VectorBundle.OrthonormalFrame
+import DifferentialGeometry.Bundle.OrthonormalFrame
 import Mathlib.Analysis.Matrix.Hermitian
 
 noncomputable section

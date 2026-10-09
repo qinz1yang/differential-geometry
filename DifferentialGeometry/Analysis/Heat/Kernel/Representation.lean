@@ -80,7 +80,7 @@ private theorem continuous_deriv_slice_of_jointSmoothOn
   have hdf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun q : ℝ × M => deriv (fun r => f r q.2) q.1) (U ×ˢ univ) := by
     intro q hq
-    exact (contMDiffAt_partial_deriv_fst ((hf q hq).contMDiffAt
+    exact (timeDeriv_smoothAt ((hf q hq).contMDiffAt
       ((hU.prod isOpen_univ).mem_nhds hq)) (by simp)).contMDiffWithinAt
   exact hdf.continuousOn.comp_continuous (continuous_const.prodMk continuous_id)
     (fun y => ⟨ht, mem_univ y⟩)
@@ -98,7 +98,7 @@ private theorem hasDerivAt_integral_jointSmoothOn
   have hdf : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun q : ℝ × M => deriv (fun s => f s q.2) q.1) (U ×ˢ univ) := by
     intro q hq
-    exact (contMDiffAt_partial_deriv_fst ((hf q hq).contMDiffAt
+    exact (timeDeriv_smoothAt ((hf q hq).contMDiffAt
       ((hU.prod isOpen_univ).mem_nhds hq)) (by simp)).contMDiffWithinAt
   have hslice (s : ℝ) (hs : s ∈ U) (y : M) : DifferentiableAt ℝ (fun r => f r y) s := by
     have hat := (hf (s, y) ⟨hs, mem_univ y⟩).contMDiffAt

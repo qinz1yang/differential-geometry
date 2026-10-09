@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalizationLocality
 
 open Set Topology
@@ -18,6 +23,7 @@ theorem IsCanonicalSurface.exists_bridge_normalization_sequence [DecidableEq E3]
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -35,7 +41,7 @@ theorem IsCanonicalSurface.exists_bridge_normalization_sequence [DecidableEq E3]
       ∃ Y : ℤ → Geometry.SimplicialComplex ℝ E3,
         IsCanonicalBridgeNormalization Z.1 Y (fun i => φ '' S i) S'' T''
           (interior (h '' C u ∪ h '' C v)) P' (h u) (h v) (rows n) ∅ :=
-    Z.2.1.exists_window_bridge_normalization ht hu hv huv he htw havoid
+    Z.2.1.exists_window_bridge_normalization ht hu hv huv he htw havoid h303 h286 h314
       Z.2.2.1 Z.2.2.2 (rows n) (fun _ _ => empty_disjoint _) (fun _ _ => empty_disjoint _)
   let next (n : ℕ) (Z : {Z // valid Z}) : {Z // valid Z} :=
     ⟨(hnext n Z).choose, (hnext n Z).choose_spec.target.surface,

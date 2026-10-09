@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDual
-import DifferentialGeometry.Analysis.Sobolev.Time.SteklovEnergy
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.SteklovEnergy
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeOperatorH1
 
 noncomputable section

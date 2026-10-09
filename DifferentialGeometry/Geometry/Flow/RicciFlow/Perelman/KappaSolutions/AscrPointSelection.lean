@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticScalarRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialPointSelection
-import DifferentialGeometry.Topology.MetricSpace.PointPicking
+import DifferentialGeometry.Geometry.Metric.PointPicking
 
 set_option autoImplicit false
 

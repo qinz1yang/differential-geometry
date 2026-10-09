@@ -69,10 +69,10 @@ theorem hasAmbientGaussEquation_of_subsingleton
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_iff_window (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     LoopFamilyLeastAreaSlopeBound (I := I) (M := M) B γ ↔
       LoopFamilyWindowComparison (I := I) (M := M) B γ := by
   constructor
@@ -88,7 +88,7 @@ theorem rfs_csf_embedded_area_iff_window (B : RicciBackground (I := I) (M := M) 
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_leastArea_eq_zero
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hzero : ∀ t ∈ Icc a b, loopFamilyLeastArea B.family.metric γ t = 0)
     (hF : ∀ v ∈ Icc a b, 0 ≤ -2 * Real.pi +
       (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v) :
@@ -102,7 +102,7 @@ theorem loopFamilyWindowComparison_of_leastArea_eq_zero
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_leastArea_eq_zero
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hzero : ∀ t ∈ Icc a b, loopFamilyLeastArea B.family.metric γ t = 0)
     (hF : ∀ v ∈ Icc a b, 0 ≤ -2 * Real.pi +
       (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) v) :
@@ -133,15 +133,15 @@ theorem rfs_csf_immersed_area_of_leastArea_eq_zero
 omit hBoundary hT2 hCompact hNonempty [SigmaCompactSpace M] in
 theorem not_loopFamilyEmbeddedOffFinset_of_constantLoop
     (p : M) (hab : a < b) :
-    ¬ LoopFamilyEmbeddedOffFinset (M := M) (fun _ : ℝ => DifferentialGeometry.Topology.FreeLoop.constants p) (Icc a b) := by
+    ¬ LoopFamilyEmbeddedOffFinset (M := M) (fun _ : ℝ => constantLoops p) (Icc a b) := by
   rintro ⟨exceptional, hexc⟩
   have hdiff : (Icc a b \ (↑exceptional : Set ℝ)).Nonempty :=
     ((Set.Icc_infinite hab).sdiff (Finset.finite_toSet exceptional)).nonempty
   obtain ⟨t, ht, htne⟩ := hdiff
   have hinj := (hexc t ht htne).injective
-  have hconst : (DifferentialGeometry.Topology.FreeLoop.constants p) (0 : Surgery.Topology.Circle) =
-      (DifferentialGeometry.Topology.FreeLoop.constants p) ((1 / 2 : ℝ) : Surgery.Topology.Circle) := by
-    simp [DifferentialGeometry.Topology.FreeLoop.constants]
+  have hconst : (constantLoops p) (0 : Surgery.Topology.Circle) =
+      (constantLoops p) ((1 / 2 : ℝ) : Surgery.Topology.Circle) := by
+    simp [constantLoops]
   have hne : (0 : Surgery.Topology.Circle) ≠ ((1 / 2 : ℝ) : Surgery.Topology.Circle) := by
     intro h
     have h' : ((1 / 2 : ℝ) : Surgery.Topology.Circle) = 0 := h.symm
@@ -156,7 +156,7 @@ theorem not_loopFamilyEmbeddedOffFinset_of_constantLoop
   exact hne (hinj hconst)
 
 omit hBoundary hT2 hCompact hNonempty [SigmaCompactSpace M] in
-theorem loopFamilyEmbeddedOffFinset_empty (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) :
+theorem loopFamilyEmbeddedOffFinset_empty (γ : ℝ → ContinuousFreeLoop M) :
     LoopFamilyEmbeddedOffFinset (M := M) γ (∅ : Set ℝ) :=
   LoopFamilyEmbeddedOffFinset.of_slicewiseEmbedding fun t ht => (Set.notMem_empty t ht).elim
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import Mathlib.Topology.MetricSpace.Completion
 

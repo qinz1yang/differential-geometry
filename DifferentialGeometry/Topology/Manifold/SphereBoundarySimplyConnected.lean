@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.SphereBoundaryDomain
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
-import DifferentialGeometry.Topology.Collar.TwoSided.BandExtension
+import DifferentialGeometry.Topology.SphereSeparation.BicollarBandExtension
 import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
 import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images

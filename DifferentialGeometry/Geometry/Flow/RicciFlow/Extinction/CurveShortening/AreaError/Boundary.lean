@@ -20,7 +20,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 omit [IsManifold 𝓘(ℝ, E) ∞ Q] in
 theorem SmoothDisk.isotopyVelocity_boundary_eq_curve_velocity
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q)
     (sigma : SmoothWeaklyMonotoneCircleMap) {J : Set ℝ} {t₀ : ℝ} (ht₀ : t₀ ∈ J)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ t₀ (sigma.map theta))
     (Phi : ℝ → Diffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) Q Q ∞)
@@ -43,7 +43,7 @@ theorem SmoothDisk.boundaryCurvatureVelocity_eq_curve_curvatureVector [FiniteDim
     (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) Q)
     (gamma : RegularLoop 𝓘(ℝ, E) Q) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma (sigma.map theta))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q) (t : ℝ)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q) (t : ℝ)
     (hslice : γ t = gamma.toContinuousLoop) (x : ℝ) :
     u.boundaryCurvatureVelocity (G t) gamma sigma htrace x =
       (curveOfLoopFamily γ).curvatureVector G (sigma.lift x) t := by
@@ -122,7 +122,7 @@ theorem SmoothDisk.boundaryAreaError_isotopy_eq_curve_areaError [FiniteDimension
     (gamma : RegularLoop 𝓘(ℝ, E) Q) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma (sigma.map theta))
     {U : ℂ → Q} (hU : SmoothDiskExtension (E := E) u.map U)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q) {J : Set ℝ} {t : ℝ} (ht : t ∈ J)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q) {J : Set ℝ} {t : ℝ} (ht : t ∈ J)
     (hslice : γ t = gamma.toContinuousLoop)
     (Phi : ℝ → Diffeomorph 𝓘(ℝ, E) 𝓘(ℝ, E) Q Q ∞)
     (hid : ∀ q, Phi t q = q)
@@ -140,7 +140,7 @@ theorem SmoothDisk.boundaryAreaError_isotopy_eq_curve_areaError [FiniteDimension
   apply SmoothDisk.integral_boundaryNormalVelocityErrorDensity_eq_areaError u G gamma sigma htrace
     (u.isotopyVelocity Phi J t hid) γ J t
   · exact SmoothDisk.curveOfLoopFamily_lift_eq_map_diskBoundary u gamma sigma htrace γ t
-      (fun theta => congrArg (fun f : DifferentialGeometry.Topology.freeLoop Q => f theta) hslice)
+      (fun theta => congrArg (fun f : Surgery.Topology.ContinuousFreeLoop Q => f theta) hslice)
   · exact SmoothDisk.isotopyVelocity_boundary_eq_curve_velocity u γ sigma ht htraceγ Phi hid
       hboundary
   · exact SmoothDisk.boundaryCurvatureVelocity_eq_curve_curvatureVector u G gamma sigma htrace γ t
@@ -264,7 +264,7 @@ theorem SmoothDisk.boundaryAreaError_isotopy_eq_areaError [CompactSpace Q]
     {D : RealTimeInterval} (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) Q)
     (hG : MetricFamilySmoothOn D G) {J : Set ℝ} (hJ : J ⊆ D.regular)
     (hJuniq : UniqueDiffOn ℝ J)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := 𝓘(ℝ, E)) J)
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := 𝓘(ℝ, E)) J)
     {t : ℝ} (ht : t ∈ J)

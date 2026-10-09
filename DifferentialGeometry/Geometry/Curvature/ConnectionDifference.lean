@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.LoweredDifference
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Geometry.Metric.Tensor.TraceDerivativeBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.Curvature
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
@@ -8,6 +8,7 @@ import DifferentialGeometry.Bundle.Section
 set_option autoImplicit false
 noncomputable section
 open Bundle Manifold Set DifferentialGeometry DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff BigOperators

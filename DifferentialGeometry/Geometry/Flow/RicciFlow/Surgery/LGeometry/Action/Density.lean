@@ -31,13 +31,10 @@ private theorem exists_contMDiff_action_lt_on_carrier
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_contMDiff_action_lt
+private theorem exists_contMDiff_action_lt
     (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u ≤ v) (hupper : T - u ^ 2 ≤ s) (hlower : a ≤ T - v ^ 2)
     (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)
@@ -180,7 +177,7 @@ theorem exists_contMDiff_stage_action_lt_of_absolutelyContinuousOnInterval
         H.stageRegularizedLagrangian i.castSucc T γ = lRegularizedLagrangian (H.event i).incoming.flow T γ :=
       funext (H.stageRegularizedLagrangian_castSucc i T γ)
     obtain ⟨β, hβ, hβu, hβv, hβint, hβact⟩ :=
-      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_contMDiff_action_lt (H.event i).terminal hs0 hlt.le
+      OrientedThreeStage.IncomingSlab.exists_contMDiff_action_lt (H.event i).terminal hs0 hlt.le
         hStageUpper hStageLower (hα ⟨_, hj⟩) hterminal (by simpa only [hLagEq] using hint ⟨_, hj⟩) hε
     refine ⟨β, hβ, hβu, hβv, ?_, ?_⟩
     · simpa only [hLagEq] using hβint
@@ -741,13 +738,10 @@ open scoped Manifold ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_history_regularizedCost_minimum_of_action_lt_compact_barrier
+theorem TerminalLimitMetric.exists_history_regularizedCost_minimum_of_action_lt_compact_barrier
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) (H : ObservedHistory.{u})
     (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)

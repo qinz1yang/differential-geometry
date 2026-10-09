@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.ChartComponentFrameTrace
-import DifferentialGeometry.Geometry.Connection.ChartFrame.Localized.Coordinates
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.Coordinates
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.MinimizingLensAngle
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.MinimizingLensAngle
 import DifferentialGeometry.Geometry.Geodesic.MinimizingArm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TransverseCrossingPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckArmNoReturn

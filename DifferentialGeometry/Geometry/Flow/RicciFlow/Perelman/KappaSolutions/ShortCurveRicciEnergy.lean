@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Derivative.EndpointIntegralComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.IntegratedHarnackCalculus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
@@ -94,7 +94,7 @@ theorem smoothCurveRicciEnergy_short_average_tendsto
     Tendsto (fun h => (∫ s in tau - h..tau,
       smoothCurveRicciEnergy S gamma (s, s - (tau - h))) / h)
       (𝓝[>] (0 : ℝ)) (𝓝 (smoothCurveRicciEnergy S gamma (tau, 0))) := by
-  apply DifferentialGeometry.Analysis.Calculus.tendsto_diagonal_interval_average
+  apply short_diagonal_average_tendsto
   · have hc := smoothCurveRicciEnergy_continuousOn S hS gamma hgamma
       (tau, 0) ⟨hcarrier (le_rfl : tau ≤ tau), mem_univ _⟩
     exact hc.mono (fun q hq => ⟨hcarrier hq.1, mem_univ _⟩)

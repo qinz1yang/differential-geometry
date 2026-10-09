@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.MinimizingSequence
-import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexSource
+import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicReplacement
 import DifferentialGeometry.Analysis.Integration.PlaneScaling

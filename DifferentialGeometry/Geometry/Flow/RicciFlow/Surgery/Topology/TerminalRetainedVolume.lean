@@ -9,9 +9,6 @@ open DifferentialGeometry.Topology.ThreeManifold.Surgery
 open scoped Manifold ContDiff Topology ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
@@ -23,7 +20,7 @@ private local instance : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.retained_core_union_negative_bands_volume_le
+theorem TerminalLimitMetric.retained_core_union_negative_bands_volume_le
     (L : G.TerminalLimitMetric) {ι : Type*} [Finite ι] {δ : ι → ℝ}
     (x₀ : ι → G.terminalRegularOpen) (order : ι → ℕ)
     (d : ∀ i, normalizedDatum L.metric (x₀ i) (δ i) (order i))

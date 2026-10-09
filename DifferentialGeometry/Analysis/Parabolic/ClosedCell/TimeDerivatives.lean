@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.ClosedCell.WeakEquation
-import DifferentialGeometry.Analysis.Parabolic.MetricDivergence.Interior.TimeDerivatives
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakDensity.TimeDerivatives
 import DifferentialGeometry.Topology.Attachment.Basic
 
 noncomputable section

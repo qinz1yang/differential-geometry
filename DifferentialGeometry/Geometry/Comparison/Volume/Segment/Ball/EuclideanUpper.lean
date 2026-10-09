@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Ball
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.FrameBound
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.Measure
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.MinimizingDomain.NoConjugatePoints
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Domain.NoConjugatePoints
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
 
 set_option autoImplicit false

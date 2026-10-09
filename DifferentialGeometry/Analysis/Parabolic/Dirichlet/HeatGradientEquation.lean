@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatTimeRegularity
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.Smoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Parabolic.WeakEquationDensity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
 

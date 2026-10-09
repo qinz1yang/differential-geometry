@@ -132,17 +132,17 @@ theorem component_removedBand_isOpen (p : ConnectedComponents P.Carrier)
   exact (E.removedBand_isOpen a.1).preimage continuous_subtype_val
 
 theorem component_middleSphereSeparation (p : ConnectedComponents P.Carrier)
-    [SimplyConnectedSpace (P.component p).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component p).Carrier] :
     (E.trace.tubes.component p).middleSphereSeparation := by
   let : SimplyConnectedSpace (ComponentCarrier p) :=
-    inferInstanceAs (SimplyConnectedSpace (P.component p).toClosedOrientedManifold.Carrier)
+    inferInstanceAs (SimplyConnectedSpace (P.component p).Carrier)
   let : LocallyPathConnectedSpace (ComponentCarrier p) :=
-    ChartedSpace.locallyPathConnectedSpace ThreeSpace (P.component p).toClosedOrientedManifold.Carrier
+    ChartedSpace.locallyPathConnectedSpace ThreeSpace (P.component p).Carrier
   exact (E.trace.tubes.component p).middleSphereSeparation_of_isOpen_removedBand
     (E.component_removedBand_isOpen p)
 
 theorem parent_middleSphereSeparation (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
     (E.trace.tubes.component (E.childParent c)).middleSphereSeparation :=
   E.component_middleSphereSeparation (E.childParent c)
 
@@ -170,18 +170,18 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 theorem component_tubes_componentwiseSimplyConnected
     (p : ConnectedComponents P.Carrier)
-    [SimplyConnectedSpace (P.component p).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component p).Carrier] :
     (E.trace.tubes.component p).componentwiseSimplyConnected := by
   let _ : SimplyConnectedSpace (ComponentCarrier p) :=
-    inferInstanceAs (SimplyConnectedSpace (P.component p).toClosedOrientedManifold.Carrier)
+    inferInstanceAs (SimplyConnectedSpace (P.component p).Carrier)
   let _ : LocallyPathConnectedSpace (ComponentCarrier p) :=
-    ChartedSpace.locallyPathConnectedSpace ThreeSpace (P.component p).toClosedOrientedManifold.Carrier
+    ChartedSpace.locallyPathConnectedSpace ThreeSpace (P.component p).Carrier
   exact (E.trace.tubes.component p).componentwiseSimplyConnected_of_isOpen_removedBand
     (E.component_removedBand_isOpen p)
 
 theorem parent_tubes_componentwiseSimplyConnected
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
     (E.trace.tubes.component (E.childParent c)).componentwiseSimplyConnected :=
   E.component_tubes_componentwiseSimplyConnected (E.childParent c)
 
@@ -332,14 +332,14 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 theorem simplyConnectedSpace_puncturedCoreComponent_of_parent_simplyConnected
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
     SimplyConnectedSpace (E.trace.tubes.puncturedCoreComponent (E.childCoreComponent c)) :=
   E.simplyConnectedSpace_puncturedCoreComponent_of_parent_componentwiseSimplyConnected c
     (E.parent_tubes_componentwiseSimplyConnected c)
 
 theorem simplyConnectedSpace_childCore_of_parent_simplyConnected
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
     SimplyConnectedSpace (E.ChildCore c) :=
   E.simplyConnectedSpace_childCore_of_puncturedCoreComponent c
     (E.simplyConnectedSpace_puncturedCoreComponent_of_parent_simplyConnected c)

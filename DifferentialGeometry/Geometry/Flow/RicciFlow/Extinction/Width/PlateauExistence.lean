@@ -19,7 +19,7 @@ private theorem conformal_disk_producer_standard_model
     (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift γ.toContinuousLoop))
     (hemb : Topology.IsEmbedding (γ : Surgery.Topology.Circle → M))
     (himm : ∀ t : ℝ, loopVelocity (I := 𝓘(ℝ, E)) γ.toContinuousLoop t ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop) :
+    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop) :
     ∃ u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M), ∃ σ : SmoothWeaklyMonotoneCircleMap,
       (∀ θ, u.map (diskBoundary θ) = γ (σ.map θ)) ∧
       u.IsConformal g ∧ u.IsHarmonic g ∧
@@ -56,7 +56,7 @@ theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
     (hemb : Topology.IsEmbedding (γ : Surgery.Topology.Circle → Q))
     (himm : ∀ t : ℝ, loopVelocity (I := I) γ.toContinuousLoop t ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop) :
+    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop) :
     ∃ u : SmoothDisk (I := I) (Q := Q), ∃ σ : SmoothWeaklyMonotoneCircleMap,
       (∀ θ, u.map (diskBoundary θ) = γ (σ.map θ)) ∧
       u.IsConformal g ∧ u.IsHarmonic g ∧
@@ -76,8 +76,8 @@ theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
   have himm' (t : ℝ) : loopVelocity (I := 𝓘(ℝ, E)) γ'.toContinuousLoop t ≠ 0 := by
     rw [loopVelocity_postcomposeDiffeomorph Φ γ hγ]
     exact fun h => himm t ((mfderiv_eq_zero_iff_of_diffeomorph Φ _).mp h)
-  have hctr' : ContinuousMap.Nullhomotopic γ'.toContinuousLoop :=
-    hctr.comp_right ⟨Φ, Φ.continuous⟩
+  have hctr' : Surgery.Topology.IsContractibleLoop γ'.toContinuousLoop :=
+    hctr.postcompose ⟨Φ, Φ.continuous⟩
   obtain ⟨u, σ, htrace, hconf, hharm, hmin⟩ :=
     conformal_disk_producer_standard_model g' hdim γ' hγ' hemb' himm' hctr'
   let v := SmoothDisk.compDiffeomorph Φ.symm u

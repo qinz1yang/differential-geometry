@@ -24,9 +24,9 @@ theorem exists_oriented_discardedCap_model_collar_of_projective_cap_cover
     (component : ConnectedComponents D.Carrier)
     (b : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace Z ∞)
     (F : PartialDiffeomorph ThreeModel ThreeModel Z
-      (D.component component).Carrier ∞)
+      (D.toClosedOrientedManifold.component component).Carrier ∞)
     (B : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace
-      (D.component component).Carrier ∞)
+      (D.toClosedOrientedManifold.component component).Carrier ∞)
     (hb : closedBall (0 : ThreeSpace) 1 ⊆ b.source)
     (hF : (b '' ball (0 : ThreeSpace) 1)ᶜ ⊆ F.source)
     (hB : closedBall (0 : ThreeSpace) 1 ⊆ B.source)
@@ -41,12 +41,12 @@ theorem exists_oriented_discardedCap_model_collar_of_projective_cap_cover
       c.toFun q = E.trace.discardedCap boundary hdiscarded (capSide ⟨q,hq⟩)) :
     let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
     ∃ (G : SphericalSpaceFormGroup)
-      (e : (D.component component).Carrier
+      (e : (D.toClosedOrientedManifold.component component).Carrier
         ≃ₘ⟮ThreeModel, ThreeModel⟯ G.manifold.Carrier)
       (H : SphericalSpaceFormGroup)
       (τ : G.manifold.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ H.manifold.Carrier)
       (f : ClosedOrientedManifold.OrientedDiffeomorph
-        (D.component component).toClosedOrientedManifold H.manifold.toClosedOrientedManifold)
+        (D.toClosedOrientedManifold.component component).toClosedOrientedManifold H.manifold.toClosedOrientedManifold)
       (fCap : C(ThreeBall,G.manifold.Carrier))
       (profile : C(Sphere 2 × symmetricOpenInterval c.radius,G.manifold.Carrier))
       (fCap' : C(ThreeBall,H.manifold.Carrier))
@@ -67,7 +67,7 @@ theorem exists_oriented_discardedCap_model_collar_of_projective_cap_cover
       ContMDiff ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ profile' ∧
       (∀ q, (f.1.symm (profile' q)).val = c.toFun q) ∧
       (∀ q (hq : q.2.val ≤ 0), profile' q = fCap' (capSide ⟨q,hq⟩)) ∧
-      isStandardFactor (D.component component) := by
+      isStandardFactor (D.toClosedOrientedManifold.component component) := by
   let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
   have hp : IsLocalDiffeomorph ThreeModel ThreeModel ∞ pr.quotient :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv

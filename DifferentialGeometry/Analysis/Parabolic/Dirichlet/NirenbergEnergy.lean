@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationFixedMass
-import DifferentialGeometry.Analysis.Sobolev.Time.SteklovEnergy
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.SteklovEnergy
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergEstimate
 
 noncomputable section

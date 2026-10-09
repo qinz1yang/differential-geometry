@@ -26,8 +26,8 @@ noncomputable def childSeamSphere (c : ConnectedComponents Q.Carrier) (b : E.Chi
 
 def seamSphereSmoothlyEmbedded (c : ConnectedComponents Q.Carrier) (b : E.ChildCapBoundary c) :
     Prop :=
-  letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-  letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+  letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+  letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
   IsSmoothEmbedding (𝓡 2) ThreeModel ∞ fun y : Sphere 2 => E.childSeamSphere c b y
 
 private theorem contMDiff_sphereToThreeBall :
@@ -73,8 +73,8 @@ private theorem capBoundary_isSmoothEmbedding (b : E.trace.tubes.Boundary) :
 
 theorem childSeamSphere_isSmoothEmbedding (c : ConnectedComponents Q.Carrier)
     (b : E.ChildCapBoundary c) : E.seamSphereSmoothlyEmbedded c b := by
-  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
   let inclusion : E.ChildCarrier c → Q.Carrier ⊕ D.Carrier := fun q => Sum.inl q.1
   have heq : inclusion ∘ E.childSeamSphere c b =
       E.presentation ∘ (E.trace.capping.cap b.1 ∘ sphereToThreeBall) := by
@@ -99,31 +99,31 @@ theorem childSeamSphere_isSmoothEmbedding (c : ConnectedComponents Q.Carrier)
 theorem nonempty_smoothTwoSidedCollar_of_seamSphereSmoothlyEmbedded
     (c : ConnectedComponents Q.Carrier) (b : E.ChildCapBoundary c)
     (h : E.seamSphereSmoothlyEmbedded c b) :
-    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
     Nonempty (DifferentialGeometry.Topology.SmoothTwoSidedCollar
       (𝓡 2) ThreeModel fun y : Sphere 2 => E.childSeamSphere c b y) := by
-  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
   exact DifferentialGeometry.Topology.exists_smoothTwoSidedCollar_of_smoothSphereEmbedding
     (fun y : Sphere 2 => E.childSeamSphere c b y) h
 
 theorem nonempty_twoSidedCollar_of_seamSphereSmoothlyEmbedded
     (c : ConnectedComponents Q.Carrier) (b : E.ChildCapBoundary c)
     (h : E.seamSphereSmoothlyEmbedded c b) :
-    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
     Nonempty (DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
       fun y : Sphere 2 => E.childSeamSphere c b y) := by
-  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+  let thisChart : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+  let thisSmooth : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
   obtain ⟨h⟩ := E.nonempty_smoothTwoSidedCollar_of_seamSphereSmoothlyEmbedded c b h
   exact ⟨DifferentialGeometry.Topology.SmoothTwoSidedCollar.toTwoSidedCollar h⟩
 
 theorem nonempty_smoothTwoSidedCollar_childSeamSphere
     (c : ConnectedComponents Q.Carrier) (b : E.ChildCapBoundary c) :
-    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.charts
-    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).toClosedOrientedManifold.smooth
+    letI : ChartedSpace ThreeSpace (E.ChildCarrier c) := (Q.component c).charts
+    letI : IsManifold ThreeModel ∞ (E.ChildCarrier c) := (Q.component c).smooth
     Nonempty (DifferentialGeometry.Topology.SmoothTwoSidedCollar
       (𝓡 2) ThreeModel fun y : Sphere 2 => E.childSeamSphere c b y) :=
   E.nonempty_smoothTwoSidedCollar_of_seamSphereSmoothlyEmbedded c b
@@ -143,17 +143,17 @@ theorem seamSphereSmoothlyEmbedded_of_isEmpty_childCapBoundary
 
 theorem simplyConnectedSpace_childCarrier_of_univ_V_producer
     (h : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         ∃ d : E.ChildCarrierCoreCapCover c, d.V = univ)
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
     SimplyConnectedSpace (E.ChildCarrier c) := by
   obtain ⟨d, hd⟩ := h c inferInstance
   exact E.simplyConnectedSpace_childCarrier_of_cover_univ_V c d hd
 
 def childCoreCapCoverAssembly : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       (∀ b : E.ChildCapBoundary c,
         Nonempty (DifferentialGeometry.Topology.ThreeManifold.TwoSidedCollar
           fun y : Sphere 2 => E.childSeamSphere c b y)) →

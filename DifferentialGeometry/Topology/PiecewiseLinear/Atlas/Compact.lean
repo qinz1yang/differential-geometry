@@ -1,6 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Atlas.Gluing
+import DifferentialGeometry.Topology.PiecewiseLinear.ChartGluingCh5Port
 import DifferentialGeometry.Topology.Manifold.PartialAtlas.Compact
-
 open Set Topology
 open scoped Manifold
 

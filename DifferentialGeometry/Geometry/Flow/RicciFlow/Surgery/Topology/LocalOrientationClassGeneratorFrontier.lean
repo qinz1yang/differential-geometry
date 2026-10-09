@@ -59,11 +59,15 @@ theorem exists_generator_with_functional_eq_one :
       integralEuclideanLocalTopGenerator_coordinate E 1 hd 0⟩,
     integralEuclideanLocalTopGenerator_zsmul_bijective E 1 hd 0⟩
 
-private theorem exists_ne_zero_not_generator_of_coordinate_one
-    {A : Type*} [AddCommGroup A] [Module ℤ A]
-    (e : A ≃ₗ[ℤ] ℤ) (g : A) (hg : e g = 1) :
-    ∃ c : A, c ≠ 0 ∧ (∃ φ : A →ₗ[ℤ] ℤ, φ c ≠ 0) ∧
-      ¬ Function.Bijective (fun z : ℤ => z • c) := by
+theorem exists_ne_zero_not_generator :
+    ∃ c : integralLocalHomology 3 (0 : liftedSphereSpace.{u} 1), c ≠ 0 ∧
+      (∃ φ : integralLocalHomology 3 (0 : liftedSphereSpace.{u} 1) →ₗ[ℤ] ℤ, φ c ≠ 0) ∧
+        ¬ Function.Bijective (fun z : ℤ => z • c) := by
+  let E := liftedSphereSpace.{u} 1
+  let hd : Module.finrank ℝ E = 1 + 2 := liftedSphereSpace_finrank 1
+  let e := integralEuclideanLocalTopEquiv E 1 hd 0
+  let g := integralEuclideanLocalTopGenerator E 1 hd 0
+  have hg : e g = 1 := integralEuclideanLocalTopGenerator_coordinate E 1 hd 0
   refine ⟨(2 : ℤ) • g, ?_, ?_, ?_⟩
   · intro hzero
     have h2 : e ((2 : ℤ) • g) = e 0 := congrArg e hzero
@@ -81,18 +85,6 @@ private theorem exists_ne_zero_not_generator_of_coordinate_one
     obtain ⟨k, hk⟩ := h.2 1
     simp only [smul_eq_mul] at hk
     omega
-
-theorem exists_ne_zero_not_generator :
-    ∃ c : integralLocalHomology 3 (0 : liftedSphereSpace.{u} 1), c ≠ 0 ∧
-      (∃ φ : integralLocalHomology 3 (0 : liftedSphereSpace.{u} 1) →ₗ[ℤ] ℤ, φ c ≠ 0) ∧
-        ¬ Function.Bijective (fun z : ℤ => z • c) := by
-  exact exists_ne_zero_not_generator_of_coordinate_one
-    (integralEuclideanLocalTopEquiv (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0)
-    (integralEuclideanLocalTopGenerator (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0)
-    (integralEuclideanLocalTopGenerator_coordinate (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

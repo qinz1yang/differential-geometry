@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialEquivalence
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialEquivalence
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularBandTargetTrace
 
 open Set
@@ -45,8 +45,8 @@ theorem exists_section34_first_annular_band_of_essential_second_pair
         Disjoint C (G (ends e).1 '' (Ab₀ e ∪ Ab₁ e)) →
           G (ends e).1 '' CpBd (ends e).1 ∩ C =
             (u ∘ φ) '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
-  have hiA := (piercing_generators_of_essential_second hprep hpack e hi hiess).2.2
-  have hjA := (piercing_generators_of_essential_second hprep hpack e hj hjess).2.2
+  have hiA := (section34_piercing_generators_of_essential_second hprep hpack e hi hiess).2.2
+  have hjA := (section34_piercing_generators_of_essential_second hprep hpack e hj hjess).2.2
   have hann := (section34_piercing_annuli hprep hpack e).1
   obtain ⟨-, -, -, -, hCp, -, -, -, -, -, -, -, -, -, hAa, -⟩ := hprep
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hGcp, -, -, -, -, -, -, hPg, hdisj, -⟩ := hpack

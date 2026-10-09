@@ -356,7 +356,7 @@ theorem unitModel_operatorFieldApplication_slotInsertEndoCc_cons
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
           U.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [slotInsertEndoCc_toSection (I := I) (M := M) g s' Λ x]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
   unfold unitModel
   congr 1
   rw [show (Fin.cons a rest : Fin (s' + 1) → E) 0 = a from rfl]
@@ -393,9 +393,9 @@ theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
     a (Fin.cons b m)]
   rw [show (show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
       (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ).toSection x) =
-      slotInsertEndomorphism (I := I) (M := M) (s' + 1) 0 x (Λ x) from
+      slotInsertEndoFib (I := I) (M := M) (s' + 1) 0 x (Λ x) from
     slotInsertEndoCc_toSection (I := I) (M := M) g s' Λ x]
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
   unfold unitModel
   rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
     (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 2) I x from

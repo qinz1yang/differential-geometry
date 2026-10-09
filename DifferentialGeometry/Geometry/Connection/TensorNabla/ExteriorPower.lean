@@ -35,7 +35,7 @@ def exteriorPower (cov : CovariantDerivative I F V) (k : ℕ) :
   exact pullbackFiberwiseLinearEquiv
     (fun x => (_root_.exteriorPower.alternatingDualEquiv (E := V x) k).toLinearEquiv)
     (Bundle.ExteriorPower.contMDiff_alternatingDualEquiv_map (IB := I) F V k 1)
-    (_root_.CovariantDerivative.hom I M
+    (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M
       (F [⋀^Fin k]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
       ℝ (Bundle.Trivial M ℝ) (alternating cov k) (trivial I M ℝ))
@@ -48,7 +48,7 @@ theorem exteriorPower_apply (cov : CovariantDerivative I F V) (k : ℕ)
     letI := Bundle.ExteriorPower.vector_bundle F V k
     exteriorPower cov k u x X =
       (_root_.exteriorPower.alternatingDualEquiv k).symm
-        (_root_.CovariantDerivative.hom I M
+        (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M
           (F [⋀^Fin k]→L[ℝ] ℝ)
           (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
           ℝ (Bundle.Trivial M ℝ) (alternating cov k) (trivial I M ℝ)
@@ -105,7 +105,7 @@ theorem exteriorPower_ιMulti (cov : CovariantDerivative I F V) (k : ℕ)
   have hu := Bundle.ExteriorPower.mdifferentiableAt_ιMulti (IB := I) F V k Y hY
   have hmap := Bundle.ExteriorPower.contMDiff_alternatingDualEquiv_map (IB := I) F V k 1
   have hd := (hmap.mdifferentiableAt one_ne_zero).comp x hu
-  rw [_root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  rw [DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M (F [⋀^Fin k]→L[ℝ] ℝ)
     (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
     ℝ (Bundle.Trivial M ℝ) (alternating cov k) (trivial I M ℝ)
@@ -145,7 +145,7 @@ theorem exteriorPower_alternatingDualEquiv_apply
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   rw [← hZ, exteriorPower_apply, ContinuousLinearEquiv.apply_symm_apply]
-  exact _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  exact DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M (F [⋀^Fin k]→L[ℝ] ℝ)
     (Bundle.continuousAlternatingMap ℝ (Fin k) F V ℝ (Bundle.Trivial M ℝ))
     ℝ (Bundle.Trivial M ℝ) (CovariantDerivative.alternating cov k) (trivial I M ℝ)

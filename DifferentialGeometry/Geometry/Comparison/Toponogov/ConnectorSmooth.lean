@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RealizedConnectors
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
-import DifferentialGeometry.Geometry.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 
 set_option autoImplicit false

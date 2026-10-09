@@ -73,7 +73,7 @@ theorem forward_uniqueness_cutoff_energy_deriv_le_of_flux_remainder_bounds
     let C_rest := C_R + 4 * n ^ 4 + 1 + δ * C_A + δ⁻¹ + Real.sqrt (n * Λric)
     let S := forwardUniquenessSfield (I := I) g₁ g₂ t
     let A := metricNabla0S (I := I) (g₁ t) S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)
@@ -93,7 +93,7 @@ theorem forward_uniqueness_cutoff_energy_deriv_le_of_flux_remainder_bounds
   let C_rest := C_R + 4 * n ^ 4 + 1 + δ * C_A + δ⁻¹ + Real.sqrt (n * Λric)
   let S := forwardUniquenessSfield (I := I) g₁ g₂ t
   let A := metricNabla0S (I := I) (g₁ t) S
-  let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+  let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
     ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
       (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
     (unitZeroSec (I := I) (M := M) x)
@@ -297,7 +297,7 @@ theorem forward_uniqueness_cutoff_energy_deriv_le
     let C_U := 32 * n ^ 5 * BR2 + 8 * n ^ 10 * (BP * Background)
     let S := forwardUniquenessSfield (I := I) g₁ g₂ t
     let A := metricNabla0S (I := I) (g₁ t) S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)
@@ -412,7 +412,7 @@ theorem forward_uniqueness_corrected_cutoff_energy_deriv_le
       (16 * n ^ 18 * Ce ^ 8 + 32 * n ^ 19 * Ce ^ 6) * BR2g2 * BH
     let S := forwardUniquenessSfield (I := I) g₁ g₂ t
     let A := metricNabla0S (I := I) (g₁ t) S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)

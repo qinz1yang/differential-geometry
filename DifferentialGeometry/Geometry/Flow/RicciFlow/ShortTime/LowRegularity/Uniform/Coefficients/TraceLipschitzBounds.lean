@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CurvatureMonomialJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.InverseLipschitzBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaise
@@ -910,23 +909,22 @@ private theorem monoSplit (g gT gU : SmoothRiemannianMetric I M)
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g gT -
             cometricDoublePairTraceCoefficient (I := I) (M := M) g gU)
           (monoExt (I := I) (M := M) g 0 2 4
-            (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) S) +
+            (RicciDeTurckLowOrder.monoPerm σ) S) +
         ccOperatorFieldComp (I := I) (M := M) g 4 6 2
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g gU)
           (monoExt (I := I) (M := M) g 0 2 4
-              (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) S -
+              (RicciDeTurckLowOrder.monoPerm σ) S -
             monoExt (I := I) (M := M) g 0 2 4
-              (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) R) := by
-  dsimp only [curvatureDecompositionMonomialCoeffField]
-  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gT S σ,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gU R σ,
-    show monoExt (I := I) (M := M) g 0 2 4 (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) S =
+              (RicciDeTurckLowOrder.monoPerm σ) R) := by
+  rw [RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gT S σ,
+    RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gU R σ,
+    show monoExt (I := I) (M := M) g 0 2 4 (RicciDeTurckLowOrder.monoPerm σ) S =
         rsDomDomCongrSection (I := I) (M := M) g 4 6
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ)
+          (RicciDeTurckLowOrder.monoPerm σ)
           (slotExtendIter (I := I) (M := M) g 0 2 4 S) from rfl,
-    show monoExt (I := I) (M := M) g 0 2 4 (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) R =
+    show monoExt (I := I) (M := M) g 0 2 4 (RicciDeTurckLowOrder.monoPerm σ) R =
         rsDomDomCongrSection (I := I) (M := M) g 4 6
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ)
+          (RicciDeTurckLowOrder.monoPerm σ)
           (slotExtendIter (I := I) (M := M) g 0 2 4 R) from rfl,
     operatorFieldComposition_sub_left, operatorFieldComposition_sub_right]
   abel
@@ -1018,7 +1016,7 @@ theorem curvMono_h2_lip_uniform
   have hjet2 := hjet 2 (by norm_num)
   let N : ℝ := ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖
   let X : SmoothCcTensor g 0 2 → SmoothCcTensor g 4 6 :=
-    fun W => monoExt (I := I) (M := M) g 0 2 4 (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) W
+    fun W => monoExt (I := I) (M := M) g 0 2 4 (RicciDeTurckLowOrder.monoPerm σ) W
   let Q₁ : SmoothCcTensor g 4 2 :=
     ccOperatorFieldComp (I := I) (M := M) g 4 6 2
       (cometricDoublePairTraceCoefficient (I := I) (M := M) g gT -
@@ -1054,7 +1052,7 @@ theorem curvMono_h2_lip_uniform
             ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 0 2 j S‖ ^ 2 :=
         monoExtJet (I := I) (M := M) g 0 2 4 2
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) S
+          (RicciDeTurckLowOrder.monoPerm σ) S
       _ ≤ (Module.finrank ℝ E : ℝ) ^ 4 * A ^ 2 :=
         mul_le_mul_of_nonneg_left hS (pow_nonneg (Nat.cast_nonneg _) 4)
       _ = (9 * A) ^ 2 := by rw [hfr3]; ring
@@ -1064,19 +1062,19 @@ theorem curvMono_h2_lip_uniform
         (9 * D) ^ 2 := by
     rw [show X S - X R =
         monoExt (I := I) (M := M) g 0 2 4
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) (S - R) from
+          (RicciDeTurckLowOrder.monoPerm σ) (S - R) from
       (monoExtSub (I := I) (M := M) g 0 2 4
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) S R).symm]
+        (RicciDeTurckLowOrder.monoPerm σ) S R).symm]
     calc
       (∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 4 6 j
             (monoExt (I := I) (M := M) g 0 2 4
-              (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) (S - R))‖ ^ 2) ≤
+              (RicciDeTurckLowOrder.monoPerm σ) (S - R))‖ ^ 2) ≤
           (Module.finrank ℝ E : ℝ) ^ 4 *
             ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g 0 2 j (S - R)‖ ^ 2 :=
         monoExtJet (I := I) (M := M) g 0 2 4 2
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ) (S - R)
+          (RicciDeTurckLowOrder.monoPerm σ) (S - R)
       _ ≤ (Module.finrank ℝ E : ℝ) ^ 4 * D ^ 2 :=
         mul_le_mul_of_nonneg_left hSR (pow_nonneg (Nat.cast_nonneg _) 4)
       _ = (9 * D) ^ 2 := by rw [hfr3]; ring

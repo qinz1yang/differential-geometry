@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.HarmonicGradient
 import DifferentialGeometry.Geometry.Operator.Laplacian.Isometry
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 
 noncomputable section
 

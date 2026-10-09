@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.TimeRegularity
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.PotentialBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.PotentialCoefficientBounds
 
 noncomputable section
 

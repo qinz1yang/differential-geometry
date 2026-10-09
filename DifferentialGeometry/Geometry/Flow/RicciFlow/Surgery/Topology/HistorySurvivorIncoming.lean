@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Topology.Manifold.OpenCoverLocalDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow
@@ -165,7 +165,7 @@ theorem backwardSurvivorIncomingMetric_terminal :
         (H.backwardSurvivorIncomingMap first last hle G)
         (H.backwardSurvivorIncomingMap_isLocalDiffeomorph first last hle G) := by
   rw [backwardSurvivorIncomingMetric,
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
 
 def backwardSurvivorIncomingClosedSlab :
     SolutionOn (I := ThreeModel) (M := H.backwardSurvivorIncomingDomain first last hle G)
@@ -1277,7 +1277,7 @@ theorem localPullMetric_backwardSurvivorIncomingMetric_eq_stage_of_initial_eq
       ((H.event j).incoming.flow.base.metric t).restrictOpen G.terminalRegularOpen := by
     rcases lt_or_eq_of_le ht with hlt | rfl
     · rw [L.extendedMetric_before hlt, hsource]
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
+    · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
         hterminal]
   let f := (H.backwardSurvivorMap first i.castSucc hle j.castSucc hfirst hji) ∘
     Subtype.val ∘ F
@@ -1505,7 +1505,7 @@ theorem localPullMetric_backwardSurvivorIncoming_flow_eq_of_source_eq
         (G.flow.base.metric t).restrictOpen G₀.terminalRegularOpen := by
       rcases lt_or_eq_of_le ht.2 with hlt | rfl
       · rw [L₀.extendedMetric_before hlt, hsource]
-      · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
+      · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
           hterminal]
     apply SmoothRiemannianMetric.ext_inner
     intro x v w
@@ -1566,7 +1566,7 @@ theorem localPullMetric_backwardSurvivorIncomingMetric_eq_slab_of_source_eq
       ((H.event j).incoming.flow.base.metric t).restrictOpen G₀.terminalRegularOpen := by
     rcases lt_or_eq_of_le ht with hlt | rfl
     · rw [L₀.extendedMetric_before hlt, hsource]
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
+    · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal,
         hterminal]
   let f := H.backwardSurvivorTerminalMap first last hle j hf hl ∘ F
   have hdiff : IsLocalDiffeomorph I ThreeModel ∞ f :=

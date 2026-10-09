@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CurveDistance
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.SegmentTail
+import DifferentialGeometry.Geometry.Compactness.SegmentTail
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.InverseCurves
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Chain
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.DirectedSubsequence.FiniteRadius

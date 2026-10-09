@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorCovariantDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.OpenCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OpenChartTimeJets
 
 
 set_option autoImplicit false

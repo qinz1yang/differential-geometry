@@ -11,12 +11,10 @@ open DifferentialGeometry.Tensor0SBundle
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable (P : OrientedThreeStage.{u})
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialLift_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
+theorem spatialLift_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
     (X : (x : P.Carrier) → TangentSpace ThreeModel x)
     (hX : ContMDiffOn ThreeModel (ThreeModel.prod 𝓘(ℝ, ThreeSpace)) ∞
       (fun x => TotalSpace.mk' ThreeSpace x (X x)) U) :
@@ -37,7 +35,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialLift_
     hX.comp contMDiff_snd.contMDiffOn (fun _ hq => hq.2)
   exact contMDiff_equivTangentBundleProd_symm.comp_contMDiffOn (hzero.prodMk hspace)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialDerivative_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
+theorem spatialDerivative_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
     (hU : IsOpen U) (hV : IsOpen V) (f : ℝ × P.Carrier → ℝ)
     (X : (x : P.Carrier) → TangentSpace ThreeModel x)
     (hf : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ, ℝ) ∞ f (V ×ˢ U))
@@ -59,7 +57,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialDeriv
   simp only [id_eq, mfderiv_prod_right] at hchain
   exact hchain
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialIterCovComp_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
+theorem spatialIterCovComp_contMDiffOn {U : Set P.Carrier} {V : Set ℝ}
     (hU : IsOpen U) (hV : IsOpen V) {r : ℕ}
     (frame : Fin 3 → (x : P.Carrier) → TangentSpace ThreeModel x)
     (chr : P.Carrier → Fin 3 → Fin 3 → Fin 3 → ℝ)
@@ -95,7 +93,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.spatialIterC
       (hchr (n 0) (Fin.tail n s) p).comp contMDiff_snd.contMDiffOn (fun _ hq => hq.2)
     exact (hc.mul (ih (Function.update (Fin.tail n) s p))) q hq
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.localFrame_christoffel_contMDiffOn (p : P.Carrier) (gRef : P.Metric)
+theorem localFrame_christoffel_contMDiffOn (p : P.Carrier) (gRef : P.Metric)
     (b : Module.Basis (Fin 3) ℝ ThreeSpace) :
     let e := trivializationAt ThreeSpace (TangentSpace ThreeModel) p
     ∀ i j k : Fin 3, ContMDiffOn ThreeModel 𝓘(ℝ, ℝ) ∞
@@ -110,7 +108,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.localFrame_c
   have hA := hD.clm_bundle_apply (hf.contMDiffOn i)
   exact contMDiffOn_baseSet_localFrameCoeff (e := e) b hA k
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.localFrame_euclidean_eq_chartVector (p x : P.Carrier)
+private theorem localFrame_euclidean_eq_chartVector (p x : P.Carrier)
     (hx : x ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet)
     (i : Fin 3) :
     (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).localFrame
@@ -120,7 +118,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.loca
   rw [Trivialization.symmL_apply _ hx]
   simp [Trivialization.basisAt]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.exists_covariantComponent_extension
+theorem MetricSmoothUpTo.exists_covariantComponent_extension
     {g : ℝ → P.Metric} {J : Set ℝ} (hg : P.MetricSmoothUpTo g J)
     (gRef : P.Metric) (p : P.Carrier) {t : ℝ} (ht : t ∈ J) (a : ℕ) :
     let e := trivializationAt ThreeSpace (TangentSpace ThreeModel) p

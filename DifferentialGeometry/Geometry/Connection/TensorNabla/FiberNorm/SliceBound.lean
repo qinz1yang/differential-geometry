@@ -35,7 +35,7 @@ private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (K : Fin r → Fin n) (J : Fin s → Fin n) (a : Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x r s
-        ((covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
+        ((covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
       fiberNormSqComponent (I := I) (M := M) g x r (s + 1) T n e K (Fin.cons a J) := by
   unfold fiberNormSqComponent
   set ωK : ContinuousMultilinearMap ℝ (fun _ : Fin r => TangentSpace I x) ℝ :=
@@ -43,14 +43,14 @@ private lemma fiberNormSqComponent_covGradBundleEquivSymm_slice_eq
       (fun k => g.inner x (e (K k))) with hωK
   change Tensor0SSpace.eval
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        ((covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T) (e a))
+        ((covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a))
           ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK))
         (fun k => e (J k)) =
     Tensor0SSpace.eval
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
         ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK))
       (fun k => e ((Fin.cons a J : Fin (s + 1) → Fin n) k))
-  rw [covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a)
+  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a)
     ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r x).symm ωK) (fun k => e (J k))]
   congr 1
   exact (Fin.comp_cons e a J).symm
@@ -65,7 +65,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
       g.inner x (B i x) (B j x) = if i = j then (1 : ℝ) else 0)
     (i : Fin (Module.finrank ℝ E)) :
     riemannianFiberNormSq (I := I) (M := M) g r s x
-        ((covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T (B i x)) ≤
+        ((covGradBundleEquiv (I := I) (M := M) r s x).symm T (B i x)) ≤
       riemannianFiberNormSq (I := I) (M := M) g r (s + 1) x T := by
   classical
   set eC : Fin (Module.finrank ℝ E) → TangentSpace I x := fun j => B j x with heC_def
@@ -103,7 +103,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_symm_slice_le
   rw [hBix]
   have hcomp : ∀ K : Fin r → Fin (Module.finrank ℝ E), ∀ J : Fin s → Fin (Module.finrank ℝ E),
       (fiberNormSqComponent (I := I) (M := M) g x r s
-          ((covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T (eC i))
+          ((covGradBundleEquiv (I := I) (M := M) r s x).symm T (eC i))
           (Module.finrank ℝ E) eC K J) ^ 2 =
         (fiberNormSqComponent (I := I) (M := M) g x r (s + 1) T
           (Module.finrank ℝ E) eC K (Fin.cons i J)) ^ 2 := by

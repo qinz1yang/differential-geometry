@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallDistinctLocalMaps
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallSeam
 import DifferentialGeometry.Topology.Manifold.OpenCoverLocalDiffeomorph
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Merge
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
 
 section
 

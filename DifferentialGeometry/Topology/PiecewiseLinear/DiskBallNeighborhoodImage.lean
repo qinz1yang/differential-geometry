@@ -1,11 +1,15 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Piece.LocalFiniteness
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.Simplex.NormedBall
 import DifferentialGeometry.Topology.PiecewiseLinear.IsCombinatorialManifoldOfLocallyFinitePLPieceIn
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.LocalDiskBallNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.PLBallSphere
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedShell
+import DifferentialGeometry.Topology.PiecewiseLinear.TopologicalCellNestedShell
 
 open Set Topology
 
@@ -34,6 +38,21 @@ theorem LocallyFinitePLPieceIn.card_le_four (𝒦 : LocallyFinitePLPieceIn Ea 3 
       card_le_of_isPLSphere (m := 2) (SimplicialComplex.geometricLink 𝒦.complex {v})
         (hK v hv') hmem
     omega
+
+omit [FiniteDimensional ℝ Ea] in
+theorem LocallyFinitePLPieceIn.finite_faces_inter_of_isCompact
+    (𝒦 : LocallyFinitePLPieceIn Ea 3 M U) {C : Set Ea} (hC : IsCompact C)
+    (hC𝒦 : C ⊆ 𝒦.complex.space) :
+    {t : Finset Ea | t ∈ 𝒦.complex.faces ∧ (convexHull ℝ (t : Set Ea) ∩ C).Nonempty}.Finite := by
+  have hCsub : IsCompact ((Subtype.val : 𝒦.complex.space → Ea) ⁻¹' C) := by
+    rw [Subtype.isCompact_iff, image_preimage_eq_iff.mpr]
+    · exact hC
+    · intro x hx
+      exact ⟨⟨x, hC𝒦 hx⟩, rfl⟩
+  have hfin := 𝒦.locallyFinite.finite_nonempty_inter_compact hCsub
+  refine (hfin.image fun i : 𝒦.complex.faces => (i : Finset Ea)).subset ?_
+  rintro t ⟨ht, x, hxt, hxC⟩
+  exact ⟨⟨t, ht⟩, ⟨⟨x, hC𝒦 hxC⟩, hxt, hxC⟩, rfl⟩
 
 open Classical in
 theorem LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two
@@ -182,7 +201,7 @@ theorem LocallyFinitePLPieceIn.exists_isPLBall_nhdsWithin_space_of_isPLBall_two
     ⟨space_mono_of_faces_subset (restrict_faces_subset 𝒦.complex X) (hNT hy).1, (hNT hy).2.1⟩,
     fun x hx => nhdsWithin_le_of_mem (hTn x hx) (hNn x hx)⟩
 
-theorem exists_isPLCellOn_superset_image_of_isPLBall_two
+theorem Moise305Tame.exists_isPLCellOn_superset_image_of_isPLBall_two
     {M₂ : Type*} [TopologicalSpace M₂] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M₂]
     (hU : IsOpen U) (𝒦 : LocallyFinitePLPieceIn Ea 3 M U)
     (hK : IsCombinatorialManifold 3 𝒦.complex) {h : M → M₂} (hhc : ContinuousOn h U)
@@ -273,7 +292,7 @@ theorem exists_isPLCellOn_superset_image_of_isPLBall_two
       (𝒦.continuousOn.mono hD𝒦)).image_of_continuousOn
         (hhc.mono (image_subset_iff.mpr fun x hx => hmapU (hD𝒦 hx)))
   obtain ⟨C, B, hCB, hKC, hCY⟩ :=
-    exists_isPLCellOn_between_of_isTopologicalCell hc hYc hcell hKc hKY
+    Moise305Tame.exists_isPLCellOn_of_isTopologicalCell hc hYc hcell hKc hKY
   exact ⟨C, B, hCB, hKC, hCY.trans (interior_subset.trans hYW)⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
-import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Basic
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz
 import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
 
 open Bundle Function Set

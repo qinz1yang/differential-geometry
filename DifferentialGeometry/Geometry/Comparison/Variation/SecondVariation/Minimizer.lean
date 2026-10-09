@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Variation.SecondVariation.Basic
-import DifferentialGeometry.Geometry.Variation.Field.Realization
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Realization
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic

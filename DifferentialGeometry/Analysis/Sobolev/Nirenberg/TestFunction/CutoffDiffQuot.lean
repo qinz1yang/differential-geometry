@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.WeakDerivative
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivative
 
 noncomputable section
 

@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Lifetime.Value
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MetricFamilyRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.CompactBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 noncomputable section

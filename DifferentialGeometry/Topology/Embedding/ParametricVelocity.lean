@@ -26,7 +26,7 @@ theorem exists_contDiff_compact_velocity_extension_of_tsupport_image_subset
   rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hgraph
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞
       (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) :=
-    (fun p => DifferentialGeometry.contMDiffAt_partial_deriv_fst (he p) (by simp))
+    (fun p => DifferentialGeometry.timeDeriv_smoothAt (he p) (by simp))
   exact hgraph.exists_contDiff_compact_extension_of_tsupport_image_subset hv hK hO hKO
 
 theorem exists_contDiff_compact_velocity_extension
@@ -87,7 +87,7 @@ theorem exists_contDiff_compact_velocity_extension_halfspace_of_tsupport_image_s
   have hgraph := isSmoothEmbedding_parametric_graph_halfspace he hf
   rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hgraph
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod (𝓡∂ (d + 1))) 𝓘(ℝ, V) ∞
-      (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) := (fun p => DifferentialGeometry.contMDiffAt_partial_deriv_fst (he p) (by simp))
+      (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) := (fun p => DifferentialGeometry.timeDeriv_smoothAt (he p) (by simp))
   exact hgraph.exists_contDiff_compact_extension_prod_halfspace_of_tsupport_image_subset hv hK hO hKO
 
 theorem exists_contDiff_compact_velocity_extension_halfspace_Icc_of_tsupport_image_subset

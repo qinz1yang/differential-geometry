@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.BilinearForm.HamiltonBlock.Reaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ExactBlockEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.CurvatureBlock
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TraceHarnackAlgebra

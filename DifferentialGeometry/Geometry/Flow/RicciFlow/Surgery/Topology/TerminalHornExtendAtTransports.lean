@@ -44,7 +44,7 @@ theorem extendAt_scalar_lower_on_ball_of_gradientBoundBefore {Cgrad : ℝ≥0} {
     x.val y hy).mpr ?_
   intro z hz
   rw [inv_mul_eq_div]
-  exact DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.quarter_scalar_le_on_closedBall_of_gradientBoundBefore
+  exact OrientedThreeStage.IncomingSlab.quarter_scalar_le_on_closedBall_of_gradientBoundBefore
     hgrad ⟨hat, hτs⟩ hq hA x.val hqR z
     (show riemannianEDistOf (G.flow.base.metric τ) x.val z < _ from hz).le
 

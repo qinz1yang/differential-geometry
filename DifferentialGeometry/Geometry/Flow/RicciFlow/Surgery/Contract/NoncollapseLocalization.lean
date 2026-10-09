@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Metric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Predicates
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.RecenteredRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RecenteredSourceInputs
 
 set_option autoImplicit false
 

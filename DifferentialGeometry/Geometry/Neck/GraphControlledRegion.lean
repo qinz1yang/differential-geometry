@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.Chart
 import DifferentialGeometry.Topology.Manifold.OrientedProductChart
 import DifferentialGeometry.Topology.Embedding.GraphCollarCover
 import DifferentialGeometry.Topology.Embedding.ProductChartInwardSegment
-import DifferentialGeometry.Topology.Connected.EmbeddedClosedCover
+import DifferentialGeometry.Topology.Connected.EndpointCollarStrip
 import Mathlib.Order.Interval.Set.OrdConnected
 
 noncomputable section

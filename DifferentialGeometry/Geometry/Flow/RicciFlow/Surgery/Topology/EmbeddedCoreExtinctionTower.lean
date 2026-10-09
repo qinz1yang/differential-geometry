@@ -168,14 +168,14 @@ theorem hasExtinctObservationTower_of_embeddedCoreEvents
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (T : ObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hc : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.observe b hb).event i).transition))
     (hcore : hasEmbeddedCoreEvents T)
     (hctrl : ∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.component q).Carrier)
+        DifferentialGeometry.Topology.isPoincareStandard
+          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier)
     (hextinct : towerExtinct T) :
     hasExtinctObservationTower M g :=
   ⟨T, hc, coreInclusion_isSmoothEmbedding_of_embeddedCoreEvents T hcore, hctrl, hextinct⟩
@@ -184,14 +184,14 @@ def hasEmbeddedCoreObservationTower
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
   ∃ T : ObservationTower
-      (M.toClosedOrientedManifold) g,
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g,
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       Nonempty (SmoothCutCapCompletion ((T.observe b hb).event i).transition)) ∧
     hasEmbeddedCoreEvents T ∧
     (∀ (b : ℝ) (hb : 0 ≤ b) (i : Fin (T.observe b hb).eventCount),
       ∀ q : ConnectedComponents ((T.observe b hb).event i).discarded.Carrier,
-        DifferentialGeometry.Topology.isStandardConnectedSum
-          (((T.observe b hb).event i).discarded.component q).Carrier) ∧
+        DifferentialGeometry.Topology.isPoincareStandard
+          (((T.observe b hb).event i).discarded.toClosedOrientedManifold.component q).Carrier) ∧
     towerExtinct T
 
 theorem hasEmbeddedCoreObservationTower_of_coreCompatible

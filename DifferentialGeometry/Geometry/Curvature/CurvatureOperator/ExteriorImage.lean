@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImagePlane
-import DifferentialGeometry.Geometry.Metric.VectorBundle.ExteriorPower.Submodule
+import DifferentialGeometry.Geometry.Metric.ExteriorSubmodule
 
 set_option autoImplicit false
 

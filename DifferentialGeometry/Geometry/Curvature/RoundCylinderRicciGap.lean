@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RoundCylinderPerturbation
-import DifferentialGeometry.Geometry.Metric.Perturbation.AxisOperator
-import DifferentialGeometry.Geometry.Metric.Perturbation.NormalizedAxis
+import DifferentialGeometry.Geometry.Metric.AxisOperatorPerturbation
+import DifferentialGeometry.Geometry.Metric.NormalizedAxisPerturbation
 
 noncomputable section
 open scoped Manifold ContDiff

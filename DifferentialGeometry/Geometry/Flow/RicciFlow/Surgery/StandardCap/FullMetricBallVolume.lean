@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.BallComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.BallCapture
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.Cover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullPreparedGluing
 import DifferentialGeometry.Geometry.Measure.LocalIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWindowVolume

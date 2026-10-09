@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Compression.DiskTrace
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34DiskTraceDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingGenerators
 
 open Set

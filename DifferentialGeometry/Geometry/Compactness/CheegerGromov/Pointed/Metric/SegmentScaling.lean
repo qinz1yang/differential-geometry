@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Scaling
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
+import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 

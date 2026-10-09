@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.Jets
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Jets
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Product.AllOrderBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductAllOrderDerivativeBernstein
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductEmbedding
 
 noncomputable section

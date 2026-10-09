@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.Bo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completeness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Regularity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.CovariantLipschitz

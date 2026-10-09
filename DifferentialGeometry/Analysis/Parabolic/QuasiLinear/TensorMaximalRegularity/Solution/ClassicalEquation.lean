@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Classical
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Classical
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.FiniteProduct
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.ScalarContinuousInjective
 

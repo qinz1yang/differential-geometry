@@ -33,7 +33,7 @@ theorem redDensity_eq_perelmanDensity
     (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (x : M)
     {tau : ℝ} (htau : 0 < tau) :
     (fun y => redDensity S T x y tau) =
-      DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) tau (fun y => redLength S T x y tau) := by
+      perelmanDensity (Module.finrank ℝ E) tau (fun y => redLength S T x y tau) := by
   rw [← perelmanPotential_redDensity S T x htau]
   exact (density_potential (Module.finrank ℝ E)
     (fun y => redDensity S T x y tau) htau (fun _ => Real.exp_pos _)).symm

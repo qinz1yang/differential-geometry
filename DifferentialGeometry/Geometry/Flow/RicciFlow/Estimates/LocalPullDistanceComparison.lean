@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.LocalDistanceComparison
-import DifferentialGeometry.Geometry.Metric.Pullback.LocalPairDistance
+import DifferentialGeometry.Geometry.Metric.LocalPullDistance
 
 noncomputable section
 

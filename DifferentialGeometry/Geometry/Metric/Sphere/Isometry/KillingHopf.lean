@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Metric.Sphere.Polar.PuncturedCartan
-import DifferentialGeometry.Topology.Manifold.Sphere.Punctured
+import DifferentialGeometry.Geometry.Metric.Sphere.Polar.PuncturedOverlap
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import DifferentialGeometry.Topology.Covering.SimplyConnected
 open DifferentialGeometry.Geometry.Curvature

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.Orientation.SurfaceFrame
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 
 set_option autoImplicit false
 

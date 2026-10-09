@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.IntrinsicPola
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Compactness
 import DifferentialGeometry.Analysis.Sobolev.Interval.EnergyCompactness
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Composition
-import DifferentialGeometry.Analysis.Complex.CircleParameter
+import DifferentialGeometry.Topology.LoopSpace.CircleParameter
 import DifferentialGeometry.Topology.UniformConvergence
 
 section

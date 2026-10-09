@@ -34,7 +34,7 @@ theorem parabolicOperatorWithDrift_trace
       LinearMap.trace ℝ (V x)
         (derivWithin (fun q => A q x) (Icc 0 T) t -
           rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
-          _root_.CovariantDerivative.hom I M F V F V cov cov
+          HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
             (fun y => A t y) x (X t x)).toLinearMap := by
   let : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
   let L₀ : (V x →L[ℝ] V x) →ₗ[ℝ] ℝ :=
@@ -61,7 +61,7 @@ theorem parabolicOperatorWithDrift_trace
   have hdrift : driftTerm (I := I) G t (X t)
       (fun y => LinearMap.trace ℝ (V y) (A t y).toLinearMap) x =
       LinearMap.trace ℝ (V x)
-        (_root_.CovariantDerivative.hom I M F V F V cov cov
+        (HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
           (fun y => A t y) x (X t x)).toLinearMap := by
     unfold driftTerm gradientAt
     rw [(G.metric t).symm, inner_gradientFun]

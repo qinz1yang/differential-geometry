@@ -1,6 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliverForwardComparison
-
 set_option autoImplicit false
 noncomputable section
 open Set Filter Manifold MeasureTheory
@@ -14,12 +13,9 @@ universe u
 
 namespace OrientedThreeStage.ClosedSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab
-
 variable {P : OrientedThreeStage.{u}} {a b : ℝ} (G : P.ClosedSlab a b)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.abs_derivWithin_scalar_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+theorem abs_derivWithin_scalar_le_of_forall_Ioo {C q t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
     (y : P.Carrier)
     (h : ∀ t ∈ Ioo a t₀, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)

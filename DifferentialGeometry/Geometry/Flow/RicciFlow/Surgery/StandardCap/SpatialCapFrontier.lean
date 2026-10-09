@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.EndNeck
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.EndNeckDatum
 import Mathlib.Analysis.Normed.Module.RCLike.Real
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckMarkSideBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckSpatialBridge
@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Neck.SpatialLevelEmbedding
 import DifferentialGeometry.Topology.SphereSeparation.StandardSphere
 import DifferentialGeometry.Topology.SphereSeparation.Transport
-import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
 
 set_option autoImplicit false

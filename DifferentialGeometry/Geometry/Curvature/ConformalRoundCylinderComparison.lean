@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Operator.Restriction
 import DifferentialGeometry.Geometry.Operator.HessianComposition
 import DifferentialGeometry.Geometry.Operator.ParallelPotential
 import DifferentialGeometry.Geometry.Operator.Cylinder
-import DifferentialGeometry.Analysis.InnerProductSpace.QuadraticFormBound
+import DifferentialGeometry.Analysis.FiniteDimensional.QuadraticNormBound
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldComposition
 import DifferentialGeometry.Geometry.Measure.Area.EuclideanDisk
-import DifferentialGeometry.Geometry.Metric.Distance.Infinitesimal
+import DifferentialGeometry.Geometry.Metric.InfinitesimalDistance
 
 noncomputable section
 open Bundle Manifold Set MeasureTheory Topology

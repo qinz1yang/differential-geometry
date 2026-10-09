@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.SphereSeparation.EuclideanComponents
-import DifferentialGeometry.Topology.SphereSeparation.SeparationFromHomology
+import DifferentialGeometry.Topology.SphereSeparation.JordanBrouwer
 import DifferentialGeometry.Topology.SphereSeparation.SmoothEmbeddingComposition
 import DifferentialGeometry.Topology.SphereSeparation.Transport
 

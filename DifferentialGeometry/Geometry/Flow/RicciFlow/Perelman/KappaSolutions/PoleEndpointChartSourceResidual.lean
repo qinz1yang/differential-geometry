@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.WeakEquation.ChartResidualTransport
 import DifferentialGeometry.Analysis.Parabolic.WeakEquation.GaussianIntegrability
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.CompactTestExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.Density.AncientResidual
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.Density.Lipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointSourceResidual
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointDensityLipschitz
 import DifferentialGeometry.Analysis.Calculus.GaussianNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineTimeReversal
 

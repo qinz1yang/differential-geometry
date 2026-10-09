@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Gradient.Normalized
-import DifferentialGeometry.Topology.Manifold.Boundary.InwardCurve
+import DifferentialGeometry.Geometry.Boundary.Normal.InwardCurve
 import DifferentialGeometry.Geometry.Boundary.Normal.Derivative
 import DifferentialGeometry.Geometry.Metric.Basic
 

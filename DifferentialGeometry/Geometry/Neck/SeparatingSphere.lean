@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.UnboundedComponent
 import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.RemoteLevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckWitnessConversion
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulRetraction
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 

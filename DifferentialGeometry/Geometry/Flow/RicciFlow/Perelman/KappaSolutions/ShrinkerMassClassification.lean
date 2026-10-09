@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorP
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
-import DifferentialGeometry.Geometry.Metric.ProjectiveSpace.RoundMetric
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 
 

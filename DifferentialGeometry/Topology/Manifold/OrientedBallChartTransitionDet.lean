@@ -1,11 +1,14 @@
-import DifferentialGeometry.Topology.Manifold.BallEmbedding.Defs
-import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
+import DifferentialGeometry.Topology.Manifold.BallChartStraightening
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 
 set_option autoImplicit false
 noncomputable section
 open Bundle Manifold Set Metric Filter Topology
 open scoped Manifold ContDiff Topology
+open DifferentialGeometry.Topology (BallChart)
+open DifferentialGeometry.Topology.Manifold
+  (exists_isotopy_eqOn_closedBall_of_partialDiffeomorphs_of_subset)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -128,7 +131,7 @@ theorem OrientedBallEmbedding.transition_fderiv_det_pos {U : Type u} [Topologica
     exact h2.symm
   have hmap : Orientation.map (Fin 3) (Aeq.trans Ceq) (modelBasisOrientation 0)
       = modelBasisOrientation 0 := by
-    rw [DifferentialGeometry.orientation_map_trans Aeq Ceq
+    rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between Aeq Ceq
       (modelBasisOrientation 0), hA, hC, modelBasisOrientation_eq]
   have hdet : 0 < LinearMap.det ((Aeq.trans Ceq :
       TangentSpace ThreeModel (0 : ThreeSpace) →ₗ[ℝ]

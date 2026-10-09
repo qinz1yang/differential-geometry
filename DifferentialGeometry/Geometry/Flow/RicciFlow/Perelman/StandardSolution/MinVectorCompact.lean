@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InitialVectorBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.DomainLimits
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Minimizer.Limits
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RegDomainLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinVector
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 import Mathlib.Analysis.Normed.Group.Bounded
 import Mathlib.Analysis.Normed.Module.FiniteDimension

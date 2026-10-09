@@ -103,7 +103,7 @@ theorem section34_annular_filling_boundary_carries_generators
     exact hF.first_subset.trans subset_union_right
   have hpath := hT.isPathConnected.image'
     (hu.continuousOn.mono (hclosed.frontier_subset.trans hRP))
-  have hgen := piercing_generators_of_essential_second hprep hpack e hi hess
+  have hgen := section34_piercing_generators_of_essential_second hprep hpack e hi hess
   have hFS := hFT.trans
     ((section34_inner_tube_subset_interior_outer hprep hpack e).trans interior_subset)
   exact ⟨hgen.2.1.mono_of_isPathConnected hF.ends_nonempty.1 hJF hFT hpath,

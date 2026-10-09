@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.CylinderBoundary
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.CapAnnulus
 import DifferentialGeometry.Topology.Diffeomorph.SphereGermExtension
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 
 noncomputable section

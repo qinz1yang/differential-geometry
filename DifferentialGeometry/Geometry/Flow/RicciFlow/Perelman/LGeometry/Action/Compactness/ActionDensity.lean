@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.LowerSemicontinuity
-import DifferentialGeometry.Analysis.Sobolev.Time.Curve.Approximation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.GeometricDensity
 import DifferentialGeometry.Geometry.Operator.Family.Gram.StrongConvergence
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Approximation.Density
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Density
 
 set_option autoImplicit false
 
@@ -411,7 +411,7 @@ theorem lAction_c1_dense
     intro U hU
     exact (tendsto_add_atTop_nat N).eventually (hvlim i U hU)
   obtain ⟨alpha, halpha, halpha0, halphaL, hrepV, hsrc, huniform⟩ :=
-    DifferentialGeometry.Analysis.Parabolic.TimeSobolev.exists_contMDiff_one_chart_approximation a b t htmono ht0 htlast p gamma uLim hsrcLim hrepLim
+    exists_c1_of_flat a b t htmono ht0 htlast p gamma uLim hsrcLim hrepLim
       K hKc hKtar (fun i n ↦ v i (n + N))
       (fun i n ↦ hvC1 i (n + N))
       (fun i n ↦ (hvg0 i (n + N)).trans

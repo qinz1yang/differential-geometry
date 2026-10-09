@@ -7,6 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Bundle Manifold Set TopologicalSpace DifferentialGeometry
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.RSTensor
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Tensor

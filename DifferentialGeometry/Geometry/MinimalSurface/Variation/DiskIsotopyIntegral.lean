@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskMetricIntegral
-import DifferentialGeometry.Geometry.Metric.Family.Pullback.Smoothness
+import DifferentialGeometry.Geometry.Metric.ParameterPullbackFamily
 import DifferentialGeometry.Geometry.Measure.Area.Pullback
 
 

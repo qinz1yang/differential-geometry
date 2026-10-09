@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnulusCircleDichotomy
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialGenerators
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialGenerator
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingSideConnectivity
 
 open Set Topology
@@ -145,7 +145,7 @@ theorem section34_opposite_second_rim_sides
       G (ends e).2 '' Bb₁ e ⊆ (G (ends e).1 '' Cp (ends e).1)ᶜ) ∨
     (G (ends e).2 '' Bb₀ e ⊆ (G (ends e).1 '' Cp (ends e).1)ᶜ ∧
       G (ends e).2 '' Bb₁ e ⊆ interior (G (ends e).1 '' Cp (ends e).1)) := by
-  obtain ⟨i, hi, -, -, hess⟩ := exists_piercing_circle_carrying_generators hprep hpack e
+  obtain ⟨i, hi, -, -, hess⟩ := exists_section34_piercing_circle_carrying_generators hprep hpack e
   exact section34_opposite_second_rim_sides_of_essential_circle hprep hpack e hi hess
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -62,7 +62,7 @@ theorem tensorL2Inner_operatorFieldApplication_slotInsertEndoCc_self_adjoint
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ) A).toFun x =
         TensorRSSpace.toModel
           (show TensorRSSpace 0 (s + 1) I x from
-            TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x (Λ x)).comp
+            TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x (Λ x)).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 A.toSection x))) := rfl
   have hslotB :
@@ -70,7 +70,7 @@ theorem tensorL2Inner_operatorFieldApplication_slotInsertEndoCc_self_adjoint
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ s Λ) B).toFun x =
         TensorRSSpace.toModel
           (show TensorRSSpace 0 (s + 1) I x from
-            TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x (Λ x)).comp
+            TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x (Λ x)).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 B.toSection x))) := rfl
   rw [hslotA, hslotB, SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply]

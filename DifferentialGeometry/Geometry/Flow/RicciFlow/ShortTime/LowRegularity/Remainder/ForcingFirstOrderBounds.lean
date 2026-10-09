@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.SobolevOneLipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Forcing.FirstOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.PathLowerBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPath.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalTerm.TameBounds

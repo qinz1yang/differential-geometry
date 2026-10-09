@@ -1,18 +1,18 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonSupportRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ComparisonDefs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Topology.Manifold.InteriorImage
 import DifferentialGeometry.Topology.VanKampen.SmoothSphereSeparation
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
-import DifferentialGeometry.Topology.Connected.Separation.DisjointClosures
-import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
+import DifferentialGeometry.Topology.SphereSeparation.SideClosureDisjoint
+import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
+
+
 
 noncomputable section
 
@@ -33,7 +33,7 @@ theorem riemannianCurveLength_eq_zero_of_apply_eq_const
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {a b : ℝ} {q : M}
-    (h : ∀ t ∈ Icc a b, γ t = q) : DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b = 0 := by
+    (h : ∀ t ∈ Icc a b, γ t = q) : riemannianCurveLength g γ a b = 0 := by
   exact DifferentialGeometry.Geometry.riemannianCurveVariation_eq_zero_of_apply_eq_const g γ h
 
 theorem rfs_exterior_branches (P : OrientedThreeStage.{u}) [ConnectedSpace P.Carrier]
@@ -626,7 +626,7 @@ noncomputable def wholeParentMap (d : (G.Child c).Carrier) :
     C((G.Parent c).Carrier, (G.Child c).Carrier) :=
   ⟨K.wholeParentMapFun d, K.wholeParentMapFun_continuous d⟩
 
-theorem wholeParentMap_apply (d : (G.Child c).Carrier) (x : (G.Parent c).Carrier) :
+@[simp] theorem wholeParentMap_apply (d : (G.Child c).Carrier) (x : (G.Parent c).Carrier) :
     K.wholeParentMap d x = K.wholeParentMapFun d x := rfl
 
 theorem wholeParentMap_of_mem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}
@@ -761,7 +761,7 @@ theorem rfs_whole_parent_map_curveLength_eq_zero_of_mapsTo_compl
     {γ : ℝ → (G.Parent c).Carrier} {a b : ℝ}
     (hγ : ContinuousOn γ (Icc a b))
     (hmap : ∀ t ∈ Icc a b, γ t ∉ K.support.region) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).outputMetric
+    riemannianCurveLength (H.event i).outputMetric
       (fun t => (K.canonicalWholeParentMap (γ t)).1) a b = 0 := by
   by_cases hab : a ≤ b
   · refine riemannianCurveLength_eq_zero_of_apply_eq_const _ _
@@ -817,10 +817,10 @@ def LocalTerminalLengthControl (f : C((G.Parent c).Carrier, (G.Child c).Carrier)
       (hparent : ∀ t, ConnectedComponents.mk (γ t).1 = G.transition.childParent c)
       (a b : ℝ), a ≤ b → ContinuousOn γ (Icc a b) →
       (∀ t ∈ Icc a b, (⟨(γ t).1, hparent t⟩ : (G.Parent c).Carrier) ∈ U) →
-      DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).terminal.metric γ a b ≠ ⊤ →
-      DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).outputMetric
+      riemannianCurveLength (H.event i).terminal.metric γ a b ≠ ⊤ →
+      riemannianCurveLength (H.event i).outputMetric
         (fun t => (f ⟨(γ t).1, hparent t⟩).1) a b ≤
-          DifferentialGeometry.Geometry.riemannianCurveVariation (H.event i).terminal.metric γ a b)
+          riemannianCurveLength (H.event i).terminal.metric γ a b)
 
 theorem rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz
     (hf : ∀ (y z : (G.Parent c).Carrier),
@@ -836,7 +836,7 @@ theorem rfs_whole_parent_map_localTerminalLengthControl_of_lipschitz
       (K.support_terminal x hx),
     fun _ hy => hy, fun y _ z _ hy hz => hf y z hy hz, ?_⟩
   intro γ hparent a b hab hγ hU hlen
-  unfold DifferentialGeometry.Geometry.riemannianCurveVariation
+  unfold riemannianCurveLength
   refine iSup_le fun p => ?_
   refine le_trans (Finset.sum_le_sum fun k _ => ?_) (le_iSup (fun q : ℕ ×
     {u : ℕ → ℝ // Monotone u ∧ ∀ j, u j ∈ Icc a b} =>
@@ -1046,13 +1046,13 @@ theorem rfs_child_comparison_of_local_length_comparison
       ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x ∈ (Kc c).support.region,
         ∃ U ∈ 𝓝 x, ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
           a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-          DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.castSucc).componentMetric
+          riemannianCurveLength ((H.stage i.castSucc).componentMetric
             ((H.event i).incoming.flow.base.metric s)
             (G.transition.childParent c)) γ a b ≠ ⊤ →
-          DifferentialGeometry.Geometry.riemannianCurveVariation
+          riemannianCurveLength
             ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
             (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-          ENNReal.ofReal (ell s) * DifferentialGeometry.Geometry.riemannianCurveVariation
+          ENNReal.ofReal (ell s) * riemannianCurveLength
             ((H.stage i.castSucc).componentMetric
               ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
@@ -1082,9 +1082,9 @@ theorem rfs_child_comparison_of_local_length_comparison
   have hlocFull : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
       ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-        DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b ≠ ⊤ →
-        DifferentialGeometry.Geometry.riemannianCurveVariation hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-          ENNReal.ofReal (ell s) * DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b := by
+        riemannianCurveLength gs γ a b ≠ ⊤ →
+        riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
+          ENNReal.ofReal (ell s) * riemannianCurveLength gs γ a b := by
     intro x
     by_cases hx : x ∈ (Kc c).support.region
     · obtain ⟨U, hU, hU'⟩ := hloc c s hs x hx
@@ -1103,10 +1103,6 @@ theorem rfs_child_comparison_of_local_length_comparison
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Parent c).Carrier
   let : SecondCountableTopology (G.Child c).Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Child c).Carrier
-  let : RegularSpace (G.Parent c).Carrier :=
-    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
-  let : RegularSpace (G.Child c).Carrier :=
-    DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
   by_cases hfin : riemannianEDistOf gs x y = ⊤
   · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr
       (lt_of_lt_of_le (zero_lt_one : (0 : ℝ) < 1) (hell s hs))))]
@@ -1114,14 +1110,14 @@ theorem rfs_child_comparison_of_local_length_comparison
   · have hlocCoe : ∀ x : (G.Parent c).Carrier, ∃ U ∈ 𝓝 x,
         ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
           a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
-          DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b ≠ ⊤ →
-          DifferentialGeometry.Geometry.riemannianCurveVariation hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
-            ↑(NNReal.mk (ell s) hL) * DifferentialGeometry.Geometry.riemannianCurveVariation gs γ a b :=
+          riemannianCurveLength gs γ a b ≠ ⊤ →
+          riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
+            ↑(NNReal.mk (ell s) hL) * riemannianCurveLength gs γ a b :=
       fun x => by
         obtain ⟨U, hU, hU'⟩ := hlocFull x
         exact ⟨U, hU, fun a b γ hab hγ hmap hfin => by
           simpa only [ENNReal.ofReal_eq_coe_nnreal hL] using hU' a b γ hab hγ hmap hfin⟩
-    have h := DifferentialGeometry.Geometry.riemannianEDistOf_comp_le_of_local_riemannianCurveVariation_of_ne_top gs hc
+    have h := rfs_local_to_global_length_of_ne_top gs hc
       ((Kc c).canonicalWholeParentMap) (NNReal.mk (ell s) hL) hlocCoe hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 

@@ -45,19 +45,20 @@ theorem fFunctionalFirstVariation_eq_integral_of_formula
     {scalarCurvature lapPotential gradPotentialNormSq potentialVariation
       metricVariationTrace metricVariationRicciHess : M -> Real}
     (hderiv :
-      HasDerivAt (DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalAlong muPath scalarCurvaturePath gradPotentialNormSqPath potentialPath) firstVariation s0)
+      FFunctionalHasFirstVariationAt muPath scalarCurvaturePath
+        gradPotentialNormSqPath potentialPath s0 firstVariation)
     (hformula :
       FFunctionalFirstVariationFormula weightedMeasure firstVariation scalarCurvature
         lapPotential gradPotentialNormSq potentialVariation
         metricVariationTrace metricVariationRicciHess) :
-    DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalFirstVariation muPath scalarCurvaturePath
+    fFunctionalFirstVariation muPath scalarCurvaturePath
         gradPotentialNormSqPath potentialPath s0 =
       ∫ x,
         fFunctionalFirstVariationIntegrand scalarCurvature lapPotential
           gradPotentialNormSq potentialVariation metricVariationTrace
           metricVariationRicciHess x
         ∂weightedMeasure := by
-  rw [DifferentialGeometry.Analysis.Entropy.Perelman.fFunctionalFirstVariation_eq_of_hasFirstVariationAt hderiv]
+  rw [fFunctionalFirstVariation_eq_of_hasFirstVariationAt hderiv]
   exact hformula
 
 end

@@ -130,11 +130,11 @@ private theorem metricDoubleTraceFibFixedFrame_contMDiff (r t : ℕ)
           curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x) (B i x) (B i x))) := by
     refine ContMDiff.sum_section (s := Finset.univ) (fun i _ => ?_)
     have hA :=
-      (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r (t + 1)).comp Z.contMDiff
+      (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r (t + 1)).comp Z.contMDiff
     have h1 :=
       ContMDiff.clm_bundle_apply (b := id) hA (hB i)
     have h2 :=
-      (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r t).comp h1
+      (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r t).comp h1
     have h3 :=
       ContMDiff.clm_bundle_apply (b := id) h2 (hB i)
     refine h3.congr ?_

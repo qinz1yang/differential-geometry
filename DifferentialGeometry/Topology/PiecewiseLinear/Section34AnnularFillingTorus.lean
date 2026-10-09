@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.PrescribedAnnularBand
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PrescribedAnnularRegion
 
 open Set
 
@@ -79,7 +79,7 @@ theorem section34_annular_filling_frontier_isPLTorus
     (huF.continuousOn.comp hψ.isPiecewiseAffineOn.continuousOn hmaps)
     (huF.injOn.comp hψ.bijOn.injOn hmaps)
   rw [hψ₀, hψ₁] at hFann
-  have hFeq := first_band_eq_of_same_essential_ends hprep hpack e hi hj hij
+  have hFeq := section34_first_band_eq_of_same_essential_ends hprep hpack e hi hj hij
     hiess hjess hFann hF hψA hFA
   have hFimage : uF '' (ψ '' L) = F := by rw [← image_comp]; exact hFeq
   have hcircle : IsPLSphere 1 (stdSimplexBoundary 2) := by

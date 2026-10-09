@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Derivative
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.ChartFlow
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Basic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
@@ -12,8 +12,8 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.SmallVeloci
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistence
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
-import DifferentialGeometry.Geometry.Variation.SecondVariation.Basic
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

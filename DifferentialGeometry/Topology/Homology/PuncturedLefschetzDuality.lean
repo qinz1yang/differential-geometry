@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Homology.PoincareDualityTwoOnePairing
 import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThreeManifold
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleCohomology
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
 noncomputable section
 

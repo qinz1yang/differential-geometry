@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Conjugate
+import DifferentialGeometry.Geometry.Metric.SelfAdjointConjugate
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
-import DifferentialGeometry.Geometry.Connection.HomBundle.Composition
 
 noncomputable section
 
 open Bundle
+open DifferentialGeometry.HomConnectionGen
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -33,7 +33,7 @@ theorem map_selfAdjoint_conjugate
         (φ x).toContinuousLinearEquiv.toContinuousLinearMap))
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0) :
     let S₁ := selfAdjointSubbundle (I := I) (F := F₁) (V := V₁) (n := ∞)
     let S₂ := selfAdjointSubbundle (I := I) (F := F₂) (V := V₂) (n := ∞)
@@ -62,9 +62,9 @@ theorem map_selfAdjoint_conjugate
   have ha := (S₂.contMDiff_section_iff A).mp A.contMDiff
   have hb := (S₁.contMDiff_section_iff B).mp B.contMDiff
   have hφx := (hφ x).mdifferentiableAt (by simp)
-  have hl := _root_.CovariantDerivative.hom_comp D D C
+  have hl := homBundleCovariantDerivativeGen_comp D D C
     ((hb x).mdifferentiableAt (by simp)) hφx X
-  have hr := _root_.CovariantDerivative.hom_comp D C C
+  have hr := homBundleCovariantDerivativeGen_comp D C C
     hφx ((ha x).mdifferentiableAt (by simp)) X
   have heq : (fun y => (φ y).toContinuousLinearEquiv.toContinuousLinearMap.comp (b y)) =
       (fun y => (a y).comp (φ y).toContinuousLinearEquiv.toContinuousLinearMap) := by
@@ -72,13 +72,13 @@ theorem map_selfAdjoint_conjugate
     apply ContinuousLinearMap.ext
     intro v
     exact (φ y).apply_symm_apply (a y (φ y v))
-  change _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+  change homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
     (fun y => (φ y).toContinuousLinearEquiv.toContinuousLinearMap.comp (b y)) x X = _ at hl
   rw [hparallel] at hl hr
   simp only [Pi.zero_apply, zero_apply, ContinuousLinearMap.zero_comp, zero_add,
     ContinuousLinearMap.comp_zero, add_zero] at hl hr
   rw [D.selfAdjoint_subtypeVal hD, C.selfAdjoint_subtypeVal hC]
   exact hl.symm.trans
-    ((congrArg (fun s => _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C s x X) heq).trans hr)
+    ((congrArg (fun s => homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C s x X) heq).trans hr)
 
 end CovariantDerivative

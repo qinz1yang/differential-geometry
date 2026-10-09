@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold ContinuousLinearMap Filter
 open scoped Manifold ContDiff Topology
-namespace DifferentialGeometry.BilinearForm
+namespace DifferentialGeometry.Geometry.Tensor
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -64,4 +64,4 @@ theorem contMDiffOn_bilinear_symmetrize {s : Set M}
   let : ∀ x : M, ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) := fun x => inferInstance
   exact (hb.add_section (contMDiffOn_bilinear_flip hb)).const_smul_section
 
-end DifferentialGeometry.BilinearForm
+end DifferentialGeometry.Geometry.Tensor

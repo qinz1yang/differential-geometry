@@ -120,7 +120,7 @@ theorem gradientRicciSoliton_and_hamiltonNormalized_of_conjugate_density_and_ham
     (T : ℝ) (f : ℝ → M → ℝ)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn Dr
       (reverseFamily (flowG S) T) (fun r x => -S.scalar (T - r) x)
-      (fun r => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (f r)))
+      (fun r => perelmanDensity (Module.finrank ℝ E) r (f r)))
     {t : ℝ} (ht : t ∈ Dr.regular) (htpos : 0 < t)
     (hTt : T - t ∈ D.regular)
     (hHJ : ∀ r, r ∈ Dr.regular → 0 < r → ∀ x : M,
@@ -134,7 +134,7 @@ theorem gradientRicciSoliton_and_hamiltonNormalized_of_conjugate_density_and_ham
         ⟨f t, hf⟩ (1 / t) ∧
       hamiltonNormalized (I := I) ((reverseFamily (flowG S) T).metric t)
         ⟨f t, hf⟩ (1 / t) := by
-  let u := fun r => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (f r)
+  let u := fun r => perelmanDensity (Module.finrank ℝ E) r (f r)
   have hpos : ∀ r, r ∈ Dr.regular ∩ Set.Ioi (0 : ℝ) → ∀ x, 0 < u r x := by
     intro r hr x
     exact mul_pos (prefactor_pos (Module.finrank ℝ E) hr.2) (Real.exp_pos _)

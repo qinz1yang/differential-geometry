@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Analysis.Estimates.GaussianSeries
-import DifferentialGeometry.Analysis.SpecialFunctions.JacobiModel.Volume
+import DifferentialGeometry.Geometry.Comparison.Volume.Model
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 

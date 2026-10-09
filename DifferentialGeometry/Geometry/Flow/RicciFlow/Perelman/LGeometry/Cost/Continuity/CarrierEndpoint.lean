@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Co
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Approximation
 import Mathlib.Topology.Semicontinuity.Basic
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Approximation.Ramp
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Ramp
 
 
 noncomputable section

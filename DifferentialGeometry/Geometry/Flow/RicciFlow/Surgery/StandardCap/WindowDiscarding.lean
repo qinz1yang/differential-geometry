@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLoss
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.Persistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Window.Crossing
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowPersistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCrossing
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 
 set_option autoImplicit false
 noncomputable section

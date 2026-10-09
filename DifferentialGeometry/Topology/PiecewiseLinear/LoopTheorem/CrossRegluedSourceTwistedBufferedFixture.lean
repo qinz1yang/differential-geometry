@@ -1,7 +1,12 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.HalfTurn.BoundaryRealization
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.HalfTurn.TubeScaling
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedFixture
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedTubeScale
 import
-  DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Restriction
+  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceReadingRestriction
 
 open Set Topology
 open DifferentialGeometry.Topology.Homotopy (StrongDeformationRetract)

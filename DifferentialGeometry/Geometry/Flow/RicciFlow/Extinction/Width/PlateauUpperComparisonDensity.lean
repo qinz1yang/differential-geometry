@@ -18,13 +18,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [hT2 : T2Space Q] [hCompact : CompactSpace Q]
   [hBoundary : I.Boundaryless] [hSigma : SigmaCompactSpace Q]
 
-def PlateauDiskDensity (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) : Prop :=
+def PlateauDiskDensity (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) : Prop :=
   ∀ v : DiskCompetitor g γ, ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
     (∀ j theta, (w j).map (diskBoundary theta) = γ theta) ∧
       Tendsto (fun j => diskArea g (w j).map) atTop (𝓝 (diskArea g v.1.map))
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
-theorem plateauDiskDensity_iff (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :
+theorem plateauDiskDensity_iff (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) :
     PlateauDiskDensity (I := I) (Q := Q) g γ ↔
       ∀ v : DiskCompetitor g γ, ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
         (∀ j theta, (w j).map (diskBoundary theta) = γ theta) ∧
@@ -43,7 +43,7 @@ theorem plateauDiskDensity_areaUpperApproximation (g : SmoothRiemannianMetric I 
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem plateauDiskDensity_of_subsingleton [Subsingleton Q] [Nonempty Q]
-    (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :
+    (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) :
     PlateauDiskDensity (I := I) (Q := Q) g γ := by
   intro v
   let q : Q := Classical.arbitrary Q
@@ -69,7 +69,7 @@ theorem rfs_plateau_upper_comparison_of_plateauDiskDensity
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))
@@ -123,7 +123,7 @@ theorem rfs_plateau_upper_comparison_of_plateauDiskDensity_of_openIsotopy
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))

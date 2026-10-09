@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Nonnegative.RauchParallel
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.GeodesicVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.GeodesicVariationJacobi
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.GeodesicSpeedBound
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 

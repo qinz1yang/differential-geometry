@@ -14,7 +14,7 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 theorem exists_oriented_discardedCap_model_collar_of_spherical_diffeomorph
     (component : ConnectedComponents D.Carrier) (G : SphericalSpaceFormGroup)
-    (e : (D.component component).Carrier
+    (e : (D.toClosedOrientedManifold.component component).Carrier
       ≃ₘ⟮ThreeModel, ThreeModel⟯ G.manifold.Carrier)
     (boundary : E.trace.tubes.Boundary) (hdiscarded : E.trace.capDiscarded boundary)
     (hcomponent : ConnectedComponents.mk
@@ -28,7 +28,7 @@ theorem exists_oriented_discardedCap_model_collar_of_spherical_diffeomorph
     ∃ (H : SphericalSpaceFormGroup)
       (τ : G.manifold.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ H.manifold.Carrier)
       (f : ClosedOrientedManifold.OrientedDiffeomorph
-        (D.component component).toClosedOrientedManifold H.manifold.toClosedOrientedManifold)
+        (D.toClosedOrientedManifold.component component).toClosedOrientedManifold H.manifold.toClosedOrientedManifold)
       (fCap : C(ThreeBall,G.manifold.Carrier))
       (profile : C(Sphere 2 × symmetricOpenInterval c.radius,G.manifold.Carrier))
       (fCap' : C(ThreeBall,H.manifold.Carrier))
@@ -48,12 +48,12 @@ theorem exists_oriented_discardedCap_model_collar_of_spherical_diffeomorph
       ContMDiff ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ profile' ∧
       (∀ q, (f.1.symm (profile' q)).val = c.toFun q) ∧
       (∀ q (hq : q.2.val ≤ 0), profile' q = fCap' (capSide ⟨q,hq⟩)) ∧
-      isStandardFactor (D.component component) := by
+      isStandardFactor (D.toClosedOrientedManifold.component component) := by
   let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
   obtain ⟨fCap,profile,hfCap,hfe,hfb,hps,hpe,hpc⟩ :=
     E.exists_discardedCap_model_collar_of_component_diffeomorph component e boundary hdiscarded hcomponent c capSide hcap
   obtain ⟨H,τ,f,hf,hτ,hstandard⟩ := exists_oriented_spherical_model_of_diffeomorph
-    (D.component component) G e
+    (D.toClosedOrientedManifold.component component) G e
   let fCap' : C(ThreeBall,H.manifold.Carrier) := ⟨τ ∘ fCap,τ.continuous.comp fCap.continuous⟩
   let profile' : C(Sphere 2 × symmetricOpenInterval c.radius,H.manifold.Carrier) :=
     ⟨τ ∘ profile,τ.continuous.comp profile.continuous⟩

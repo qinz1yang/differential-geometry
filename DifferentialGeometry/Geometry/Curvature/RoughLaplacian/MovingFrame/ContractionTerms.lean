@@ -45,7 +45,7 @@ theorem frameSummand_leadingSlot_secondOrder_commutation_orthoFrame
           (unitZeroSec (I := I) (M := M) x)) (smoothOrthoFrame (I := I) g x i x) -
       tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (fun y : M => tensorSecondCovDeriv (I := I) g 0 s
                 (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)

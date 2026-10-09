@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Variation.TwistedExponential
-import DifferentialGeometry.Geometry.Variation.LocalFirstVariation
-import DifferentialGeometry.Geometry.Variation.TwistedEnergy
+import DifferentialGeometry.Geometry.Comparison.Variation.TwistedExponential
+import DifferentialGeometry.Geometry.Comparison.Variation.LocalFirstVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.TwistedEnergy
 
 noncomputable section
 open Bundle Manifold Set Filter

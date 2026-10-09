@@ -4,6 +4,7 @@ import Mathlib.Order.Interval.Finset.Nat
 
 namespace DifferentialGeometry.Topology.Engulfing
 
+set_option linter.unusedSectionVars false
 
 open Set _root_.Geometry _root_.Topology
 open scoped BigOperators

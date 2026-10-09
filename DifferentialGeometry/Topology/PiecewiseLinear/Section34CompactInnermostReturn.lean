@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleClosedCover
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.ReturnDiskCrosscuts
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.ReturnDisks
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment
 
 open Set Topology

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.VectorField.Collar.BoundarySectionExtension
-import DifferentialGeometry.Topology.VectorField.PoincareHopf.OutwardPoincareHopf
+import DifferentialGeometry.Topology.VectorField.BoundarySectionExtension
+import DifferentialGeometry.Topology.VectorField.OutwardPoincareHopf
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.NormalSign
 
 set_option autoImplicit false

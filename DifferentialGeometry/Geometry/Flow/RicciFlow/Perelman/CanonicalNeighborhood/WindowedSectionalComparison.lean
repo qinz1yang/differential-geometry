@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.SectionalPerturbation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Bounds.CanonicalDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedCanonicalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalScalingTransport
 
 set_option autoImplicit false

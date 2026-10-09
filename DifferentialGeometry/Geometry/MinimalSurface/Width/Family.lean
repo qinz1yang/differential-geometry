@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.LeastAreaContinuity
-import DifferentialGeometry.Topology.LoopSpace.C1.Families
+import DifferentialGeometry.Topology.LoopSpace.RegularFamily
 
 
 

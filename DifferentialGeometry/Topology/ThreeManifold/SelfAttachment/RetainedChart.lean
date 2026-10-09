@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Smooth
-import DifferentialGeometry.Topology.Manifold.OrientedBallChart.OpenImage
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartOpenImage
 
 set_option autoImplicit false
 noncomputable section

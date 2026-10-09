@@ -34,25 +34,25 @@ theorem potential_slice
     ContMDiff I 𝓘(Real, Real) ∞ (perelmanPotential n s (u s)) := by
   have husmooth : ContMDiff I 𝓘(Real, Real) ∞ (u s) :=
     hu.sliceSmooth s (D.regular_subset hs)
-  have hpref_pos : 0 < DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s := by
-    unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+  have hpref_pos : 0 < perelmanDensityPrefactor n s := by
+    unfold perelmanDensityPrefactor
     exact Real.rpow_pos_of_pos
       (mul_pos (mul_pos (by norm_num) Real.pi_pos) hspos) _
   intro y
   have hquot :
       ContMDiffAt I 𝓘(Real, Real) ∞
-        (fun z : M => u s z / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s) y :=
+        (fun z : M => u s z / perelmanDensityPrefactor n s) y :=
     husmooth.contMDiffAt.div₀ contMDiffAt_const hpref_pos.ne'
   have hlog :
       ContDiffAt Real ∞ Real.log
-        (u s y / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s) :=
+        (u s y / perelmanDensityPrefactor n s) :=
     Real.contDiffAt_log.2 (div_ne_zero (hpos y).ne' hpref_pos.ne')
   have h := (hlog.comp_contMDiffAt
     (I := I)
-    (f := fun z : M => u s z / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s)
+    (f := fun z : M => u s z / perelmanDensityPrefactor n s)
     (x := y) hquot).neg
   change ContMDiffAt I 𝓘(Real, Real) ∞
-    (fun z : M => -Real.log (u s z / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s)) y at h
+    (fun z : M => -Real.log (u s z / perelmanDensityPrefactor n s)) y at h
   exact h
 
 theorem potential_pde
@@ -70,13 +70,13 @@ theorem potential_pde
           (gradientFun (I := I) (G.metric s)
             (perelmanPotential n s (u s)) x) -
         V s x - (n : Real) / (2 * s)) s := by
-  let pref : Real := DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s
+  let pref : Real := perelmanDensityPrefactor n s
   let logu : M -> Real := fun y => Real.log (u s y)
   have hpref_pos : 0 < pref := by
-    dsimp only [pref, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor]
+    dsimp only [pref, perelmanDensityPrefactor]
     exact Real.rpow_pos_of_pos
       (mul_pos (mul_pos (by norm_num) Real.pi_pos) hspos) _
-  have hpref_ne : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s ≠ 0 := by
+  have hpref_ne : perelmanDensityPrefactor n s ≠ 0 := by
     simpa only [pref] using hpref_pos.ne'
   have husmooth : ContMDiff I 𝓘(Real, Real) ∞ (u s) :=
     hu.sliceSmooth s (D.regular_subset hs)
@@ -148,8 +148,8 @@ theorem potential_pde
     rw [hlap_pot, hlap_log, hnorm_pot]
     ring
   have hpref_deriv :
-      HasDerivAt (fun r : Real => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n r)
-        (-((n : Real) / (2 * s)) * 1 * DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n s) s := by
+      HasDerivAt (fun r : Real => perelmanDensityPrefactor n r)
+        (-((n : Real) / (2 * s)) * 1 * perelmanDensityPrefactor n s) s := by
     exact perelmanDensityPrefactor_hasDerivAt
       (n := n) (tauPath := fun r : Real => r) (s0 := s) (tau := s)
       (tauVariation := 1) rfl hspos (hasDerivAt_id (x := s))
@@ -246,8 +246,8 @@ theorem potential_df_time
           ContMDiffAt
             ((modelWithCornersSelf Real Real).prod I)
             (modelWithCornersSelf Real Real) 2
-            (fun p : Real × M => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1) (t, x) := by
-        unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+            (fun p : Real × M => perelmanDensityPrefactor n p.1) (t, x) := by
+        unfold perelmanDensityPrefactor
         have hpow :
             ContDiffAt Real 2 (fun z : Real => z ^ (-(n : Real) / 2))
               (4 * Real.pi * t) :=
@@ -261,44 +261,44 @@ theorem potential_df_time
           (fun p : Real × M => (4 * Real.pi * p.1) ^ (-(n : Real) / 2))
           (t, x) at h
         exact h
-      have hpref_pos : 0 < DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n t := by
-        unfold DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+      have hpref_pos : 0 < perelmanDensityPrefactor n t := by
+        unfold perelmanDensityPrefactor
         exact Real.rpow_pos_of_pos hbase_pos _
       have hquot :
           ContMDiffAt
             ((modelWithCornersSelf Real Real).prod I)
             (modelWithCornersSelf Real Real) 2
             (fun p : Real × M =>
-              u p.1 p.2 / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1) (t, x) :=
+              u p.1 p.2 / perelmanDensityPrefactor n p.1) (t, x) :=
         huAt.div₀ hprefAt hpref_pos.ne'
       have hlog :
           ContMDiffAt
             ((modelWithCornersSelf Real Real).prod I)
             (modelWithCornersSelf Real Real) 2
             (fun p : Real × M =>
-              Real.log (u p.1 p.2 / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1))
+              Real.log (u p.1 p.2 / perelmanDensityPrefactor n p.1))
             (t, x) :=
         by
           have hlogAt :
               ContDiffAt Real 2 Real.log
-                (u t x / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n t) :=
+                (u t x / perelmanDensityPrefactor n t) :=
             Real.contDiffAt_log.2
               (div_ne_zero (hpos t ht x).ne' hpref_pos.ne')
           have h := hlogAt.comp_contMDiffAt
             (I := (modelWithCornersSelf Real Real).prod I)
             (f := fun p : Real × M =>
-              u p.1 p.2 / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1)
+              u p.1 p.2 / perelmanDensityPrefactor n p.1)
             (x := (t, x)) hquot
           change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
             (modelWithCornersSelf Real Real) 2
             (fun p : Real × M =>
-              Real.log (u p.1 p.2 / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1)) (t, x) at h
+              Real.log (u p.1 p.2 / perelmanDensityPrefactor n p.1)) (t, x) at h
           exact h
       have h := hlog.neg
       change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
         (modelWithCornersSelf Real Real) 2
         (fun p : Real × M =>
-          -Real.log (u p.1 p.2 / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n p.1)) (t, x) at h
+          -Real.log (u p.1 p.2 / perelmanDensityPrefactor n p.1)) (t, x) at h
       exact h
     · intro t ht x _
       exact

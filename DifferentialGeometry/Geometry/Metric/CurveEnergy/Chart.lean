@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
 import DifferentialGeometry.Geometry.Metric.ChartDistance.InverseMetric
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.Lipschitz
+import DifferentialGeometry.Geometry.Metric.LipschitzCurves
 
 section
 

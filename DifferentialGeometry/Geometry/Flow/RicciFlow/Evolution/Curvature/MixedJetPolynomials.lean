@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.JetPolyn
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.RmJetEvolutionPolynomial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.CoefficientEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.PolynomialFields
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TimePolynomialField
 import DifferentialGeometry.Geometry.Metric.Variation.TimeDerivative
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 

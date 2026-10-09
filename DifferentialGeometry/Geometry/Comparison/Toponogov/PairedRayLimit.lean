@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.MetricSpace.GeodesicLine.Approximation
+import DifferentialGeometry.Geometry.Comparison.Splitting.MetricApproximateLineLimit
 import DifferentialGeometry.Geometry.Comparison.Toponogov.ComparisonAngle
 import Mathlib.Topology.Instances.NNReal.Lemmas
 

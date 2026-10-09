@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.HalfBandSeparation
 import DifferentialGeometry.Geometry.Neck.HalfBandVolume
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.RetainedCoreMaps
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 
 noncomputable section

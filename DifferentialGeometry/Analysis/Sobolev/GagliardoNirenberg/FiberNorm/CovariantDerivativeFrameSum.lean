@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
-import DifferentialGeometry.Analysis.Convex.LogConvexSequence
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 
 open DifferentialGeometry.TensorMetric
@@ -56,7 +56,7 @@ private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (K : Fin r → Fin n) (J : Fin s → Fin n) (a : Fin n) :
     DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r s
-        ((Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
+        ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
       DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
         (s + 1) T n e K
         (Fin.cons a J) := by
@@ -66,13 +66,13 @@ private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
       (fun k => g.inner x (e (K k))) with hωK
   change Tensor0SBundle.Tensor0SSpace.eval
       ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
-        ((Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T) (e a)) ωK)
+        ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T) (e a)) ωK)
       (fun k => e (J k)) =
     Tensor0SBundle.Tensor0SSpace.eval
       ((show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ]
         Tensor0SBundle.Tensor0SSpace (s + 1) I x from T) ωK)
       (fun k => e (((Fin.cons a J) : Fin (s + 1) → Fin n) k))
-  rw [Tensor0SBundle.covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a) ωK
+  rw [Tensor0SBundle.covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r s x T (e a) ωK
     (fun k => e (J k))]
   congr 1
   exact (Fin.comp_cons e a J).symm
@@ -126,16 +126,16 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs
     {n : ℕ} (e : Fin n → TangentSpace I x) (hn : n = Module.finrank ℝ E)
     (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + 1) x
-        (Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x Φ) =
+        (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x Φ) =
       ∑ a : Fin n, riemannianFiberNormSq (I := I) (M := M) g r s x (Φ (e a)) := by
   classical
   set T : Tensor0SBundle.TensorRSSpace r (s + 1) I x :=
-    Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x Φ with hT_def
+    Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x Φ with hT_def
   rw [riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame (I := I) (M := M) g r
     (s + 1) x T e hn
     horth]
   have hΦeq : ∀ a : Fin n,
-      Φ (e a) = (Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x).symm T (e a) := by
+      Φ (e a) = (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a) := by
     intro a
     rw [hT_def]
     rw [ContinuousLinearEquiv.symm_apply_apply]
@@ -204,7 +204,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_le_card_mul_rs
     (hbound : ∀ v : TangentSpace I x, g.inner x v v = 1 →
       riemannianFiberNormSq (I := I) (M := M) g r s x (Φ v) ≤ b) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + 1) x
-        (Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) r s x Φ) ≤
+        (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x Φ) ≤
       (Module.finrank ℝ E : ℝ) * b := by
   classical
   let cd : InnerProductSpace.Core ℝ (TangentSpace I x) := g.toRiemannianMetric.toCore x

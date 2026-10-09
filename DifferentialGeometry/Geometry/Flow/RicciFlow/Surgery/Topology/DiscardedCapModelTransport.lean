@@ -1,6 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapMaps
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Topology.Manifold.Components
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
@@ -25,7 +24,7 @@ theorem exists_discardedCap_model_collar_of_component_diffeomorph
     {Y : Type*} [TopologicalSpace Y] [ChartedSpace ThreeSpace Y]
     [IsManifold ThreeModel ∞ Y]
     (component : ConnectedComponents D.Carrier)
-    (e : (D.component component).Carrier
+    (e : (D.toClosedOrientedManifold.component component).Carrier
       ≃ₘ⟮ThreeModel, ThreeModel⟯ Y)
     (boundary : E.trace.tubes.Boundary) (hdiscarded : E.trace.capDiscarded boundary)
     (hcomponent : ConnectedComponents.mk
@@ -49,8 +48,8 @@ theorem exists_discardedCap_model_collar_of_component_diffeomorph
       (∀ q, (e.symm (profile q)).val = c.toFun q) ∧
       (∀ q (hq : q.2.val ≤ 0), profile q = fCap (capSide ⟨q, hq⟩)) := by
   let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
-  let U := D.componentOpen component
-  let : IsManifold ThreeModel ∞ U := (D.component component).smooth
+  let U := D.toClosedOrientedManifold.componentOpen component
+  let : IsManifold ThreeModel ∞ U := (D.toClosedOrientedManifold.component component).smooth
   let : PreconnectedSpace ThreeBall := isPreconnected_iff_preconnectedSpace.mp
     (convex_closedBall (0 : ThreeSpace) 1).isPreconnected
   have hmem (x : ThreeBall) : E.trace.discardedCap boundary hdiscarded x ∈ U := by

@@ -86,8 +86,8 @@ theorem orientation_map_of_ambient_germ
   have hG : Orientation.map (Fin n) eg.toLinearEquiv oM = oN := hgo.trans hp.symm
   change Orientation.map (Fin n) ef.toLinearEquiv oK = oL
   apply (Orientation.map (Fin n) (D.inclusionDifferentialEquiv (f x)).toLinearEquiv).injective
-  rw [← DifferentialGeometry.orientation_map_trans, hlin]
-  rw [DifferentialGeometry.orientation_map_trans, hC, hD, hG]
+  rw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, hlin]
+  rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hC, hD, hG]
 
 
 theorem orientation_map_of_open_ambient_germ

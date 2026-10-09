@@ -1,4 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.FaceInteriors
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualFaceSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualIncidence
 
 open Set Topology
@@ -44,7 +49,7 @@ theorem section34Incident_of_nonempty_compactDualFaceDisk_inter_residual
   have hxt : x ∈ convexHull ℝ (t : Set E3) := closure_minimal sdiff_subset
     (t.finite_toSet.isCompact_convexHull ℝ).isClosed hxT
   exact compact_incident_of_subset (face_subset_of_mem_openSimplex_of_mem_convexHull K
-    s.2.1 ht (compact_dual_face_disk_subset_openSimplex M K hKM s hxS) hxt)
+    s.2.1 ht (compactDualFaceDisk_subset_openSimplex M K hKM s hxS) hxt)
 
 open Classical in
 theorem section34Incident_of_nonempty_compactDualVertexBall_inter_faceDisk
@@ -55,7 +60,7 @@ theorem section34Incident_of_nonempty_compactDualVertexBall_inter_faceDisk
     Section34Incident w.1 s.1 := by
   obtain ⟨x, hxV, hxF⟩ := hinter
   have hxS : x ∈ convexHull ℝ (s.1 : Set E3) :=
-    openSimplex_subset_convexHull _ (compact_dual_face_disk_subset_openSimplex M K hKM s hxF)
+    openSimplex_subset_convexHull _ (compactDualFaceDisk_subset_openSimplex M K hKM s hxF)
   have hvs : w.1.centroid ℝ id ∈ s.1 := by
     by_contra hvs
     have hzero := graphDualCell_space_inter_convexHull_eq_empty

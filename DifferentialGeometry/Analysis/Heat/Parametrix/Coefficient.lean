@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Heat.Parametrix.CoordinateCoefficient
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Jacobian.Laplacian
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalJacobianLaplacian
 
 noncomputable section
 

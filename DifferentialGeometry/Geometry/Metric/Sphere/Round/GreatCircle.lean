@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ProjectedConnectionLeviCivita
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import Mathlib.Analysis.InnerProductSpace.LinearMap
 
 

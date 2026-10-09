@@ -163,19 +163,16 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalBefore_mono_eps {ε ε' C1 C2 q t : ℝ} (hε : ε ≤ ε')
+theorem spatiallyCanonicalBefore_mono_eps {ε ε' C1 C2 q t : ℝ} (hε : ε ≤ ε')
     (hε' : ε' < 1 / 11) : G.SpatiallyCanonicalBefore ε C1 C2 q t →
     G.SpatiallyCanonicalBefore ε' C1 C2 q t := by
   intro hG y t' ht hR
   obtain ⟨W, hW⟩ := hG y t' ht hR
   exact ⟨W.monoEps hε hε', hW.mono_eps hε hε' hε hε'⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalOn_mono_eps {ε ε' C1 C2 q t η : ℝ} (hε : ε ≤ ε')
+theorem spatiallyCanonicalOn_mono_eps {ε ε' C1 C2 q t η : ℝ} (hε : ε ≤ ε')
     (hε' : ε' < 1 / 11) : G.SpatiallyCanonicalOn ε C1 C2 q t η →
     G.SpatiallyCanonicalOn ε' C1 C2 q t η := by
   intro hG y t' ha ht hη hs hR

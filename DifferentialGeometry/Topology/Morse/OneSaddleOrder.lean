@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Morse.OneSaddleComponents
 import DifferentialGeometry.Topology.Morse.ExtremumChart
 import DifferentialGeometry.Topology.Morse.SphereLevelComponents
-import DifferentialGeometry.Topology.LevelSet.QuadraticComponent
+import DifferentialGeometry.Topology.Morse.QuadraticComponent
 
 open Set Metric Manifold
 open scoped ContDiff Manifold

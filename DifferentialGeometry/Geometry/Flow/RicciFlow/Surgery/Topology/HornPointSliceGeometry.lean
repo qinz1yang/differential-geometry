@@ -32,12 +32,9 @@ private theorem false_of_inv_sqrt_quarter_bound {R C a : ℝ} (hR : 0 < R) (hC :
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.quarter_scalar_le_on_closedBall_of_gradientBoundBefore {Cgrad : ℝ≥0} {q ρ τ : ℝ}
+theorem quarter_scalar_le_on_closedBall_of_gradientBoundBefore {Cgrad : ℝ≥0} {q ρ τ : ℝ}
     (hgrad : G.GradientBoundBefore Cgrad q s) (hτ : τ ∈ Ioo a s) (hq0 : 0 < q) (hρ : 0 ≤ ρ)
     (x : P.Carrier) (hq : q < G.flow.scalar τ x / (4 * (1 + Cgrad * ρ) ^ 2)) :
     ∀ w ∈ riemannianClosedBallOf (G.flow.base.metric τ) x
@@ -58,7 +55,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (div_le_self hR.le (by nlinarith)) (not_le.mp hlt).le (by positivity) hw
   exact false_of_inv_sqrt_quarter_bound hR Cgrad.coe_nonneg hρ hkey
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.quarter_scalar_le_on_ball_of_gradientBoundBefore
+theorem TerminalLimitMetric.quarter_scalar_le_on_ball_of_gradientBoundBefore
     (L : G.TerminalLimitMetric) {Cgrad : ℝ≥0} {q ρ : ℝ} (hgrad : G.GradientBoundBefore Cgrad q s)
     (hq0 : 0 < q) (hρ : 0 ≤ ρ) (x : G.terminalRegularOpen)
     (hq : q < metricScalarAt L.metric x / (4 * (1 + Cgrad * ρ) ^ 2)) :
@@ -79,7 +76,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (div_lt_self hR (by nlinarith)) (not_le.mp hlt) hw
   exact false_of_inv_sqrt_quarter_bound hR Cgrad.coe_nonneg hρ hkey
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_le_on_slice_ball_of_image_closedBall
+theorem TerminalLimitMetric.scalar_le_on_slice_ball_of_image_closedBall
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) {r Q η τ : ℝ} (hr : 0 < r)
     (hL : ∀ w : G.terminalRegularOpen,
       riemannianEDistOf L.metric x w < ENNReal.ofReal (2 * r) → metricScalarAt L.metric w ≤ Q)

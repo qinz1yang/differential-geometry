@@ -2,7 +2,8 @@ import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentPieceGluing
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumLocalization
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSphericalGraphSumRealizationReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountAbelianizationRank
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.CappingRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 
 noncomputable section
 
@@ -182,7 +183,7 @@ theorem SmoothCutCapTransition.componentConnectedSumDecomposition_of_cutComponen
     (X : SmoothCutCapTransition P Q D N) (h : SmoothCutCapCompletion X)
     (S : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (hS : DifferentialGeometry.Topology.isSphereTwoTimesCircleFactor S)
-    (hinj : ∀ C : ConnectedComponents P.Carrier,
+    (hinj : ∀ C : ConnectedComponents P.toClosedOrientedManifold.Carrier,
       Function.Injective ((SphericalCutCapTransition.ofSmoothCutCapTransition X h).cappedFactor C))
     (hpiece : (SphericalCutCapTransition.ofSmoothCutCapTransition X h).cutComponentPieceGluing S)
     (hcount : (SphericalCutCapTransition.ofSmoothCutCapTransition X h).cutCapSummandCountDeterminedOnCutComponents) :
@@ -190,6 +191,34 @@ theorem SmoothCutCapTransition.componentConnectedSumDecomposition_of_cutComponen
   SphericalCutCapTransition.componentConnectedSumDecomposition_of_cutComponentPieceGluing_of_cutCapSummandCountDeterminedOnCutComponents
     _ S hS hinj hpiece hcount
 
+namespace RetainedCoreEventData
 
+theorem componentConnectedSumDecomposition_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    (R : RetainedCoreEventData P Q a s)
+    (hglue : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutComponentGluing)
+    (hcount : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutCapSummandCountDeterminedOnCutComponents) :
+    (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).componentConnectedSumDecomposition :=
+  R.transition.componentConnectedSumDecomposition_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    R.completion hglue hcount
+
+theorem graphSumRealization_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    (R : RetainedCoreEventData P Q a s)
+    (hglue : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutComponentGluing)
+    (hcount : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutCapSummandCountDeterminedOnCutComponents) :
+    (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).graphSumRealization :=
+  R.transition.graphSumRealization_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    R.completion hglue hcount
+
+theorem sphericalGraphSumRealization_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    (R : RetainedCoreEventData P Q a s)
+    (S : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
+    (hS : DifferentialGeometry.Topology.isSphereTwoTimesCircleFactor S)
+    (hglue : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutComponentGluing)
+    (hcount : (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).cutCapSummandCountDeterminedOnCutComponents) :
+    (SphericalCutCapTransition.ofSmoothCutCapTransition R.transition R.completion).sphericalGraphSumRealization S :=
+  R.transition.sphericalGraphSumRealization_of_cutComponentGluing_of_cutCapSummandCountDeterminedOnCutComponents
+    R.completion S hS hglue hcount
+
+end RetainedCoreEventData
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

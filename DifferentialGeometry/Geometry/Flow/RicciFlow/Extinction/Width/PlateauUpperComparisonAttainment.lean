@@ -19,7 +19,7 @@ variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 omit [IsManifold 𝓘(ℝ, F) ∞ N] in
 theorem contMDiff_of_exists_smoothDisk_trace
-    (u : SmoothDisk (I := 𝓘(ℝ, F)) (Q := N)) (γ : DifferentialGeometry.Topology.freeLoop N)
+    (u : SmoothDisk (I := 𝓘(ℝ, F)) (Q := N)) (γ : ContinuousFreeLoop N)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ θ) :
     ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, F) ∞ (fun t : ℝ => γ (t : Surgery.Topology.Circle)) := by
   have h := (SmoothDisk.diskSmoothUpToBoundary u).trace
@@ -53,7 +53,7 @@ omit hSigma in
 theorem diskArea_eq_leastArea_of_minimizingDiskCompetitor
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ (σ.map theta))
     (hmin : ∀ v : DiskCompetitor g γ.toContinuousLoop,
@@ -74,7 +74,7 @@ omit hSigma in
 theorem exists_diskCompetitor_diskArea_eq_leastArea_of_minimizingDiskCompetitor
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ (σ.map theta))
     (hmin : ∀ v : DiskCompetitor g γ.toContinuousLoop,
@@ -92,7 +92,7 @@ omit hSigma in
 theorem diskArea_eq_leastArea_of_minimizingSmoothDisk_of_density
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ (σ.map theta))
     (hmin : ∀ v : SmoothDisk (I := I) (Q := Q),
@@ -108,7 +108,7 @@ theorem diskArea_eq_leastArea_of_minimizingSmoothDisk_of_density
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem diskArea_const_le_diskCompetitor (g : SmoothRiemannianMetric I Q) (q : Q)
-    (v : DiskCompetitor g (DifferentialGeometry.Topology.FreeLoop.constants q)) :
+    (v : DiskCompetitor g (constantLoops q)) :
     diskArea g (⇑(SmoothDisk.const (I := I) (Q := Q) q).map) ≤ diskArea g v.1.map := by
   rw [show (⇑(SmoothDisk.const (I := I) (Q := Q) q).map : Disk → Q) = (fun _ : Disk => q)
     from rfl, diskArea_const]
@@ -122,7 +122,7 @@ theorem transportedArea_at_base_eq_loopFamilyLeastArea_of_minimizingDiskCompetit
     (gamma : ℝ → RegularLoop I Q)
     (hgamma : (curveOfLoopFamily (fun t => (gamma t).toContinuousLoop)).SmoothOn
       (I := I) (Icc a b))
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) =
       (gamma t₀).toContinuousLoop (sigma.map theta))
@@ -159,7 +159,7 @@ theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_and_transported
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))

@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.IntervalExtension
 import DifferentialGeometry.Topology.Manifold.AddCircle.Descent
 import DifferentialGeometry.Topology.LoopSpace.ImmersionStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Basic
-import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.Velocity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ImmersedPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.Loops
 
@@ -20,7 +20,7 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace M] [ChartedSpace H M]
 
 theorem contMDiff_uncurry_of_smoothOn_univ
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) univ) :
     ContMDiff (𝓘(ℝ).prod 𝓘(ℝ)) I ∞
       (fun p : ℝ × Surgery.Topology.Circle => γ p.1 p.2) := by
@@ -39,7 +39,7 @@ theorem contMDiff_uncurry_of_smoothOn_univ
   simpa only [univ_prod_univ] using hsource
 
 theorem smoothOn_curveOfLoopFamily_of_contMDiff
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : ContMDiff (𝓘(ℝ).prod 𝓘(ℝ)) I ∞
       (fun p : ℝ × Surgery.Topology.Circle => γ p.1 p.2)) (J : Set ℝ) :
     (curveOfLoopFamily γ).SmoothOn (I := I) J := by
@@ -69,9 +69,9 @@ theorem exists_smooth_loopFamily_extension
     {a b : ℝ} {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
     (R : Width.SmoothTubularRetraction e)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) :
-    ∃ γext : ℝ → DifferentialGeometry.Topology.freeLoop M,
+    ∃ γext : ℝ → ContinuousFreeLoop M,
       (curveOfLoopFamily γext).SmoothOn (I := I) univ ∧
       ∀ t ∈ Icc a b, γext t = γ t := by
   have hlift : ContMDiffOn 𝓘(ℝ, ℝ × ℝ) I ∞
@@ -88,7 +88,7 @@ theorem exists_smooth_loopFamily_extension
   obtain ⟨G, hG, hGeq⟩ := _root_.Manifold.exists_contMDiff_extension_Icc_of_retraction
     e.smooth R.retract R.neighborhood R.isOpen_neighborhood R.range_subset R.smoothOn
     R.leftInverse hsource
-  let γext : ℝ → DifferentialGeometry.Topology.freeLoop M := fun t =>
+  let γext : ℝ → ContinuousFreeLoop M := fun t =>
     ⟨fun z => G (t, z), hG.continuous.comp (continuous_const.prodMk continuous_id)⟩
   refine ⟨γext, ?_, ?_⟩
   · have hcoe : ContMDiff 𝓘(ℝ, ℝ × ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
@@ -121,10 +121,10 @@ theorem exists_smooth_immersed_loopFamily_extension
     {a b : ℝ} (hab : a ≤ b) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
     (R : Width.SmoothTubularRetraction e)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
-    ∃ γext : ℝ → DifferentialGeometry.Topology.freeLoop M, ∃ lo hi : ℝ,
+    ∃ γext : ℝ → ContinuousFreeLoop M, ∃ lo hi : ℝ,
       lo < a ∧ b < hi ∧
       (curveOfLoopFamily γext).SmoothOn (I := I) univ ∧
       (curveOfLoopFamily γext).ImmersedOn (I := I) (Icc lo hi) ∧
@@ -153,6 +153,7 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
+open Surgery.Topology (ContinuousFreeLoop)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -160,7 +161,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem deriv_embeddedLoopFamily_eq {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ}
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J) {t : ℝ} (ht : t ∈ J) (r : ℝ) :
     deriv (fun s : ℝ => e.map (γ t (s : Surgery.Topology.Circle))) r =
       mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (γ t (r : Surgery.Topology.Circle))
@@ -170,7 +171,7 @@ theorem deriv_embeddedLoopFamily_eq {N : ℕ}
 
 theorem norm_deriv_embeddedLoopFamily_sub_le_iteratedFDerivWithin_one {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ Γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b : ℝ} (hab : a < b)
+    (γ Γ : ℝ → ContinuousFreeLoop M) {a b : ℝ} (hab : a < b)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hΓ : (curveOfLoopFamily Γ).SmoothOn (I := I) (Icc a b))
     {t : ℝ} (ht : t ∈ Icc a b) (r : ℝ) :
@@ -187,11 +188,11 @@ theorem norm_deriv_embeddedLoopFamily_sub_le_iteratedFDerivWithin_one {N : ℕ}
 
 theorem exists_loopFamily_immersion_separation_radius {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {a b : ℝ} (hab : a < b)
+    (γ : ℝ → ContinuousFreeLoop M) {a b : ℝ} (hab : a < b)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
     ∃ ε : ℝ, 0 < ε ∧ ∃ δ : ℝ, 0 < δ ∧
-      ∀ Γ : ℝ → DifferentialGeometry.Topology.freeLoop M,
+      ∀ Γ : ℝ → ContinuousFreeLoop M,
         (curveOfLoopFamily Γ).SmoothOn (I := I) (Icc a b) →
         (∀ q ∈ Icc (0 : ℝ) 1 ×ˢ Icc a b,
           ‖iteratedFDerivWithin ℝ 1

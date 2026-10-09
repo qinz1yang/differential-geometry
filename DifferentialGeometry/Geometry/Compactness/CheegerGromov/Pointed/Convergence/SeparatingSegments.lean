@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Line
-import DifferentialGeometry.Topology.Connected.Separation.PathCrossing
+import DifferentialGeometry.Topology.SphereSeparation.PathCrossing
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 

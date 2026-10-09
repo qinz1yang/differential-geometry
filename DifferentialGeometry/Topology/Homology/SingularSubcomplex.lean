@@ -56,13 +56,13 @@ lemma singSub_eq_top_iff (A : Set X) : singSub X A = ⊤ ↔ A = Set.univ := by
   · rintro rfl
     exact singSub_univ X
 
-lemma singSub_iInf {ι : Sort*} (A : ι → Set X) :
+lemma singSub_iInf {ι : Sort*} [Nonempty ι] (A : ι → Set X) :
     singSub X (⋂ i, A i) = ⨅ i, singSub X (A i) := by
   ext n σ
   rw [mem_singSub_iff, Subfunctor.iInf_obj, Set.mem_iInter, Set.subset_iInter_iff]
   simp only [mem_singSub_iff]
 
-lemma singSub_empty : singSub X ∅ = ⊥ := by
+lemma singSub_empty [Nonempty X] : singSub X ∅ = ⊥ := by
   ext n σ
   rw [mem_singSub_iff]
   simp only [Set.subset_empty_iff, Set.range_eq_empty_iff, Subfunctor.bot_obj,

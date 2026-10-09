@@ -14,7 +14,6 @@ variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   {n d p : ℕ} {K L : SimplicialComplex ℝ E} {g : C(K.space, M)} {X : Set M}
   {b : AdaptedPiecewiseLinearChart K L g X n p} {Z : Set E} {ε : ℝ}
 
-omit [FiniteDimensional ℝ E] in
 theorem LocalObstacleChartSetup.exists_innerModel
     (S : LocalObstacleChartSetup K L g b Z d ε) (m : ObstaclePullbackModel S.approximation)
     (H Y : SimplicialComplex ℝ E) (hHK : H.faces ⊆ m.source.faces)

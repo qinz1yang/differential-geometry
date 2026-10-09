@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Preliminaries
-import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.CompactNeighborhood
+import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.SupportAndDomain.CrossChartBoundStrictMemWkp
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.BanachManifold
 

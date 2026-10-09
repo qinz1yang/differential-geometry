@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Variation.DiskMetricVariation
-import DifferentialGeometry.Geometry.Metric.Family.TimeBound
+import DifferentialGeometry.Geometry.Metric.FamilyTimeBound
 import DifferentialGeometry.Geometry.Measure.Area.MetricDensityError
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import Mathlib.Analysis.Calculus.ParametricIntegral

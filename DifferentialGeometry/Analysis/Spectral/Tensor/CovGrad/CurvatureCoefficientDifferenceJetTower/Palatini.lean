@@ -601,9 +601,9 @@ lemma slotInsert_perturbationSharp_eq_raise_ccTensor02Symm (g₀ : SmoothRiemann
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (slotInsertEndoCc (I := I) (M := M) g₀ 0
             (perturbationSharpEndoField (I := I) (M := M) g₀ T)).toSection x) om) =
-        slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        slotInsertEndoFib (I := I) (M := M) 1 0 x
           (perturbationSharpEndoField (I := I) (M := M) g₀ T x) om from rfl]
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single_eq_cotangentToDual (I := I) (M := M) x om
       (Function.update w 0
         (tangentLinearMapToModel
@@ -740,7 +740,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
           (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁))).toSection x)
         (unitTensor (I := I) (M := M) x) =
-      slotInsertEndomorphism (I := I) (M := M) 4 0 x
+      slotInsertEndoFib (I := I) (M := M) 4 0 x
         (perturbationSharpEndoField (I := I) (M := M) g₀ T x)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
@@ -748,7 +748,7 @@ lemma riemannG1LoweringDifference_slotInsert_repr (g₀ g₁ : SmoothRiemannianM
           (unitTensor (I := I) (M := M) x)) from by
       rw [operatorFieldComposition_toSection]
       rfl]
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
   rw [happ]
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
     (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₁) x]
@@ -1451,12 +1451,12 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
   rw [Tensor0SSpace.toModel_sub, sub_apply]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricMixedSharpEndoField (I := I) (M := M) g₀ g₁)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x) om from rfl]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricEndoRaisedField (I := I) (M := M) g₀)).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x (ricEndoRaisedFib (I := I) g₀ x) om from rfl]
-  rw [slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval]
+      slotInsertEndoFib (I := I) (M := M) 1 0 x (ricEndoRaisedFib (I := I) g₀ x) om from rfl]
+  rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
   set u : TangentSpace I x := inverseMetricSharpFib (I := I) g₀ x om with hu_def
   have hupd : ∀ V : TangentSpace I x,
       Function.update m 0 (tangentSpaceModelContinuousLinearEquiv (I := I) x V) =

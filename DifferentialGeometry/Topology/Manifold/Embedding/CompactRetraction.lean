@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Retraction.Compact
-import DifferentialGeometry.Topology.Manifold.Retraction.LocalCollapse
+import DifferentialGeometry.Geometry.Metric.LocalCollapse
 import DifferentialGeometry.Topology.Manifold.Embedding.CompactNeighborhood
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 

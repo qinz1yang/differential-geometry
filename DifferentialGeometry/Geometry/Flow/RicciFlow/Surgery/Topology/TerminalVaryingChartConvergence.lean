@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.ReferenceChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Comparison
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
@@ -15,33 +15,30 @@ open scoped Manifold ContDiff Topology BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
+private local instance terminalSigmaCompact : SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalOpenSigmaCompact
+private local instance terminalOpenSigmaCompact
     (V : TopologicalSpace.Opens G.terminalRegularOpen) : SigmaCompactSpace V :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel V.isOpen)
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullbackCompleteSpace {E : Type*} [NormedAddCommGroup E]
+private local instance pullbackCompleteSpace {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] : CompleteSpace E :=
   FiniteDimensional.complete ℝ E
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
+private local instance terminalC1 : IsManifold ThreeModel 1 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalC2 : IsManifold ThreeModel 2 G.terminalRegularOpen :=
+private local instance terminalC2 : IsManifold ThreeModel 2 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_metricDerivNorm_source_on_compact
+theorem TerminalLimitMetric.eventually_metricDerivNorm_source_on_compact
     (L : G.TerminalLimitMetric) {K : Set G.terminalRegularOpen} (hK : IsCompact K)
     (p : ℕ) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ t in 𝓝[<] s, ∀ j ≤ p, ∀ x ∈ K,
@@ -71,7 +68,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact hbound.trans_lt (by linarith)
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_metricDerivNormSupOn_varying_pullbacks
+theorem TerminalLimitMetric.eventually_metricDerivNormSupOn_varying_pullbacks
     (L : G.TerminalLimitMetric) {K : Set G.terminalRegularOpen} (hK : IsCompact K)
     {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {E H X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

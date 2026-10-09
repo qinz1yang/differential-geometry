@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Locality
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SurvivingChartPreimages
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.PuncturedAtlas
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Merge
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallPuncturedAtlas
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallSeam
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Interior
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Sigma

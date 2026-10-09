@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 omit hT2 hCompact hBoundary hSigma in
 structure PlateauSpanningFrontier (g : SmoothRiemannianMetric I Q)
-    (gamma : DifferentialGeometry.Topology.freeLoop Q) where
+    (gamma : ContinuousFreeLoop Q) where
   disk : SmoothDisk (I := I) (Q := Q)
   sigma : SmoothWeaklyMonotoneCircleMap
   trace : ∀ theta, disk.map (diskBoundary theta) = gamma (sigma.map theta)
@@ -55,7 +55,7 @@ theorem rfs_plateau_upper_comparison_of_frontiers
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (F : PlateauSpanningFrontier (W.family.metric t₀) (gamma t₀).toContinuousLoop)
     (Phi : ℝ → Diffeomorph I I Q Q ∞)
     (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
@@ -113,7 +113,7 @@ theorem plateau_upper_slope_bound_of_frontiers
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (F : PlateauSpanningFrontier (W.family.metric t₀) (gamma t₀).toContinuousLoop)
     (Phi : ℝ → Diffeomorph I I Q Q ∞)
     (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
@@ -145,7 +145,7 @@ theorem rfs_plateau_upper_comparison_of_plateauSpanningFrontier
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (F : PlateauSpanningFrontier (W.family.metric t₀) (gamma t₀).toContinuousLoop)
     (Phi : ℝ → Diffeomorph I I Q Q ∞)
     (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
@@ -185,7 +185,7 @@ theorem plateau_upper_slope_bound_of_plateauSpanningFrontier
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (F : PlateauSpanningFrontier (W.family.metric t₀) (gamma t₀).toContinuousLoop)
     (Phi : ℝ → Diffeomorph I I Q Q ∞)
     (hPhi : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞ (fun p : Q × ℝ => Phi p.2 p.1)
@@ -211,7 +211,7 @@ theorem plateau_upper_slope_bound_of_plateauSpanningFrontier
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem density_family_at_constantDiskCompetitor (g : SmoothRiemannianMetric I Q) (q : Q) :
     ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
-      (∀ j theta, (w j).map (diskBoundary theta) = DifferentialGeometry.Topology.FreeLoop.constants q theta) ∧
+      (∀ j theta, (w j).map (diskBoundary theta) = constantLoops q theta) ∧
         Tendsto (fun j => diskArea g (w j).map) atTop
           (𝓝 (diskArea g (constantDiskCompetitor g q).1.map)) := by
   simpa only [constantDiskCompetitor] using
@@ -219,7 +219,7 @@ theorem density_family_at_constantDiskCompetitor (g : SmoothRiemannianMetric I Q
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem minimizing_disk_area_le_constant_competitor (g : SmoothRiemannianMetric I Q) (q : Q)
-    (v : DiskCompetitor g (DifferentialGeometry.Topology.FreeLoop.constants q)) :
+    (v : DiskCompetitor g (constantLoops q)) :
     diskArea g (⇑(SmoothDisk.const (I := I) (Q := Q) q).map) ≤ diskArea g v.1.map :=
   diskArea_const_le_diskCompetitor g q v
 
@@ -235,7 +235,7 @@ def SmoothWeaklyMonotoneCircleMap.id : SmoothWeaklyMonotoneCircleMap where
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] hT2 hCompact hBoundary hSigma in
 theorem SmoothDisk.const_trace (q : Q) (sigma : SmoothWeaklyMonotoneCircleMap) :
     ∀ theta, (SmoothDisk.const (I := I) (Q := Q) q).map (diskBoundary theta) =
-      DifferentialGeometry.Topology.FreeLoop.constants q (sigma.map theta) := by
+      constantLoops q (sigma.map theta) := by
   intro theta
   simp only [SmoothDisk.const]
   rfl

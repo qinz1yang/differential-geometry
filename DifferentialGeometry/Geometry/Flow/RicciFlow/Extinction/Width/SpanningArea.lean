@@ -14,16 +14,13 @@ import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Analysis.Calculus.TangentCone.Real
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Comparison
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Distance
-import DifferentialGeometry.Geometry.Metric.CurveVariation.WeakDerivative
-import DifferentialGeometry.Topology.Manifold.LocalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WeakLength
 import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
 import DifferentialGeometry.Geometry.Measure.Area.AnnulusCompetitor
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Topology.StandardModel
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.ScalarComparison
+import DifferentialGeometry.Geometry.Metric.ScalarCurveComparison
 import DifferentialGeometry.Analysis.Calculus.Variation.Lipschitz
 
 noncomputable section
@@ -387,7 +384,7 @@ def LipschitzDisk.changeMetric (g h : SmoothRiemannianMetric I Q)
         simp only [ENNReal.coe_mul, ENNReal.ofReal, mul_assoc]
 
 
-abbrev DiskCompetitor (g : SmoothRiemannianMetric I Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :=
+abbrev DiskCompetitor (g : SmoothRiemannianMetric I Q) (γ : ContinuousFreeLoop Q) :=
   {u : LipschitzDisk g // ∀ θ : Surgery.Topology.Circle, u.map (diskBoundary θ) = γ θ}
 
 
@@ -455,7 +452,7 @@ def constantLipschitzDisk (g : SmoothRiemannianMetric I Q) (q : Q) : LipschitzDi
     exact bot_le⟩
 
 def constantDiskCompetitor (g : SmoothRiemannianMetric I Q) (q : Q) :
-    DiskCompetitor g (DifferentialGeometry.Topology.FreeLoop.constants q) :=
+    DiskCompetitor g (constantLoops q) :=
   ⟨constantLipschitzDisk g q, fun _ => rfl⟩
 
 theorem parametricJacobian_congr_on (g : SmoothRiemannianMetric I Q)
@@ -796,7 +793,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit connectedQ in
 theorem ae_mdifferentiable_loopLift (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     ∀ᵐ t ∂volume.restrict (Icc (0 : ℝ) 1),
       MDifferentiableAt 𝓘(ℝ, ℝ) I (loopLift γ) t := by
   have hquot : LipschitzWith 1 (fun t : ℝ => (t : Surgery.Topology.Circle)) := by
@@ -1237,7 +1234,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [I.Boundaryless] in
 private theorem embedded_loop_lipschitz {N : ℕ}
     (g : SmoothRiemannianMetric I Q) (e : SmoothLoopEmbedding (I := I) (Q := Q) N)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     ∃ L : ℝ≥0, LipschitzWith L (e.map ∘ loopLift γ) := by
   have hquot : LipschitzWith 1 (fun t : ℝ => (t : Surgery.Topology.Circle)) := by
     apply LipschitzWith.of_dist_le_mul
@@ -1273,7 +1270,7 @@ private theorem embedded_loop_lipschitz {N : ℕ}
   exact ⟨Cn * L, hlip⟩
 
 private theorem aemeasurable_loopSpeed_actual (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     AEMeasurable (fun t : ℝ => Real.sqrt (g.inner (loopLift γ t)
       (loopVelocity (I := I) γ t) (loopVelocity (I := I) γ t)))
       (volume.restrict (Icc (0 : ℝ) 1)) := by
@@ -1292,7 +1289,7 @@ omit connectedQ in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem integrable_loopSpeed (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     IntegrableOn (fun t : ℝ => Real.sqrt (g.inner (loopLift γ t)
       (loopVelocity (I := I) γ t) (loopVelocity (I := I) γ t))) (Icc (0 : ℝ) 1) := by
   obtain ⟨N, ⟨e⟩⟩ := smoothLoopEmbedding_exists (I := I) (Q := Q)
@@ -1349,7 +1346,7 @@ theorem curveSpeed_nonneg (g : SmoothRiemannianMetric I Q) (γ : ℝ → Q) (t :
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem loopLength_eq_integral_curveSpeed (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) :
+    (γ : ContinuousFreeLoop Q) :
     loopLength g γ = ∫ t in Icc (0 : ℝ) 1, curveSpeed g (loopLift γ) t := rfl
 
 omit compactQ connectedQ in
@@ -1481,8 +1478,8 @@ theorem riemannianCurveLength_le_of_edist_le_sub (g : SmoothRiemannianMetric I Q
     {v : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b) (hv : MonotoneOn v (Icc a b))
     (h : ∀ x ∈ Icc a b, ∀ y ∈ Icc a b, x ≤ y →
       riemannianEDistOf g (f y) (f x) ≤ ENNReal.ofReal (v y - v x)) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation g f a b ≤ ENNReal.ofReal (v b - v a) := by
-  unfold DifferentialGeometry.Geometry.riemannianCurveVariation
+    Surgery.Topology.riemannianCurveLength g f a b ≤ ENNReal.ofReal (v b - v a) := by
+  unfold Surgery.Topology.riemannianCurveLength
   refine iSup_le fun p => ?_
   obtain ⟨n, ⟨u, hu, hs⟩⟩ := p
   have hstep : ∀ i ∈ Finset.range n,
@@ -1502,8 +1499,8 @@ theorem riemannianCurveLength_le_of_edist_le_sub (g : SmoothRiemannianMetric I Q
 
 omit connectedQ in
 theorem loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ) 0 1 ≤
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 ≤
       ENNReal.ofReal (loopLength g γ) := by
   obtain ⟨L, hL⟩ := hlip
   have hlip' : IsLipschitzLoop g γ := ⟨L, hL⟩
@@ -1577,9 +1574,9 @@ theorem loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
 
 omit connectedQ in
 theorem ofReal_loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     ENNReal.ofReal (loopLength g γ) ≤
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ) 0 1 := by
+      Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := by
   let : RiemannianBundle (TangentSpace I : Q → Type _) :=
     ⟨g.toContinuousRiemannianMetric.toRiemannianMetric⟩
   let : PseudoEMetricSpace Q := .ofRiemannianMetric I Q
@@ -1633,22 +1630,22 @@ theorem ofReal_loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I
     _ = eVariationOn (loopLift γ) (Icc (0 : ℝ) 1) :=
         ENNReal.ofReal_toReal
           (DifferentialGeometry.Analysis.eVariationOn_Icc_ne_top_of_lipschitz hlift 0 1)
-    _ = DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ) 0 1 := rfl
+    _ = Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := rfl
 
 end CurveSpeedComparison
 
 omit connectedQ in
 theorem loopLength_eq_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
     ENNReal.ofReal (loopLength g γ) =
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ) 0 1 := by
+      Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 := by
   exact le_antisymm (ofReal_loopLength_le_riemannianCurveLength g γ hlip)
     (loopLength_le_riemannianCurveLength g γ hlip)
 
 omit connectedQ in
 theorem riemannianCurveLength_loop_ne_top (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ) 0 1 ≠ (∞ : ℝ≥0∞) := by
+    (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ) :
+    Surgery.Topology.riemannianCurveLength g (loopLift γ) 0 1 ≠ (∞ : ℝ≥0∞) := by
   rw [← loopLength_eq_riemannianCurveLength g γ hlip]
   exact ENNReal.ofReal_ne_top
 
@@ -1656,12 +1653,12 @@ omit connectedQ in
 theorem RegularLoop.length_eq_riemannianCurveLength (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q) :
     ENNReal.ofReal (loopLength g γ.toContinuousLoop) =
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (loopLift γ.toContinuousLoop) 0 1 :=
+      Surgery.Topology.riemannianCurveLength g (loopLift γ.toContinuousLoop) 0 1 :=
   loopLength_eq_riemannianCurveLength g γ.toContinuousLoop (γ.isLipschitz g)
 
 omit boundarylessI connectedQ in
 theorem isLipschitzLoop_metric_iff (g h : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) : IsLipschitzLoop g γ ↔ IsLipschitzLoop h γ := by
+    (γ : ContinuousFreeLoop Q) : IsLipschitzLoop g γ ↔ IsLipschitzLoop h γ := by
   have htransfer (g h : SmoothRiemannianMetric I Q)
       (hlip : IsLipschitzLoop g γ) : IsLipschitzLoop h γ := by
     obtain ⟨c, hc, hbound⟩ := metric_lower_bound_of_compact g h
@@ -1682,7 +1679,7 @@ theorem isLipschitzLoop_metric_iff (g h : SmoothRiemannianMetric I Q)
 
 omit boundarylessI connectedQ in
 theorem diskCompetitor_maps_metric_iff (g h : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (u : C(Disk, Q)) :
+    (γ : ContinuousFreeLoop Q) (u : C(Disk, Q)) :
     (∃ v : DiskCompetitor g γ, v.1.map = u) ↔
       ∃ v : DiskCompetitor h γ, v.1.map = u := by
   have htransfer (g h : SmoothRiemannianMetric I Q)
@@ -1797,14 +1794,14 @@ theorem annulusArea_finite_decomposition (g : SmoothRiemannianMetric I Q)
 
 
 def loopUniformDistance (g : SmoothRiemannianMetric I Q)
-    (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q) : ℝ :=
+    (γ₀ γ₁ : ContinuousFreeLoop Q) : ℝ :=
   sSup (Set.range (fun θ => (riemannianEDistOf g (γ₀ θ) (γ₁ θ)).toReal))
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem loopUniformDistance_comm (g : SmoothRiemannianMetric I Q)
-    (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q) :
+    (γ₀ γ₁ : ContinuousFreeLoop Q) :
     loopUniformDistance g γ₀ γ₁ = loopUniformDistance g γ₁ γ₀ := by
   have hd (x y : Q) : riemannianEDistOf g x y = riemannianEDistOf g y x := by
     let : Bundle.RiemannianBundle (TangentSpace I : Q → Type _) := ⟨g.toRiemannianMetric⟩
@@ -1930,7 +1927,7 @@ private theorem riemannianAreaDensity_pullbackMetricCross_standardModel
 
 omit connectedQ in
 theorem disk_annulus_gluing (g : SmoothRiemannianMetric I Q)
-    (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q) (u : DiskCompetitor g γ₀) (A : LipschitzAnnulus g)
+    (γ₀ γ₁ : ContinuousFreeLoop Q) (u : DiskCompetitor g γ₀) (A : LipschitzAnnulus g)
     (htrace₀ : ∀ θ, A.map (⟨0, by simp⟩, θ) = γ₀ θ)
     (htrace₁ : ∀ θ, A.map (⟨1, by simp⟩, θ) = γ₁ θ) :
     ∃ v : DiskCompetitor g γ₁,
@@ -2084,7 +2081,7 @@ private theorem loopLength_eq_riemannianCurveLength_real'
     {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
     {Q' : Type*} [TopologicalSpace Q'] [ChartedSpace E' Q'] [IsManifold 𝓘(ℝ, E') ∞ Q']
     [T2Space Q'] [CompactSpace Q']
-    (g : SmoothRiemannianMetric 𝓘(ℝ, E') Q') (γ : DifferentialGeometry.Topology.freeLoop Q')
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E') Q') (γ : ContinuousFreeLoop Q')
     (hlip : IsLipschitzLoop g γ) :
     loopLength g γ = Geometry.riemannianCurveLength g (loopLift γ) 0 1 := by
   have hb : ∀ x y : ℝ, riemannianEDistOf g (loopLift γ x) (loopLift γ y) ≤
@@ -2104,16 +2101,16 @@ private theorem riemannianCurveLength_pullbackMetricCross'
     {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
     (g : SmoothRiemannianMetric J P) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), J⟯ P) (γ : ℝ → A) (a b : ℝ) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation (Diffeomorph.pullbackMetricCross g Ψ) γ a b =
-      DifferentialGeometry.Geometry.riemannianCurveVariation g (fun t => Ψ (γ t)) a b := by
-  unfold DifferentialGeometry.Geometry.riemannianCurveVariation
+    Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =
+      Surgery.Topology.riemannianCurveLength g (fun t => Ψ (γ t)) a b := by
+  unfold Surgery.Topology.riemannianCurveLength
   refine congrArg sSup (congrArg Set.range (funext fun p => ?_))
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [pullbackMetricCross_riemannianEDistOf]
 
 theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
     ∃ ρ C : ℝ, 0 < ρ ∧ 0 < C ∧
-      ∀ (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q),
+      ∀ (γ₀ γ₁ : ContinuousFreeLoop Q),
         IsLipschitzLoop g γ₀ → IsLipschitzLoop g γ₁ →
         loopUniformDistance g γ₀ γ₁ < ρ →
         ∃ A : LipschitzAnnulus g,
@@ -2145,7 +2142,7 @@ theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
   have hdist (x y : c.Q) :
       riemannianEDistOf g' x y = riemannianEDistOf g (Φ.symm x) (Φ.symm y) :=
     pullbackMetricCross_riemannianEDistOf g Φ.symm x y
-  have hdict (γ₀ γ₁ : DifferentialGeometry.Topology.freeLoop Q) :
+  have hdict (γ₀ γ₁ : ContinuousFreeLoop Q) :
       (Geometry.riemannianLoopDistance g' (Φc.comp γ₀) (Φc.comp γ₁) : ℝ) =
         loopUniformDistance g γ₀ γ₁ := by
     rw [loopUniformDistance, Geometry.riemannianLoopDistance_eq_iSup]
@@ -2246,7 +2243,7 @@ theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
           (y := Φ (γ₁ θ)) (by simpa only [hΦc₀ θ, hΦc₁ θ] using hfin θ) s.property t.property,
         hdist]
       simp only [Φ.symm_apply_apply]
-    have hlen (γ : DifferentialGeometry.Topology.freeLoop Q) (hlip : IsLipschitzLoop g γ)
+    have hlen (γ : ContinuousFreeLoop Q) (hlip : IsLipschitzLoop g γ)
         (hlip' : IsLipschitzLoop g' (Φc.comp γ)) :
         loopLength g' (Φc.comp γ) = loopLength g γ := by
       have h₁ := loopLength_eq_riemannianCurveLength (g := g') (γ := Φc.comp γ) hlip'
@@ -2296,7 +2293,7 @@ theorem rfs_nearby_loop_annulus (g : SmoothRiemannianMetric I Q) :
 
 omit connectedQ in
 theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (hctr : ContinuousMap.Nullhomotopic γ) (hlip : IsLipschitzLoop g γ) :
+    (γ : ContinuousFreeLoop Q) (hctr : IsContractibleLoop γ) (hlip : IsLipschitzLoop g γ) :
     Nonempty (DiskCompetitor g γ) := by
   classical
   obtain ⟨L, hL⟩ := hlip
@@ -2313,7 +2310,7 @@ theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)
   let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
     Diffeomorph.pullbackMetricCross g Φ.symm
   let Φc : C(Q, c.Q) := ⟨fun x => Φ x, Φ.continuous⟩
-  let γ' : DifferentialGeometry.Topology.freeLoop c.Q := Φc.comp γ
+  let γ' : ContinuousFreeLoop c.Q := Φc.comp γ
   have hdist (x y : c.Q) :
       riemannianEDistOf g' x y = riemannianEDistOf g (Φ.symm x) (Φ.symm y) :=
     pullbackMetricCross_riemannianEDistOf g Φ.symm x y
@@ -2343,7 +2340,7 @@ theorem rfs_disk_competitor_exists (g : SmoothRiemannianMetric I Q)
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
 theorem LipschitzDisk.isLipschitz_trace
     (g : SmoothRiemannianMetric I Q)
-    (u : LipschitzDisk g) (γ : DifferentialGeometry.Topology.freeLoop Q)
+    (u : LipschitzDisk g) (γ : ContinuousFreeLoop Q)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ θ) : IsLipschitzLoop g γ := by
   obtain ⟨L, hL⟩ := u.isLipschitz
   let K : ℝ≥0 := ⟨2 * Real.pi, by positivity⟩

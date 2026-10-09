@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.CurvatureDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureDerivative
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Tower
 
 set_option autoImplicit false

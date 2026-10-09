@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.UniformParam
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetOperators
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalSmoothConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TimeJetConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.JointSpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.UniformParameter
 import DifferentialGeometry.Topology.LocallyUniformConvergence
 

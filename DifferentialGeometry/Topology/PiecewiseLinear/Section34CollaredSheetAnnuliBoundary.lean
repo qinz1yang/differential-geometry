@@ -1,6 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredFillingCylinderSquare
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredCylinderFrontier
-import DifferentialGeometry.Topology.PiecewiseLinear.LateralAnnulusLevels
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredSheetAnnuliActual
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 
 open Set

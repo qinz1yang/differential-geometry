@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskDifferential
-import DifferentialGeometry.Tensor.BilinearForm.ConformalPair
+import DifferentialGeometry.Analysis.InnerProductSpace.ConformalPair
 import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 

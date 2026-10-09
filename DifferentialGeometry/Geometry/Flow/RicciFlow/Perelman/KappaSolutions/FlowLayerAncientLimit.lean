@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.WindowCompactnessProducer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AncientHalfLine
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Convergence.Subsequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CGHSubsequenceClosure
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.WindowEstimatesTransfer
 
 set_option autoImplicit false

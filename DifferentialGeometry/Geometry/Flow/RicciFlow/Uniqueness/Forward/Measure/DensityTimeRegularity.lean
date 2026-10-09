@@ -64,7 +64,7 @@ theorem forward_uniqueness_density_dot_continuous
       hdenSmooth.contMDiffAt ((isOpen_Ioo.prod isOpen_univ).mem_nhds hp)
     have hdAt : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun q : ℝ × M => deriv (fun s => forwardUniqueDensity (I := I) g₁ g₂ s q.2) q.1) p :=
-      DifferentialGeometry.contMDiffAt_partial_deriv_fst hat (by simp)
+      DifferentialGeometry.timeDeriv_smoothAt hat (by simp)
     exact hdAt.continuousAt.continuousWithinAt
   have hc : Continuous (fun x => deriv (fun s => forwardUniqueDensity (I := I) g₁ g₂ s x) t) := by
     have hslice : Continuous (fun x : M => (t, x)) := continuous_const.prodMk continuous_id

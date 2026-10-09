@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Commutative
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitFillingSmooth
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereCapFillingIsometry
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedChartTransport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
 
@@ -105,12 +105,8 @@ theorem connectedSumCommDiffeomorph_preservesOrientation
     exact hAeq.trans hCeq
   exact Diffeomorph.preservesOrientation_of_eq_at F O O' (IL x) hpoint
 
-theorem connectedSum_comm (M : ConnectedClosedOrientedManifold.{u} 3)
-    (N : ConnectedClosedOrientedManifold.{v} 3) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (connectedSum M N).toClosedOrientedManifold
-      (connectedSum N M).toClosedOrientedManifold) :=
-  ⟨connectedSumCommDiffeomorph M N,
+theorem connectedSumCommutative_holds : connectedSumCommutative.{u} :=
+  fun M N => ⟨connectedSumCommDiffeomorph M N,
     connectedSumCommDiffeomorph_preservesOrientation M N⟩
 
 namespace ConnectedSumUnit
@@ -236,7 +232,7 @@ theorem nonempty_orientedDiffeomorph_connectedSum_sphere_right_iso
     (Diffeomorph.preservesOrientation_refl X.orientation)
   exact ⟨e₂.symm.trans e₁⟩
 
-theorem connectedSum_sphere_right
+theorem nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit
     (X : ConnectedClosedOrientedManifold.{u} 3) :
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (connectedSum X standardThreeSphereLift.{u}).toClosedOrientedManifold
@@ -320,12 +316,16 @@ theorem connectedSum_sphere_right
     intro u
     rw [orientedBallChartLiftIso_chart]
 
-theorem connectedSum_sphere_left (X : ConnectedClosedOrientedManifold.{u} 3) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (connectedSum standardThreeSphereLift.{u} X).toClosedOrientedManifold
-      X.toClosedOrientedManifold) := by
-  obtain ⟨e₁⟩ := connectedSum_comm standardThreeSphereLift.{u} X
-  obtain ⟨e₂⟩ := connectedSum_sphere_right X
-  exact ⟨e₁.trans e₂⟩
+theorem sphereUnitLaws_holds : sphereUnitLaws.{u} :=
+  ⟨fun X =>
+      (connectedSumCommutative_holds standardThreeSphereLift.{u} X).elim fun e₁ =>
+        (nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit X).elim fun e₂ =>
+          ⟨e₁.trans e₂⟩,
+    fun X => nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit X⟩
+
+theorem connectedSumLaws_of_associative (hassoc : connectedSumAssociative.{u}) :
+    connectedSumLaws.{u} :=
+  connectedSumLaws_of_unit_commutative_associative
+    sphereUnitLaws_holds connectedSumCommutative_holds hassoc
 
 end DifferentialGeometry.Topology

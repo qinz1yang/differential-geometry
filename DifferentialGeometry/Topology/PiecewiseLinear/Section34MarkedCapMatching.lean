@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.CellChain
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeChain
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 
 open Set

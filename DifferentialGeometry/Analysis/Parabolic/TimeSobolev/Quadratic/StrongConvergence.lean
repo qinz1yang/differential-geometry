@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.WeakConvergence
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.WeakConvergence
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Basic
 
 set_option autoImplicit false

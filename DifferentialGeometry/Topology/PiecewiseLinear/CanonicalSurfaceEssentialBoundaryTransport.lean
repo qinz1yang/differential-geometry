@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleCappingMarkedComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.CollaredTraceCircleMembership
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentSeamDisks
@@ -61,7 +66,7 @@ variable [DecidableEq E3] {φ : E3 → E3} {Pt : ℤ → E3}
 
 theorem IsCanonicalNullSplit.exists_component_containing_essential_seams
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    {X Y : ℤ → Geometry.SimplicialComplex ℝ E3} {i : ℤ}
+    (h314 : Moise314) {X Y : ℤ → Geometry.SimplicialComplex ℝ E3} {i : ℤ}
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (hY : IsCanonicalSurface Y (fun j => φ '' S j) T'' I P' a b)
     (hstep : IsCanonicalNullSplit (fun j => φ '' S j) T'' i X Y)
@@ -77,9 +82,9 @@ theorem IsCanonicalNullSplit.exists_component_containing_essential_seams
   let _ (k : ℤ) : Finite (X k).faces := (hX.finiteFaces k).to_subtype
   let _ (k : ℤ) : Finite (Y k).faces := (hY.finiteFaces k).to_subtype
   have hess₀' : ¬ boundsDiskIn G₀ (T'' (2 * j)) :=
-    fun h => hess₀ ((hX.lower_component_boundsDiskIn_iff htw j c h₀).mp h)
+    fun h => hess₀ ((hX.lower_component_boundsDiskIn_iff htw h314 j c h₀).mp h)
   have hess₁' : ¬ boundsDiskIn G₁ (T'' (2 * (j + 1))) :=
-    fun h => hess₁ ((hX.upper_component_boundsDiskIn_iff htw j c h₁).mp h)
+    fun h => hess₁ ((hX.upper_component_boundsDiskIn_iff htw h314 j c h₁).mp h)
   have hdis (k : ℤ) : Disjoint (T'' (2 * k)) (T'' (2 * (k + 1))) :=
     (htw.apart (2 * k) (2 * (k + 1)) (by rw [le_abs]; omega)).mono
       (htw.boundary_subset_outer _) (htw.boundary_subset_outer _)
@@ -120,7 +125,7 @@ theorem IsCanonicalNullSplit.exists_component_containing_essential_seams
 
 theorem IsCanonicalTower.exists_component_containing_essential_seams_of_null_splits
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    {X Y : ℤ → Geometry.SimplicialComplex ℝ E3} (window : Finset ℤ)
+    (h314 : Moise314) {X Y : ℤ → Geometry.SimplicialComplex ℝ E3} (window : Finset ℤ)
     (hpath : Relation.ReflTransGen (fun U V =>
       IsCanonicalSurface U (fun j => φ '' S j) T'' I P' a b ∧
       IsCanonicalSurface V (fun j => φ '' S j) T'' I P' a b ∧
@@ -139,7 +144,7 @@ theorem IsCanonicalTower.exists_component_containing_essential_seams_of_null_spl
   | tail hpath hlast ih =>
     obtain ⟨hU, hV, i, -, hstep⟩ := hlast
     obtain ⟨c, h₀, h₁⟩ := ih
-    exact hstep.exists_component_containing_essential_seams htw hU hV j c
+    exact hstep.exists_component_containing_essential_seams htw h314 hU hV j c
       h₀ h₁ hess₀ hess₁
 
 end DifferentialGeometry.Topology.PiecewiseLinear

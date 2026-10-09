@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseCapture
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 
 set_option autoImplicit false
 noncomputable section

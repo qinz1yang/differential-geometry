@@ -1350,7 +1350,6 @@ theorem kappa_self_pair_h2
     sq_nonneg ‖iteratedCovGrad (I := I) g 0 2 2 (T - U)‖,
     sq_nonneg ‖iteratedCovGrad (I := I) g 0 2 3 (T - U)‖]
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem pbLow_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :
@@ -1421,7 +1420,6 @@ theorem pbLow_h2
   rw [heq]
   simpa only [B] using hout
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem pbLow_h2_mul
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :
@@ -1492,7 +1490,6 @@ theorem pbLow_h2_mul
   rw [heq]
   simpa only [C] using hout
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem kappaBackground_h1
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :
@@ -1585,7 +1582,6 @@ theorem kappaBackground_h1
   change Q R ≤ (B R) ^ 2
   rw [show (B R) ^ 2 = Q R by simp only [B, Real.sq_sqrt (hQ R)]]
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem kappaBackground_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :
@@ -1674,7 +1670,6 @@ theorem kappaBackground_tame
   change Q R A ≤ (B R A) ^ 2
   rw [show (B R A) ^ 2 = Q R A by simp only [B, Real.sq_sqrt (hQ R A)]]
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem kappaBackground_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M) :

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWindow
 
 open Set Topology
@@ -46,7 +51,7 @@ theorem IsCanonicalAnnularWindow.exists_window_bridge_reduction [d : DecidableEq
     {X : ℤ → Geometry.SimplicialComplex ℝ E3} {rows : Finset ℤ}
     (hX : IsCanonicalAnnularWindow X (fun j => φ '' S j) S'' T'' I P' a b rows)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (hI : IsOpen I)
+    (h314 : Moise314) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (hbridge : ∀ i ∈ rows, ∀ c : ConnectedComponents (X i).space,
       IsCanonicalBridgeComponent X T'' i c)
@@ -98,7 +103,7 @@ theorem IsCanonicalAnnularWindow.exists_window_bridge_reduction [d : DecidableEq
         exact hxJ (hCb.subset ((boundaryComplex_space_connectedComponentComplex
           2 (X i) c).symm.subset ⟨hxB, hxC⟩))
       obtain ⟨X₁, hX₁, hstep, -, hkeep, hretained, hfixed⟩ :=
-        hX.exists_bridge_component_deletion htw hI havoid i c keep hck hC hK
+        hX.exists_bridge_component_deletion htw h314 hI havoid i c keep hck hC hK
           hJ₀ hJ₁ hK₀ hK₁ hJess₀ hJess₁ hKess₀ hKess₁ ((hF i hi).mono_right hsub)
       have hbridge₁ : ∀ j ∈ rows, ∀ q : ConnectedComponents (X₁ j).space,
           IsCanonicalBridgeComponent X₁ T'' j q := by

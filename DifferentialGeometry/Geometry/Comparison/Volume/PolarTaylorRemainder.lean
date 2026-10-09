@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.PolarJacobian.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Volume.PolarExpansion
 import Mathlib.Analysis.Calculus.Taylor
 
 set_option autoImplicit false

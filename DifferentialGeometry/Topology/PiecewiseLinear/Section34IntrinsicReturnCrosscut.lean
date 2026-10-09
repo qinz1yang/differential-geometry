@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.FinitePartition
 import DifferentialGeometry.Topology.PiecewiseLinear.PLModelCircleCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicSeamArcSides
@@ -60,7 +65,7 @@ theorem exists_section34_model_trace_crosscut_in_return_disk
   obtain ⟨x, hxD, hxF⟩ := hdirty
   obtain ⟨t, hxt⟩ := mem_iUnion.mp hxF
   obtain ⟨Q, v, hQ, hv, himageQ, hfrontQ⟩ :=
-    exists_PL_solid_torus_model_of_faceTorus hcut hgraph t
+    exists_section34FaceTorus_intrinsic_model hcut hgraph t
   obtain ⟨ι, hι, F, hF, -, hmodeltrace, hactual, hdis, htrace, -⟩ :=
     exists_finite_section34Trace_model_circles hcut hf₁ hinv t hQ hv himageQ hfrontQ
   let _ := hι

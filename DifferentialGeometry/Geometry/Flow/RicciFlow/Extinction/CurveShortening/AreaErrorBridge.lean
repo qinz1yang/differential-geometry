@@ -158,7 +158,7 @@ theorem SmoothDisk.curveOfLoopFamily_lift_eq_map_diskBoundary
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (gamma : RegularLoop 𝓘(ℝ, E) Q)
     (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma.toContinuousLoop (sigma.map theta))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q) (t : ℝ)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q) (t : ℝ)
     (hslice : ∀ θ : Surgery.Topology.Circle, γ t θ = gamma θ) (x : ℝ) :
     (curveOfLoopFamily γ).lift (sigma.lift x) t =
       u.map (diskBoundary (x : Surgery.Topology.Circle)) := by
@@ -171,7 +171,7 @@ theorem SmoothDisk.boundaryNormalVelocityErrorDensity_eq_curve
     (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma.toContinuousLoop (sigma.map theta))
     (V : ∀ z : Disk, TangentSpace 𝓘(ℝ, E) (u.map z))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q)
     (J : Set ℝ) (t : ℝ)
     (hpoint : ∀ x : ℝ, (curveOfLoopFamily γ).lift (sigma.lift x) t =
       u.map (diskBoundary (x : Surgery.Topology.Circle)))
@@ -251,7 +251,7 @@ theorem SmoothDisk.integral_boundaryNormalVelocityErrorDensity_eq_areaError
     (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma.toContinuousLoop (sigma.map theta))
     (V : ∀ z : Disk, TangentSpace 𝓘(ℝ, E) (u.map z))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q)
     (J : Set ℝ) (t : ℝ)
     (hpoint : ∀ x : ℝ, (curveOfLoopFamily γ).lift (sigma.lift x) t =
       u.map (diskBoundary (x : Surgery.Topology.Circle)))

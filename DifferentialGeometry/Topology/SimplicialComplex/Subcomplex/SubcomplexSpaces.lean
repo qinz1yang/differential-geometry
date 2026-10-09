@@ -6,6 +6,7 @@ namespace DifferentialGeometry.Topology.Engulfing
 
 open Set _root_.Geometry
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
 
@@ -110,7 +111,7 @@ theorem refine {P : SimplicialComplex ℝ E} (h : isSubcomplexSpace K C)
     complexRestriction_space_of_refines P K R href hspace hR⟩
 
 omit [DecidableEq E] in
-theorem isCompact (h : isSubcomplexSpace K C) (hK : K.faces.Finite) :
+theorem isCompact [FiniteDimensional ℝ E] (h : isSubcomplexSpace K C) (hK : K.faces.Finite) :
     IsCompact C := by
   classical
   obtain ⟨R, hR, rfl⟩ := h

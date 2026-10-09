@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.OperatorScaling
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitTerminalNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlierTimeVolume
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Naturality
+import DifferentialGeometry.Geometry.Comparison.Volume.DiffeomorphVolume
 
 set_option autoImplicit false
 

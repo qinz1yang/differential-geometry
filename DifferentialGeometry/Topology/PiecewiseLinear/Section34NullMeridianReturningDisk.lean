@@ -1,7 +1,7 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.SeamRotation
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalSeamRotation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MeridianBigonArc
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MeridianLocalHeightSides
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Bigon.ReturningDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MeridianReturningDisk
 
 open Set Topology
 

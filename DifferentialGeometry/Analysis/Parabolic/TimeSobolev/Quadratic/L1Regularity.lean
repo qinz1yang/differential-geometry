@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.EulerLagrange
-import DifferentialGeometry.Analysis.Sobolev.Time.WeakDerivative.FundamentalTheorem
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.WeakDerivative.FundamentalTheorem
 
 set_option autoImplicit false
 

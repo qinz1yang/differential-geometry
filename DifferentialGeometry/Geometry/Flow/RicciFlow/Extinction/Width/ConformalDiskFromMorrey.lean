@@ -49,7 +49,7 @@ theorem conformal_disk_producer_of_hasConformalMinimizingInteriorDisk
   simpa only [hwmap] using hmin v' hv'
 
 theorem isSignedWeaklyMonotoneTrace_of_weaklyMonotoneCircleMap {u : Disk → Q}
-    {γ : DifferentialGeometry.Topology.freeLoop Q} (σ : SmoothWeaklyMonotoneCircleMap)
+    {γ : Surgery.Topology.ContinuousFreeLoop Q} (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ θ, u (diskBoundary θ) = γ (σ.map θ)) :
     IsSignedWeaklyMonotoneTrace u γ :=
   ⟨σ.lift, σ.smooth_lift.continuous, Or.inl ⟨σ.monotone_lift, σ.increment⟩,

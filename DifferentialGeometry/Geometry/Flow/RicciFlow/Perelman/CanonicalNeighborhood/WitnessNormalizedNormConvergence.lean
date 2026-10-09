@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessNormContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowTimeJets
-import DifferentialGeometry.Geometry.Metric.Approximation.Existence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianBoundScaling
 
 

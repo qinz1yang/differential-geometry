@@ -1,0 +1,207 @@
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryStageProjsEmbeddedOBD
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryStageGeometryOBD
+
+/-!
+# The stage geometry with embedded base inclusions (lane S-BD2c, suffix `_OBD`)
+
+`exists_stageGeometry74b_smooth_OBD` (G7e) restructured (group G7f): the cut-choice construction
+of `exists_stageGeometry74b_OBD` is the definition `BoundaryGaf02ChainE.stageGeometryOfStages_OBD`
+on GIVEN stages (the elaboration budget of the single theorem does not allow a richer
+conclusion), and `exists_stageGeometry74b_embedded_OBD` is the producer on the embedded stages:
+the three base inclusions `ιslim`, `ιedge`, `ιcircle` of the produced stage geometry are smooth
+EMBEDDINGS.
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Function Metric Bundle Manifold Filter Topology
+open scoped ContDiff Manifold Topology ENNReal
+open DifferentialGeometry.Topology.Ehresmann DifferentialGeometry.Topology.Manifold
+open DifferentialGeometry.Geometry.Riemannian GC.MetricGeometry
+open DifferentialGeometry GC.Endpoint DifferentialGeometry.Geometry.Hyperbolic
+open DifferentialGeometry.Analysis DifferentialGeometry.Topology GC.GraphManifold
+  GC.GraphManifold.Assembly GC.GraphManifold.Assembly.FC39P0
+
+namespace DifferentialGeometry.Geometry.Collapse
+
+local notation "E3" => EuclideanSpace ℝ (Fin 3)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+attribute [local instance] nezero_finrank_euclideanThree_LC87
+
+attribute [local instance] interiorCharted_BDRY1 interiorManifold_BDRY1
+  connectedSpace_interior_BDRY2
+
+
+open Set Function Metric Topology
+
+variable {K : ℕ} {A : ℝ → ℝ} {β : ℕ → ℝ}
+  {βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz θ : ℝ}
+  {W : CompactCarrier.{0}} [ConnectedSpace W.Carrier] {g : SmoothRiemannianMetric W.model W.Carrier}
+  {δn : ℝ} {n : ℕ} {B : NearlyCuspidalBoundary W g K δn}
+  {oM : ManifoldOrientation 𝓘(ℝ, E3) (W.pieceInterior ⊤) 3}
+
+variable {S : BoundarySupply K A β βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz
+    θ W g δn n B oM} {Γ Sg eg : Fin 3 → ℝ}
+  {DP : BoundaryAugmentedDataPV3 S (actualSlotsV2_BAUGD S) Γ Sg eg} {Kj : ℕ}
+  {Ξ c cw : Fin 3 → ℝ} {bcut bder κ cadj : ℝ}
+
+
+namespace BoundaryGaf02ChainE
+
+variable (C : BoundaryGaf02ChainE DP Kj Ξ c cw bcut bder κ cadj)
+
+include C in
+/-- **The stage geometry on given stages** (the construction of G7b): from the three stages with
+their identifications, the slim base sets, the cut choice and all the identification fields. -/
+def stageGeometryOfStages_OBD (dec : BoundaryActualDecompositionV2b C.toChain)
+    (geom : BoundaryGeometricExports74b C.toChain dec)
+    (zc : BoundaryZeroCuspExit74b C.toChain dec)
+    {Qc : StageProj74 W 2}
+    {ιc : Qc.Base → BoundaryAmbient_BIF S.IntTag_BAUGA (Fin S.packet.cusp.count)}
+    (hc : StageIdentSrc_LND74 Qc (C.toChain.stageMap 0) ιc (dec.bases.source 0))
+    (hrc : range ιc = dec.bases.base 0)
+    {Qs : StageProj74 W 1}
+    {ιs : Qs.Base → BoundaryAmbient_BIF S.IntTag_BAUGA (Fin S.packet.cusp.count)}
+    (hs : StageIdentSrc_LND74 Qs (C.toChain.stageMap 2) ιs (dec.bases.source 2))
+    (hrs : range ιs = dec.bases.base 2)
+    {E : EdgeStage74 W}
+    {ιe : E.Base → BoundaryAmbient_BIF S.IntTag_BAUGA (Fin S.packet.cusp.count)}
+    (he : StageIdentSrc_LND74 E.toStageProj74 (C.toChain.stageMap 1) ιe dec.bases.edgeParent)
+    (hre : range ιe = dec.bases.base 1) (hh : ∀ x : E.parent, E.height x = C.toChain.heightRatio x)
+    (hl : E.level = 4 * Δ) : BoundaryStageGeometry74b zc := by
+  classical
+  have hK₃sub : dec.slim.K₃ ⊆ range ιs := by
+    intro y hy
+    obtain ⟨k, hk⟩ := mem_iUnion.1 hy
+    rw [hrs]
+    exact dec.slim.arc_subset_base k hk
+  have hpe : dec.slim.edgePiece ⊆ dec.bases.source 1 := inter_subset_right
+  have hP₂ : C.toChain.stageMap 1 '' dec.slim.edgePiece ⊆ range ιe := by
+    rw [hre, ← dec.bases.image_eq 1]
+    exact image_mono hpe
+  have hP₀ : C.toChain.stageMap 0 '' dec.slim.remainder ⊆ range ιc := by
+    rw [hrc, ← dec.bases.image_eq 0]
+    exact image_mono geom.pieces.2.2.2.1
+  have hD₃ : IsCompact (dec.slim.K₃ ∩ dec.bases.slimBaseDomain_BIFc) := by
+    have hKc : IsCompact dec.slim.K₃ := dec.slim.isCompact_K₃_BIFc
+    have hcl : IsClosed C.toChain.M₁_BIFc := isOpen_interior.isClosed_compl
+    have hKb : dec.slim.K₃ ⊆ dec.bases.base 2 := hrs ▸ hK₃sub
+    have h1 : IsCompact (dec.bases.source 2 ∩ C.toChain.stageMap 2 ⁻¹' dec.slim.K₃) :=
+      dec.bases.proper 2 _ hKb hKc
+    have h2 : IsCompact (C.toChain.M₁_BIFc ∩ (dec.bases.source 2 ∩
+        C.toChain.stageMap 2 ⁻¹' dec.slim.K₃)) := h1.inter_left hcl
+    have h3 := h2.image (C.contMDiff_stageMap_OBD 2).continuous
+    have h4 : C.toChain.stageMap 2 '' (C.toChain.M₁_BIFc ∩ (dec.bases.source 2 ∩
+        C.toChain.stageMap 2 ⁻¹' dec.slim.K₃)) =
+        dec.slim.K₃ ∩ dec.bases.slimBaseDomain_BIFc := by
+      rw [← inter_assoc, image_inter_preimage, inter_comm]
+      rfl
+    rwa [h4] at h3
+  let slim : SlimStage74 W :=
+    { toStageProj74 := Qs
+      C₃ := ιs ⁻¹' dec.bases.slimBaseDomain_BIFc
+      slabImage := ιs ⁻¹' (C.toChain.stageMap 2 '' (Subtype.val '' S.slimSlabs_BIF))
+      facePoints := ιs ⁻¹' (C.toChain.stageMap 2 ''
+        (frontier C.toChain.M₁_BIFc ∩ dec.bases.source 2)) }
+  have hreq : slim.slabImage ∪ slim.facePoints ⊆ interior (ιs ⁻¹' dec.slim.K₃) :=
+    union_subset
+      (preimage_subset_interior_of_relInterior_OBD hs.emb hrs dec.slim.slabs_subset)
+      (preimage_subset_interior_of_relInterior_OBD hs.emb hrs dec.slim.faces_subset)
+  let cut : StageCutChoice74 (assembleBoundaryStages74 zc.zero zc.cusp slim E Qc) :=
+    { K₃ := ιs ⁻¹' dec.slim.K₃
+      D₃ := ιs ⁻¹' (dec.slim.K₃ ∩ dec.bases.slimBaseDomain_BIFc)
+      C₂ := ιe ⁻¹' (C.toChain.stageMap 1 '' dec.slim.edgePiece)
+      C₁ := ιc ⁻¹' (C.toChain.stageMap 0 '' dec.slim.remainder)
+      edgeBaseOpen := if ιe ⁻¹' (C.toChain.stageMap 1 '' dec.slim.edgePiece) = ∅ then ⊥ else ⊤
+      circleBaseOpen := ⊤
+      K₃_compact := isCompact_preimage_of_subset_range_OBD hs.emb dec.slim.isCompact_K₃_BIFc hK₃sub
+      D₃_compact := isCompact_preimage_of_subset_range_OBD hs.emb hD₃
+        (inter_subset_left.trans hK₃sub)
+      D₃_eq := rfl
+      K₃_req := hreq
+      K₃_faces := disjoint_left.2 fun x hx hf => hx.2 (hreq (Or.inr hf))
+      C₂_sub := by
+        intro x hx
+        by_cases h : ιe ⁻¹' (C.toChain.stageMap 1 '' dec.slim.edgePiece) = ∅
+        · exact absurd (h ▸ hx) (notMem_empty x)
+        · simp only [h, ite_false]
+          exact trivial
+      C₁_sub := fun _ _ => trivial
+      edgeBaseOpen_empty := fun h => by simp only [h, ite_true] }
+  have hDimg : ιs '' cut.D₃ = dec.slim.K₃ ∩ dec.bases.slimBaseDomain_BIFc :=
+    image_preimage_eq_of_subset (inter_subset_left.trans hK₃sub)
+  have hC₂img : ιe '' cut.C₂ = C.toChain.stageMap 1 '' dec.slim.edgePiece :=
+    image_preimage_eq_of_subset hP₂
+  have hC₁img : ιc '' cut.C₁ = C.toChain.stageMap 0 '' dec.slim.remainder :=
+    image_preimage_eq_of_subset hP₀
+  have hep : dec.slim.edgePiece = dec.bases.edgeParent ∩
+      C.toChain.stageMap 1 ⁻¹' (ιe '' cut.C₂) ∩ {p | C.toChain.heightRatio p ≤ 4 * Δ} := by
+    have h1 : dec.slim.edgePiece = dec.bases.source 1 ∩
+        C.toChain.stageMap 1 ⁻¹' (C.toChain.stageMap 1 '' dec.slim.edgePiece) :=
+      dec.edge.saturated
+    have h2 : dec.bases.source 1 =
+        dec.bases.parent.edgeParent ∩ {p | C.toChain.heightRatio p ≤ 4 * Δ} :=
+      dec.bases.parent.edgeParent_cut
+    rw [hC₂img]
+    ext x
+    have hx2 : x ∈ dec.bases.source 1 ↔
+        x ∈ dec.bases.parent.edgeParent ∧ C.toChain.heightRatio x ≤ 4 * Δ := by
+      rw [h2]
+      rfl
+    have hx1 := Set.ext_iff.1 h1 x
+    simp only [mem_inter_iff, mem_preimage, Set.mem_ofPred_eq] at hx1 ⊢
+    tauto
+  let G : BoundaryStageGeometry74b zc :=
+    { slim := slim
+      edge := E
+      circle := Qc
+      ιslim := ιs
+      ιedge := ιe
+      ιcircle := ιc
+      slim_ident := hs
+      edge_ident := he
+      circle_ident := hc
+      edge_range := hre.subset
+      circle_range := hrc.subset
+      edge_height := hh
+      edge_level := hl
+      cut := cut
+      cut_D₃ := hDimg
+      cut_C₂ := hC₂img
+      cut_C₁ := hC₁img
+      comp := (actualComponentEquiv_OCL ιs hs.emb cut.D₃).trans
+        (actualComponentEquivOfEq_OCL hDimg)
+      comp_eq := fun c => by simp
+      edgePiece_eq := hep }
+  exact G
+
+include C in
+/-- **The stage geometry with embedded base inclusions** (G7f): for every zero / cusp exit `zc`,
+a `BoundaryStageGeometry74b zc` whose three base inclusions are smooth embeddings. -/
+theorem exists_stageGeometry74b_embedded_OBD (dec : BoundaryActualDecompositionV2b C.toChain)
+    (geom : BoundaryGeometricExports74b C.toChain dec)
+    (hint : dec.bases.edgeParent ⊆ (W.interior : Set W.Carrier))
+    (zc : BoundaryZeroCuspExit74b C.toChain dec) : ∃ P : BoundaryStageGeometry74b zc,
+      IsSmoothEmbedding (𝓡 1) 𝓘(ℝ, BoundaryAmbient_BIF S.IntTag_BAUGA
+        (Fin S.packet.cusp.count)) ∞ P.ιslim ∧
+      IsSmoothEmbedding (𝓡 1) 𝓘(ℝ, BoundaryAmbient_BIF S.IntTag_BAUGA
+        (Fin S.packet.cusp.count)) ∞ P.ιedge ∧
+      IsSmoothEmbedding (𝓡 2) 𝓘(ℝ, BoundaryAmbient_BIF S.IntTag_BAUGA
+        (Fin S.packet.cusp.count)) ∞ P.ιcircle := by
+  have h1 := Classical.choose_spec (Classical.choose_spec
+    (C.exists_circleStage_embedded_OBD dec))
+  have h2 := Classical.choose_spec (Classical.choose_spec
+    (C.exists_slimStage_embedded_OBD dec))
+  have h3 := Classical.choose_spec (Classical.choose_spec
+    (C.exists_edgeStage_embedded_OBD dec hint))
+  exact ⟨C.stageGeometryOfStages_OBD dec geom zc h1.1 h1.2.1 h2.1 h2.2.1 h3.1 h3.2.1 h3.2.2.1
+    h3.2.2.2.1, h2.2.2, h3.2.2.2.2, h1.2.2⟩
+
+end BoundaryGaf02ChainE
+
+end DifferentialGeometry.Geometry.Collapse

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.MetricSpace.Busemann.Ray
-import DifferentialGeometry.Topology.MetricSpace.GeodesicLine.Limit
+import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.BusemannBasic
+import DifferentialGeometry.Geometry.Comparison.Splitting.MetricLineLimit
 import DifferentialGeometry.Geometry.Comparison.Toponogov.MinimizingRay
 
 set_option autoImplicit false

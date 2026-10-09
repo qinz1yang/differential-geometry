@@ -46,14 +46,3 @@ theorem LocallyLipschitzOn.ae_differentiableAt
   filter_upwards [hf.ae_differentiableWithinAt hΩ.measurableSet,
     ae_restrict_mem hΩ.measurableSet] with x hx hxΩ
   exact hx.differentiableAt (hΩ.mem_nhds hxΩ)
-
-noncomputable section
-
-theorem LocallyLipschitzOn.ae_differentiableAt_of_isOpen
-    {f : E → F} {s : Set E} (hf : LocallyLipschitzOn s f) (hs : IsOpen s) :
-    ∀ᵐ x ∂μ, x ∈ s → DifferentiableAt ℝ f x := by
-  filter_upwards [hf.ae_differentiableWithinAt_of_mem (μ := μ)] with x hx
-  intro hxs
-  exact (hx hxs).differentiableAt (hs.mem_nhds hxs)
-
-end

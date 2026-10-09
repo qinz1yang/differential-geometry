@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Topology.MetricSpace.Lipschitz
 
 noncomputable section

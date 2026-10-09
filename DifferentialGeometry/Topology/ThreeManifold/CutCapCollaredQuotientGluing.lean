@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SingleTube
+import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentGluingReduction
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutCappingRealization
 import DifferentialGeometry.Topology.ThreeManifold.PartialRealizationStepQuotient
 import DifferentialGeometry.Topology.ThreeManifold.CutCapFrontierCanonicalReduction

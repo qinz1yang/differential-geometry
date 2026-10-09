@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapHistory
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.CurvatureComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.ActionComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Blowup.Terminal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Existence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardTerminalBlowup
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardUniformExistence
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullbackScaling
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 

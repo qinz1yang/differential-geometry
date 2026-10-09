@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Witness.CapCollar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 
@@ -54,14 +54,11 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_forall_Icc_scalar_le {b : ℝ} (hb : b < s) :
+theorem exists_forall_Icc_scalar_le {b : ℝ} (hb : b < s) :
     ∃ K : ℝ, ∀ t ∈ Icc a b, ∀ x : P.Carrier, G.flow.scalar t x ≤ K := by
   have hsub : Icc a b ×ˢ (univ : Set P.Carrier) ⊆
       (RealTimeInterval.closedOpen a s G.lt).carrier ×ˢ univ :=
@@ -70,7 +67,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (G.equation.scalarCont.mono hsub)
   exact ⟨K, fun t ht x => hK ⟨(t, x), ⟨ht, mem_univ x⟩, rfl⟩⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_forall_Icc_riemannNorm_le {b : ℝ} (hb : b < s) :
+theorem exists_forall_Icc_riemannNorm_le {b : ℝ} (hb : b < s) :
     ∃ K : ℝ, ∀ t ∈ Icc a b, ∀ x : P.Carrier, G.riemannNorm t x ≤ K := by
   have hc : ContinuousOn (fun q : ℝ × P.Carrier => G.riemannNorm q.1 q.2)
       (Ico a s ×ˢ univ) :=
@@ -81,7 +78,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨K, hK⟩ := (isCompact_Icc.prod isCompact_univ).bddAbove_image (hc.mono hsub)
   exact ⟨K, fun t ht x => hK ⟨(t, x), ⟨ht, mem_univ x⟩, rfl⟩⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_noncanonical_point_with_canonical_above_double {ε C1 C2 q T η : ℝ}
+theorem exists_noncanonical_point_with_canonical_above_double {ε C1 C2 q T η : ℝ}
     (hq : 0 ≤ q) (hT : a ≤ T)
     (hbad : ∃ (x : P.Carrier) (t : ℝ), T ≤ t ∧ t < T + η ∧ t < s ∧ q < G.flow.scalar t x ∧
       ¬ ∃ W : CanonicalWitness G.flow ε C1 C2 x t, W.capTubeHasNeckChart ε) :

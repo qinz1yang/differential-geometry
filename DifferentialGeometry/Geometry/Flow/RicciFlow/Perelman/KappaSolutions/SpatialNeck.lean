@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UnitCylinderMetric
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Basic
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 

@@ -271,7 +271,7 @@ theorem exists_metricFamilyRegularAt_eventuallyEq
             (fun q : Real × M =>
               deriv (fun s : Real =>
                 chartGramMatrix (I := I) (g' s) x₀ q.2 i j) q.1) p :=
-        DifferentialGeometry.contMDiffAt_partial_deriv_fst hAt (by simp)
+        DifferentialGeometry.timeDeriv_smoothAt hAt (by simp)
       exact hdAt.continuousAt.continuousWithinAt
   refine ⟨g', hg'reg, ?_⟩
   filter_upwards [hρeq] with s hs

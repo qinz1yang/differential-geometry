@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.MeridianIntersection
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalMeridianBarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
 

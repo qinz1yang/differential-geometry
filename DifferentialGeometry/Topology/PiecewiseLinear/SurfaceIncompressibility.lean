@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskCompression
 
@@ -9,7 +14,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 
 open Classical in
 theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_fundamentalGroup_map_eq_one
-    (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
+    (h252 : Moise252) (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hdim : Module.finrank ℝ E = 3)
     (hSc : IsConnected S.space) {U H T : Set E} (hU : IsOpen U) (hSU : S.space ⊆ U)
     (hH : IsPreconnected H) (hT : IsPreconnected T) (hHU : H ⊆ Uᶜ) (hTU : T ⊆ Uᶜ)
@@ -23,7 +28,7 @@ theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_fundame
       Homology.bettiOne P.space < Homology.bettiOne S.space := by
   obtain ⟨D, r, hr, hDU, hmeet, _, hnon⟩ :=
     hS.exists_essential_disk_in_neighborhood_of_fundamentalGroup_map_eq_one
-      S hdim hSc hU hSU x g hg hmap
+      h252 S hdim hSc hU hSU x g hg hmap
   obtain ⟨N, W, D₀, D₁, _, ρ, r₀, r₁, hN, hNU, _, _, _, _, _, _, hwall, _, _, _,
     hρ, hzero, _, hr₀, hr₁, hdis, hfront, hmeet₀, hmeet₁, hbd₀, hbd₁⟩ :=
     hS.exists_compression_neighborhood_of_spanning_disk S hSc hdim hr hmeet hU hDU
@@ -45,7 +50,7 @@ theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_fundame
       (subset_union_right.trans hcaps)), hPsep, hβ⟩
 
 theorem IsCombinatorialManifold.fundamentalGroup_map_injective_of_bettiOne_min
-    (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
+    (h252 : Moise252) (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hdim : Module.finrank ℝ E = 3)
     (hSc : IsConnected S.space) {U H T : Set E} (hU : IsOpen U) (hSU : S.space ⊆ U)
     (hH : IsPreconnected H) (hT : IsPreconnected T) (hHU : H ⊆ Uᶜ) (hTU : T ⊆ Uᶜ)
@@ -61,7 +66,7 @@ theorem IsCombinatorialManifold.fundamentalGroup_map_injective_of_bettiOne_min
   by_contra hne
   obtain ⟨P, hPfin, hP, hPc, _, _, hPU, hPsep, hβ⟩ :=
     hS.exists_separating_surface_bettiOne_lt_of_fundamentalGroup_map_eq_one
-      S hdim hSc hU hSU hH hT hHU hTU hsep x g hne hg
+      h252 S hdim hSc hU hSU hH hT hHU hTU hsep x g hne hg
   exact (not_lt_of_ge (hmin P hPfin hP hPc hPU hPsep)) hβ
 
 end DifferentialGeometry.Topology.PiecewiseLinear

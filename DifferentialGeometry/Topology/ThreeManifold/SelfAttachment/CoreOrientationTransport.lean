@@ -44,8 +44,8 @@ theorem localDiffeomorph_orientation_of_comp_eq
     exact congrArg (fun k : M → Q => mfderiv (𝓡 n) (𝓡 n) k x v) heq
   change Orientation.map (Fin n) A (oM.orientation x) = oP.orientation (f x)
   apply (Orientation.map (Fin n) B).injective
-  erw [← DifferentialGeometry.orientation_map_trans, hlin,
-    DifferentialGeometry.orientation_map_trans]
+  erw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, hlin,
+    ← DifferentialGeometry.VectorBundle.map_orientation_trans_between]
   have hFx : Orientation.map (Fin n) C (oM.orientation x) = oN.orientation (F x) := hF x
   erw [hFx]
   have hgx : Orientation.map (Fin n) D (oN.orientation (F x)) = oQ.orientation (g (F x)) :=

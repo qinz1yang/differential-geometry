@@ -99,27 +99,27 @@ private noncomputable def covGradSmoothSection
     tensorRSBundle_smooth ∞ r (s + 1)
   have hcomp :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (s + 1) ℝ E)) ∞
-        ((covariantSlotBundleSmoothEquiv (I := I) (M := M) r s).toDiffeomorph ∘
+        ((covGradBundleSmoothEquiv (I := I) (M := M) r s).toDiffeomorph ∘
           (fun x : M =>
             (⟨x, covGradGradSection (I := I) (M := M) g r s w x⟩ :
               TotalSpace (E →L[ℝ] TensorRSModel r s ℝ E)
                 fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y))) :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) r s).toDiffeomorph.contMDiff.comp
+    (covGradBundleSmoothEquiv (I := I) (M := M) r s).toDiffeomorph.contMDiff.comp
       (covGradGradSection_contMDiff (I := I) (M := M) g r s w)
   have hsmooth :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (s + 1) ℝ E)) ∞
         (fun x : M =>
-          (⟨x, covariantSlotBundleEquiv (I := I) (M := M) r s x
+          (⟨x, covGradBundleEquiv (I := I) (M := M) r s x
               (covGradGradSection (I := I) (M := M) g r s w x)⟩ :
             TotalSpace (TensorRSModel r (s + 1) ℝ E)
               fun y : M => TensorRSSpace r (s + 1) I y)) := by
     refine hcomp.congr ?_
     intro x
     rw [Function.comp_apply,
-      covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r s x
+      covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r s x
         (covGradGradSection (I := I) (M := M) g r s w x)]
   (ContMDiffSection.mk
-      (fun x : M => covariantSlotBundleEquiv (I := I) (M := M) r s x
+      (fun x : M => covGradBundleEquiv (I := I) (M := M) r s x
         (covGradGradSection (I := I) (M := M) g r s w x))
       hsmooth :
     Cₛ^∞⟮I; TensorRSModel r (s + 1) ℝ E,
@@ -131,7 +131,7 @@ private lemma covGradSmoothSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M) :
     covGradSmoothSection (I := I) (M := M) g r s w x =
-      covariantSlotBundleEquiv (I := I) (M := M) r s x
+      covGradBundleEquiv (I := I) (M := M) r s x
         (covGradGradSection (I := I) (M := M) g r s w x) := rfl
 
 omit [CompactSpace M] in
@@ -183,7 +183,7 @@ theorem covGrad_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) (x : M) :
     (covGrad (I := I) (M := M) g r s w).toSection x =
-      covariantSlotBundleEquiv (I := I) (M := M) r s x
+      covGradBundleEquiv (I := I) (M := M) r s x
         (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
           (fun y : M => w.toSection y) x) := by
   rw [covGrad_toSection, covGradSmoothSection_apply]
@@ -202,7 +202,7 @@ theorem covGrad_toSection_apply_eval
           tensorCovDerivAt (I := I) (M := M) g r s w x (v 0)) D)
         (Matrix.vecTail v) := by
   rw [covGrad_toSection_apply]
-  rw [covariantSlotBundleEquiv_apply_toModel]
+  rw [covGradBundleEquiv_apply_toModel]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
@@ -218,7 +218,7 @@ theorem covGrad_toSection_apply_natural
           tensorCovDerivAt (I := I) (M := M) g r s w x
             (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0))) D)
         (Matrix.vecTail v) := by
-  rw [covGrad_toSection_apply, covariantSlotBundleEquiv_apply_eval, tensorCovDerivAt_def,
+  rw [covGrad_toSection_apply, covGradBundleEquiv_apply_eval, tensorCovDerivAt_def,
     ContinuousLinearEquiv.symm_apply_apply]
 
 omit [CompactSpace M] in

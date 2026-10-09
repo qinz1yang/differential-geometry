@@ -108,7 +108,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_kernel_covariantly_invaria
     · exact (hp t ht).2.1
   have hevol : ∀ r ∈ Ioo a b, ∀ y, HasDerivAt (fun u => A u y)
       (rawBundleEndomorphismConnLap (S.family.metric r) (cov r) (fun z => A r z) y +
-        _root_.CovariantDerivative.hom I M
+        HomConnectionGen.homBundleCovariantDerivativeGen I M
           (⋀[ℝ]^2 F) (fun z => ⋀[ℝ]^2 (V z)) (⋀[ℝ]^2 F) (fun z => ⋀[ℝ]^2 (V z))
           (cov r) (cov r) (fun z => A r z) y 0 +
         (curvatureOperatorReactionEndomorphism3 (A r y).toLinearMap).toContinuousLinearMap) r := by

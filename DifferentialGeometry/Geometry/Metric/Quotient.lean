@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens

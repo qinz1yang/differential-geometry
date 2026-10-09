@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
 import DifferentialGeometry.Topology.Manifold.DiffeomorphOrientationDichotomy
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
 set_option autoImplicit false
 noncomputable section
@@ -20,7 +20,7 @@ theorem isSphereTwoTimesCircleFactor_of_diffeomorph
     sphereTwoTimesCircleLiftOrientation with hf | hf
   · exact ⟨F.trans sphereTwoTimesCircleModelCopy.equiv.symm,
       Diffeomorph.preservesOrientation_trans hf sphereTwoTimesCircleLift_preservesOrientation⟩
-  · obtain ⟨ρ, hρ⟩ := exists_orientationReversing_diffeomorph_sphereTwoTimesCircle
+  · obtain ⟨ρ, hρ⟩ := sphereTwoTimesCircleOrientationClosure_holds
     have hG := Diffeomorph.preservesOrientation_trans hf
       (Diffeomorph.preservesOrientation_opposite sphereTwoTimesCircleLift_preservesOrientation)
     exact ⟨(F.trans sphereTwoTimesCircleModelCopy.equiv.symm).trans ρ,

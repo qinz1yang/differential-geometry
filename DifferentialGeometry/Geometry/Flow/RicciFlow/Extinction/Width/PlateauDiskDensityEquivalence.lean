@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTranspo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaBridge
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MinimalDiskAreaDensityFrontier
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
 
 noncomputable section
 
@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
 
 theorem smoothDiskAreaDensity_of_plateauDiskDensity (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (h : PlateauDiskDensity (I := 𝓘(ℝ, E)) (Q := Q) g γ) :
+    (γ : ContinuousFreeLoop Q) (h : PlateauDiskDensity (I := 𝓘(ℝ, E)) (Q := Q) g γ) :
     Geometry.SmoothDiskAreaDensity (E := E) g γ := by
   intro v hv
   obtain ⟨htr, hlip⟩ := (mem_spanningDiskCompetitors_iff g γ v).mp hv
@@ -45,7 +45,7 @@ theorem smoothDiskAreaDensity_of_plateauDiskDensity (g : SmoothRiemannianMetric 
 
 omit [FiniteDimensional ℝ E] in
 theorem plateauDiskDensity_of_smoothDiskAreaDensity (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (h : Geometry.SmoothDiskAreaDensity (E := E) g γ) :
+    (γ : ContinuousFreeLoop Q) (h : Geometry.SmoothDiskAreaDensity (E := E) g γ) :
     PlateauDiskDensity (I := 𝓘(ℝ, E)) (Q := Q) g γ := by
   intro v
   have hv : v.1.map ∈ Geometry.spanningDiskCompetitors g γ :=
@@ -69,7 +69,7 @@ theorem plateauDiskDensity_of_smoothDiskAreaDensity (g : SmoothRiemannianMetric 
     exact htend
 
 theorem smoothDiskAreaDensity_of_subsingleton [Subsingleton Q] [Nonempty Q]
-    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : DifferentialGeometry.Topology.freeLoop Q) :
+    (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : ContinuousFreeLoop Q) :
     Geometry.SmoothDiskAreaDensity (E := E) g γ :=
   smoothDiskAreaDensity_of_plateauDiskDensity g γ (plateauDiskDensity_of_subsingleton g γ)
 

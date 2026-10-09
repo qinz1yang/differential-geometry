@@ -88,8 +88,8 @@ theorem middleSphereCuttingSeparation_iff_componentwisePuncturedCoreOfParent :
 theorem child_simplyConnected_of_collaredStarCoverProducer_and_middleSphereCuttingSeparation
     (hcover : E.childCollaredStarCoverProducer) (hsep : E.middleSphereCuttingSeparation)
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.child_simplyConnected_of_puncturedCoreProducer hcover
     (E.componentwisePuncturedCoreOfParent_of_middleSphereCuttingSeparation hsep) c
 

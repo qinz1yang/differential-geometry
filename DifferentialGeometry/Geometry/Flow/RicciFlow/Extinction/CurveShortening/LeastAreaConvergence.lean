@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 omit [IsManifold I ∞ M] in
 private theorem deriv_embeddedLoopFamily_eq_fderivWithin {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ}
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J)
     (x t : ℝ) (ht : t ∈ J) :
     deriv (fun s : ℝ => e.map (γ t (s : Surgery.Topology.Circle))) x =
@@ -44,11 +44,11 @@ theorem uniform_loopFamilyLeastArea_of_uniform_c1
     (hg : DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn D g)
     {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.carrier) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (γseq : ℕ → ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M) (γseq : ℕ → ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hγseq : ∀ j, (curveOfLoopFamily (γseq j)).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
-    (hctrseq : ∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (γseq j t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
+    (hctrseq : ∀ j t, t ∈ Icc a b → IsContractibleLoop (γseq j t))
     (hconv : ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ m : ℕ, m ≤ 1 →
       ∀ p ∈ Icc (0 : ℝ) 1 ×ˢ Icc a b,
         ‖iteratedFDerivWithin ℝ m

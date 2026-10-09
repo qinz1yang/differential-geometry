@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Basic
+import DifferentialGeometry.Geometry.Metric.BundlePullback
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorConjugation
 

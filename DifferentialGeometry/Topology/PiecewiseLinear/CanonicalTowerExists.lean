@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Torus.NestedApproximation
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SplitDiskCylinderCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.InnerSolidTorusToroidalShell
@@ -14,7 +18,7 @@ theorem exists_fits_image_annulus_of_isRevolvedTorusChain
     {P : Fin 4 → E3} {Dp Dpint : Fin 3 → Set E3} {J : Fin 4 → Set E3}
     {A S T : Fin 3 → Set E3} {φ : E3 → E3}
     (hc : IsRevolvedTorusChain P Dp Dpint J A S T)
-    (he : IsEmbedding ((⋃ j, S j).domRestrict φ)) (j : Fin 3) :
+    (he : IsEmbedding ((⋃ j, S j).domRestrict φ)) (h307 : Moise307) (j : Fin 3) :
     ∃ R, Fits (φ '' A j) (interior (φ '' S j)) R := by
   have heS : IsEmbedding ((S j).domRestrict φ) :=
     he.comp (IsEmbedding.inclusion (subset_iUnion S j))
@@ -24,7 +28,7 @@ theorem exists_fits_image_annulus_of_isRevolvedTorusChain
     ⟨e.symm.trans (Classical.choice (hc.isSolidTorus j))⟩
   obtain ⟨S₁, hS₁, hAS₁, hS₁S, hshell⟩ :=
     exists_innerSolidTorus_toroidalShell_of_annulusImage hc rfl he j
-  obtain ⟨R, hR, hS₁R, hRS⟩ := exists_hasCylindricalDiagram_between_nested_tori hS₁ hS hS₁S hshell
+  obtain ⟨R, hR, hS₁R, hRS⟩ := h307 S₁ (φ '' S j) hS₁ hS hS₁S hshell
   exact ⟨R, isCombinatorialSolidTorus_of_hasCylindricalDiagram hR,
     hAS₁.trans (interior_subset.trans hS₁R), hRS⟩
 
@@ -83,7 +87,7 @@ theorem exists_canonicalTower (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.verti
     (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {P'} ⊆ interior W)
     (hWsub : W ⊆ h '' C u ∪ h '' C v)
     (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
-    (hWK : W ∩ h '' K.space = {P'}) {Z : Set E3} (hZ : IsClosed Z)
+    (hWK : W ∩ h '' K.space = {P'}) (h307 : Moise307) {Z : Set E3} (hZ : IsClosed Z)
     (hZD : Disjoint Z (h '' D {u, v})) :
     ∃ (φ : E3 → E3) (Pt : ℤ → E3) (Dp Dpint J A S T S'' T'' : ℤ → Set E3),
       IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
@@ -201,7 +205,7 @@ theorem exists_canonicalTower (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.verti
       by_contra hzB
       exact hzV ⟨z, ⟨hScyl i hz, hzB⟩, rfl⟩
   have hseed : ∀ i, ∃ R, Fits (φ '' A i) (interior (φ '' S i)) R := fun i => by
-    simpa using exists_fits_image_annulus_of_isRevolvedTorusChain (hbase i) (hembi i)
+    simpa using exists_fits_image_annulus_of_isRevolvedTorusChain (hbase i) (hembi i) h307
       (0 : Fin 3)
   obtain ⟨R, hR, hGP⟩ := exists_fits_family_pairGP_succ hAcpt (fun _ => isOpen_interior) hseed
   refine ⟨φ, Pt, Dp, Dpint, J, A, S, T, R, fun i => frontier (R i),

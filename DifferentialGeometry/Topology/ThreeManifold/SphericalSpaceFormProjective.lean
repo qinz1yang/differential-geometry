@@ -107,13 +107,13 @@ theorem exists_isStandardFactor_nonsimplyConnected :
   ⟨antipodal.manifold, isStandardFactor_antipodal,
     not_subsingleton_fundamentalGroup_antipodal⟩
 
-theorem isStandardConnectedSum_antipodal :
-    isStandardConnectedSum antipodal.manifold.Carrier :=
-  isStandardConnectedSum_of_standard_factor antipodal.manifold isStandardFactor_antipodal
+theorem isPoincareStandard_antipodal :
+    isPoincareStandard antipodal.manifold.Carrier :=
+  isPoincareStandard_of_standard_factor antipodal.manifold isStandardFactor_antipodal
 
-theorem isStandardConnectedSum_connectedSum_antipodal :
-    isStandardConnectedSum (connectedSum antipodal.manifold antipodal.manifold).Carrier :=
-  isStandardConnectedSum_connectedSum_of_standardFactor antipodal.manifold antipodal.manifold
+theorem isPoincareStandard_connectedSum_antipodal :
+    isPoincareStandard (connectedSum antipodal.manifold antipodal.manifold).Carrier :=
+  isPoincareStandard_connectedSum_of_standardFactor antipodal.manifold antipodal.manifold
     isStandardFactor_antipodal isStandardFactor_antipodal
 
 theorem nonempty_connectedSum_antipodal :

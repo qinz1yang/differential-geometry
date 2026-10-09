@@ -887,14 +887,14 @@ lemma palatiniCotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :
     cotangentToDual (I := I)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om) w =
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om) w =
       cotangentToDual (I := I) om (Λ w) := by
   rw [cotangentToDual_apply, cotangentToDual_apply]
-  rw [show (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om) (fun _ : Fin 1 => w)
-      = Tensor0SSpace.toModel (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om)
+  rw [show (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om) (fun _ : Fin 1 => w)
+      = Tensor0SSpace.toModel (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om)
           (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x w) from by
     rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show Function.update
         (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x w) 0
         (tangentLinearMapToModel Λ
@@ -976,32 +976,32 @@ theorem palatiniWEndoInsert_sub_eq_cometricRaise
           (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g₀).toSection x) om from rfl]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om from rfl]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g₀).toSection x) om =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om from rfl]
   rw [show cotangentToDual (I := I)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x
             (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om -
-          slotInsertEndomorphism (I := I) (M := M) 1 0 x
+          slotInsertEndoFib (I := I) (M := M) 1 0 x
             (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om) w =
       cotangentToDual (I := I)
-          (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+          (slotInsertEndoFib (I := I) (M := M) 1 0 x
             (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om) w -
         cotangentToDual (I := I)
-          (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+          (slotInsertEndoFib (I := I) (M := M) 1 0 x
             (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om) w from by
     rw [show cotangentToDual (I := I)
-          (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+          (slotInsertEndoFib (I := I) (M := M) 1 0 x
               (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om -
-            slotInsertEndomorphism (I := I) (M := M) 1 0 x
+            slotInsertEndoFib (I := I) (M := M) 1 0 x
               (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om) =
         cotangentToDualLinear (I := I) (x := x)
-          (slotInsertEndomorphism (I := I) (M := M) 1 0 x
+          (slotInsertEndoFib (I := I) (M := M) 1 0 x
               (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om -
-            slotInsertEndomorphism (I := I) (M := M) 1 0 x
+            slotInsertEndoFib (I := I) (M := M) 1 0 x
               (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) om) from rfl]
     rw [map_sub]
     rfl]

@@ -154,24 +154,20 @@ theorem standardCapBall_sandwich_of_quadratic_close
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 variable {P : OrientedThreeStage.{u}}
 
 namespace IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousOn_riemannNorm :
+theorem continuousOn_riemannNorm :
     ContinuousOn (fun q : ℝ × P.Carrier =>
       Real.sqrt (normSq0S (G.flow.base.metric q.1) q.2 4 (G.flow.base.rm04 q.1 q.2)))
       (Ico a s ×ˢ univ) :=
   (P.tensorFamily_normSq_continuousOn G.equation.smoothMetric.metricTensor_cont
     G.equation.rm04Cont).sqrt
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousOn_riemannNorm_apply (x : P.Carrier) :
+theorem continuousOn_riemannNorm_apply (x : P.Carrier) :
     ContinuousOn (fun t : ℝ => G.riemannNorm t x) (Ico a s) := by
   have hpair : ContinuousOn (fun t : ℝ => (t, x)) (Ico a s) :=
     continuousOn_id.prodMk continuousOn_const
@@ -180,7 +176,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hcomp := (G.continuousOn_riemannNorm).comp hpair hmaps
   simpa [riemannNorm, Function.comp_def] using hcomp
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.tendsto_riemannNorm_nhdsGT (x : P.Carrier) :
+theorem tendsto_riemannNorm_nhdsGT (x : P.Carrier) :
     Tendsto (fun t : ℝ => G.riemannNorm t x) (𝓝[>] a) (𝓝 (G.riemannNorm a x)) := by
   have hci : ContinuousWithinAt (fun t : ℝ => G.riemannNorm t x) (Ico a s) a :=
     (G.continuousOn_riemannNorm_apply x).continuousWithinAt ⟨le_rfl, G.lt⟩
@@ -190,7 +186,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       (𝓝 (G.riemannNorm a x)) := hci.mono_left hle
   rwa [nhdsWithin_Ioo_eq_nhdsGT G.lt] at h2
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousOn_ricciAt (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
+theorem continuousOn_ricciAt (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
     ContinuousOn (fun t => G.flow.ricciAt t x (vec2 X Y)) (Ico a s) := by
   have heval := tensor0SFamilyContinuousOnSet.eval_continuous
     (I := ThreeModel) (M := P.Carrier) (s := 2) G.equation.ricciCont
@@ -202,7 +198,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 
 end IncomingSlab
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.hasDerivWithinAt_of_continuousOn_Ico
+private theorem hasDerivWithinAt_of_continuousOn_Ico
     {a s : ℝ} (has : a < s) {f F : ℝ → ℝ}
     (hf : ContinuousOn f (Ico a s)) (hF : ContinuousOn F (Ico a s))
     (hderiv : ∀ t ∈ Ioo a s, HasDerivWithinAt f (F t) (Ico a s) t) :
@@ -225,11 +221,9 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.hasD
 
 namespace IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hasDerivWithinAt_inner_at_start (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
+theorem hasDerivWithinAt_inner_at_start (x : P.Carrier) (X Y : TangentSpace ThreeModel x) :
     HasDerivWithinAt (fun t => (G.flow.base.metric t).inner x X Y)
       (-2 * G.flow.ricciAt a x (vec2 X Y)) (Ici a) a := by
   refine hasDerivWithinAt_of_continuousOn_Ico
@@ -242,7 +236,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · intro t ht
     exact G.equation.equation ⟨t, ht⟩ x X Y
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.not_exists_closedSlab_of_singularEndpoint (h : G.SingularEndpoint) :
+theorem not_exists_closedSlab_of_singularEndpoint (h : G.SingularEndpoint) :
     ¬ ∃ H : P.ClosedSlab a s, H.flow.base = G.flow.base := by
   rintro ⟨H, hbase⟩
   obtain ⟨K, hK, hbound⟩ := H.curvature_bound P

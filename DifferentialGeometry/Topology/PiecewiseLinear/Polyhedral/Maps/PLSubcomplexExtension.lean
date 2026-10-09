@@ -10,6 +10,8 @@ open scoped BigOperators
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
+set_option linter.style.haveILetI false
 
 variable {ι κ F : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] [DecidableEq κ]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -76,7 +78,7 @@ theorem exists_nondegenerate_extension_of_vertexRestriction
       (∀ s ∈ K.faces, ∃ B : E →ᵃ[ℝ] (F × (Fin n → ℝ)), EqOn g B (convexHull ℝ (s : Set E))) ∧
       (∀ s ∈ K.faces, InjOn g (convexHull ℝ (s : Set E))) := by
   classical
-  let : Fintype K.vertices := (finite_vertices_of_finite_faces K hK).fintype
+  letI : Fintype K.vertices := (finite_vertices_of_finite_faces K hK).fintype
   let n := Fintype.card (Option K.vertices)
   let label : E → Fin n := fun x => Fintype.equivFin (Option K.vertices)
     (if hx : x ∈ K.vertices then some ⟨x, hx⟩ else none)
@@ -108,7 +110,7 @@ theorem exists_nondegenerate_extension_of_vertexRestriction
           ⟨fun x => ⟨x.val.val, Finset.mem_filter.mpr ⟨x.val.property, x.property⟩⟩,
             fun x y he => Subtype.ext (Subtype.ext (congrArg (fun z : t => z.val) he))⟩
         exact hind.comp_embedding j
-      · let : IsEmpty AS := ⟨fun x => ht ⟨x.val.val,
+      · letI : IsEmpty AS := ⟨fun x => ht ⟨x.val.val,
           Finset.mem_filter.mpr ⟨x.val.property, x.property⟩⟩⟩
         exact affineIndependent_of_subsingleton ℝ _
     have hls : Function.Injective (fun x : s => label x.val) := by
@@ -165,7 +167,6 @@ theorem exists_nondegenerate_extension_of_vertexRestriction
 def subcomplexFaceCentroids (D : SimplicialComplex ℝ E) : Set E :=
   {x | ∃ s ∈ D.faces, s.centroid ℝ id = x}
 
-omit [FiniteDimensional ℝ E] in
 theorem vertexRestriction_barycentric_subcomplex
     (K D : SimplicialComplex ℝ E) (hDK : D.faces ⊆ K.faces) :
     vertexRestriction (barycentricSubdivision K) (subcomplexFaceCentroids D) =
@@ -215,8 +216,7 @@ theorem exists_nondegenerate_PL_extension
   rw [hfull, barycentricSubdivision_space] at hg
   exact ⟨n, g, hg, hgaff, hginj⟩
 
-omit [DecidableEq E] [NormedAddCommGroup F] [NormedSpace ℝ F]
-  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem extension_fiber_iff {n : ℕ} {f : E → F} {g : E → F × (Fin n → ℝ)}
     {D : Set E} (hg : ∀ x ∈ D, g x = (f x, 0)) {x y : E} (hx : x ∈ D) (hy : y ∈ D) :
     g x = g y ↔ f x = f y := by

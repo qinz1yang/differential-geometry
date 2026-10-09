@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianLineLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedSectionalCurvature
-import DifferentialGeometry.Geometry.Comparison.Splitting.Busemann
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TimeZeroSplitting
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 
 set_option autoImplicit false

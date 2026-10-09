@@ -1,11 +1,11 @@
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Oscillation
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Oscillation
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.Crosscut
 import DifferentialGeometry.Analysis.Complex.CircleArc
 import DifferentialGeometry.Analysis.Integration.Integral.IsometricDerivative
 import DifferentialGeometry.Analysis.Complex.CircleRotation
 import Mathlib.Topology.MetricSpace.Equicontinuity
-import DifferentialGeometry.Topology.Circle.Metric
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Closure
+import DifferentialGeometry.Topology.LoopSpace.CircleMetric
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Closure
 import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
 import Mathlib.Topology.Sequences
 

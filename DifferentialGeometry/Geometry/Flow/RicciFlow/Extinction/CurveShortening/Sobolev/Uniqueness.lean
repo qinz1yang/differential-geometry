@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
-import DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.CurveRepresentation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CurveRepresentation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.ReferenceSolutions
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.SpatialRegularity
@@ -79,7 +79,7 @@ open private
 open private
   exists_continuousOn_fixedAmbientSobolev_curve_with_initial
   DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.exists_continuousOn_fixedAmbientSobolev_curve_with_initial from
-  DifferentialGeometry.Geometry.Flow.CurveShortening.Sobolev.CurveRepresentation
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.CurveRepresentation
 
 section
 noncomputable section

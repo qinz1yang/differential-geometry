@@ -142,7 +142,7 @@ private theorem edge_insert_add
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -195,12 +195,12 @@ private lemma edge_cov_insert_id (g : SmoothRiemannianMetric I M) (s : Nat) :
     rw [← hY]
     exact edge_endo_id_zero (I := I) (M := M) g Y x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (0 : TangentSpace I x →L[Real] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[Real] TangentSpace I x) =
         (0 : Real) • (0 : TangentSpace I x →L[Real] TangentSpace I x) from
       (zero_smul Real _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in

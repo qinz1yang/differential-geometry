@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Product
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 
 set_option autoImplicit false
 set_option backward.isDefEq.respectTransparency false

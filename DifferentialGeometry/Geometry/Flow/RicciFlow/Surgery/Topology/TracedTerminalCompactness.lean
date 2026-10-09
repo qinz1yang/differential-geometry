@@ -354,7 +354,7 @@ theorem exists_normalized_terminal_pointed_convergence_of_backward_traces_and_vo
         continuous_const) (riemannianClosedBallOf_mono _ _ (by linarith))
   have hjets := exists_terminal_normalized_inner_ball_curvature_derivative_bounds_of_backward_traces
     Phi hPhi H last s G L hinit x q Q hq hqQ hQ hderiv hfinal hpinch hpinchFinal hbuffer
-  have hvol := DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.normalized_inner_ball_volume_lower_bound_of_eventually_volume_ball_ge
+  have hvol := OrientedThreeStage.IncomingSlab.normalized_inner_ball_volume_lower_bound_of_eventually_volume_ball_ge
     (fun n => (H n).stage (last n)) (fun n => (H n).time (last n)) s G L x Q
       (fun n => zero_lt_one.trans_le (hQ n)) rho hcompact hvolume
   have hvolX : ∀ r R : ℝ, 0 < r → r < R → R < rho → ∀ C : ℝ, 0 ≤ C →

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentBandNoncrossing
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentBandParity
-import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.BoundaryExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34LateralBandReversal
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CircleOrderAdjacency
 
 open Set

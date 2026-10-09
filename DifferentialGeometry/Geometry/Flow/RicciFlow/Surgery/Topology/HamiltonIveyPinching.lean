@@ -237,11 +237,9 @@ theorem fixedHamiltonIveyRegion_and_scalar_lower_on_slab
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.fixedHamiltonIveyRegion_and_scalar_lower (G : P.IncomingSlab a s)
+theorem IncomingSlab.fixedHamiltonIveyRegion_and_scalar_lower (G : P.IncomingSlab a s)
     {A : ℝ} (hA : 0 < A)
     (hfixed : ∀ x, InFixedHamiltonIveyRegion (G.flow.base.metric a) A x)
     (hscalar : ∀ x, -3 / A ≤ G.flow.scalar a x) :
@@ -264,13 +262,10 @@ open scoped Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inFixedHamiltonIveyRegion_of_tendsto
+theorem TerminalLimitMetric.inFixedHamiltonIveyRegion_of_tendsto
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     {A : ℝ → ℝ} {A₀ : ℝ} (hA₀ : 0 < A₀) (hA : Tendsto A (𝓝[<] s) (𝓝 A₀))
     (hregion : ∀ᶠ t in 𝓝[<] s, InFixedHamiltonIveyRegion (G.flow.base.metric t) (A t) x.1) :
@@ -282,7 +277,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion
     (G.flow.base.metric t) (A t) x.1).mp ht
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.fixedHamiltonIveyRegion_and_scalar_lower
+theorem TerminalLimitMetric.fixedHamiltonIveyRegion_and_scalar_lower
     (L : G.TerminalLimitMetric) {A : ℝ} (hA : 0 < A)
     (hincoming : ∀ t ∈ Ico a s, ∀ x : P.Carrier,
       InFixedHamiltonIveyRegion (G.flow.base.metric t) (A + t - a) x ∧

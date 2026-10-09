@@ -73,7 +73,7 @@ private theorem scale_curv_eq (n : ℕ) {r : ℝ} (hr : 0 < r) :
 
 private theorem log_scale_eq (n : ℕ) {r v : ℝ} (hr : 0 < r) (hv : 0 < v) :
     Real.log v +
-        (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (r ^ 2)) - (n : ℝ)) =
+        (Real.log (perelmanDensityPrefactor n (r ^ 2)) - (n : ℝ)) =
       Real.log (v / r ^ n) +
         (-(n : ℝ) / 2) * Real.log (4 * Real.pi) - (n : ℝ) := by
   rw [log_prefactor n (sq_pos_of_pos hr)]
@@ -160,7 +160,7 @@ theorem flowball_w_upper
       (∫ x, w x ^ 2
         ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
           I M (S.base.metric time))) = 1 ∧
-      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+      wFunctional
           (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
             I M (S.base.metric time))
           (Module.finrank ℝ E) (B.radius ^ 2)
@@ -186,7 +186,7 @@ theorem flowball_w_upper
           B.radius ^ 2 *
             ((Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt (1 / B.radius ^ 4)) +
           Real.log B.volume.toReal +
-          (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor
+          (Real.log (perelmanDensityPrefactor
             (Module.finrank ℝ E) (B.radius ^ 2)) - (Module.finrank ℝ E : ℝ)) + δ := by
   let : Nonempty M := ⟨B.center⟩
   let g : SmoothRiemannianMetric I M := S.base.metric time
@@ -196,7 +196,7 @@ theorem flowball_w_upper
   let R : M → ℝ := fun x =>
     DifferentialGeometry.Geometry.Curvature.metricScalarAt
       (I := I) (M := M) g x
-  let C₀ : ℝ := Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) - (n : ℝ)
+  let C₀ : ℝ := Real.log (perelmanDensityPrefactor n tau) - (n : ℝ)
   have htau : 0 < tau := by
     dsimp only [tau]
     exact sq_pos_of_pos B.radius_pos
@@ -238,7 +238,7 @@ theorem flowball_w_upper
       (∫ x, 4 * tau * g.inner x
             (gradientFun (I := I) g w x) (gradientFun (I := I) g w x) +
           tau * R x * (w x * w x) - (w x * w x) * Real.log (w x * w x) +
-          (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) - (n : ℝ)) * (w x * w x) ∂μ) ≤
+          (Real.log (perelmanDensityPrefactor n tau) - (n : ℝ)) * (w x * w x) ∂μ) ≤
           (∫ x, 4 * tau * g.inner x
                 (gradientFun (I := I) g v x) (gradientFun (I := I) g v x) +
               tau * R x * v x ^ 2 - v x ^ 2 * Real.log (v x ^ 2) + C₀ * v x ^ 2
@@ -277,7 +277,7 @@ theorem exists_sel_w_bound
       (∫ x, w x ^ 2
         ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
           I M (S.base.metric time))) = 1 ∧
-      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+      wFunctional
           (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
             I M (S.base.metric time))
           (Module.finrank ℝ E) (B'.radius ^ 2)
@@ -335,7 +335,7 @@ theorem exists_sel_w_bound
   have hscale := log_scale_eq n B'.radius_pos hB'vol
   refine ⟨B', w, hnest, hrle, hB', hnorm, hw, hwpos, hwmass, ?_⟩
   calc
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional
+    wFunctional
           (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
             I M (S.base.metric time)) n (B'.radius ^ 2)
           (fun x => DifferentialGeometry.Geometry.Curvature.metricScalarAt
@@ -351,7 +351,7 @@ theorem exists_sel_w_bound
                 ((H ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2 +
             B'.radius ^ 2 * ((n : ℝ) ^ 2 * Real.sqrt (1 / B'.radius ^ 4)) +
             Real.log B'.volume.toReal +
-            (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (B'.radius ^ 2)) - (n : ℝ)) + δ := by
+            (Real.log (perelmanDensityPrefactor n (B'.radius ^ 2)) - (n : ℝ)) + δ := by
           simpa only [n, H] using hwupper
     _ ≤ 400 * (2 : ℝ) ^ (n + 1) + (n : ℝ) ^ 2 +
           Real.log (B'.volume.toReal / B'.radius ^ n) +
@@ -362,7 +362,7 @@ theorem exists_sel_w_bound
                 ((ENNReal.ofReal (5 / B'.radius) * B'.volume ^ (1 / 2 : ℝ)).toReal /
                   ((H ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2 +
               (n : ℝ) ^ 2 + Real.log B'.volume.toReal +
-              (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n (B'.radius ^ 2)) - (n : ℝ)) + δ =
+              (Real.log (perelmanDensityPrefactor n (B'.radius ^ 2)) - (n : ℝ)) + δ =
             4 * B'.radius ^ 2 *
                 ((ENNReal.ofReal (5 / B'.radius) * B'.volume ^ (1 / 2 : ℝ)).toReal /
                   ((H ^ (1 / 2 : ℝ) / 2).toReal)) ^ 2 +

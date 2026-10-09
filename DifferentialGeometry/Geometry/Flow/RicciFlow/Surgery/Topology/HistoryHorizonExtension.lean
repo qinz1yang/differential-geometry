@@ -156,7 +156,7 @@ theorem exists_extendHorizon_gt :
       ⟨ha, S'.timeRestrict (Geometry.Curvature.RealTimeInterval.closed _ T' ha.le),
         isSolutionOn_timeRestrict hS' (fun _ ht => ⟨ht.1, ht.2.trans h2.le⟩)
           (fun _ ht => ⟨ht.1, ht.2.trans h2⟩),
-        DifferentialGeometry.Topology.ClosedOrientedManifold.MetricSmoothUpTo.of_contMDiffOn_Ico _ S'.base.metric ha h2
+        OrientedThreeStage.MetricSmoothUpTo.of_contMDiffOn_Ico _ S'.base.metric ha h2
           (hjoint.mono (prod_mono Ico_subset_Icc_self subset_rfl))⟩
     have hmet : ∀ τ ∈ H.toHistory.stageDomain (Fin.last H.eventCount),
         H.toHistory.stageMetric (Fin.last H.eventCount) τ = S.flow.base.metric τ := by

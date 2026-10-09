@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.HomogeneousRegularity
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Replacement.DiskFilling
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
-import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexSource
+import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.HomogeneousChart
 import DifferentialGeometry.Topology.MetricSpace.LipschitzExtension
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Trace.CircleAnchor

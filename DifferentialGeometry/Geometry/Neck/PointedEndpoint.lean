@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Neck.Transport.InverseSpatial
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InverseSpatialNeckTransfer
 import DifferentialGeometry.Geometry.Neck.ScalarSeparation
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 

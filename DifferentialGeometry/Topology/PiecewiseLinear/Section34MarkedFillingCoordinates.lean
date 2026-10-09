@@ -128,8 +128,8 @@ theorem exists_section34_marked_filling_boundary_coordinates
   have hgen : ∀ k, CarriesFundamentalGroupOnto (L k) (Sp e) := by
     intro k
     fin_cases k
-    · exact (piercing_generators_of_essential_second hprep hpack e hi hiess).1
-    · exact (piercing_generators_of_essential_second hprep hpack e hj hjess).1
+    · exact (section34_piercing_generators_of_essential_second hprep hpack e hi hiess).1
+    · exact (section34_piercing_generators_of_essential_second hprep hpack e hj hjess).1
   have hCS := hCT.trans
     ((section34_inner_tube_subset_interior_outer hprep hpack e).trans interior_subset)
   obtain ⟨J, Q, f, q, hJ, hQ, hf, hq, hinj, hfamily⟩ :=

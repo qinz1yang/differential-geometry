@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Embedding.Sphere
 import DifferentialGeometry.Topology.Embedding.ArcGluing
 import DifferentialGeometry.Topology.Embedding.LevelArcCollar
 import DifferentialGeometry.Topology.Morse.NormalForm.Saddle
-import DifferentialGeometry.Topology.PlanarJordan.Saddle.CapSides
+import DifferentialGeometry.Topology.PlanarJordan.SaddleCapSides
 import DifferentialGeometry.Topology.PlanarJordan.InnermostDisk
 import DifferentialGeometry.Topology.PlanarJordan.SmoothArc
 import DifferentialGeometry.External.Schoenflies.Concatenate

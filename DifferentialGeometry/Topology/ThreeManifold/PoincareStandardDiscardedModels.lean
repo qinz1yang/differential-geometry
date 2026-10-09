@@ -18,9 +18,9 @@ theorem isStandardFactor_projectiveThreeSpaceLift :
     ⟨(ClosedOrientedManifold.uliftOrientedDiffeomorph
       SphericalSpaceFormGroup.antipodal.manifold.toClosedOrientedManifold).symm⟩⟩
 
-theorem isStandardConnectedSum_projectiveThreeSpaceLift :
-    isStandardConnectedSum projectiveThreeSpaceLift.{u}.Carrier :=
-  isStandardConnectedSum_of_standard_factor projectiveThreeSpaceLift.{u}
+theorem isPoincareStandard_projectiveThreeSpaceLift :
+    isPoincareStandard projectiveThreeSpaceLift.{u}.Carrier :=
+  isPoincareStandard_of_standard_factor projectiveThreeSpaceLift.{u}
     isStandardFactor_projectiveThreeSpaceLift
 
 theorem nonempty_projectiveThreeSpaceLift :
@@ -32,12 +32,12 @@ def isProjectiveThreeSpaceConnectedSum
     (connectedSum projectiveThreeSpaceLift.{u}
       projectiveThreeSpaceLift.{u}).toClosedOrientedManifold)
 
-theorem isStandardConnectedSum_of_isProjectiveThreeSpaceConnectedSum
+theorem isPoincareStandard_of_isProjectiveThreeSpaceConnectedSum
     {M : ConnectedClosedOrientedManifold.{u} 3}
-    (h : isProjectiveThreeSpaceConnectedSum M) : isStandardConnectedSum M.Carrier := by
+    (h : isProjectiveThreeSpaceConnectedSum M) : isPoincareStandard M.Carrier := by
   obtain ⟨ρ⟩ := h
-  exact isStandardConnectedSum_of_diffeomorph ρ.1
-    (isStandardConnectedSum_connectedSum_of_standardFactor projectiveThreeSpaceLift
+  exact isPoincareStandard_of_diffeomorph ρ.1
+    (isPoincareStandard_connectedSum_of_standardFactor projectiveThreeSpaceLift
       projectiveThreeSpaceLift isStandardFactor_projectiveThreeSpaceLift
       isStandardFactor_projectiveThreeSpaceLift)
 
@@ -50,10 +50,10 @@ theorem nonempty_connectedSum_projectiveThreeSpaceLift :
     Nonempty (connectedSum projectiveThreeSpaceLift.{u}
       projectiveThreeSpaceLift.{u}).Carrier := inferInstance
 
-theorem isStandardConnectedSum_connectedSum_projectiveThreeSpaceLift :
-    isStandardConnectedSum (connectedSum projectiveThreeSpaceLift.{u}
+theorem isPoincareStandard_connectedSum_projectiveThreeSpaceLift :
+    isPoincareStandard (connectedSum projectiveThreeSpaceLift.{u}
       projectiveThreeSpaceLift.{u}).Carrier :=
-  isStandardConnectedSum_of_isProjectiveThreeSpaceConnectedSum
+  isPoincareStandard_of_isProjectiveThreeSpaceConnectedSum
     isProjectiveThreeSpaceConnectedSum_self
 
 def ClosedOrientedManifold.componentwiseStandardFactorOrProjectiveThreeSpaceSum
@@ -62,14 +62,14 @@ def ClosedOrientedManifold.componentwiseStandardFactorOrProjectiveThreeSpaceSum
     isStandardFactor (D.component C) ∨
       isProjectiveThreeSpaceConnectedSum (D.component C)
 
-theorem componentwise_isStandardConnectedSum_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
+theorem componentwise_isPoincareStandard_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (D : ClosedOrientedManifold.{u} 3)
     (h : D.componentwiseStandardFactorOrProjectiveThreeSpaceSum) :
-    ∀ C : ConnectedComponents D.Carrier, isStandardConnectedSum (D.component C).Carrier := by
+    ∀ C : ConnectedComponents D.Carrier, isPoincareStandard (D.component C).Carrier := by
   intro C
   rcases h C with h | h
-  · exact isStandardConnectedSum_of_standard_factor (D.component C) h
-  · exact isStandardConnectedSum_of_isProjectiveThreeSpaceConnectedSum h
+  · exact isPoincareStandard_of_standard_factor (D.component C) h
+  · exact isPoincareStandard_of_isProjectiveThreeSpaceConnectedSum h
 
 theorem componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactorOrProjectiveThreeSpaceSum
     (D : ClosedOrientedManifold.{u} 3)

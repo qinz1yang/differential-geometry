@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.CompactDoubleCoreCharts
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Construction.CompactMetricLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CompactDoubleCoreCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactCapMetricLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.CovariantLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.WindowPullback
 import DifferentialGeometry.Topology.Exhaustion

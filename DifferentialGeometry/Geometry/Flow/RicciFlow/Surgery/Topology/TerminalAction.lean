@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.PrefixMinimality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1Regularity
 import Mathlib.Topology.ContinuousMap.Ordered
-import DifferentialGeometry.Analysis.Sobolev.Time.Curve.ManifoldAbsolutelyContinuous
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.ManifoldAbsolutelyContinuous
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
@@ -27,13 +27,10 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_mapsTo_initial_interval
+private theorem exists_mapsTo_initial_interval
     {M : Type*} [TopologicalSpace M] {α : ℝ → M} {u v : ℝ}
     (huv : u < v) (hα : ContinuousOn α (Icc u v))
     (U : TopologicalSpace.Opens M) (hU : α u ∈ U) :
@@ -46,7 +43,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   intro r hr
   exact he ⟨hr.1, hr.2.trans (hde.le.trans (min_le_left _ _))⟩
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.closedSolution_metric_eq_localPull
+private theorem closedSolution_metric_eq_localPull
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c t : ℝ} (hcs : c ≤ s) (ht : t < s) :
     (L.closedSolution W hcs).base.metric t =
@@ -58,7 +55,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     localPullMetric_comp]
   rfl
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.lagrangian_eq_of_eventuallyEq
+private theorem lagrangian_eq_of_eventuallyEq
     (T : ℝ) {α β : ℝ → P.Carrier} {r : ℝ} (heq : α =ᶠ[𝓝 r] β) :
     lRegularizedLagrangian G.flow T α r = lRegularizedLagrangian G.flow T β r := by
   have hval : α r = β r := heq.self_of_nhds
@@ -68,7 +65,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   simp only [lRegularizedLagrangian]
   rw [hval, hvel]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_absolutelyContinuous_closedSolution_collar
+theorem TerminalLimitMetric.exists_absolutelyContinuous_closedSolution_collar
     (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)
@@ -158,15 +155,12 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_contMDiff_action_lt_of_terminal_curve
+theorem TerminalLimitMetric.exists_contMDiff_action_lt_of_terminal_curve
     (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)
@@ -289,15 +283,12 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_lRegularizedMinC1_of_compact_action_sublevel
+theorem TerminalLimitMetric.exists_lRegularizedMinC1_of_compact_action_sublevel
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) (T : ℝ) {u v : ℝ} (huv : u < v)
     (hclock : ∀ r ∈ Icc u v, T - r ^ 2 ∈ Icc c s)
@@ -336,15 +327,12 @@ open DifferentialGeometry DifferentialGeometry.Geometry.Curvature DifferentialGe
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open scoped Manifold ContDiff Topology ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_pos_frontier_distance_of_compact
+private theorem exists_pos_frontier_distance_of_compact
     (g : SmoothRiemannianMetric ThreeModel P.Carrier)
     (K₀ K : Set P.Carrier) (hK₀ : IsCompact K₀) (hinside : K₀ ⊆ interior K) :
     ∃ r : ℝ, 0 < r ∧ ∀ x ∈ K₀, ∀ y ∈ frontier K,
@@ -362,7 +350,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   change ENNReal.ofReal (r : ℝ) ≤ edist x y
   simpa only [ENNReal.ofReal_coe_nnreal] using (hsep x hx y hy).le
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_uniform_terminal_compact_metric_buffer
+private theorem TerminalLimitMetric.exists_uniform_terminal_compact_metric_buffer
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     {T r₀ vmax : ℝ} (hr₀ : 0 ≤ r₀) (hrv : r₀ < vmax)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - vmax ^ 2) :
@@ -419,7 +407,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_uniform_initial_interval_mapsTo_compact_of_action_le
+theorem TerminalLimitMetric.exists_uniform_initial_interval_mapsTo_compact_of_action_le
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     {T r₀ vmax A B : ℝ} (hr₀ : 0 ≤ r₀) (hrv : r₀ < vmax)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - vmax ^ 2) (hB : 0 ≤ B)
@@ -492,15 +480,12 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open scoped Manifold ContDiff Topology ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_uniform_curveEnergy_bound_of_action_le
+theorem TerminalLimitMetric.exists_uniform_curveEnergy_bound_of_action_le
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     (g : SmoothRiemannianMetric ThreeModel P.Carrier)
     {T r₀ vmax A B : ℝ} (hr₀ : 0 ≤ r₀) (hrv : r₀ < vmax)
@@ -586,7 +571,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   nlinarith [le_max_left (A + 2 * B * vmax ^ 3) 0]
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_tendsto_subseq_of_action_le
+theorem TerminalLimitMetric.exists_tendsto_subseq_of_action_le
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     {T r₀ b A B : ℝ} (hr₀ : 0 ≤ r₀) (hrb : r₀ < b)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - b ^ 2) (hB : 0 ≤ B)
@@ -623,13 +608,10 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open scoped Manifold ContDiff Topology Interval
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.lagrangian_closedSolution_eq_of_projection
+private theorem TerminalLimitMetric.lagrangian_closedSolution_eq_of_projection
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c T r₀ d : ℝ} (hcs : c ≤ s) (hr₀ : 0 ≤ r₀)
     (hterminal : T - r₀ ^ 2 = s) (β : ℝ → W) (α : ℝ → P.Carrier)
@@ -678,7 +660,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact congrArg₂ (· + ·) (congrArg ((1 / 2 : ℝ) * ·) hkin)
     (congrArg (fun z => 2 * r ^ 2 * metricScalarAt (G.flow.base.metric (T - r ^ 2)) z) hpoint)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.action_closedSolution_eq_of_projection
+private theorem TerminalLimitMetric.action_closedSolution_eq_of_projection
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c T r₀ d : ℝ} (hcs : c ≤ s) (hr₀ : 0 ≤ r₀) (hrd : r₀ ≤ d)
     (hterminal : T - r₀ ^ 2 = s) (β : ℝ → W) (α : ℝ → P.Carrier)
@@ -687,7 +669,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact intervalIntegral.integral_congr_uIoo (by
     simpa only [uIoo_of_le hrd] using L.lagrangian_closedSolution_eq_of_projection W hcs hr₀ hterminal β α hproj)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.intervalIntegrable_closedSolution_iff_of_projection
+private theorem TerminalLimitMetric.intervalIntegrable_closedSolution_iff_of_projection
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c T r₀ d : ℝ} (hcs : c ≤ s) (hr₀ : 0 ≤ r₀) (hrd : r₀ ≤ d)
     (hterminal : T - r₀ ^ 2 = s) (β : ℝ → W) (α : ℝ → P.Carrier)
@@ -705,7 +687,7 @@ private local instance (W : TopologicalSpace.Opens G.terminalRegularOpen) : Sigm
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen ThreeModel W.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_initial_lift_chartH1_action_le_liminf
+theorem TerminalLimitMetric.exists_initial_lift_chartH1_action_le_liminf
     (L : G.TerminalLimitMetric) {T r₀ d A : ℝ} (hr₀ : 0 ≤ r₀) (hrd : r₀ < d)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - d ^ 2)
     (K : Set P.Carrier) (hK : IsCompact K) (hKreg : K ⊆ G.terminalRegularOpen)
@@ -801,9 +783,6 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open scoped Manifold ContDiff Topology Interval
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
@@ -815,7 +794,7 @@ private local instance (W : TopologicalSpace.Opens G.terminalRegularOpen) : Sigm
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen ThreeModel W.isOpen)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_split_chartH1_action_le_liminf
+theorem TerminalLimitMetric.exists_split_chartH1_action_le_liminf
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     {T r₀ b A B : ℝ} (hr₀ : 0 ≤ r₀) (hrb : r₀ < b)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - b ^ 2) (hB : 0 ≤ B)
@@ -985,13 +964,10 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open scoped Manifold ContDiff Topology Interval
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.absolutelyContinuousOnInterval_of_terminal_chartH1_partition
+private theorem absolutelyContinuousOnInterval_of_terminal_chartH1_partition
     (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {r₀ d : ℝ} (hrd : r₀ ≤ d) (β : ℝ → W) (γ : ℝ → P.Carrier)
     (hproj : EqOn (fun r => (β r).val.val) γ (Icc r₀ d))
@@ -1013,7 +989,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   · intro i
     exact hrep i
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.absolutelyContinuousOnInterval_action_le_liminf_of_tendsto
+theorem TerminalLimitMetric.absolutelyContinuousOnInterval_action_le_liminf_of_tendsto
     (L : G.TerminalLimitMetric) (K₀ : Set G.terminalRegularOpen) (hK₀ : IsCompact K₀)
     {T r₀ b A B : ℝ} (hr₀ : 0 ≤ r₀) (hrb : r₀ < b)
     (hterminal : T - r₀ ^ 2 = s) (hpast : a ≤ T - b ^ 2) (hB : 0 ≤ B)
@@ -1059,13 +1035,10 @@ open scoped Manifold ContDiff Topology NNReal ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.closedSolution_lagrangian_ae_eq_of_projection
+private theorem closedSolution_lagrangian_ae_eq_of_projection
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c T u d : ℝ} (hcs : c ≤ s) (hu : 0 ≤ u) (hTu : T - u ^ 2 = s)
     (η : ℝ → W) (γ : ℝ → P.Carrier)
@@ -1076,7 +1049,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   filter_upwards [ae_restrict_mem measurableSet_Ioo] with r hr
   exact L.lagrangian_closedSolution_eq_of_projection W hcs hu hTu η γ hproj hr
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_lower_on_terminal_compact
+private theorem metric_lower_on_terminal_compact
     (L : G.TerminalLimitMetric) (Q : Set P.Carrier) (hQ : IsCompact Q)
     (hQU : Q ⊆ G.terminalRegularOpen) :
     ∃ μ : ℝ, 0 < μ ∧ ∀ t ∈ Ico a s, ∀ x ∈ Q, ∀ v : TangentSpace ThreeModel x,
@@ -1101,7 +1074,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_terminal_collar_of_compact_neighborhood
+private theorem exists_terminal_collar_of_compact_neighborhood
     (L : G.TerminalLimitMetric) (K Q : Set P.Carrier) (hQ : IsCompact Q)
     (hKQ : K ⊆ interior Q) (hQU : Q ⊆ G.terminalRegularOpen)
     {r : ℝ} (hr : 0 < r)
@@ -1187,7 +1160,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   apply (le_div_iff₀ hμ).mpr
   nlinarith only [henergy, htailLower, hadd, hact, hlarge]
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_incoming_tail_energy_bound
+private theorem exists_uniform_incoming_tail_energy_bound
     {T u d v : ℝ} (hu : 0 ≤ u) (hud : u < d) (hdv : d ≤ v)
     (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 < C ∧
@@ -1239,7 +1212,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_uniform_terminal_collar_of_action_le
+theorem TerminalLimitMetric.exists_uniform_terminal_collar_of_action_le
     (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
     {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
     (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
@@ -1302,7 +1275,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     intervalIntegral.integral_add_adjacent_intervals hrefpre hreftail
   exact ⟨hstay, henergyAdd ▸ add_le_add hprefixEnergy htailEnergy⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_subsequence_tendsto_of_action_le
+theorem TerminalLimitMetric.exists_subsequence_tendsto_of_action_le
     (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
     {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
     (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
@@ -1354,10 +1327,7 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_open_subtype_lifts_of_tendstoUniformlyOn
+private theorem exists_open_subtype_lifts_of_tendstoUniformlyOn
     {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [TopologicalSpace H] [UniformSpace M] [ChartedSpace H M]
     (I : ModelWithCorners ℝ E H) (U : Opens M) (u d : ℝ) (hud : u ≤ d)
@@ -1405,7 +1375,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_subsequence_action_liminf_of_tendsto_on_terminal_compact
+theorem TerminalLimitMetric.exists_subsequence_action_liminf_of_tendsto_on_terminal_compact
     (L : G.TerminalLimitMetric) {T u d : ℝ} (hu : 0 ≤ u) (hud : u < d)
     (hTu : T - u ^ 2 = s) (ha : a ≤ T - d ^ 2)
     (Q : Set P.Carrier) (hQ : IsCompact Q) (hQU : Q ⊆ G.terminalRegularOpen)
@@ -1541,10 +1511,7 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_split_action_subsequence
+private theorem exists_split_action_subsequence
     (f p q : ℕ → ℝ) (A cp cq ell : ℝ)
     (hsplit : ∀ n, p n + q n = f n)
     (hf : ∀ n, f n ≤ A) (hp : ∀ n, cp ≤ p n) (hq : ∀ n, cq ≤ q n)
@@ -1567,13 +1534,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe uLimit
 variable {P : OrientedThreeStage.{uLimit}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_subsequence_action_le_of_tendsto_action
+theorem TerminalLimitMetric.exists_subsequence_action_le_of_tendsto_action
     (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
     {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
     (ha : a ≤ T - v ^ 2) (A B ell : ℝ) (hB : 0 ≤ B)
@@ -1708,13 +1672,10 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_lRegularizedAction_minimizer
+theorem TerminalLimitMetric.exists_lRegularizedAction_minimizer
     (L : G.TerminalLimitMetric) {T u v : ℝ}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (x : G.terminalRegularOpen) (y : P.Carrier) (B : ℝ) (hB : 0 ≤ B)
@@ -1800,13 +1761,10 @@ open scoped Manifold ContDiff Topology Interval
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe uIncomingC1
 variable {P : OrientedThreeStage.{uIncomingC1}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_contMDiffOn_one_collar_of_action_minimal
+theorem TerminalLimitMetric.exists_contMDiffOn_one_collar_of_action_minimal
     (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
     (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
     (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)

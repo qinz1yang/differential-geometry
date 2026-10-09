@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedGeometry.Cost.TimeUpperSupport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ReducedGeometry.Cost.TimeContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostTimeSupport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCostTimeContinuity
 import DifferentialGeometry.Analysis.Calculus.UpperSupport.Monotonicity
 
 noncomputable section

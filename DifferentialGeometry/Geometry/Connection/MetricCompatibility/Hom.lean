@@ -1,4 +1,3 @@
-import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
 import DifferentialGeometry.Geometry.Metric.BundleHom
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
@@ -41,9 +40,9 @@ theorem mvfderiv_hilbertSchmidtInner
     let _ : ∀ y, FiniteDimensional ℝ (U y) := fun y => VectorBundle.finiteDimensional ℝ FU U y
     mvfderiv I (fun y => ContinuousLinearMap.hilbertSchmidtInner (A y) (C y)) x v =
       ContinuousLinearMap.hilbertSchmidtInner
-        (_root_.CovariantDerivative.hom I M FU U FV V covU covV A x v) (C x) +
+        (homBundleCovariantDerivativeGen I M FU U FV V covU covV A x v) (C x) +
       ContinuousLinearMap.hilbertSchmidtInner (A x)
-        (_root_.CovariantDerivative.hom I M FU U FV V covU covV C x v) := by
+        (homBundleCovariantDerivativeGen I M FU U FV V covU covV C x v) := by
   classical
   dsimp only
   let _ : ∀ y, FiniteDimensional ℝ (U y) := fun y => VectorBundle.finiteDimensional ℝ FU U y
@@ -77,7 +76,7 @@ theorem mvfderiv_hilbertSchmidtInner
       eventually_of_mem (hS.mem_nhds hxS) hsum
     change mfderiv I 𝓘(ℝ, ℝ) _ x (X x) = _
     rw [hgerm.mfderiv_eq]
-    have h := mvfderiv_finset_sum_apply Finset.univ
+    have h := mvfderiv_finset_sum_apply_at Finset.univ
       (fun i y => inner ℝ (A y (e i y)) (C y (e i y))) (X x)
       (fun i _ => (hAdiff i).inner_bundle (hCdiff i))
     change mfderiv I 𝓘(ℝ, ℝ)
@@ -108,18 +107,18 @@ theorem mvfderiv_hilbertSchmidtInner
     change inner ℝ (K.adjoint (b i)) (b j) = inner ℝ (-(K (b i))) (b j)
     rw [K.adjoint_inner_left, inner_neg_left]
     linear_combination hskew i j
-  let DA := _root_.CovariantDerivative.hom I M FU U FV V covU covV A x (X x)
-  let DC := _root_.CovariantDerivative.hom I M FU U FV V covU covV C x (X x)
+  let DA := homBundleCovariantDerivativeGen I M FU U FV V covU covV A x (X x)
+  let DC := homBundleCovariantDerivativeGen I M FU U FV V covU covV C x (X x)
   have hDA (i) : covV (fun y => A y (e i y)) x (X x) =
       DA (b i) + A x (K (b i)) := by
-    have h := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    have h := homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M FU U FV V covU covV A hA X.mdifferentiableAt (hediff i)
     rw [hex i] at h
     rw [hK]
     exact eq_add_of_sub_eq h.symm
   have hDC (i) : covV (fun y => C y (e i y)) x (X x) =
       DC (b i) + C x (K (b i)) := by
-    have h := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    have h := homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M FU U FV V covU covV C hC X.mdifferentiableAt (hediff i)
     rw [hex i] at h
     rw [hK]
@@ -153,7 +152,7 @@ theorem homBundleCovariantDerivativeGen_isMetricCompatible
       Bundle.instInnerProductSpaceReal (E := fun y => U y →L[ℝ] V y) y
     CovariantDerivative.IsMetricCompatible (I := I) (F := FU →L[ℝ] FV)
       (V := fun y => U y →L[ℝ] V y)
-      (_root_.CovariantDerivative.hom I M FU U FV V covU covV) := by
+      (homBundleCovariantDerivativeGen I M FU U FV V covU covV) := by
   let _ : ∀ y, FiniteDimensional ℝ (U y) := fun y => VectorBundle.finiteDimensional ℝ FU U y
   let g := homContMDiffRiemannianMetric (IB := I) (n := 1) (FU := FU) (FV := FV) U V
   let _ : RiemannianBundle (fun y => U y →L[ℝ] V y) := ⟨g.toRiemannianMetric⟩

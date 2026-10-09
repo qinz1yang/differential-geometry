@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Defs
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation
 import DifferentialGeometry.Topology.Manifold.OrientationLinearVariation
 
 set_option autoImplicit false

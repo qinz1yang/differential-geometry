@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 
 
 noncomputable section

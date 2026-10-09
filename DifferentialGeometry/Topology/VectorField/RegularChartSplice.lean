@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.RegularSplice
 import DifferentialGeometry.Topology.VectorField.ChartPatchIndex
-import DifferentialGeometry.Topology.VectorField.Index.InteriorLinearization
+import DifferentialGeometry.Topology.VectorField.InteriorIndexLinearization
 import DifferentialGeometry.Topology.VectorField.FiniteZeros
 
 set_option autoImplicit false

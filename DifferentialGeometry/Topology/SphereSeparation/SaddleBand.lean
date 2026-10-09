@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.HeightSection
+import DifferentialGeometry.Topology.SphereSeparation.HeightSection
 import DifferentialGeometry.Topology.SphereSeparation.LevelSet
 import DifferentialGeometry.Topology.Morse.CriticalFinite
 import DifferentialGeometry.Topology.Morse.ModelTransport

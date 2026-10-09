@@ -2,9 +2,9 @@ import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.HaarBasis
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Gram
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
-import DifferentialGeometry.Geometry.Metric.LinearAlgebra.OrthogonalBasis
+import DifferentialGeometry.Geometry.Metric.OrthogonalComplement
 import Mathlib.MeasureTheory.Integral.Lebesgue.Map
 
 noncomputable section

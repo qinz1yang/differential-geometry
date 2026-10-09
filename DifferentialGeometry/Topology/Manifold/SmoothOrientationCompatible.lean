@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
+import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
 import DifferentialGeometry.Topology.Manifold.Orientation
 
 set_option autoImplicit false
@@ -71,10 +71,10 @@ theorem exists_manifoldOrientation_eq_of_compatibleOrientation {n : ℕ}
     obtain ⟨hyU, hyS, hyneg⟩ := hU'sub hy
     have hyT : y ∈ t.baseSet := hU hyU
     have hmapy : Orientation.map (Fin n) (S.linearEquivAt ℝ y hyS) (o y) = -q := by
-      rw [htrans y hyT hyS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans y hyT hyS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL y hyU, (Orientation.map_eq_neg_iff_det_neg q (C y).toLinearEquiv hcard).2 hyneg]
     have hmapx : Orientation.map (Fin n) (S.linearEquivAt ℝ x hxS) (o x) = -q := by
-      rw [htrans x hxT hxS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans x hxT hxS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL x (mem_of_mem_nhds hUx),
         (Orientation.map_eq_neg_iff_det_neg q (C x).toLinearEquiv hcard).2 hneg]
     simp only [tangentChartEquiv]
@@ -89,10 +89,10 @@ theorem exists_manifoldOrientation_eq_of_compatibleOrientation {n : ℕ}
     obtain ⟨hyU, hyS, hypos⟩ := hU'sub hy
     have hyT : y ∈ t.baseSet := hU hyU
     have hmapy : Orientation.map (Fin n) (S.linearEquivAt ℝ y hyS) (o y) = q := by
-      rw [htrans y hyT hyS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans y hyT hyS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL y hyU, (Orientation.map_eq_iff_det_pos q (C y).toLinearEquiv hcard).2 hypos]
     have hmapx : Orientation.map (Fin n) (S.linearEquivAt ℝ x hxS) (o x) = q := by
-      rw [htrans x hxT hxS, DifferentialGeometry.orientation_map_trans,
+      rw [htrans x hxT hxS, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between,
         hqL x (mem_of_mem_nhds hUx),
         (Orientation.map_eq_iff_det_pos q (C x).toLinearEquiv hcard).2 hpos]
     simp only [tangentChartEquiv]

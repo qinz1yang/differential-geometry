@@ -19,6 +19,7 @@ abbrev singularHomologyMap {X Y : TopCat.{u}} (f : X ⟶ Y) (n : ℕ) : singular
 lemma singularHomologyMap_eq_homologyMap {X Y : TopCat.{u}} (f : X ⟶ Y) (n : ℕ) :
     singularHomologyMap R f n = homologyMap ((singularChainFunctor R).map f) n := rfl
 
+@[simp]
 lemma singularHomologyMap_id (X : TopCat.{u}) (n : ℕ) : singularHomologyMap R (𝟙 X) n = 𝟙 _ :=
   CategoryTheory.Functor.map_id _ _
 
@@ -95,14 +96,6 @@ theorem relativeHomologyMap_comp {X Y W : TopCat.{u}} {A : Set X} {B : Set Y} {D
     (hfg : Set.MapsTo (f ≫ g) A D) (n : ℕ) :
     relativeHomologyMap R (f ≫ g) hfg n = relativeHomologyMap R f hf n ≫ relativeHomologyMap R g hg n := by
   rw [relativeHomologyMap, pairMap_comp f g hf hg hfg, SSetPair.homologyMap_comp]
-
-@[reassoc (attr := simp)]
-lemma relativeHomologyMap_id_comp {X : TopCat.{u}} {A B D : Set X}
-    (hAB : Set.MapsTo (𝟙 X) A B) (hBD : Set.MapsTo (𝟙 X) B D) (n : ℕ) :
-    relativeHomologyMap R (𝟙 X) hAB n ≫ relativeHomologyMap R (𝟙 X) hBD n =
-      relativeHomologyMap R (𝟙 X) (fun _ hx => hBD (hAB hx)) n := by
-  simpa only [Category.id_comp] using
-    (relativeHomologyMap_comp R (𝟙 X) (𝟙 X) hAB hBD (fun _ hx => hBD (hAB hx)) n).symm
 
 def scMap {X Y : TopCat.{u}} {A : Set X} {B : Set Y} (f : X ⟶ Y) (hf : Set.MapsTo f A B) :
     (pair X A).chainComplexShortComplex R ⟶ (pair Y B).chainComplexShortComplex R where
@@ -199,7 +192,7 @@ abbrev reducedHomologyZeroInclusion (X : TopCat.{u}) : reducedHomologyZero R X �
 
 instance (X : TopCat.{u}) : Mono (reducedHomologyZeroInclusion R X) := inferInstance
 
-@[reassoc]
+@[reassoc (attr := simp)]
 lemma reducedHomologyZeroInclusion_ε (X : TopCat.{u}) : reducedHomologyZeroInclusion R X ≫ ε R X = 0 := kernel.condition _
 
 def reducedHomologyZeroMap {X Y : TopCat.{u}} (f : X ⟶ Y) : reducedHomologyZero R X ⟶ reducedHomologyZero R Y :=
@@ -471,13 +464,10 @@ lemma δred_comp_reducedHomologyZeroMap : δred R X A ≫ reducedHomologyZeroMap
   exact (pair X A).homologyδ_comp R 1 0 rfl
 
 @[reassoc (attr := simp)]
-lemma singularHomologyMap_incl_relπ (n : ℕ) :
-    singularHomologyMap R (incl X A) n ≫ relπ R X A n = 0 :=
-  (pair X A).homologyMap_hom_homologyπ R n
-
-@[reassoc]
 lemma reducedHomologyZeroMap_comp_relπ : reducedHomologyZeroMap R (incl X A) ≫ (reducedHomologyZeroInclusion R X ≫ relπ R X A 0) = 0 := by
-  simp
+  rw [reducedHomologyZeroMap_ι_assoc]
+  have h : singularHomologyMap R (incl X A) 0 ≫ relπ R X A 0 = 0 := (pair X A).homologyMap_hom_homologyπ R 0
+  rw [h, comp_zero]
 
 @[reassoc (attr := simp)]
 lemma relπ_comp_δred : relπ R X A 1 ≫ δred R X A = 0 := by

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
-import DifferentialGeometry.Geometry.Variation.RicciIntegral
+import DifferentialGeometry.Geometry.Comparison.Variation.RicciIntegral
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveLength
 import Mathlib.Topology.Separation.Connected
 

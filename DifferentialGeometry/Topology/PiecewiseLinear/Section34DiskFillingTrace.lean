@@ -117,7 +117,7 @@ theorem exists_section34_filling_with_exact_first_trace
     exists_section34_matching_disk_pair hprep hpack e hi hD hDT htrace
   obtain ⟨B, hB, hBT⟩ := exists_section34_filling_of_disk_pair hprep hpack e hD hF
     (hDT.trans inter_subset_right) (subset_union_left.trans hFT) (inter_comm D F ▸ hFD)
-  obtain ⟨k, hk, -, hgen, -⟩ := exists_piercing_circle_carrying_generators hprep hpack e
+  obtain ⟨k, hk, -, hgen, -⟩ := exists_section34_piercing_circle_carrying_generators hprep hpack e
   have htor := (section34_tubes_are_topological_solid_tori hprep hpack e).2
   obtain ⟨-, -, -, -, hCp, -, -, -, -, -, -, -, -, -, hAa, -⟩ := hprep
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hG, -, -, -, -, -, -, hPg, -⟩ := hpack

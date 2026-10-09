@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.ClosedHalfLineContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientConnectionContinuity
 import Mathlib.Topology.UniformSpace.UniformApproximation
 
 

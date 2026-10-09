@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
-import DifferentialGeometry.Analysis.ODE.PhaseFlow.InverseVelocity.Convergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.InverseVelocityConvergence
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Configuration
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Chart
 

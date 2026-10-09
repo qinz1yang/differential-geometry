@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapWindowGeometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ForwardScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 
 set_option autoImplicit false
 noncomputable section

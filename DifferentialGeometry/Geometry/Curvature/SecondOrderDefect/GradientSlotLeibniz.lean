@@ -284,16 +284,16 @@ theorem covGradBundleEquiv_covDeriv_rawConnLap_eq_sum
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y (T y)))
     (x : M) :
-    covariantSlotBundleEquiv (I := I) (M := M) r s x
+    covGradBundleEquiv (I := I) (M := M) r s x
         ((tensorCov (I := I) g r s).toFun
           (fun y : M => rawTensorConnLap (I := I) g r s T y) x) =
       ∑ i : Fin (Module.finrank ℝ E),
-        covariantSlotBundleEquiv (I := I) (M := M) r s x
+        covGradBundleEquiv (I := I) (M := M) r s x
           ((tensorCov (I := I) g r s).toFun
             (fun y : M => tensorSecondCovDeriv (I := I) g r s
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) T y) x) := by
   rw [covDerivMap_rawConnLap_eq_frozenFrameTrace_sum (I := I) g r s hT x]
-  exact map_sum (covariantSlotBundleEquiv (I := I) (M := M) r s x) _ _
+  exact map_sum (covGradBundleEquiv (I := I) (M := M) r s x) _ _
 
 omit [CompactSpace M] in
 theorem covGrad_rawConnLap_toSection_eq_frame_sum
@@ -301,7 +301,7 @@ theorem covGrad_rawConnLap_toSection_eq_frame_sum
     (covGrad (I := I) (M := M) g 0 2
         (rawTensorConnLapSmooth (I := I) g 0 2 T₀)).toSection x =
       ∑ i : Fin (Module.finrank ℝ E),
-        covariantSlotBundleEquiv (I := I) (M := M) 0 2 x
+        covGradBundleEquiv (I := I) (M := M) 0 2 x
           ((tensorCov (I := I) g 0 2).toFun
             (fun y : M => tensorSecondCovDeriv (I := I) g 0 2
               (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
@@ -325,7 +325,7 @@ theorem covGradRoughLapCurv_toSection_eq_frame_sum
         (tensorSecondCovDeriv (I := I) g 0 3
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (fun y : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection y) x -
-          covariantSlotBundleEquiv (I := I) (M := M) 0 2 x
+          covGradBundleEquiv (I := I) (M := M) 0 2 x
             ((tensorCov (I := I) g 0 2).toFun
               (fun y : M => tensorSecondCovDeriv (I := I) g 0 2
                 (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)

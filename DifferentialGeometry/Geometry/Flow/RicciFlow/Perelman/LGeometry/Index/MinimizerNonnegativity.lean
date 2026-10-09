@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SecondVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
-import DifferentialGeometry.Geometry.Variation.Field.Realization
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Realization
 
 set_option autoImplicit false
 

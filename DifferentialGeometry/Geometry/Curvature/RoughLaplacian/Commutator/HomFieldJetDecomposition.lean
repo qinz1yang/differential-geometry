@@ -202,20 +202,20 @@ private lemma slotExtTrace_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x 
     (metricDoubleTraceFib (I := I) (M := M) g r s x) V D v0 m]
   rw [show (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         metricDoubleTraceFib (I := I) (M := M) g r s x
-          ((covariantSlotBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)) =
+          ((covGradBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)) =
       ∑ i : Fin (Module.finrank ℝ E),
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           curryLastTwoTensorSlots (I := I) (M := M) r s x
-            ((covariantSlotBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)
+            ((covGradBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)
             (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x i x)) from
     metricDoubleTraceFib_apply (I := I) (M := M) g r s x
-      ((covariantSlotBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)]
+      ((covGradBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)]
   rw [sum_apply, Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [twoSlotPeel_eval (I := I) (M := M) r s x
-    ((covariantSlotBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)
+    ((covGradBundleEquiv (I := I) (M := M) r (s + 2) x).symm V v0)
     (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x i x) D m]
-  exact covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r (s + 2) x V v0 D
+  exact covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r (s + 2) x V v0 D
     (Fin.cons (smoothOrthoFrame (I := I) g x i x)
       (Fin.cons (smoothOrthoFrame (I := I) g x i x) m))
 
@@ -257,10 +257,10 @@ private lemma traceConj_eval (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M
     (smoothOrthoFrame (I := I) g x i x)
     (Fin.cons (smoothOrthoFrame (I := I) g x i x) (Fin.cons v0 m))]
   rw [swapTwoFib_eval (I := I) (M := M) r s x
-    ((covariantSlotBundleEquiv (I := I) (M := M) r (s + 2) x).symm
+    ((covGradBundleEquiv (I := I) (M := M) r (s + 2) x).symm
       (swapTwoFib (I := I) (M := M) r (s + 1) x V) (smoothOrthoFrame (I := I) g x i x))
     (smoothOrthoFrame (I := I) g x i x) v0 D m]
-  rw [covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) r (s + 2) x
+  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) r (s + 2) x
     (swapTwoFib (I := I) (M := M) r (s + 1) x V) (smoothOrthoFrame (I := I) g x i x) D
     (Fin.cons v0 (Fin.cons (smoothOrthoFrame (I := I) g x i x) m))]
   rw [swapTwoFib_eval (I := I) (M := M) r (s + 1) x V

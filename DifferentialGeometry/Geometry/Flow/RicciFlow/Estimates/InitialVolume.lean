@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.CompactSmallBall
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.InitialCompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactCurvatureControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.BallVolumeComparison
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 

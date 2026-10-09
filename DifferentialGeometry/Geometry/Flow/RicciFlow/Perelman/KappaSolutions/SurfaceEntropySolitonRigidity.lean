@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surface.EntropyMonotonicity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceEntropyFlow
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 
 set_option autoImplicit false

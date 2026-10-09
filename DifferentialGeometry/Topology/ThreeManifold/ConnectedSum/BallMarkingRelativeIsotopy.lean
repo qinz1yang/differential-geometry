@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Isotopy
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransitionIsotopy
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
 
 set_option autoImplicit false

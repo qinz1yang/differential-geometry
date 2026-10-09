@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.Morse.Cancellation.FirstCancellation
 import Mathlib.Topology.Instances.Matrix
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -484,7 +485,6 @@ open Classical in
 def leftSphere (q : M) : Set M :=
   if hq : q ∈ B.crit then B.D.leftSphere q hq B.ε B.c else ∅
 
-omit [T2Space M] [I.Boundaryless] in
 theorem sardValid {p q : M} (hp : p ∈ B.lowerIndexCriticalPoints) (hq : q ∈ B.upperIndexCriticalPoints) :
     B.D.sardValid B.ε p ((B.mem_upperIndexCriticalPoints.1 hq).1) ((B.mem_lowerIndexCriticalPoints.1 hp).1) := by
   have hpα : f p = B.α := B.hP p (B.mem_lowerIndexCriticalPoints.1 hp).1 (B.mem_lowerIndexCriticalPoints.1 hp).2

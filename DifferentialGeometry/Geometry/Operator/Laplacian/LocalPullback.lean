@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Operator.Pullback
 import DifferentialGeometry.Geometry.Operator.OrthonormalTrace
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 
 
 noncomputable section
@@ -61,7 +61,7 @@ theorem laplacian_localPull_of_contMDiffOn
     laplacian (Connection.LeviCivita (localPullMetric g Phi hPhi))
         (localPullMetric g Phi hPhi) (f ∘ Phi) x =
       laplacian (Connection.LeviCivita g) g f (Phi x) := by
-  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn hU hx hf
+  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ hU hx hf
   have hfx : ContMDiffAt I 𝓘(ℝ) ∞ f (Phi x) :=
     hf.contMDiffAt (hU.mem_nhds hx)
   have hcomp : (F ∘ Phi) =ᶠ[𝓝 x] (f ∘ Phi) :=

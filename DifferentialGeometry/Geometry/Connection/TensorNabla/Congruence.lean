@@ -132,9 +132,9 @@ theorem homBundleCovariantDerivativeGen_apply_congr
     (hA : MDifferentiableAt I (I.prod 𝓘(ℝ, F₁ →L[ℝ] F₂))
       (fun y => (⟨y, A y⟩ : TotalSpace (F₁ →L[ℝ] F₂)
         (fun y => V₁ y →L[ℝ] V₂ y))) x) (X : TangentSpace I x) :
-    _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂
       D₁ D₂ A x X =
-    _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂
       C₁ C₂ A x X := by
   apply ContinuousLinearMap.ext
   intro v
@@ -143,9 +143,9 @@ theorem homBundleCovariantDerivativeGen_apply_congr
   obtain ⟨Z, hZ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
     (n := (⊤ : ℕ∞)) x X
   rw [← hY, ← hZ,
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M F₁ V₁ F₂ V₂ D₁ D₂ A hA Z.mdifferentiableAt Y.mdifferentiableAt,
-    _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+    DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
       I M F₁ V₁ F₂ V₂ C₁ C₂ A hA Z.mdifferentiableAt Y.mdifferentiableAt,
     hDC₁ Y Y.mdifferentiableAt,
     hDC₂ (fun y => A y (Y y)) (hA.clm_bundle_apply Y.mdifferentiableAt)]

@@ -438,9 +438,9 @@ lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_c
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
             (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T)).toSection x) om) =
-        slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        slotInsertEndoFib (I := I) (M := M) 1 0 x
           (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) om from rfl]
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single_eq_cotangentToDual_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x om
       (Function.update w 0 (tangentLinearMapToModel
         (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x) (w 0)))]
@@ -538,7 +538,7 @@ lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (
   have hsec : unitModel (I := I) (M := M) g₀ 4
       (deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg) x m =
       Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) 4 0 x
+        (slotInsertEndoFib (I := I) (M := M) 4 0 x
           (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
             (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -546,7 +546,7 @@ lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (
     rw [unitModel]
     rw [show ((deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (I := I) (M := M) g₀ T g₁ g_bg).toSection x)
         (unitTensor (I := I) (M := M) x) =
-        slotInsertEndomorphism (I := I) (M := M) 4 0 x
+        slotInsertEndoFib (I := I) (M := M) 4 0 x
           (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T x)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
             (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -554,7 +554,7 @@ lemma deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc_unitModel_apply (
       rw [deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc, operatorFieldComposition_toSection]
       rfl]
   rw [hsec]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from
         (deTurckLieConnectionDifferenceDerivativeLoweredCc (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -726,9 +726,9 @@ lemma sharpFlatEndoCc_eq_slotInsert_fullRaised_deTurckLieConnectionDifferenceDer
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om) =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) om from rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [toModel_om_single_eq_cotangentToDual_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x om
     (Function.update m 0 (tangentLinearMapToModel
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) (m 0)))]
@@ -786,7 +786,7 @@ private lemma slotInsertEndoCc_add_endo_deTurckLieConnectionDifferenceDerivative
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -841,11 +841,11 @@ private lemma covGrad_slotInsert_fullRaised_id_eq_zero_deTurckLieConnectionDiffe
       (F := E) (V := fun y : M => TangentSpace I y) (n := (⊤ : ℕ∞)) x w
     rw [← hY]
     exact endoCovariantDerivative_fullRaised_id_eq_zero_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ Y x (m 0)]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (0 + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (0 + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
         (0 : ℝ) • (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from (zero_smul ℝ _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in

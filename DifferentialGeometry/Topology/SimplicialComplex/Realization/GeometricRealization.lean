@@ -7,19 +7,19 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {ι E : Type*} [Fintype ι] [DecidableEq ι] [DecidableEq E]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 def vertexEvaluation (v : ι → E) : (ι → ℝ) →ₗ[ℝ] E := Fintype.linearCombination ℝ v
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 @[simp] theorem vertexEvaluation_single (v : ι → E) (i : ι) :
     vertexEvaluation v (Pi.single i 1) = v i := by
   classical
   simp [vertexEvaluation, Fintype.linearCombination_apply]
 
-omit [FiniteDimensional ℝ E] in
 theorem vertexEvaluation_image_face (v : ι → E) (s : Finset ι) :
     vertexEvaluation v '' convexHull ℝ
       ((s.image (fun i => Pi.single i (1 : ℝ))) : Set (ι → ℝ)) =
@@ -34,7 +34,6 @@ theorem vertexEvaluation_image_face (v : ι → E) (s : Finset ι) :
   · rintro ⟨i, hi, rfl⟩
     exact ⟨Pi.single i 1, ⟨i, hi, rfl⟩, vertexEvaluation_single v i⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem vertexEvaluation_image_space (P : PreAbstractSimplicialComplex ι) (v : ι → E)
     (K : SimplicialComplex ℝ E) (hfaces : K.faces = (P.map v).faces) :
     vertexEvaluation v '' (standardRealization P).space = K.space := by
@@ -185,7 +184,6 @@ def abstractVertexComplex (K : SimplicialComplex ℝ E) :
     intro t hts ht
     exact K.down_closed hs (Finset.image_subset_image hts) (Finset.image_nonempty.mpr ht)
 
-omit [FiniteDimensional ℝ E] in
 theorem abstractVertexComplex_map (K : SimplicialComplex ℝ E) :
     ((abstractVertexComplex K).map Subtype.val).faces = K.faces := by
   classical
@@ -206,14 +204,13 @@ theorem abstractVertexComplex_map (K : SimplicialComplex ℝ E) :
     change t.image Subtype.val ∈ K.faces
     rwa [ht]
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem finite_vertices_of_finite_faces (K : SimplicialComplex ℝ E) (hK : K.faces.Finite) :
     K.vertices.Finite := by
   classical
   rw [K.vertices_eq]
   exact hK.biUnion (fun s _ => s.finite_toSet)
 
-omit [FiniteDimensional ℝ E] in
 theorem abstractVertexComplex_face_card_le (K : SimplicialComplex ℝ E) {d : ℕ}
     (hd : ∀ s ∈ K.faces, s.card ≤ d) :
     ∀ s ∈ (abstractVertexComplex K).faces, s.card ≤ d := by

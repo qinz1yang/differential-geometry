@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.HalfClosedInterval
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialCap
-import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

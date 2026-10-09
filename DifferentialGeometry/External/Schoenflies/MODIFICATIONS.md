@@ -255,14 +255,3 @@ the vendor predicate and its methods were renamed from `Graph.IsBridge` to
 `Graph.IsCycleBridge`; the cycle proofs, all other graph declarations, and
 their statements are unchanged. The compatibility rename preserves the
 original copyright and author headers and introduces no linter suppression.
-
-## 2026-10-03: Preserve original Graph bridge documentation
-
-Restored the two original documentation references in `Graph/Cycle.lean` to
-their exact historical text, including the original `Graph.IsBridge` and
-`G.IsBridge e` spellings. The compatibility API remains `Graph.IsCycleBridge`.
-
-The necessary code-level rename is retained for Lean and Mathlib v4.35.0-rc3,
-where upstream `Graph.IsBridge` denotes a singleton edge cut. This documentation
-restoration changes no declaration, mathematical statement, proof body, copyright,
-license, author attribution, or other original source documentation.

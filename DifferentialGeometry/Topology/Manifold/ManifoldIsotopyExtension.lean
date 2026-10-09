@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.AffineBallIsotopy
+import DifferentialGeometry.Topology.Manifold.BallChartStraightening
 import DifferentialGeometry.Topology.Manifold.EmbeddedBallContraction
 import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans

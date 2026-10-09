@@ -150,14 +150,14 @@ noncomputable def slotInsertHomTensorRSFib (r a c : ℕ) (x : M)
     homTensorRSSpaceT2 (I := I) (M := M)
   LinearMap.toContinuousLinearMap
     { toFun := fun D =>
-        covariantSlotBundleEquiv (I := I) (M := M) r c x
-          (A.comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D))
+        covGradBundleEquiv (I := I) (M := M) r c x
+          (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D))
       map_add' := fun D₁ D₂ => by
-        rw [map_add (covariantSlotBundleEquiv (I := I) (M := M) r a x).symm,
-          ContinuousLinearMap.comp_add, map_add (covariantSlotBundleEquiv (I := I) (M := M) r c x)]
+        rw [map_add (covGradBundleEquiv (I := I) (M := M) r a x).symm,
+          ContinuousLinearMap.comp_add, map_add (covGradBundleEquiv (I := I) (M := M) r c x)]
       map_smul' := fun k D => by
-        rw [map_smul (covariantSlotBundleEquiv (I := I) (M := M) r a x).symm,
-          ContinuousLinearMap.comp_smul, map_smul (covariantSlotBundleEquiv (I := I) (M := M) r c x)]
+        rw [map_smul (covGradBundleEquiv (I := I) (M := M) r a x).symm,
+          ContinuousLinearMap.comp_smul, map_smul (covGradBundleEquiv (I := I) (M := M) r c x)]
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -165,8 +165,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 @[simp] lemma slotInsertHomTensorRSFib_apply (r a c : ℕ) (x : M)
     (A : TensorRSSpace r a I x →L[ℝ] TensorRSSpace r c I x) (D : TensorRSSpace r (a + 1) I x) :
     slotInsertHomTensorRSFib (I := I) (M := M) r a c x A D =
-      covariantSlotBundleEquiv (I := I) (M := M) r c x
-        (A.comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D)) :=
+      covGradBundleEquiv (I := I) (M := M) r c x
+        (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D)) :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -179,10 +179,10 @@ lemma slotInsertHomTensorRSFib_apply_eval (r a c : ℕ) (x : M)
           slotInsertHomTensorRSFib (I := I) (M := M) r a c x A D) Dlow) (Fin.cons v0 vs) =
       Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace c I x from
-          A ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D v0)) Dlow) vs := by
+          A ((covGradBundleEquiv (I := I) (M := M) r a x).symm D v0)) Dlow) vs := by
   rw [slotInsertHomTensorRSFib_apply (I := I) (M := M) r a c x A D]
-  rw [covariantSlotBundleEquiv_apply_eval (I := I) (M := M) r c x
-    (A.comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D)) Dlow (Fin.cons v0 vs)]
+  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r c x
+    (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D)) Dlow (Fin.cons v0 vs)]
   have htail : Matrix.vecTail (Fin.cons v0 vs : Fin (c + 1) → TangentSpace I x) = vs := by
     funext j; simp [Matrix.vecTail, Fin.cons_succ]
   have hhead : (Fin.cons v0 vs : Fin (c + 1) → TangentSpace I x) 0 = v0 := by simp [Fin.cons_zero]
@@ -198,11 +198,11 @@ lemma slotInsertHomTensorRSFib_apply_toModel (r a c : ℕ) (x : M)
           slotInsertHomTensorRSFib (I := I) (M := M) r a c x A D) Dlow) (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace c I x from
-          A ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D
+          A ((covGradBundleEquiv (I := I) (M := M) r a x).symm D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))) Dlow) vs := by
   rw [slotInsertHomTensorRSFib_apply (I := I) (M := M) r a c x A D]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) r c x
-    (A.comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm D)) Dlow (Fin.cons v0 vs)]
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) r c x
+    (A.comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm D)) Dlow (Fin.cons v0 vs)]
   have htail : Matrix.vecTail (Fin.cons v0 vs : Fin (c + 1) → E) = vs := by
     funext j
     simp [Matrix.vecTail, Fin.cons_succ]
@@ -231,7 +231,7 @@ private theorem slotInsertHomTensorRSFib_apply_apply_contMDiff (r a c : ℕ)
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r c ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r c ℝ E)
         (E := fun z : M => TensorRSSpace r c I z) x
-        ((Ψ x) ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm (D x) (Y x)))) := by
+        ((Ψ x) ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x) (Y x)))) := by
   let : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
     tensorRSModelNormedAddCommGroup r (a + 1)
   let : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
@@ -242,7 +242,7 @@ private theorem slotInsertHomTensorRSFib_apply_apply_contMDiff (r a c : ℕ)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (a + 1)
   intro D Y
   have hH :=
-    (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r a).comp D.contMDiff
+    (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r a).comp D.contMDiff
   have hstep1 := ContMDiff.clm_bundle_apply (b := id) hH Y.contMDiff
   have hstep2 := ContMDiff.clm_bundle_apply (b := id) hΨ hstep1
   refine hstep2.congr ?_
@@ -269,7 +269,7 @@ private theorem slotInsertHomTensorRSFib_apply_contMDiff (r a c : ℕ)
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] TensorRSModel r c ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel r c ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace r c I z) x
-        ((Ψ x).comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm (D x)))) := by
+        ((Ψ x).comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x)))) := by
   let : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
     tensorRSModelNormedAddCommGroup r (a + 1)
   let : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
@@ -281,7 +281,7 @@ private theorem slotInsertHomTensorRSFib_apply_contMDiff (r a c : ℕ)
   intro D
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
     (V₁ := TangentSpace I) (V₂ := fun z : M => TensorRSSpace r c I z)
-    (φ := fun x => (Ψ x).comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm (D x)))
+    (φ := fun x => (Ψ x).comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x)))
   intro Y
   exact slotInsertHomTensorRSFib_apply_apply_contMDiff (I := I) (M := M) r a c Ψ hΨ D Y
 
@@ -295,7 +295,7 @@ theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (c + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel r (c + 1) ℝ E)
         (E := fun z : M => TensorRSSpace r (c + 1) I z) x
-        (covariantSlotBundleEquiv (I := I) (M := M) r c x (G x))) := by
+        (covGradBundleEquiv (I := I) (M := M) r c x (G x))) := by
   let : NormedAddCommGroup (TensorRSModel r (c + 1) ℝ E) :=
     tensorRSModelNormedAddCommGroup r (c + 1)
   let : NormedSpace ℝ (TensorRSModel r (c + 1) ℝ E) :=
@@ -305,11 +305,11 @@ theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
   let := tensorRSBundle_vector (I := I) (M := M) r (c + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (c + 1)
   have hcomp :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) r c).toDiffeomorph.contMDiff.comp hG
+    (covGradBundleSmoothEquiv (I := I) (M := M) r c).toDiffeomorph.contMDiff.comp hG
   refine hcomp.congr ?_
   intro x
   rw [Function.comp_apply,
-    covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r c x (G x)]
+    covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r c x (G x)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -329,7 +329,7 @@ theorem slotInsertHomTensorRSFib_contMDiff (r a c : ℕ)
   intro D
   have hG := slotInsertHomTensorRSFib_apply_contMDiff (I := I) (M := M) r a c Ψ hΨ D
   have hcov := covGradBundleEquiv_section_contMDiff (I := I) (M := M) r c
-    (fun x => (Ψ x).comp ((covariantSlotBundleEquiv (I := I) (M := M) r a x).symm (D x))) hG
+    (fun x => (Ψ x).comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x))) hG
   refine hcov.congr ?_
   intro x
   rfl

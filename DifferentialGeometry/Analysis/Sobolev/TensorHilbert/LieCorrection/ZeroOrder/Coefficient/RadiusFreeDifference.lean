@@ -680,7 +680,6 @@ private theorem b4_reindex_h2
   rw [iteratedCovGrad_reindexCoefficientInputSlots,
     norm_reindexCoefficientInputSlots_eq]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem b4_app_h2_mul
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :

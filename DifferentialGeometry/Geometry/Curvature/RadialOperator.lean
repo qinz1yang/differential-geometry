@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.Radial.Curvature
-import DifferentialGeometry.Geometry.Metric.Radial.Frame
+import DifferentialGeometry.Geometry.Metric.RadialCurvature
+import DifferentialGeometry.Geometry.Metric.RadialFrame
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.ReactionTensor
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
-import DifferentialGeometry.Geometry.Metric.Restriction.Distance
+import DifferentialGeometry.Geometry.Metric.RestrictionDistance
 
 noncomputable section
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 
 namespace DifferentialGeometry.Integral.Measure
 

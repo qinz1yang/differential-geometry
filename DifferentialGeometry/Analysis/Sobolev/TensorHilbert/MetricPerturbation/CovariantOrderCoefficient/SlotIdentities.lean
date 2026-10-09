@@ -32,7 +32,7 @@ private lemma termSlotFib_toModel_apply (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → E) :
     Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
         (Matrix.vecTail v) := by
   exact termSlotFib_apply_eval (I := I) (M := M) s x Term D
@@ -109,7 +109,7 @@ theorem termSlotEndoCc_succ
           (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
             (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0)))) from rfl]
   rw [termSlotFib_toModel_apply]
-  rw [slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
   simp only [TensorMultilinear.tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
   congr 1

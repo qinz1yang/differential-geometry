@@ -15,13 +15,10 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_normalizedNeck_of_incoming_strongNecks
+theorem TerminalLimitMetric.eventually_normalizedNeck_of_incoming_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
@@ -41,7 +38,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact L.eventually_normalizedNeck_of_canonical_neighborhoods hτ hq hcanonical hPhi hpinch
     x hx hδ hδ1 hepsδ hfit k hk neck
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound
+theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
@@ -71,7 +68,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact (congrArg Subtype.val (hnkmap z)).trans (hmap z)
   exact ⟨nk', hcenter, hvalues⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
+theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 11) (hepsδ : eps < δ)
@@ -90,7 +87,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact L.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound hτ hq0 hbound x hx hδ
     hδsmall hepsδ hfit (fun n => (neck n).toSpatialNeck)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks_of_scalar_derivative_bound
+theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks_of_scalar_derivative_bound
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
@@ -128,7 +125,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨K, hK⟩ := nk.exists_short_spherical_barrier hδsmall A C2 hA hC2 hscale
   exact ⟨n, nk, K, hmap, hK⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_strongNecks
+theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 8646)
     (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
@@ -163,7 +160,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   obtain ⟨K, hK⟩ := nk.exists_short_spherical_barrier hδsmall A C2 hA hC2 hscale
   exact ⟨n, nk, K, hmap, hK⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_spatialNeck_of_canonical_caps
+theorem TerminalLimitMetric.eventually_spatialNeck_of_canonical_caps
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 11)
@@ -194,7 +191,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact ⟨v, nk', hv, hm⟩
 
 set_option backward.isDefEq.respectTransparency false in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_cap_spherical_barrier
+theorem TerminalLimitMetric.eventually_cap_spherical_barrier
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
@@ -258,7 +255,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact ⟨hqc.trans (hmap ⟨(q.1, 1 / 2 + (q.2 : ℝ)), hz⟩).symm, hmem⟩
 
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neck_half_slice_edist_le
+private theorem neck_half_slice_edist_le
     (L : G.TerminalLimitMetric) {δ : ℝ} {v : G.terminalRegularOpen}
     (nk : SpatialNeck L.metric δ v) (p q : Sphere 2) :
     riemannianEDistOf L.metric (nk.map (p, 1 / 2)) (nk.map (q, 1 / 2)) ≤
@@ -293,7 +290,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       congr 1
       ring
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.neck_boundary_edist_le_of_scalar_comparison
+private theorem neck_boundary_edist_le_of_scalar_comparison
     (L : G.TerminalLimitMetric) {δ C Q : ℝ} (hC : 1 ≤ C) (hQ : 0 < Q)
     {v : G.terminalRegularOpen} (nk : SpatialNeck L.metric δ v)
     (hscalar : Q / (2 * C) < metricScalarAt L.metric v)
@@ -327,7 +324,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   nlinarith
 
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonical_domain_edist_lt
+private theorem canonical_domain_edist_lt
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps C1 C2 : ℝ} (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n)) :
@@ -361,7 +358,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
             Real.sqrt (G.flow.scalar (τ n) x.val) := by ring
         _ ≤ 4 * C1 := (div_le_iff₀ hrootn).mpr (by nlinarith)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.eventually_canonical_domain_metric_lower
+private theorem eventually_canonical_domain_metric_lower
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {K : Set G.terminalRegularOpen} (hK : IsCompact K) :
     ∀ᶠ n in atTop, ∀ y ∈ K, ∀ v : TangentSpace ThreeModel y,
@@ -377,7 +374,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   nlinarith
 
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.eventually_canonical_region_subset_ball_of_neck_boundary
+private theorem eventually_canonical_region_subset_ball_of_neck_boundary
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps C1 C2 : ℝ} (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n))
@@ -430,7 +427,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       · positivity
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.spatial_neck_or_cap_of_canonical_neighborhoods
+theorem TerminalLimitMetric.spatial_neck_or_cap_of_canonical_neighborhoods
     (L : G.TerminalLimitMetric) {eps δ q C1 C2 : ℝ}
     (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
     (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q)
@@ -510,7 +507,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     have hupperK := hupper nk K (interior_subset hxK) hKW hscalarV hfront
     exact Or.inr ⟨v, nk, K, hmodel', hxK, hballK, hupperK, hscalarK, hscalarN, hfront, hemb, c, hc, hcollar⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_spherical_barrier_at_level_of_canonical
+theorem TerminalLimitMetric.exists_spherical_barrier_at_level_of_canonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q A : ℝ}
     (hδsmall : δ < 1 / 20000) (hA : 0 < A)
     (hqA : q < 4 * C2 * A)
@@ -609,7 +606,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     · exact Or.inr ⟨hfront, hemb, hcollar⟩
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_spherical_barrier_at_level
+theorem exists_uniform_spherical_barrier_at_level
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
     ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -657,7 +654,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     hscale hy hyA (fun t ht hx => hcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le)
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_spherical_barrier_at_level
+theorem TerminalLimitMetric.exists_spherical_barrier_at_level
     (L : G.TerminalLimitMetric) {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
     ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
       ∀ (A : ℝ) (x y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →
@@ -696,7 +693,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact ⟨C2, q, hC2, hq, hbarrier L⟩
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.nonempty_spatialNeck_of_canonical_along_minimizer
+theorem TerminalLimitMetric.nonempty_spatialNeck_of_canonical_along_minimizer
     (L : G.TerminalLimitMetric) {eps δ α q C1 C2 : ℝ}
     (hδ : 0 < δ)
     (hα : α < 1 / 11) (hreserve : 13000 * δ ≤ α)

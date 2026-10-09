@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.OpenCover.Induction
+import DifferentialGeometry.Topology.OpenCoverInduction
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Vanishing
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Homeomorph
 import Mathlib.Topology.Homeomorph.Lemmas

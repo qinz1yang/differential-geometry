@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowDerivativeBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Windowed.Bounds.ScalarDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedGoodPointBounds
 
 set_option autoImplicit false
 
@@ -39,10 +39,7 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_scalar_derivative_bounds_of_windowedModelWitness :
+theorem exists_scalar_derivative_bounds_of_windowedModelWitness :
     ∃ Cw : ℝ, 0 < Cw ∧
       ∀ {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s) {eps kappa : ℝ}
         {y : P.Carrier} {t : ℝ}, WindowedModelWitness eps kappa G.flow y t → eps ≤ 1 / 4 →
@@ -249,7 +246,7 @@ theorem exists_cap_window_scalar_derivative_gradient_constants (τQ : ℝ) (hτQ
           Cgrad * Gk.flow.scalar t y * Real.sqrt (Gk.flow.scalar t y) *
             Real.sqrt ((Gk.flow.base.metric t).inner y v v) := by
   obtain ⟨Cw, hCw, hW⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_scalar_derivative_bounds_of_windowedModelWitness.{u}
+    OrientedThreeStage.IncomingSlab.exists_scalar_derivative_bounds_of_windowedModelWitness.{u}
   obtain ⟨c₀, hc₀, hage⟩ := exists_standard_time_le_of_close_scalar_mul_lt
   set Θ₂ : ℝ := (τQ + 1) / (τQ + 1 + c₀) with hΘ₂
   have hΘ₂0 : 0 < Θ₂ := by positivity

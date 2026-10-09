@@ -595,7 +595,7 @@ lemma tensorMetricCompatDiff_apply
             (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) T x v)) := by
   rfl
 
-open DifferentialGeometry.Tensor0SNabla in
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.HomConnection in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
@@ -620,7 +620,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
   have hYfield : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hHom := _root_.CovariantDerivative.homFun_apply
+  have hHom := HomConnection.homBundleCovariantDerivativeFun_apply_eq
     (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel s ℝ E)
     (V := fun x : M => Tensor0SSpace s I x)
     (cov_U := LeviCivita (I := I) g)
@@ -629,7 +629,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
   have hsucc : tensor0SCurry (I := I) (M := M) s x
       (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) =
-      _root_.CovariantDerivative.homFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
+      HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M) (E_U := E) (U := TangentSpace I)
         (F := Tensor0SModel s ℝ E)
         (V := fun x : M => Tensor0SSpace s I x)
         (cov_U := LeviCivita (I := I) g)
@@ -642,7 +642,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
   rw [hHom]
   abel
 
-open DifferentialGeometry.Tensor0SNabla in
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.HomConnection in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensor0SCovariantDerivative_succ_consEval_peel
@@ -688,7 +688,7 @@ lemma tensor0SCovariantDerivative_succ_consEval_peel
     add_apply, hterm2]
   ring
 
-open DifferentialGeometry.Tensor0SNabla in
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.HomConnection in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma tensor0SCovariantDerivative_succ_consEval_peel_natural

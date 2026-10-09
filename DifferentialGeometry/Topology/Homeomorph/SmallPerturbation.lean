@@ -4,7 +4,6 @@ import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.Topology.Maps.Basic
 import Mathlib.Topology.MetricSpace.PartitionOfUnity
-
 open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear

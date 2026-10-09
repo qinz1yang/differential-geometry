@@ -9,6 +9,10 @@ namespace DifferentialGeometry.Topology
 
 universe u
 
+def poincareStandardSumClosed : Prop :=
+  ∀ L : List (ConnectedClosedOrientedManifold.{u} 3),
+    (∀ F ∈ L, isPoincareStandard F.Carrier) → isPoincareStandard (finiteConnectedSum L).Carrier
+
 def isSphereTwoTimesCircleFactor (F : ConnectedClosedOrientedManifold.{u} 3) : Prop :=
   ∃ f : F.Carrier ≃ₘ⟮𝓡 3, (𝓡 2).prod (𝓡 1)⟯ SphereTwoTimesCircle,
     f.preservesOrientation F.orientation sphereTwoTimesCircleOrientation
@@ -40,9 +44,9 @@ namespace ClosedOrientedManifold
 
 variable (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]
 
-theorem isStandardConnectedSum_of_component (C : ConnectedComponents M.Carrier)
-    (h : isStandardConnectedSum (M.component C).Carrier) : isStandardConnectedSum M.Carrier :=
-  isStandardConnectedSum_of_diffeomorph (componentDiffeomorph M C) h
+theorem isPoincareStandard_of_component (C : ConnectedComponents M.Carrier)
+    (h : isPoincareStandard (M.component C).Carrier) : isPoincareStandard M.Carrier :=
+  isPoincareStandard_of_diffeomorph (componentDiffeomorph M C) h
 
 end ClosedOrientedManifold
 
@@ -203,8 +207,61 @@ theorem exists_completeEnumeration (C : ConnectedComponents M.Carrier) :
   exact ⟨s.toList, s.nodup_toList, fun F hF => (hs F).mp (Finset.mem_toList.mp hF),
     fun F hF => Finset.mem_toList.mpr ((hs F).mpr hF)⟩
 
+theorem componentwise_isPoincareStandard (h : E.localReconstruction)
+    (hctrl : E.poincareControlled)
+    (hnext : ∀ C : ConnectedComponents Q.Carrier, isPoincareStandard (Q.component C).Carrier)
+    (hsum : poincareStandardSumClosed.{u}) :
+    ∀ C : ConnectedComponents M.Carrier, isPoincareStandard (M.component C).Carrier := by
+  intro C
+  obtain ⟨L, hL⟩ := E.exists_completeEnumeration C
+  obtain ⟨b, K, hKlen, hKfac, -, ⟨ρ⟩⟩ := h C L hL
+  refine isPoincareStandard_of_diffeomorph ρ.1 (hsum (L ++ K) ?_)
+  intro F hF
+  rcases List.mem_append.mp hF with hF | hF
+  · obtain ⟨x, -, rfl⟩ := hL.2.1 F hF
+    rcases hx : E.presentation (E.capping.coreInclusion x) with q | d
+    · rw [E.associatedFactor_eq_of_presentation_eq_inl x q hx]
+      exact hnext (ConnectedComponents.mk q)
+    · rw [E.associatedFactor_eq_of_presentation_eq_inr x d hx]
+      exact hctrl (ConnectedComponents.mk d)
+  · exact isPoincareStandard_of_standard_factor F
+      (isStandardFactor_of_isSphereTwoTimesCircleFactor (hKfac F hF))
 
 end SphericalCutCapTransition
 
+namespace FiniteCutCapTrace
+
+variable (T : FiniteCutCapTrace.{u})
+
+theorem componentwise_isPoincareStandard
+    (h : ∀ i : Fin T.eventCount, (T.transition i).localReconstruction)
+    (hctrl : T.poincareControlled) (hext : T.extinct) (hsum : poincareStandardSumClosed.{u}) :
+    ∀ i : Fin (T.eventCount + 1), ∀ C : ConnectedComponents (T.stage i).Carrier,
+      isPoincareStandard ((T.stage i).component C).Carrier := by
+  have hbase : ∀ C : ConnectedComponents (T.stage (Fin.last T.eventCount)).Carrier,
+      isPoincareStandard ((T.stage (Fin.last T.eventCount)).component C).Carrier := by
+    have hEmpty : IsEmpty (ConnectedComponents (T.stage (Fin.last T.eventCount)).Carrier) :=
+      ConnectedComponents.isEmpty_iff_isEmpty.mpr hext
+    intro C
+    exact hEmpty.elim C
+  refine Fin.reverseInduction (motive := fun j => ∀ C : ConnectedComponents (T.stage j).Carrier,
+    isPoincareStandard ((T.stage j).component C).Carrier) hbase ?_
+  intro j ih
+  exact (T.transition j).componentwise_isPoincareStandard (h j) (hctrl j) ih hsum
+
+theorem isPoincareStandard_of_initialIdentification
+    (h : ∀ i : Fin T.eventCount, (T.transition i).localReconstruction)
+    (hctrl : T.poincareControlled) (hext : T.extinct) (hsum : poincareStandardSumClosed.{u})
+    (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]
+    (Φ : T.InitialIdentification M) : isPoincareStandard M.Carrier := by
+  have hcomp := T.componentwise_isPoincareStandard h hctrl hext hsum 0
+  have : ConnectedSpace (T.stage 0).Carrier :=
+    Φ.1.toHomeomorph.connectedSpace_iff.mp inferInstance
+  let C : ConnectedComponents (T.stage 0).Carrier :=
+    ConnectedComponents.mk (Φ.1 (Classical.choice inferInstance))
+  exact isPoincareStandard_of_diffeomorph Φ.1
+    ((T.stage 0).isPoincareStandard_of_component C (hcomp C))
+
+end FiniteCutCapTrace
 
 end DifferentialGeometry.Topology

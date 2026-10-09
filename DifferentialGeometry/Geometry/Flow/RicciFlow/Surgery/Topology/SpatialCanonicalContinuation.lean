@@ -14,45 +14,42 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBefore_of_threshold_le {ε C1 C2 q q' τmin t₀ : ℝ} (hq : q ≤ q')
+theorem canonicalBefore_of_threshold_le {ε C1 C2 q q' τmin t₀ : ℝ} (hq : q ≤ q')
     (hG : G.CanonicalBefore ε C1 C2 q τmin t₀) : G.CanonicalBefore ε C1 C2 q' τmin t₀ :=
   fun y t ht hR hτ => hG y t ht (hq.trans_lt hR) hτ
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundBefore_of_threshold_le {Ctime : ℝ≥0} {q q' t₀ : ℝ} (hq : q ≤ q')
+theorem derivativeBoundBefore_of_threshold_le {Ctime : ℝ≥0} {q q' t₀ : ℝ} (hq : q ≤ q')
     (hG : G.DerivativeBoundBefore Ctime q t₀) : G.DerivativeBoundBefore Ctime q' t₀ :=
   fun y t ht hR => hG y t ht (hq.trans_lt hR)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.gradientBoundBefore_of_threshold_le {Cgrad : ℝ≥0} {q q' t₀ : ℝ} (hq : q ≤ q')
+theorem gradientBoundBefore_of_threshold_le {Cgrad : ℝ≥0} {q q' t₀ : ℝ} (hq : q ≤ q')
     (hG : G.GradientBoundBefore Cgrad q t₀) : G.GradientBoundBefore Cgrad q' t₀ :=
   fun y t ht hR => hG y t ht (hq.trans_lt hR)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalBefore_of_threshold_le {ε C1 C2 q q' t₀ : ℝ} (hq : q ≤ q')
+theorem spatiallyCanonicalBefore_of_threshold_le {ε C1 C2 q q' t₀ : ℝ} (hq : q ≤ q')
     (hG : G.SpatiallyCanonicalBefore ε C1 C2 q t₀) : G.SpatiallyCanonicalBefore ε C1 C2 q' t₀ :=
   fun y t ht hR => hG y t ht (hq.trans_lt hR)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundOn_mono {Ctime : ℝ≥0} {qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
+theorem derivativeBoundOn_mono {Ctime : ℝ≥0} {qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
     (hG : G.DerivativeBoundOn Ctime qcan t₀ η₂) : G.DerivativeBoundOn Ctime qcan t₀ η₁ :=
   fun y t hat ht₀ htη hts hR => hG y t hat ht₀ (htη.trans_le (by linarith)) hts hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.gradientBoundOn_mono {Cgrad : ℝ≥0} {qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
+theorem gradientBoundOn_mono {Cgrad : ℝ≥0} {qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
     (hG : G.GradientBoundOn Cgrad qcan t₀ η₂) : G.GradientBoundOn Cgrad qcan t₀ η₁ :=
   fun y t hat ht₀ htη hts hR => hG y t hat ht₀ (htη.trans_le (by linarith)) hts hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalOn_mono {ε C1 C2 qcan τmin t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
+theorem canonicalOn_mono {ε C1 C2 qcan τmin t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
     (hG : G.CanonicalOn ε C1 C2 qcan τmin t₀ η₂) : G.CanonicalOn ε C1 C2 qcan τmin t₀ η₁ :=
   fun y t hat ht₀ htη hts hR hτ => hG y t hat ht₀ (htη.trans_le (by linarith)) hts hR hτ
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.spatiallyCanonicalOn_mono {ε C1 C2 qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
+theorem spatiallyCanonicalOn_mono {ε C1 C2 qcan t₀ η₁ η₂ : ℝ} (h : η₁ ≤ η₂)
     (hG : G.SpatiallyCanonicalOn ε C1 C2 qcan t₀ η₂) :
     G.SpatiallyCanonicalOn ε C1 C2 qcan t₀ η₁ :=
   fun y t hat ht₀ htη hts hR => hG y t hat ht₀ (htη.trans_le (by linarith)) hts hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_boundsOn_spatiallyCanonicalOn {ε C1 C2 C1s C2s qcan qs τmin t₀ : ℝ}
+theorem exists_boundsOn_spatiallyCanonicalOn {ε C1 C2 C1s C2s qcan qs τmin t₀ : ℝ}
     {Ctime Cgrad : ℝ≥0}
     (h₁ : ∃ η : ℝ, 0 < η ∧ G.DerivativeBoundOn Ctime qcan t₀ η ∧
       G.GradientBoundOn Cgrad qcan t₀ η ∧ G.CanonicalOn ε C1 C2 qcan τmin t₀ η)
@@ -65,7 +62,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     G.gradientBoundOn_mono (min_le_left _ _) hg, G.canonicalOn_mono (min_le_left _ _) hc,
     G.spatiallyCanonicalOn_mono (min_le_right _ _) hs⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.canonicalBefore_end_of_continuation_spatial {ε C1 C2 C1s C2s qcan qs τmin : ℝ}
+theorem canonicalBefore_end_of_continuation_spatial {ε C1 C2 C1s C2s qcan qs τmin : ℝ}
     {Ctime Cgrad : ℝ≥0} (N : ℝ → Prop)
     (hN : ∀ t₀ ∈ Ioo a s, G.CanonicalBefore ε C1 C2 qcan τmin t₀ →
       G.DerivativeBoundBefore Ctime qcan t₀ → G.GradientBoundBefore Cgrad qcan t₀ →

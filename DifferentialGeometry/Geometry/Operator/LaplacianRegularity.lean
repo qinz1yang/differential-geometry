@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Geometry.Operator.TimeLaplacian
 
 noncomputable section
@@ -20,7 +20,7 @@ theorem contMDiffOn_laplacian_leviCivita
     (hU : IsOpen U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (laplacian (Connection.LeviCivita g) g f) U := by
   intro x hx
-  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn hU hx hf
+  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ hU hx hf
   have hLF : ContMDiff I 𝓘(ℝ, ℝ) ∞ (laplacian (Connection.LeviCivita g) g F) := by
     apply (Δ_g_contMDiff g ⟨F, hF⟩).congr
     intro y
@@ -116,7 +116,7 @@ theorem contMDiffOn_laplacian_leviCivita_prod_of_isOpen
     ContMDiffOn (IP.prod I) 𝓘(ℝ, ℝ) ∞
       (fun z : P × M => laplacian (Connection.LeviCivita g) g (f z.1) z.2) D := by
   intro z hz
-  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn hD hz hf
+  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ hD hz hf
   have hLF := contMDiff_laplacian_leviCivita_prod (I := I) (IP := IP) g
     (fun p q => F (p, q)) hF
   have hEq : ∀ᶠ r in 𝓝 z,

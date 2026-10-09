@@ -9,9 +9,6 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 
@@ -21,7 +18,7 @@ variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 private local instance : IsManifold ThreeModel 1 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.closedSolution_riemannNorm
+private theorem TerminalLimitMetric.closedSolution_riemannNorm
     (L : G.TerminalLimitMetric) {c : ℝ} (hcs : c ≤ s) (t : ℝ)
     (x : G.terminalRegularOpen) :
     Real.sqrt (normSq0S ((L.closedSolution ⊤ hcs).base.metric t)
@@ -31,14 +28,14 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   simp only [SolutionFamily.rm04, metricRm04_apply, L.closedSolution_metric]
   rw [rmNormSq_restrictOpen]
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_riemannNorm_before
+private theorem TerminalLimitMetric.extendedMetric_riemannNorm_before
     (L : G.TerminalLimitMetric) {t : ℝ} (ht : t < s) (x : G.terminalRegularOpen) :
     Real.sqrt (normSq0S (L.extendedMetric t) x 4 (metricRm04At (L.extendedMetric t) x)) =
       G.riemannNorm t x.val := by
   rw [L.extendedMetric_before ht, rmNormSq_restrictOpen]
   rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_riemannNorm
+theorem TerminalLimitMetric.tendsto_riemannNorm
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) :
     Tendsto (fun t => G.riemannNorm t x.val) (𝓝[<] s)
       (𝓝 (Real.sqrt (normSq0S L.metric x 4 (metricRm04At L.metric x)))) := by

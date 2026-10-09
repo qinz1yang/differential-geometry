@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulSubmanifold
-import DifferentialGeometry.Geometry.Geodesic.Local.Germ
+import DifferentialGeometry.Geometry.Comparison.Soul.GeodesicGerms
 
 set_option autoImplicit false
 

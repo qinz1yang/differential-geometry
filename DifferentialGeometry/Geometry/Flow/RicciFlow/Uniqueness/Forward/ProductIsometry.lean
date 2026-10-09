@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Product.Isometry
+import DifferentialGeometry.Geometry.Metric.ProductIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Isometry
 
 noncomputable section

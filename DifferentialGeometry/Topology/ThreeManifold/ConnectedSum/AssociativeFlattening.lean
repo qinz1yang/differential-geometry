@@ -709,6 +709,60 @@ private theorem flattenMap_flattenInv (X Y Z : ConnectedClosedOrientedManifold.{
         exact congrArg (inr (orientedBallChart X).toBallChart
           (factorChartInl Y Z dY' δ h2).toBallChart boundaryAttachment.1.toHomeomorph) hq.symm
 
+def ConnectedSumFlatteningIsoCanonical : Prop :=
+  ∀ (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
+    (δ dY' : OrientedBallChart Y.toClosedOrientedManifold)
+    (h1 : ∀ x ∈ closedBall (0 : E3) 2, dY'.chart x ∉ δ.chart '' closedBall (0 : E3) 1)
+    (h2 : ∀ x ∈ closedBall (0 : E3) 2, δ.chart x ∉ dY'.chart '' closedBall (0 : E3) 1),
+    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+      (smoothConnectedSum (leftSum X Y δ) Z (factorChartInr X Y δ dY' h1)
+        (orientedBallChart Z) boundaryAttachment
+        ).toConnectedClosedOrientedManifold.toClosedOrientedManifold
+      (smoothConnectedSum X (rightSum Y Z dY') (orientedBallChart X)
+        (factorChartInl Y Z dY' δ h2) boundaryAttachment
+        ).toConnectedClosedOrientedManifold.toClosedOrientedManifold)
+
+theorem connectedSumAssociative_of_flatteningIsoCanonical
+    (h : ConnectedSumFlatteningIsoCanonical.{u}) : connectedSumAssociative.{u} := by
+  intro X Y Z
+  obtain ⟨dY', δ, h1, h2⟩ := exists_disjointOrientedBallChart_closedBall (orientedBallChart Y)
+  let A := (smoothConnectedSum X Y (orientedBallChart X) δ boundaryAttachment
+    ).toConnectedClosedOrientedManifold
+  let B := (smoothConnectedSum Y Z dY' (orientedBallChart Z) boundaryAttachment
+    ).toConnectedClosedOrientedManifold
+  let f : OrientedBallChart A.toClosedOrientedManifold := factorChartInr X Y δ dY' h1
+  let g : OrientedBallChart B.toClosedOrientedManifold := factorChartInl Y Z dY' δ h2
+  obtain ⟨Ψd, hΨdo, hΨd⟩ := selfTransport_holds (orientedBallChart Y) δ
+  obtain ⟨hAB⟩ := csTransport_diffeomorph_preservesOrientation (orientedBallChart X)
+    (orientedBallChart X) (orientedBallChart Y) δ boundaryAttachment
+    (Diffeomorph.refl (𝓡 3) X.Carrier ∞) Ψd (fun _ _ => rfl)
+    (fun x hx => by simpa only [Diffeomorph.coe_toHomeomorph] using hΨd x hx)
+    (Diffeomorph.preservesOrientation_refl X.orientation)
+  obtain ⟨Ψd', hΨd'o, hΨd'⟩ := selfTransport_holds (orientedBallChart Y) dY'
+  obtain ⟨hBQ⟩ := csTransport_diffeomorph_preservesOrientation (orientedBallChart Y) dY'
+    (orientedBallChart Z) (orientedBallChart Z) boundaryAttachment Ψd'
+    (Diffeomorph.refl (𝓡 3) Z.Carrier ∞)
+    (fun x hx => by simpa only [Diffeomorph.coe_toHomeomorph] using hΨd' x hx)
+    (fun _ _ => rfl) hΨd'o
+  obtain ⟨Φ₁, hΦ₁o⟩ := hAB
+  obtain ⟨Φ₂, hΦ₂o⟩ := hBQ
+  obtain ⟨step1⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_orientedDiffeomorph
+    Φ₁ hΦ₁o (orientedBallChart Z) boundaryAttachment
+  obtain ⟨step2⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_leftChart
+    (orientedBallChart A) f (orientedBallChart Z) boundaryAttachment
+  obtain ⟨step3⟩ := h X Y Z δ dY' h1 h2
+  obtain ⟨step4⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_rightChart
+    (orientedBallChart X) g (orientedBallChart B) boundaryAttachment
+  obtain ⟨step5⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_orientedDiffeomorph_right
+    Φ₂.symm (Diffeomorph.preservesOrientation_symm hΦ₂o) (orientedBallChart X)
+    boundaryAttachment
+  exact ⟨step1.trans (step2.trans (step3.trans (step4.trans step5)))⟩
+
+theorem connectedSumFlatteningIsoCanonical_of_flatteningIso
+    (h : ConnectedSumFlatteningIso.{u}) : ConnectedSumFlatteningIsoCanonical.{u} :=
+  fun X Y Z δ dY' h1 h2 =>
+    h X Y Z δ dY' (factorChartInr X Y δ dY' h1) (factorChartInl Y Z dY' δ h2)
+
 def connectedSumFlatteningMap (X Y Z : ConnectedClosedOrientedManifold.{u} 3)
     (δ dY' : OrientedBallChart Y.toClosedOrientedManifold)
     (h1 : ∀ x ∈ closedBall (0 : E3) 2, dY'.chart x ∉ δ.chart '' closedBall (0 : E3) 1)
@@ -1384,18 +1438,8 @@ private theorem isLocalDiffeomorph_flattenMap :
         boundaryAttachment.1)
       (g := flattenMap X Y Z δ dY' h1 h2) hgf (hLc p)
 
-theorem nonempty_orientedDiffeomorph_smoothConnectedSum_assoc
-    (M N P : ConnectedClosedOrientedManifold.{u} 3)
-    (δm dNm : OrientedBallChart N.toClosedOrientedManifold)
-    (h1m : ∀ x ∈ closedBall (0 : E3) 2, dNm.chart x ∉ δm.chart '' closedBall (0 : E3) 1)
-    (h2m : ∀ x ∈ closedBall (0 : E3) 2, δm.chart x ∉ dNm.chart '' closedBall (0 : E3) 1) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (smoothConnectedSum (leftSum M N δm) P (factorChartInr M N δm dNm h1m)
-        (orientedBallChart P) boundaryAttachment
-        ).toConnectedClosedOrientedManifold.toClosedOrientedManifold
-      (smoothConnectedSum M (rightSum N P dNm) (orientedBallChart M)
-        (factorChartInl N P dNm δm h2m) boundaryAttachment
-        ).toConnectedClosedOrientedManifold.toClosedOrientedManifold) := by
+theorem connectedSumFlatteningIsoCanonical_holds : ConnectedSumFlatteningIsoCanonical.{u} := by
+  intro M N P δm dNm h1m h2m
   let S := smoothConnectedSum (leftSum M N δm) P (factorChartInr M N δm dNm h1m)
     (orientedBallChart P) boundaryAttachment
   let S' := smoothConnectedSum M (rightSum N P dNm) (orientedBallChart M)
@@ -1512,41 +1556,7 @@ theorem nonempty_orientedDiffeomorph_smoothConnectedSum_assoc
 
 end
 
-theorem connectedSum_assoc (X Y Z : ConnectedClosedOrientedManifold.{u} 3) :
-    Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-      (connectedSum (connectedSum X Y) Z).toClosedOrientedManifold
-      (connectedSum X (connectedSum Y Z)).toClosedOrientedManifold) := by
-  obtain ⟨dY', δ, h1, h2⟩ := exists_disjointOrientedBallChart_closedBall (orientedBallChart Y)
-  let A := (smoothConnectedSum X Y (orientedBallChart X) δ boundaryAttachment
-    ).toConnectedClosedOrientedManifold
-  let B := (smoothConnectedSum Y Z dY' (orientedBallChart Z) boundaryAttachment
-    ).toConnectedClosedOrientedManifold
-  let f : OrientedBallChart A.toClosedOrientedManifold := factorChartInr X Y δ dY' h1
-  let g : OrientedBallChart B.toClosedOrientedManifold := factorChartInl Y Z dY' δ h2
-  obtain ⟨Ψd, hΨdo, hΨd⟩ := selfTransport_holds (orientedBallChart Y) δ
-  obtain ⟨hAB⟩ := csTransport_diffeomorph_preservesOrientation (orientedBallChart X)
-    (orientedBallChart X) (orientedBallChart Y) δ boundaryAttachment
-    (Diffeomorph.refl (𝓡 3) X.Carrier ∞) Ψd (fun _ _ => rfl)
-    (fun x hx => by simpa only [Diffeomorph.coe_toHomeomorph] using hΨd x hx)
-    (Diffeomorph.preservesOrientation_refl X.orientation)
-  obtain ⟨Ψd', hΨd'o, hΨd'⟩ := selfTransport_holds (orientedBallChart Y) dY'
-  obtain ⟨hBQ⟩ := csTransport_diffeomorph_preservesOrientation (orientedBallChart Y) dY'
-    (orientedBallChart Z) (orientedBallChart Z) boundaryAttachment Ψd'
-    (Diffeomorph.refl (𝓡 3) Z.Carrier ∞)
-    (fun x hx => by simpa only [Diffeomorph.coe_toHomeomorph] using hΨd' x hx)
-    (fun _ _ => rfl) hΨd'o
-  obtain ⟨Φ₁, hΦ₁o⟩ := hAB
-  obtain ⟨Φ₂, hΦ₂o⟩ := hBQ
-  obtain ⟨step1⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_orientedDiffeomorph
-    Φ₁ hΦ₁o (orientedBallChart Z) boundaryAttachment
-  obtain ⟨step2⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_leftChart
-    (orientedBallChart A) f (orientedBallChart Z) boundaryAttachment
-  obtain ⟨step3⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_assoc X Y Z δ dY' h1 h2
-  obtain ⟨step4⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_rightChart
-    (orientedBallChart X) g (orientedBallChart B) boundaryAttachment
-  obtain ⟨step5⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_orientedDiffeomorph_right
-    Φ₂.symm (Diffeomorph.preservesOrientation_symm hΦ₂o) (orientedBallChart X)
-    boundaryAttachment
-  exact ⟨step1.trans (step2.trans (step3.trans (step4.trans step5)))⟩
+theorem connectedSumAssociative_holds : connectedSumAssociative.{u} :=
+  connectedSumAssociative_of_flatteningIsoCanonical connectedSumFlatteningIsoCanonical_holds
 
 end DifferentialGeometry.Topology

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Handle.CollaredGluing.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.CollaredGluing
 import DifferentialGeometry.Topology.Double.Basic
 import DifferentialGeometry.Topology.Double.SeamPatch
 import Mathlib.Logic.Relation

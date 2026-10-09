@@ -64,7 +64,7 @@ theorem flatPolygonContractibleLoop (g : SmoothRiemannianMetric I Q) (P : Flatte
     (hhom : ∀ p : Sphere 2, ContinuousMap.Homotopic
       (flatPolygonLoop g P N ((Γ p).1) (hcd p)).toContinuousLoop
       (Γ p).1.toContinuousLoop) (p : Sphere 2) :
-    ContinuousMap.Nullhomotopic (flatPolygonLoop g P N ((Γ p).1) (hcd p)).toContinuousLoop := by
+    IsContractibleLoop (flatPolygonLoop g P N ((Γ p).1) (hcd p)).toContinuousLoop := by
   obtain ⟨q, hq⟩ := (Γ p).2
   exact ⟨q, (hhom p).trans hq⟩
 

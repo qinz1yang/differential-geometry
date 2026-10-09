@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Width.Metric
-import DifferentialGeometry.Geometry.Metric.Family.LocalComparison
+import DifferentialGeometry.Geometry.Metric.FamilyComparison
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 
 

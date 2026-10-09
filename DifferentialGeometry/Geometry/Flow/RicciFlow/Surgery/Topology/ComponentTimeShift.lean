@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import Mathlib.Analysis.Calculus.Deriv.Shift
@@ -13,32 +11,29 @@ open scoped Manifold ContDiff Topology Pointwise
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.componentTimeShift (c : ConnectedComponents P.Carrier) :
+def componentTimeShift (c : ConnectedComponents P.Carrier) :
     SolutionOn (I := ThreeModel) (M := P.componentOpen c)
       (RealTimeInterval.closedOpen 0 (s - a) (sub_pos.mpr G.lt)) := by
   let : CompactSpace (P.componentOpen c) := P.component_compact c
   exact (solutionOnRestrictOpen (G.flow.timeShift a) (P.componentOpen c)).timeRestrict _
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.componentTimeShift_metric (c : ConnectedComponents P.Carrier) (t : ℝ) :
+theorem componentTimeShift_metric (c : ConnectedComponents P.Carrier) (t : ℝ) :
     (G.componentTimeShift c).base.metric t =
       (G.flow.base.metric (t + a)).restrictOpen (P.componentOpen c) := rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.componentTimeShift_scalar (c : ConnectedComponents P.Carrier)
+theorem componentTimeShift_scalar (c : ConnectedComponents P.Carrier)
     (t : ℝ) (x : P.componentOpen c) :
     (G.componentTimeShift c).scalar t x = G.flow.scalar (t + a) x.val := by
   let : CompactSpace (P.componentOpen c) := P.component_compact c
   exact scalar_restrictOpen (G.flow.timeShift a) (P.componentOpen c) t x
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.isSolutionOn_componentTimeShift (c : ConnectedComponents P.Carrier) :
+theorem isSolutionOn_componentTimeShift (c : ConnectedComponents P.Carrier) :
     IsSolutionOn (G.componentTimeShift c) := by
   let : CompactSpace (P.componentOpen c) := P.component_compact c
   apply isSolutionOn_timeRestrict _
@@ -48,7 +43,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact Subset.rfl
   · exact isSolutionOn_restrictOpen _ (isSolutionOn_timeShift G.equation a) (P.componentOpen c)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.componentTimeShift_scalar_left_derivative (c : ConnectedComponents P.Carrier)
+theorem componentTimeShift_scalar_left_derivative (c : ConnectedComponents P.Carrier)
     (t : ℝ) (x : P.componentOpen c) :
     derivWithin (fun u => (G.componentTimeShift c).scalar u x) (Iic t) t =
       derivWithin (fun u => G.flow.scalar u x.val) (Iic (t + a)) (t + a) := by

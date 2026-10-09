@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Bundle.Orientation.Map
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 
 noncomputable section
@@ -81,8 +81,8 @@ theorem exists_open_orientedChartSimplex (o : TangentOrientationSection M) (p : 
       (LinearEquiv.ofBijective (mfderiv ThreeModel ThreeModel e y).toLinearMap hbij)
         (o.orientation y) = standardThreeOrientation := by
     refine (congrArg (fun f => Orientation.map (Fin 3) f (o.orientation y)) hlinear).trans ?_
-    exact (DifferentialGeometry.orientation_map_trans
-      (tangentChartEquiv M p y (hU hy)) L.toLinearEquiv (o.orientation y)).trans
+    exact (DifferentialGeometry.VectorBundle.map_orientation_trans_between
+      (tangentChartEquiv M p y (hU hy)) L.toLinearEquiv (o.orientation y)).symm.trans
         ((congrArg (Orientation.map (Fin 3) L.toLinearEquiv) (hconst y hy)).trans hL)
   obtain ⟨r, hr, hins⟩ := compact_family_small_scaling positiveTetrahedron
     e.open_target (e.map_source hyE)

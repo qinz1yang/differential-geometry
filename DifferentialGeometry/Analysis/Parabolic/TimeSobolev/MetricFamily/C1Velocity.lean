@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Regularity.C1Representative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.C1Representative
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.C1Regularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.MetricFamily.Velocity
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse

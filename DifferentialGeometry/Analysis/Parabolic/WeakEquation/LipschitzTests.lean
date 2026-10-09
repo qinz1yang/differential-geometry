@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Mollification.LinearEquivApproximation
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.LinearEquivApproximation
 import DifferentialGeometry.Analysis.Integration.Lp.BoundedLinearPairing
 import DifferentialGeometry.Topology.LipschitzSupport
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace

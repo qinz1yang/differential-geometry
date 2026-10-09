@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SurfaceProductBall
-import DifferentialGeometry.Geometry.Metric.Product.Curvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RiemannianProduct
 
 set_option autoImplicit false
 

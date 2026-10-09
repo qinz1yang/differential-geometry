@@ -17,10 +17,10 @@ theorem perelmanDensity_upper_test_of_conjugate_heat_lower_test
           (∑ i, ∑ j, a i j * fderiv ℝ psi z (0, b i) * fderiv ℝ psi z (0, b j)) -
           R + (n : ℝ) / (2 * z.1))
     (phi : ℝ × E → ℝ) (hphi : ContDiffAt ℝ 2 phi z)
-    (hmax : IsLocalMax (fun y => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n y.1 f y - phi y) z) :
+    (hmax : IsLocalMax (fun y => perelmanDensity n y.1 f y - phi y) z) :
     fderiv ℝ phi z (1, d) -
       (∑ i, ∑ j, a i j * fderiv ℝ (fderiv ℝ phi) z (0, b i) (0, b j)) +
-      R * DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n z.1 f z ≤ 0 := by
+      R * perelmanDensity n z.1 f z ≤ 0 := by
   let q : ℝ → ℝ := fun t => (n : ℝ) / 2 * Real.log (4 * Real.pi * t)
   have hbase : 0 < 4 * Real.pi * z.1 := mul_pos (mul_pos (by norm_num) Real.pi_pos) ht
   have hq : ContDiffAt ℝ 2 q z.1 :=
@@ -33,8 +33,8 @@ theorem perelmanDensity_upper_test_of_conjugate_heat_lower_test
     simp only [id_eq]
     field_simp
   have hu (w : ℝ × E) (hw : 0 < w.1) :
-      Real.exp (-(f w + q w.1)) = DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n w.1 f w := by
-    rw [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity, ← Real.exp_log (prefactor_pos n hw), log_prefactor n hw, ← Real.exp_add]
+      Real.exp (-(f w + q w.1)) = perelmanDensity n w.1 f w := by
+    rw [perelmanDensity, ← Real.exp_log (prefactor_pos n hw), log_prefactor n hw, ← Real.exp_add]
     congr 1
     dsimp only [q]
     ring

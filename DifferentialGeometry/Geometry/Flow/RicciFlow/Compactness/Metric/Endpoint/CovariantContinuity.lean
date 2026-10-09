@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Convergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.CovariantBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalCovariantBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.CovariantEvolution
 
 noncomputable section

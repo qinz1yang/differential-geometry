@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapInitialLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ScalarDerivativeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MarkedScalarBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalIncomingScalarDerivative
 
 set_option autoImplicit false

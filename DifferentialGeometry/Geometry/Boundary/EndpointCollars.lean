@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Handle.BoundaryCollar.Uniform
+import DifferentialGeometry.Geometry.Boundary.UniformCollar
 import DifferentialGeometry.Geometry.Boundary.EndpointStrips
 import DifferentialGeometry.Geometry.Boundary.LevelComponents
 

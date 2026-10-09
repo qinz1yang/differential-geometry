@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkerModelMasses
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Classification.Cylinder.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkingCylinderMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinkerNormalization
 import Mathlib.Analysis.Complex.ExponentialBounds
 

@@ -42,7 +42,7 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
     (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 2 x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from Φ v)
         (unitZeroSec (I := I) (M := M) x) := by
@@ -52,18 +52,18 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
   rw [show Tensor0SSpace.toModel
         (tensor0SCurry (I := I) (M := M) 2 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-            covariantSlotBundleEquiv (I := I) (M := M) 0 2 x Φ)
+            covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
             (unitZeroSec (I := I) (M := M) x)) v) u =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 2 x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
           (unitZeroSec (I := I) (M := M) x))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u) from
     (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2) (b := x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-        covariantSlotBundleEquiv (I := I) (M := M) 0 2 x Φ)
+        covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
         (unitZeroSec (I := I) (M := M) x)) v u)]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) 0 2 x Φ
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 2 x Φ
     (unitZeroSec (I := I) (M := M) x)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u)]
   have hzero : (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
@@ -82,7 +82,7 @@ theorem covGradBundleEquiv_tensorCov_unit_curry_eq_abstractCovDeriv
     (x : M) (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 2 x
+          covGradBundleEquiv (I := I) (M := M) 0 2 x
             (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g)
               (fun y : M => σ y) x))
           (unitZeroSec (I := I) (M := M) x)) v =

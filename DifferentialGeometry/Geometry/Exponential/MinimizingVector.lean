@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import Mathlib.Topology.Compactness.Compact

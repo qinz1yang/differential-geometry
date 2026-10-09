@@ -46,7 +46,7 @@ theorem classWidth_le_liminf_of_lipschitzComparison
     (f : ℝ → C(M, N)) {t : ℝ} (ell : ℝ → ℝ)
     (hell : Tendsto ell (𝓝[<] t) (𝓝 1))
     (hclass : ∀ᶠ s in 𝓝[<] t,
-      DifferentialGeometry.Topology.FreeHomotopyClass.map (DifferentialGeometry.Topology.ContractibleLoop.postcompose (f s)) ξ = ξN)
+      FreeHomotopyClass.map (contractibleLoopPostcompose (f s)) ξ = ξN)
     (hlip : ∀ᶠ s in 𝓝[<] t, 0 ≤ ell s ∧ ∀ x y,
       riemannianEDistOf h (f s x) (f s y) ≤
         ENNReal.ofReal (ell s) * riemannianEDistOf (g s) x y) :

@@ -1,0 +1,50 @@
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Closure.AssemblySphereCutRelSep
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Closure.AssemblySphereCutRelPlugApplications
+import DifferentialGeometry.Topology.ThreeManifold.GraphManifold.Closure.AssemblySphereCutRelAdapterSep
+
+/-!
+# Chapter-14 assembly, relative COMPARE A4: the separating sphere cut (V2 text)
+
+Lane ASM-L2e3. `exists_rawGraphPresentation_of_sphereCut_separating` is the V2 theorem of the
+relative connected sum (FC42Dry `dry_L2_separating`, text verbatim): a connected carrier `W` cut
+along an interior sphere seam into a capped carrier with two components, each carrying a raw
+presentation, has a raw presentation. Proof (ASM-L2e plan, `Targets.lean`): the fold off the caps
+(G1, `SphereCutCapped.exists_capComplementFold`), the bounded fibre plug with its solid cap charts
+(G4, `exists_fibrePlugPiece`), the drills of the two components and the placement of their shell
+charts onto the plug's solid charts (`exists_separatingPlacement`), the placed plug piece (G4 at
+`ν₀ = 1`), and the three-piece tube cut (G5, `exists_rawGraphPresentation_of_separatingPlacement`).
+All inputs are produced; nothing is supplied by the caller beyond the V2 hypotheses.
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Function Manifold
+open DifferentialGeometry DifferentialGeometry.Topology GC.Endpoint GC.Seifert GC.GraphManifold
+open scoped Manifold ContDiff Topology
+
+universe u
+
+namespace GC.GraphManifold.Assembly
+
+/-- **[A4]** V2 `exists_rawGraphPresentation_of_sphereCut_separating` (FC42Dry `dry_L2_separating`,
+verbatim). -/
+theorem exists_rawGraphPresentation_of_sphereCut_separating (W : CompactCarrier.{u})
+    [ConnectedSpace W.Carrier] {S : SphereSeam W} {n : ℕ} {E : BoundaryTori W n}
+    (X : SphereCutCapped W S E) (DQ : X.Q.Components) (h2 : DQ.count = 2)
+    (R : ∀ i, RawGraphPresentation (GC.Topology.componentCarrier X.Q DQ i)) :
+    Nonempty (RawGraphPresentation W) := by
+  obtain ⟨F, hFs, hFt, hF⟩ := X.exists_capComplementFold
+  obtain ⟨P, v, hPR, -, -, hv, hvI, hplug⟩ := exists_fibrePlugPiece.{u}
+  obtain ⟨Ψ, K, φ, L, η, Γ, c, s₀, μ, hs₀, hμ, Θ, ε, r, hK, hKI, hΨK, h3, hφI, hφo, hφd, hLk,
+    hLc, hLR, hη, hηb, hηr, hΓs, hΓ, hLb, hsμ, hc, hshell, hball, hr, hΘ, hmatch⟩ :=
+    exists_separatingPlacement W X DQ h2 R v hv hvI
+  obtain ⟨Pc, e, ν, lift, hν, -, -, hls, hl, hPb, hPi, hPr, hcap⟩ :=
+    hplug X F hFs hF Ψ φ h3 hφI hφd c s₀ μ hs₀ hμ hsμ hc hshell hball Θ ε r hr hΘ hmatch
+      zero_lt_one
+  exact exists_rawGraphPresentation_of_separatingPlacement W X DQ h2 F hFs hFt hF Ψ K hK hKI hΨK
+    φ h3 hφI hφo L hLk hLc hLR η hη hηb hηr Γ hΓs hΓ hLb P hPR Pc e ν hν lift hls hl hPb hPi
+    hPr hcap
+
+end GC.GraphManifold.Assembly

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelBallTransport
-import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.CrossModelNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelCurvatureTransport
 
 set_option autoImplicit false
 
@@ -57,7 +57,7 @@ theorem tensor_noncollapsed_pullbackMetricCross
   intro y hy
   rw [← image_riemannianBallOf_pullbackMetricCross g Phi x r] at hy
   obtain ⟨z, hz, rfl⟩ := hy
-  simpa only [DifferentialGeometry.Geometry.Curvature.metricRmNormSq_pullbackCross] using hcurvature z hz
+  simpa only [metricRmNormSq_pullbackCross] using hcurvature z hz
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 

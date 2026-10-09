@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.NormalBall.MetricBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.ChartEndpoint
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Identity
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.Smallness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.SymmetricFlow
 

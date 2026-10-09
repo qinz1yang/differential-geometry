@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.SpecialFunctions.JacobiModel.Volume
+import DifferentialGeometry.Geometry.Comparison.Volume.Model
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
 
 set_option autoImplicit false

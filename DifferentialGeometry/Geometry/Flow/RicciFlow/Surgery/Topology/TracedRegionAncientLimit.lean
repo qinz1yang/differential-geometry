@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Geometry.Measure.BallComparison
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Metric.Distance.MetricLocality
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 
 set_option autoImplicit false

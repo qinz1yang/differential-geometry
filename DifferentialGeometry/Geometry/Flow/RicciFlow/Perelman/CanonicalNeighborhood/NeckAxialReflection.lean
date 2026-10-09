@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapChainTransition
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
-import DifferentialGeometry.Geometry.Metric.Cylinder.AxialIsometry
+import DifferentialGeometry.Geometry.Metric.CylinderAxial
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 

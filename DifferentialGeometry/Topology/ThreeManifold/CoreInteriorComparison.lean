@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.ImmersionInterior
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 
 set_option autoImplicit false
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
 
 open DifferentialGeometry.Geometry.Curvature

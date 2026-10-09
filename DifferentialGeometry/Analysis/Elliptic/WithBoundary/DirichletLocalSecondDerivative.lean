@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.CutoffLp
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.ProductMeasureLocalWeakLimit
+import DifferentialGeometry.Analysis.Sobolev.Tools.CutoffDiffQuotLp
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientProductWeakLimitLocal
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.WeakPartial
 
 noncomputable section

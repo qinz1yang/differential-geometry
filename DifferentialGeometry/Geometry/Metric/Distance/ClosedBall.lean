@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import Mathlib.Topology.MetricSpace.Basic
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension.FiniteGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PeriodicLateralExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BallMarkedExtension
 

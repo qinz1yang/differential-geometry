@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.one_div_le_endpoint_sub_of_scalar_bound
+theorem OrientedThreeStage.IncomingSlab.one_div_le_endpoint_sub_of_scalar_bound
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     (hsing : G.SingularEndpoint) {a₀ h B : ℝ} (ha₀ : 0 < a₀) (hh : a₀ ≤ h)
     (hfixed : ∀ x, InFixedHamiltonIveyRegion (G.flow.base.metric a) h x)

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderCut
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalMeridian
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34InnermostSubdisk
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.MeridianIntersection
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalMeridianBarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusProduct
 
 open Set

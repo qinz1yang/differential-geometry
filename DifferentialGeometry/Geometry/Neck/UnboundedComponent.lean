@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckOutwardAngle
-import DifferentialGeometry.Topology.MetricSpace.Busemann.Ray
+import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.BusemannBasic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckCoreSize
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
 import Batteries.Tactic.OpenPrivate

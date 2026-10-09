@@ -113,17 +113,17 @@ noncomputable def homTensorRSCovGradFib (g : SmoothRiemannianMetric I M) (r a c 
     homTensorRSSpaceT2 (I := I) (M := M)
   LinearMap.toContinuousLinearMap
     { toFun := fun d =>
-        covariantSlotBundleEquiv (I := I) (M := M) r c x
+        covGradBundleEquiv (I := I) (M := M) r c x
           (homTensorRSCovGradDirCLM (I := I) (M := M) g r a c Ψ x d)
       map_add' := fun d₁ d₂ => by
-        rw [← map_add (covariantSlotBundleEquiv (I := I) (M := M) r c x)]
-        refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) r c x) ?_
+        rw [← map_add (covGradBundleEquiv (I := I) (M := M) r c x)]
+        refine congrArg (covGradBundleEquiv (I := I) (M := M) r c x) ?_
         refine ContinuousLinearMap.ext (fun v => ?_)
         rw [add_apply, homTensorRSCovGradDirCLM_apply,
           homTensorRSCovGradDirCLM_apply, homTensorRSCovGradDirCLM_apply, map_add]
       map_smul' := fun k d => by
-        rw [RingHom.id_apply, ← map_smul (covariantSlotBundleEquiv (I := I) (M := M) r c x)]
-        refine congrArg (covariantSlotBundleEquiv (I := I) (M := M) r c x) ?_
+        rw [RingHom.id_apply, ← map_smul (covGradBundleEquiv (I := I) (M := M) r c x)]
+        refine congrArg (covGradBundleEquiv (I := I) (M := M) r c x) ?_
         refine ContinuousLinearMap.ext (fun v => ?_)
         rw [smul_apply, homTensorRSCovGradDirCLM_apply,
           homTensorRSCovGradDirCLM_apply, map_smul] }
@@ -147,12 +147,12 @@ lemma homTensorRSCovGradFieldFib_apply_eval (g : SmoothRiemannianMetric I M) (r 
   have hval : (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (c + 1) I x from
         homTensorRSCovGradFib (I := I) (M := M) g r a c Ψ x d) =
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (c + 1) I x from
-        covariantSlotBundleEquiv (I := I) (M := M) r c x
+        covGradBundleEquiv (I := I) (M := M) r c x
           (homTensorRSCovGradDirCLM (I := I) (M := M) g r a c Ψ x d)) := by
     rw [homTensorRSCovGradFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
       AddHom.coe_mk]
   rw [hval]
-  rw [covariantSlotBundleEquiv_apply_eval (I := I) (M := M) r c x
+  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r c x
     (homTensorRSCovGradDirCLM (I := I) (M := M) g r a c Ψ x d) Dlow (Fin.cons v0 vs)]
   have htail : Matrix.vecTail (Fin.cons v0 vs : Fin (c + 1) → TangentSpace I x) = vs := by
     funext j; simp [Matrix.vecTail, Fin.cons_succ]
@@ -179,12 +179,12 @@ lemma homTensorRSCovGradFieldFib_apply_toModel (g : SmoothRiemannianMetric I M) 
   have hval : (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (c + 1) I x from
         homTensorRSCovGradFib (I := I) (M := M) g r a c Ψ x d) =
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (c + 1) I x from
-        covariantSlotBundleEquiv (I := I) (M := M) r c x
+        covGradBundleEquiv (I := I) (M := M) r c x
           (homTensorRSCovGradDirCLM (I := I) (M := M) g r a c Ψ x d)) := by
     rw [homTensorRSCovGradFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
       AddHom.coe_mk]
   rw [hval]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) r c x
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) r c x
     (homTensorRSCovGradDirCLM (I := I) (M := M) g r a c Ψ x d) Dlow (Fin.cons v0 vs)]
   have htail : Matrix.vecTail (Fin.cons v0 vs : Fin (c + 1) → E) = vs := by
     funext j
@@ -316,7 +316,7 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem covGradBundleEquiv_symm_covGrad_homTensorRSApply_eq (g : SmoothRiemannianMetric I M) (r a : ℕ)
     (W : SmoothCcTensor g r a) (x : M) (v0 : TangentSpace I x) :
-    (covariantSlotBundleEquiv (I := I) (M := M) r a x).symm
+    (covGradBundleEquiv (I := I) (M := M) r a x).symm
         ((covGrad (I := I) (M := M) g r a W).toSection x) v0 =
       (show TensorRSSpace r a I x from tensorCovDerivAt (I := I) (M := M) g r a W x
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v0)) := by

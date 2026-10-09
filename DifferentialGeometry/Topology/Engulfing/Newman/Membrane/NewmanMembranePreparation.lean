@@ -9,6 +9,7 @@ open scoped ContinuousMap BigOperators
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [MetricSpace M] [DecidableEq E] [DecidableEq (ConeSpace E)]
@@ -79,7 +80,6 @@ theorem hasAdaptedPiecewiseLinearCharts.cone_membrane {m n p : ℕ} (K L : Simpl
       (b.fixed_injective ⟨hy, hycore⟩ ⟨hw, hwcore⟩ hxz)
 
 omit [DecidableEq (ConeSpace E)] in
-omit [FiniteDimensional ℝ E] in
 theorem exists_face_vertices {n p q : ℕ} (P : NewmanProblem E M n p (q + 1))
     (s : Finset E) (hs : s ∈ P.target.faces) (hcard : s.card = q + 1) :
     ∃ v : Fin (q + 1) → E, AffineIndependent ℝ v ∧ Finset.univ.image v = s := by
@@ -98,7 +98,6 @@ theorem exists_face_vertices {n p q : ℕ} (P : NewmanProblem E M n p (q + 1))
       congrArg Subtype.val (e.apply_symm_apply ⟨x, hx⟩)⟩
 
 omit [DecidableEq (ConeSpace E)] in
-omit [FiniteDimensional ℝ E] in
 theorem single_face_boundary_covered {n p q : ℕ} (P : NewmanProblem E M n p (q + 1))
     (s : Finset E) (hs : s ∈ P.target.faces)
     (hother : ∀ t ∈ P.target.faces, t ≠ s →
@@ -118,7 +117,6 @@ theorem single_face_boundary_covered {n p q : ℕ} (P : NewmanProblem E M n p (q
   exact Finset.notMem_erase (v i) s (heq.symm ▸ hvi)
 
 omit [DecidableEq (ConeSpace E)] in
-omit [FiniteDimensional ℝ E] in
 theorem FiniteSimplexExpansionIn.union_fixed
     {K : SimplicialComplex ℝ E} {A C : Set E} (h : FiniteSimplexExpansionIn K A C)
     (W : Set E) (hWC : W ∩ C ⊆ A) : FiniteSimplexExpansionIn K (W ∪ A) (W ∪ C) := by
@@ -392,7 +390,6 @@ theorem exists_newmanPreparedMembrane {n p q : ℕ}
   exact hother t ht.1 ht.2 x hxt
 
 omit [DecidableEq E] [DecidableEq (ConeSpace E)] in
-omit [FiniteDimensional ℝ E] in
 theorem newmanConclusion_of_last_face_covered {n p q : ℕ}
     (P : NewmanProblem E M n p (q + 1))
     (s : Finset E)

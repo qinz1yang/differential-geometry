@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.Handle.Middle.Geometry.MiddleSlide
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -20,7 +21,6 @@ namespace BlockConfig
 variable {I : ModelWithCorners ℝ (Fin n → ℝ) H} [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M] {f : M → ℝ} {a b : ℝ} {ℓ : ℕ}
 
-omit [SigmaCompactSpace M] in
 theorem exists_transverse (hf : MorseStrip I f a b) (B : BlockConfig I f a b ℓ) :
     ∃ B' : BlockConfig I f a b ℓ, B'.crit = B.crit ∧ B'.transverse ∧
       B'.c = B.c ∧ B'.α = B.α ∧ B'.β = B.β ∧ B'.ε ≤ B.ε ∧
@@ -950,7 +950,6 @@ theorem exists_slide (hf : MorseStrip I f a b) (B : BlockConfig I f a b ℓ) (ht
   · rw [hrow q₁ hq₁, hrow q₂ hq₂]
   · rw [hrow q hq]
 
-omit [SigmaCompactSpace M] in
 theorem simplyConnected_level (hf : MorseStrip I f a b) (B : BlockConfig I f a b ℓ)
     (hℓ : 2 ≤ ℓ) (hℓn : ℓ + 3 ≤ n) (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) :
     SimplyConnectedSpace (f ⁻¹' {B.c}) := by
@@ -1100,7 +1099,6 @@ theorem simplyConnected_level (hf : MorseStrip I f a b) (B : BlockConfig I f a b
         linarith [h1.1, hy.2, B.hcβ])
     exact e.toHomotopyEquiv.simplyConnectedSpace
 
-omit [SigmaCompactSpace M] in
 theorem simplyConnected_level_diff_rightSphere (hf : MorseStrip I f a b)
     (B : BlockConfig I f a b ℓ) (hℓ : 2 ≤ ℓ) (hℓn : ℓ + 3 ≤ n)
     (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) {p : M} (hp : p ∈ B.lowerIndexCriticalPoints) :
@@ -1266,7 +1264,6 @@ theorem simplyConnected_level_diff_rightSphere (hf : MorseStrip I f a b)
     hG hY
   exact hfin
 
-omit [SigmaCompactSpace M] in
 theorem simplyConnected_level_diff_leftSphere (hf : MorseStrip I f a b)
     (B : BlockConfig I f a b ℓ) (hℓ : 2 ≤ ℓ) (hℓn : ℓ + 3 ≤ n)
     (htop : ∀ x ∈ B.crit, morseIndex I f x ≤ ℓ + 1)
@@ -1428,7 +1425,6 @@ theorem simplyConnected_level_diff_leftSphere (hf : MorseStrip I f a b)
     (fun x _ hx => absurd hx (Finset.notMem_empty x)) hG hsc₅
   exact hfin
 
-omit [SigmaCompactSpace M] in
 theorem whitney_pair_removal (h6 : 6 ≤ n) (hf : MorseStrip I f a b) (B : BlockConfig I f a b ℓ)
     (hℓ : 2 ≤ ℓ) (hℓn : ℓ + 3 ≤ n) {p q : M} (hp : p ∈ B.lowerIndexCriticalPoints) (hq : q ∈ B.upperIndexCriticalPoints)
     (htr : B.pairTransverse p q) (hlt : (B.count p q).natAbs < B.zerosCard p q)
@@ -1778,7 +1774,6 @@ theorem exists_isolated [DecidableEq M] (hf : MorseStrip I f a b) (B : BlockConf
       (by rw [hg₂p]; linarith) (by rw [hg₂q]; linarith) htr₂ hone₂ hidx (by linarith)
       (by linarith) (by rw [hg₂p]; linarith) (by rw [hg₂q]; linarith) honly hother
 
-omit [SigmaCompactSpace M] in
 theorem exists_single_zero (h6 : 6 ≤ n) (hf : MorseStrip I f a b) (B : BlockConfig I f a b ℓ)
     (hℓ : 2 ≤ ℓ) (hℓn : ℓ + 3 ≤ n) (hidx : ∀ x ∈ B.crit, morseIndex I f x + 2 ≤ n)
     (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) (hV₁ : SimplyConnectedSpace (f ⁻¹' {b}))
@@ -1855,6 +1850,7 @@ theorem middle_target (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundaryle
     {f : M → ℝ} {a b : ℝ} (hf : MorseStrip I f a b)
     (hidx : ∀ x, f x ∈ Ioo a b → DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x →
       2 ≤ morseIndex I f x ∧ morseIndex I f x + 2 ≤ n)
+    (_hW : SimplyConnectedSpace (f ⁻¹' Icc a b))
     (hV₀ : SimplyConnectedSpace (f ⁻¹' {a})) (hV₁ : SimplyConnectedSpace (f ⁻¹' {b}))
     (hH : relHomologyVanishes (f ⁻¹' Icc a b) (Subtype.val ⁻¹' (f ⁻¹' {a})))
     {p₀ : M} (hp₀ : f p₀ ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f p₀) :

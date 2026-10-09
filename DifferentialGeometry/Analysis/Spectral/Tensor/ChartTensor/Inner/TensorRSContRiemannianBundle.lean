@@ -3,8 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SInnerSectionContinuity
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.MultilinearChartEquality
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.Transition
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.Tensor0SBundleLocalityIdentities
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleTransition
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Topology.VectorBundle.Hom

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.ContinuousEvaluation
-import DifferentialGeometry.Geometry.Metric.UnitTangent.Pair
+import DifferentialGeometry.Geometry.Metric.UnitTangentPair
 
 noncomputable section
 open Bundle Manifold Set

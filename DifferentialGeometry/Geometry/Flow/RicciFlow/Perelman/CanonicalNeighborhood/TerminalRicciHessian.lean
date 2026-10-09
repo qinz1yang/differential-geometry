@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.RicciJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.ConcurrentRicci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalRicciJetOperators
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConcurrentRicciEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 

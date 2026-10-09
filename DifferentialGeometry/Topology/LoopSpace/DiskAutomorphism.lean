@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.LoopSpace.SpanningDisk.Reparametrization
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Basic
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Argument
-import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Defs
+import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
 import Mathlib.Topology.Order.IntermediateValue
 import DifferentialGeometry.Analysis.Complex.DiskAutomorphism.Transitivity
 

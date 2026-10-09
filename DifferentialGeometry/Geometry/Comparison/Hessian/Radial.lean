@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
 import DifferentialGeometry.Geometry.Comparison.Laplacian.Radial
-import DifferentialGeometry.Geometry.Variation.IndexForm.PerpendicularCoordinates
+import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.IndexForm
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.SmoothAlongExpansion
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone
@@ -673,7 +673,7 @@ private theorem branchHess_symm
   obtain ⟨U, hUopen, hqU, hrU⟩ :=
     branchRadius_open (I := I) B hsrc hv
   obtain ⟨rSmooth, hrSmooth, hr_eq⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hUopen hqU hrU
+    DifferentialGeometry.exists_smooth_germ (I := I) hUopen hqU hrU
   have hcongr := hessFun_congr (I := I) g hr_eq
   have hsymm := hessFun_symm_of_boundaryless (I := I) g hrSmooth q Y Z
   change hessFun (I := I) g (branchRadius (I := I) g B) q Y Z =

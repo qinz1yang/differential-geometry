@@ -1,17 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.InverseSqrtScalarDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InverseSqrtScalarDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
-import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
-import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false
@@ -24,14 +14,11 @@ open scoped Manifold ContDiff Topology NNReal ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inv_sqrt_sub_inv_sqrt_scalar_le_of_gradientBoundBefore
+theorem TerminalLimitMetric.inv_sqrt_sub_inv_sqrt_scalar_le_of_gradientBoundBefore
     (L : G.TerminalLimitMetric) {Cgrad : ℝ≥0} {q m r : ℝ}
     (hgrad : G.GradientBoundBefore Cgrad q s) (hqm : q < m) {x y : G.terminalRegularOpen}
     (hx : m < metricScalarAt L.metric x) (hy : metricScalarAt L.metric y < m)

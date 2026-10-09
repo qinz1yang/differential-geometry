@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFootprint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ScalarTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceScalarTime
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 
 noncomputable section
@@ -201,7 +201,7 @@ theorem ObservedHistory.exists_backwardSurvivorFootprint_curvature_bound
           hPhi hpinch j hf hl ⟨hu.1,hus⟩ (by nlinarith [C.coe_nonneg,hQ])
         rw [(H.event j).terminal.extendedMetric_before hus,rmNormSq_restrictOpen,hy]
         exact hh
-      · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+      · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
         exact A.riemannNorm_terminal_le_of_terminal_scalar_le x hq hqQ hA (hscalar x hx)
           hPhi hpinch j hf hl y hy htime'
     exact (Real.sqrt_le_iff.mp hb).2

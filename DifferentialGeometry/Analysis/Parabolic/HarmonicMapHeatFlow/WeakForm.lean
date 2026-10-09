@@ -176,7 +176,7 @@ theorem harmonicMapFlowFlux_apply
   have hflux :
       unitEvalSection (I := I) (M := M) q 2
           (harmonicMapFlowFlux (I := I) (M := M) q h S) x =
-        D + slotInsertEndomorphism (I := I) (M := M) 2 0 x
+        D + slotInsertEndoFib (I := I) (M := M) 2 0 x
           (metricComparisonDifferenceEndomorphism (I := I) q h x) D := by
     rw [harmonicMapFlowFlux, harmonicMapFlowDiff, unitEvalSection_apply, SmoothCcTensor.toSection_add,
       ContMDiffSection.coe_add, Pi.add_apply, add_apply]
@@ -184,7 +184,7 @@ theorem harmonicMapFlowFlux_apply
       slotInsertEndoCc_toSection]
     rfl
   rw [hflux, Tensor0SSpace.toModel_add,
-    add_apply, slotInsertEndomorphism_apply_eval]
+    add_apply, slotInsertEndoFib_apply_eval]
   change Tensor0SSpace.toModel D m +
       Tensor0SSpace.toModel D
         (Function.update m 0
@@ -256,7 +256,7 @@ private theorem harmonicMapFlowSlot_add
   rw [show ((A + B) x) = A x + B x from by
     rw [ContMDiffSection.coe_add]
     rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
@@ -276,7 +276,7 @@ private theorem harmonicMapFlowSlot_self_app
   apply ContinuousMultilinearMap.ext
   intro m
   rw [operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
-    slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval,
+    slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval,
     metricComparisonEndomorphismField_apply]
   rw [show tangentLinearMapToModel (metricComparisonEndomorphism (I := I) q q x) (m 0) =
       m 0 from by

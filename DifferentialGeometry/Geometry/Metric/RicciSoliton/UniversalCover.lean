@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.Normalized
 
 set_option autoImplicit false

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Family.DominatedIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.CutoffContinuity
-import DifferentialGeometry.Analysis.Calculus.Cutoff.CompactExhaustion
+import DifferentialGeometry.Analysis.Integration.CompactExhaustionCutoff
 
 noncomputable section
 

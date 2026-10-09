@@ -109,7 +109,7 @@ theorem exists_short_regularFamily_contracting_radius (g : SmoothRiemannianMetri
   refine ⟨δ, hδ, ?_⟩
   intro K _ _ Γ hshort
   have hbase : Continuous (fun k : K => (Γ k).1.toContinuousLoop 0) :=
-    (DifferentialGeometry.Topology.FreeLoop.evaluation (Q := Q)).continuous.comp
+    (Surgery.Topology.loopEvaluation (Q := Q)).continuous.comp
       (regularLoopInclusion.continuous.comp (continuous_subtype_val.comp Γ.continuous))
   have hloopcont : Continuous (fun k : K =>
       (constantRegularLoop (I := I) (Q := Q) ((Γ k).1.toContinuousLoop 0) : RegularLoop I Q)) := by
@@ -150,7 +150,7 @@ theorem exists_short_regularFamily_contracting_radius (g : SmoothRiemannianMetri
       ((ENNReal.ofReal_lt_ofReal_iff hδ).mpr (hshort k))
   obtain ⟨R, hRc, hR0, hR1, _⟩ := hnear K (fun k => (Γ k).1) (fun k => (Δ k).1)
     (continuous_subtype_val.comp Γ.continuous) (continuous_subtype_val.comp Δ.continuous) hclose
-  have hn : ∀ p : unitInterval × K, ContinuousMap.Nullhomotopic ((R p).toContinuousLoop) :=
+  have hn : ∀ p : unitInterval × K, Surgery.Topology.IsContractibleLoop ((R p).toContinuousLoop) :=
     regular_homotopy_contractible R hRc (fun k => by rw [hR0 k]; exact (Γ k).2)
   refine ⟨{ toFun := fun p => ⟨R (p.1, p.2), hn (p.1, p.2)⟩, continuous_toFun := ?_ }, ?_, ?_⟩
   · exact hRc.subtype_mk _
@@ -167,21 +167,21 @@ theorem exists_short_sphere_family_null_radius (g : SmoothRiemannianMetric I Q) 
           (∀ k, loopLength g (Γ k).1.toContinuousLoop < σ) →
           ∃ q : Q, ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ)
             (ContinuousMap.const (Surgery.Topology.Sphere 2)
-              (⟨DifferentialGeometry.Topology.FreeLoop.constants q,
-                ContinuousMap.nullhomotopic_of_constant q⟩  :
-                  DifferentialGeometry.Topology.contractibleLoop Q))) := by
+              (⟨Surgery.Topology.constantLoops q,
+                Surgery.Topology.isContractibleLoop_constant q⟩  :
+                  Surgery.Topology.ContractibleContinuousLoop Q))) := by
   obtain ⟨σ, hσ, hcontract⟩ := exists_short_regularFamily_contracting_radius (I := I) (Q := Q) g
   refine ⟨σ, hσ, fun hpi Γ hshort => ?_⟩
   obtain ⟨F, hF0, hF1⟩ := hcontract Γ hshort
   have hb : Continuous (fun k : Surgery.Topology.Sphere 2 => (Γ k).1.toContinuousLoop 0) :=
-    (DifferentialGeometry.Topology.FreeLoop.evaluation (Q := Q)).continuous.comp
+    (Surgery.Topology.loopEvaluation (Q := Q)).continuous.comp
       (regularLoopInclusion.continuous.comp (continuous_subtype_val.comp Γ.continuous))
   let b : C(Surgery.Topology.Sphere 2, Q) := ⟨fun k => (Γ k).1.toContinuousLoop 0, hb⟩
   obtain ⟨q, hq⟩ := DifferentialGeometry.Topology.familySphereMap_nullhomotopic_of_piTwo hpi b
-  let Φ : C(Q, DifferentialGeometry.Topology.contractibleLoop Q) :=
-    ⟨fun q => ⟨DifferentialGeometry.Topology.FreeLoop.constants q,
-      ContinuousMap.nullhomotopic_of_constant q⟩,
-      (DifferentialGeometry.Topology.FreeLoop.constants (Q := Q)).continuous.subtype_mk _⟩
+  let Φ : C(Q, Surgery.Topology.ContractibleContinuousLoop Q) :=
+    ⟨fun q => ⟨Surgery.Topology.constantLoops q,
+      Surgery.Topology.isContractibleLoop_constant q⟩,
+      (Surgery.Topology.constantLoops (Q := Q)).continuous.subtype_mk _⟩
   let Δc : C(Surgery.Topology.Sphere 2, ContractibleRegularLoop (I := I) (Q := Q)) :=
     ⟨fun k => F (⟨1, by simp⟩, k), F.continuous.comp (continuous_const.prodMk continuous_id)⟩
   have hK1 : ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ) (Φ.comp b) := by
@@ -206,8 +206,8 @@ theorem exists_short_sphere_family_null_radius (g : SmoothRiemannianMetric I Q) 
   refine ⟨q, hK1.trans (hK2.trans ?_)⟩
   have h2 : Φ.comp (ContinuousMap.const (Surgery.Topology.Sphere 2) q) =
       ContinuousMap.const (Surgery.Topology.Sphere 2)
-        (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ :
-          DifferentialGeometry.Topology.contractibleLoop Q) := by
+        (⟨Surgery.Topology.constantLoops q, Surgery.Topology.isContractibleLoop_constant q⟩ :
+          Surgery.Topology.ContractibleContinuousLoop Q) := by
     ext k
     rfl
   rw [h2]

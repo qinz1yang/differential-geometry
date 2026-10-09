@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.PrescribedAnnularBand
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PrescribedAnnularRegion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularRegionSecondTrace
 
 open Set
@@ -66,7 +66,7 @@ theorem exists_section34_empty_annular_region
     hint, hext, hRP, hRT, hcontact, hsecond, hRdis, hfirst, hside⟩ :=
     exists_section34_matched_annular_region hprep hpack e hi hj hij hiess hjess
       huD hφ hφP hDT hzero hone hempty
-  have hFeq := first_band_eq_of_same_essential_ends hprep hpack e hi hj hij
+  have hFeq := section34_first_band_eq_of_same_essential_ends hprep hpack e hi hj hij
     hiess hjess hF' hF hF'A hFA
   rw [hFeq] at hDF hfront hcontact hfirst hside
   let _ : Finite R.faces := hRfin.to_subtype

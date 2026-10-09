@@ -139,7 +139,7 @@ theorem interior_field_global_cutoff_extension_local
       (∀ s ∈ Set.Ioo (a - δ) (b + δ), ∀ x : M, Xt s x = X_DT s x) ∧
       ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
         (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)) ∧
-      autonomizedFieldJointC1 (I := I) Xt := by
+      AutonomizedFieldJointC1 (I := I) Xt := by
   set δ : ℝ := min a (T - b) / 3 with hδ_def
   have hTb : 0 < T - b := by linarith
   have hmin_pos : 0 < min a (T - b) := lt_min hab hTb
@@ -462,7 +462,7 @@ theorem integral_curves_eqOn_Ico_of_smooth
     (hstart : Φ 0 x = Φ' 0 x') :
     ∀ t ∈ Set.Ico (0 : ℝ) T, Φ t x = Φ' t x' := by
   obtain ⟨Xext, hXext, hXeq⟩ := seeley_time_extend X T hT hsmooth
-  have hXc1 : autonomizedFieldJointC1 (I := I) Xext :=
+  have hXc1 : AutonomizedFieldJointC1 (I := I) Xext :=
     autonomizedFieldJointC1_of_contMDiff Xext hXext
   intro t ht
   rcases eq_or_lt_of_le ht.1 with ht0 | ht0

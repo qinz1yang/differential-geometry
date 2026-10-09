@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Embedding.Dense
+import DifferentialGeometry.Topology.DenseEmbedding
 import DifferentialGeometry.Topology.Compactness.ConvergentSeparators
 import DifferentialGeometry.Geometry.Comparison.Toponogov.Completion
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RadialDistance

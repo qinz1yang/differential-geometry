@@ -1,5 +1,5 @@
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
-import DifferentialGeometry.Analysis.Calculus.VectorField.PullbackLinearization
+import DifferentialGeometry.Topology.VectorField.Linearization
 
 set_option autoImplicit false
 

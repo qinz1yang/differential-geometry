@@ -56,7 +56,7 @@ theorem exists_orientedDiffeomorph_sphericalSpaceForm_of_roundSphereQuotient
   rcases Diffeomorph.preservesOrientation_or_preservesOrientation_opposite F
       M.orientation G.manifold.orientation with hF | hF
   · exact ⟨G, ⟨⟨F, hF⟩⟩⟩
-  · obtain ⟨G', ⟨f⟩⟩ := SphericalSpaceFormGroup.exists_orientedDiffeomorph_opposite G
+  · obtain ⟨G', ⟨f⟩⟩ := sphericalSpaceFormOrientationClosure_holds G
     let Fop : ClosedOrientedManifold.OrientedDiffeomorph
         M.toClosedOrientedManifold G.manifold.opposite.toClosedOrientedManifold := ⟨F, hF⟩
     exact ⟨G', ⟨Fop.trans f⟩⟩

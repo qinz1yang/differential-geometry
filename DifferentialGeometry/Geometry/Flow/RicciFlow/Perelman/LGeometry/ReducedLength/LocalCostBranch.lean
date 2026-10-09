@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.Smoot
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
@@ -692,7 +692,7 @@ private theorem lEndVelocity_cov
   have hcovGrad := covDerivAlong_congr_of_eventuallyEq
     (I := I) g eta hgradEv
   obtain ⟨f₀, hf₀, hf₀eq⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU₀open hyU₀ hsmooth
+    DifferentialGeometry.exists_smooth_germ (I := I) hU₀open hyU₀ hsmooth
   have hgradEq :
       (T% fun q ↦ gradientFun (I := I) g f₀ q) =ᶠ[nhds y]
         (T% fun q ↦ gradientFun (I := I) g

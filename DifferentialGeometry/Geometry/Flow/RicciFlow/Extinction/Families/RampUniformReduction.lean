@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Area.ProjectionBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Flow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DeformationReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
@@ -25,7 +25,7 @@ omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem curveOfLoopFamily_smoothOn_of_product_solution
     (B : RicciBackground (I := I) (M := Q) D a b) (lambda : ℝ)
     (c : ProductCurve Q) (hc : c.IsSolutionOn B.family.metric lambda (Icc a b))
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → ContinuousFreeLoop Q)
     (hagree : ∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) :
     (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b) := by
   refine hc.smooth.1.congr ?_
@@ -37,9 +37,9 @@ theorem rfs_rampArea_continuity (B : RicciBackground (I := I) (M := Q) D a b) :
     ∀ (L Theta : ℝ), 0 ≤ L → 0 ≤ Theta → ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 →
       ∀ c : ProductCurve Q,
         c.IsSolutionOn B.family.metric lambda (Icc a b) →
-        ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
           (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-          (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
           ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) := by
   intro _L _Theta _hL _hTheta lambda _hlambda _hlambda_one c hc γ hagree hctr
   exact continuousOn_loopFamilyLeastArea_of_contractible B γ
@@ -54,9 +54,9 @@ theorem rfs_rampArea_control_of_rampData
         c.IsSolutionOn B.family.metric lambda (Icc a b) →
         c.length B.family.metric lambda a ≤ L →
         c.totalCurvature B.family.metric lambda a ≤ Theta →
-        ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+        ∀ γ : ℝ → ContinuousFreeLoop Q,
           (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-          (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+          (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
           loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
           ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
           (∀ t ∈ Icc a b, 0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
@@ -88,9 +88,9 @@ theorem rfs_ramp_uniform_bounds_of_rampUniformBoundsData
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →

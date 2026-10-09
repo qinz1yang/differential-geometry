@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CollapseMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionDomination
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.ProductLevel
+import DifferentialGeometry.Geometry.Measure.ProductLevel
 import DifferentialGeometry.Geometry.Metric.WeakLength
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

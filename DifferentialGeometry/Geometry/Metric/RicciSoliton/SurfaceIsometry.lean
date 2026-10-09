@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceClassification
-import DifferentialGeometry.Geometry.Metric.ProjectiveSpace.RoundMetric
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.ProjectiveSpace
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.Representation
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
 import DifferentialGeometry.Geometry.Curvature.ModelChange

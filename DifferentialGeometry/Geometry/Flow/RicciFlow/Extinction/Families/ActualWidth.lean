@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.OpenConnection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.ComponentFlow
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Background.Bounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ComponentFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BackgroundBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.CanonicalClass
-import DifferentialGeometry.Analysis.ODE.Comparison.Endpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.FaceLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.SurgeryWidthEvolution
 
@@ -53,7 +53,7 @@ universe u
 def componentHalfScalar (P : OrientedThreeStage.{u})
     (F : SolutionFamily (I := ThreeModel) (M := P.Carrier))
     (c : ConnectedComponents P.Carrier) (t : ℝ) : ℝ :=
-  sInf (range (fun x : (P.component c).toClosedOrientedManifold.Carrier => F.scalar t x.1)) / 2
+  sInf (range (fun x : (P.component c).Carrier => F.scalar t x.1)) / 2
 
 def componentFactor (P : OrientedThreeStage.{u})
     (F : SolutionFamily (I := ThreeModel) (M := P.Carrier))
@@ -70,17 +70,17 @@ variable {P : OrientedThreeStage.{u}} {a b : ℝ}
 
 theorem incoming_component_solution (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier) :
-    ∃ F : SolutionOn (I := ThreeModel) (M := (P.component c).toClosedOrientedManifold.Carrier)
+    ∃ F : SolutionOn (I := ThreeModel) (M := (P.component c).Carrier)
         (RealTimeInterval.closedOpen a b G.lt),
       DifferentialGeometry.PDE.RicciFlow.IsSolutionOn F ∧
       (∀ t ∈ Ico a b, F.base.metric t = P.componentMetric (G.flow.base.metric t) c) ∧
-      (∀ t ∈ Ico a b, ∀ x : (P.component c).toClosedOrientedManifold.Carrier,
+      (∀ t ∈ Ico a b, ∀ x : (P.component c).Carrier,
         F.base.scalar t x = G.flow.base.scalar t x.1) ∧
       (∀ u ∈ Ioo a b, ∀ v ∈ Ioo u b,
-        ∃ B : RicciBackground (I := ThreeModel) (M := (P.component c).toClosedOrientedManifold.Carrier)
+        ∃ B : RicciBackground (I := ThreeModel) (M := (P.component c).Carrier)
             (RealTimeInterval.closedOpen a b G.lt) u v,
           B.family = F.base) := by
-  let : ConnectedSpace (P.component c).toClosedOrientedManifold.Carrier := P.component_connected c
+  let : ConnectedSpace (P.component c).Carrier := P.component_connected c
   obtain ⟨F, hF, hmetric, hscalar⟩ := incoming_component_native_solution G c
   refine ⟨F, hF, hmetric, hscalar, ?_⟩
   intro u hu v hv
@@ -91,11 +91,11 @@ theorem incoming_component_solution (G : P.IncomingSlab a b)
   exact ⟨B, hB⟩
 
 theorem component_covDerivAlong (g : P.Metric) (c : ConnectedComponents P.Carrier)
-    (gamma : ℝ → (P.component c).toClosedOrientedManifold.Carrier)
+    (gamma : ℝ → (P.component c).Carrier)
     (hgamma : ContMDiff 𝓘(ℝ, ℝ) ThreeModel ∞ gamma)
     (V : (r : ℝ) → TangentSpace ThreeModel (gamma r))
     (hV : ContMDiff 𝓘(ℝ, ℝ) ThreeModel.tangent ∞
-      (fun r => (⟨gamma r, V r⟩ : TangentBundle ThreeModel (P.component c).toClosedOrientedManifold.Carrier)))
+      (fun r => (⟨gamma r, V r⟩ : TangentBundle ThreeModel (P.component c).Carrier)))
     (r : ℝ) :
     (show TangentSpace ThreeModel (gamma r).1 from
       covDerivAlong (P.componentMetric g c) gamma V r) =
@@ -112,26 +112,26 @@ private theorem componentHalfScalar_continuousOn {D : RealTimeInterval}
   have hraw : ContinuousOn (fun p : ℝ × P.Carrier => F.base.scalar p.1 p.2)
       (D.carrier ×ˢ (univ : Set P.Carrier)) := by
     simpa only [SolutionOn.scalar] using hF.scalarCont
-  have hmap : Continuous (fun p : D.carrier × (P.component c).toClosedOrientedManifold.Carrier =>
+  have hmap : Continuous (fun p : D.carrier × (P.component c).Carrier =>
       ((p.1 : ℝ), p.2.1)) :=
     (continuous_subtype_val.comp continuous_fst).prodMk
       (continuous_subtype_val.comp continuous_snd)
-  have hscalar : Continuous (fun p : D.carrier × (P.component c).toClosedOrientedManifold.Carrier =>
+  have hscalar : Continuous (fun p : D.carrier × (P.component c).Carrier =>
       F.base.scalar p.1 p.2.1) :=
     hraw.comp_continuous
-      (f := fun p : D.carrier × (P.component c).toClosedOrientedManifold.Carrier => ((p.1 : ℝ), p.2.1))
+      (f := fun p : D.carrier × (P.component c).Carrier => ((p.1 : ℝ), p.2.1))
       hmap (fun p => ⟨p.1.property, mem_univ _⟩)
   have hmin : Continuous (fun t : D.carrier => componentHalfScalar P F.base c t) := by
     have hc : Continuous (fun t : D.carrier =>
-        sInf ((fun x : (P.component c).toClosedOrientedManifold.Carrier => F.base.scalar t x.1) '' univ)) :=
-      (isCompact_univ : IsCompact (univ : Set (P.component c).toClosedOrientedManifold.Carrier)).continuous_sInf
-        (f := fun (t : D.carrier) (x : (P.component c).toClosedOrientedManifold.Carrier) => F.base.scalar t x.1) hscalar
+        sInf ((fun x : (P.component c).Carrier => F.base.scalar t x.1) '' univ)) :=
+      (isCompact_univ : IsCompact (univ : Set (P.component c).Carrier)).continuous_sInf
+        (f := fun (t : D.carrier) (x : (P.component c).Carrier) => F.base.scalar t x.1) hscalar
     simpa only [image_univ, componentHalfScalar] using hc.div_const (2 : ℝ)
   exact continuousOn_iff_continuous_domRestrict.mpr hmin
 
 theorem incoming_component_continuity (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     ContinuousOn (componentHalfScalar P G.flow.base c) (Ico a b) ∧
       ContinuousOn (fun t => Width.componentWidth P (G.flow.base.metric t) c hSC) (Ico a b) := by
   exact ⟨componentHalfScalar_continuousOn G.flow G.equation c,
@@ -140,7 +140,7 @@ theorem incoming_component_continuity (G : P.IncomingSlab a b)
 
 theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     ∀ s ∈ Ico a b, ∀ t ∈ Ico s b,
       0 ≤ Width.componentWidth P (G.flow.base.metric t) c hSC ∧
       Width.componentWidth P (G.flow.base.metric t) c hSC ≤
@@ -156,12 +156,12 @@ theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
   have hrho (r : ℝ) (hr : r ∈ Ico a b) :
       halfScalarMinimum F.base r = componentHalfScalar P G.flow.base c r := by
     change sInf (range (F.base.scalar r)) / 2 =
-      sInf (range (fun x : (P.component c).toClosedOrientedManifold.Carrier => G.flow.base.scalar r x.1)) / 2
+      sInf (range (fun x : (P.component c).Carrier => G.flow.base.scalar r x.1)) / 2
     rw [show F.base.scalar r =
-      (fun x : (P.component c).toClosedOrientedManifold.Carrier => G.flow.base.scalar r x.1) from
+      (fun x : (P.component c).Carrier => G.flow.base.scalar r x.1) from
         funext (hscalar r hr)]
   have hwidth (r : ℝ) (hr : r ∈ Ico a b) :
-      Width.classWidth (F.base.metric r) (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) =
+      Width.classWidth (F.base.metric r) (positiveFreeContractibleClass (P.component c).orientation) =
         Width.componentWidth P (G.flow.base.metric r) c hSC := by
     rw [hmetric r hr]
     rfl
@@ -186,13 +186,13 @@ theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
         Width.componentWidth P (G.flow.base.metric s) c hSC -
           2 * Real.pi * ∫ r in s..t, componentFactor P G.flow.base c s r := by
     obtain ⟨B, hB⟩ := hbackground s hs t ht
-    have hess : IsEssentialFamilyClass (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) :=
+    have hess : IsEssentialFamilyClass (positiveFreeContractibleClass (P.component c).orientation) :=
       isEssentialFamilyClass_of_pi2_zero
         (fun q => (rfs_homotopy_groups q).1)
-        (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation)
-        (fun q => positiveFreeContractibleClass_nontrivial (P.component c).toClosedOrientedManifold.orientation q)
+        (positiveFreeContractibleClass (P.component c).orientation)
+        (fun q => positiveFreeContractibleClass_nontrivial (P.component c).orientation q)
     have h := (rfs_integrated_class_width B (by simp [ThreeSpace])
-      (positiveFreeContractibleClass (P.component c).toClosedOrientedManifold.orientation) hess
+      (positiveFreeContractibleClass (P.component c).orientation) hess
       s ⟨le_rfl, ht.1.le⟩ t ⟨ht.1.le, le_rfl⟩).2.2
     rw [hB] at h
     have hs' : s ∈ Ico a b := ⟨hs.1.le, hs.2⟩
@@ -215,7 +215,7 @@ theorem incoming_component_integrated_width (G : P.IncomingSlab a b)
     rcases eq_or_lt_of_le ht.1 with rfl | hst
     · simp only [componentFactor, intervalIntegral.integral_same, Real.exp_zero,
         one_mul, mul_zero, sub_zero, le_refl]
-    · apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hst
+    · apply integrated_comparison_le_endpoints hst
         (hrho_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
         (hwidth_cont.mono (fun r hr => ⟨hs.1.trans hr.1, hr.2.trans_lt ht.2⟩))
       intro u hu v hv
@@ -268,7 +268,7 @@ private theorem componentAffine_hasDerivWithinAt
 
 theorem incoming_component_smooth_width (G : P.IncomingSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     ContinuousOn (fun t => Width.componentWidth P (G.flow.base.metric t) c hSC) (Ico a b) ∧
       (∀ t ∈ Ico a b, ∀ epsilon > 0, ∃ delta > 0,
         ∀ h ∈ Ioo (0 : ℝ) delta, t + h < b →
@@ -365,7 +365,7 @@ private def closedSlabIncoming (G : P.ClosedSlab a b) : P.IncomingSlab a b where
 
 theorem closed_component_smooth_width (G : P.ClosedSlab a b)
     (c : ConnectedComponents P.Carrier)
-    (hSC : SimplyConnectedSpace (P.component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace (P.component c).Carrier) :
     ContinuousOn (fun t => Width.componentWidth P (G.flow.base.metric t) c hSC) (Icc a b) ∧
       (∀ t ∈ Ico a b, ∀ epsilon > 0, ∃ delta > 0,
         ∀ h ∈ Ioo (0 : ℝ) delta, t + h ≤ b →
@@ -400,7 +400,7 @@ theorem closed_component_smooth_width (G : P.ClosedSlab a b)
           Width.componentWidth P (G.flow.base.metric v) c hSC ≤
         Width.componentWidth P (G.flow.base.metric t) c hSC -
           2 * Real.pi * ∫ r in t..v, componentFactor P G.flow.base c t r := by
-      apply DifferentialGeometry.Analysis.ODE.integrated_comparison_le_endpoints hv.1 (hrho.mono hsub) (hw.mono hsub)
+      apply integrated_comparison_le_endpoints hv.1 (hrho.mono hsub) (hw.mono hsub)
       intro s hs r hr
       exact (hintegrated s ⟨ht.1.trans hs.1.le, hs.2.trans_le hv.2⟩
         r ⟨hr.1.le, hr.2.trans_le hv.2⟩).2.2
@@ -419,7 +419,7 @@ theorem closed_component_smooth_width (G : P.ClosedSlab a b)
 
 theorem history_component_initial_width (H : ObservedHistory.{u}) (i : Fin H.eventCount)
     (c : ConnectedComponents (H.stage i.castSucc).Carrier)
-    (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).Carrier) :
     Width.componentWidth (H.stage i.castSucc)
         ((H.event i).incoming.flow.base.metric (H.time i.castSucc)) c hSC =
       Width.componentWidth (H.stage i.castSucc) (H.initialMetric i.castSucc) c hSC := by
@@ -427,7 +427,7 @@ theorem history_component_initial_width (H : ObservedHistory.{u}) (i : Fin H.eve
 
 theorem history_incoming_component_dini (H : ObservedHistory.{u}) (i : Fin H.eventCount)
     (c : ConnectedComponents (H.stage i.castSucc).Carrier)
-    (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).toClosedOrientedManifold.Carrier) :
+    (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).Carrier) :
     ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), ∀ epsilon > 0,
       ∃ delta > 0, ∀ h ∈ Ioo (0 : ℝ) delta, t + h < H.time i.succ →
         (Width.componentWidth (H.stage i.castSucc)
@@ -442,7 +442,7 @@ theorem history_incoming_component_dini (H : ObservedHistory.{u}) (i : Fin H.eve
 
 theorem rfs_actual_smooth_width (H : ObservedHistory.{u}) :
     (∀ (i : Fin H.eventCount) (c : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).toClosedOrientedManifold.Carrier),
+      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).Carrier),
       let P := H.stage i.castSucc
       let G := (H.event i).incoming
       ContinuousOn (fun t => Width.componentWidth P (G.flow.base.metric t) c hSC)
@@ -459,7 +459,7 @@ theorem rfs_actual_smooth_width (H : ObservedHistory.{u}) :
               Width.componentWidth P (G.flow.base.metric t) c hSC) ∧
     (∀ (hfinal : H.time (Fin.last H.eventCount) < H.horizon)
       (c : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
-      (hSC : SimplyConnectedSpace ((H.stage (Fin.last H.eventCount)).component c).toClosedOrientedManifold.Carrier),
+      (hSC : SimplyConnectedSpace ((H.stage (Fin.last H.eventCount)).component c).Carrier),
       let P := H.stage (Fin.last H.eventCount)
       let G := H.finalSlab hfinal
       ContinuousOn (fun t => Width.componentWidth P (G.flow.base.metric t) c hSC)
@@ -475,13 +475,13 @@ theorem rfs_actual_smooth_width (H : ObservedHistory.{u}) :
             2 * Real.pi * (∫ r in t..v, componentFactor P G.flow.base c t r) ≤
               Width.componentWidth P (G.flow.base.metric t) c hSC) ∧
     (∀ (i : Fin H.eventCount) (c : ConnectedComponents (H.stage i.castSucc).Carrier)
-      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).toClosedOrientedManifold.Carrier),
+      (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component c).Carrier),
       Width.componentWidth (H.stage i.castSucc)
           ((H.event i).incoming.flow.base.metric (H.time i.castSucc)) c hSC =
         Width.componentWidth (H.stage i.castSucc) (H.initialMetric i.castSucc) c hSC) ∧
     ∀ (hfinal : H.time (Fin.last H.eventCount) < H.horizon)
       (c : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
-      (hSC : SimplyConnectedSpace ((H.stage (Fin.last H.eventCount)).component c).toClosedOrientedManifold.Carrier),
+      (hSC : SimplyConnectedSpace ((H.stage (Fin.last H.eventCount)).component c).Carrier),
       Width.componentWidth (H.stage (Fin.last H.eventCount))
           ((H.finalSlab hfinal).flow.base.metric (H.time (Fin.last H.eventCount))) c hSC =
         Width.componentWidth (H.stage (Fin.last H.eventCount))

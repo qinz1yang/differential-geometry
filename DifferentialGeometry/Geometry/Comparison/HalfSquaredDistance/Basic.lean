@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.CenterOfMass.Basic
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic

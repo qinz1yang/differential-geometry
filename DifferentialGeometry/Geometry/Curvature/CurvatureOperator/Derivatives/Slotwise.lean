@@ -102,7 +102,7 @@ lemma nablaRiemannSec_homBundle_apply_eq
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (τ : Cₛ^∞⟮I; E_U →L[ℝ] F, (fun x : M => U x →L[ℝ] V x)⟯)
     (W : Cₛ^∞⟮I; E_U, U⟯) (x : M) :
-    (nablaRiemannSec covT (_root_.CovariantDerivative.hom I M E_U U F V cov_U
+    (nablaRiemannSec covT (HomConnection.homBundleCovariantDerivative I M E_U U F V cov_U
       cov_V)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (fun b => τ b) x) (W x) =
       nablaRiemannSec covT cov_V (fun b => X b) (fun b => Y b) (fun b => Z b)
@@ -111,7 +111,7 @@ lemma nablaRiemannSec_homBundle_apply_eq
         - τ x (nablaRiemannSec covT cov_U (fun b => X b) (fun b => Y b) (fun b => Z b)
             (fun b => W b) x) := by
   classical
-  set covHom := _root_.CovariantDerivative.hom I M E_U U F V cov_U cov_V with
+  set covHom := HomConnection.homBundleCovariantDerivative I M E_U U F V cov_U cov_V with
     hcovHom
   set BXY : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ContMDiffSection.mk (covApply covT (fun b => X b) (fun b => Y b))
@@ -519,7 +519,7 @@ theorem nablaTensor0SCurv_succ_consEval
   rw [show nablaRiemannSec (LeviCivita (I := I) g) (tangentHomTensorCovariantDerivative (I := I) (M := M) g s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (curriedSection I M A) x =
       nablaRiemannSec (LeviCivita (I := I) g)
-          (_root_.CovariantDerivative.hom I M E
+          (HomConnection.homBundleCovariantDerivative I M E
             (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
             (fun x : M => Tensor0SSpace s I x)
             (LeviCivita (I := I) g)

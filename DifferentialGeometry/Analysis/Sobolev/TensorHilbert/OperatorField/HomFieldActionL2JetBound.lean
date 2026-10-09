@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
@@ -128,43 +127,34 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_operatorFieldComposition_l2_norm_le (g : SmoothRiemannianMetric I M) (b c : ℕ)
     (Φ : SmoothCcTensor g b c) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (a : ℕ) (V : SmoothCcTensor g a b),
-      ‖ccOperatorFieldComp (I := I) (M := M) g a b c Φ V‖ ≤ C * ‖V‖ := by
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ V : SmoothCcTensor g 0 b,
+      ‖ccOperatorFieldComp (I := I) (M := M) g 0 b c Φ V‖ ≤ C * ‖V‖ := by
   classical
   obtain ⟨Cop, hCop_nn, hCop⟩ :=
-    exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g b c Φ
-  refine ⟨Real.sqrt Cop, Real.sqrt_nonneg _, fun a V => ?_⟩
-  set Z : SmoothCcTensor g a c := ccOperatorFieldComp (I := I) (M := M) g a b c Φ V with hZ_def
-  have hpointwise : ∀ x : M,
-      riemannianFiberNormSq (I := I) (M := M) g a c x (Z.toSection x) ≤
-        Cop * riemannianFiberNormSq (I := I) (M := M) g a b x (V.toSection x) := by
-    intro x
-    rw [hZ_def, operatorFieldComposition_toSection (I := I) (M := M) g a b c Φ V x]
-    refine le_trans (riemannianFiberNormSq_compRS_le_mul (I := I) (M := M) g a b c x
-      (Φ.toSection x) (V.toSection x)) ?_
-    exact mul_le_mul_of_nonneg_right (hCop x)
-      (riemannianFiberNormSq_nonneg (I := I) (M := M) g a b x (V.toSection x))
+    exists_uniform_riemannianFiberNormSq_operatorFieldComposition_le (I := I) (M := M) g 0 b c Φ
+  refine ⟨Real.sqrt Cop, Real.sqrt_nonneg _, fun V => ?_⟩
+  set Z : SmoothCcTensor g 0 c := ccOperatorFieldComp (I := I) (M := M) g 0 b c Φ V with hZ_def
   have hZL2 : ‖Z‖ ^ 2 =
-      ∫ x, riemannianFiberNormSq (I := I) (M := M) g a c x (Z.toSection x)
+      ∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 c x (Z.toSection x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [SmoothCcTensor.norm_def (I := I) (M := M) Z]
-    exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g a c Z
+    exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g 0 c Z
   have hVL2 : ‖V‖ ^ 2 =
-      ∫ x, riemannianFiberNormSq (I := I) (M := M) g a b x (V.toSection x)
+      ∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 b x (V.toSection x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [SmoothCcTensor.norm_def (I := I) (M := M) V]
-    exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g a b V
+    exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M) g 0 b V
   have hZsq_le : ‖Z‖ ^ 2 ≤ Cop * ‖V‖ ^ 2 := by
     rw [hZL2, hVL2]
     have hg_int : MeasureTheory.Integrable
-        (fun x => Cop * riemannianFiberNormSq (I := I) (M := M) g a b x (V.toSection x))
+        (fun x => Cop * riemannianFiberNormSq (I := I) (M := M) g 0 b x (V.toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g) :=
-      (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g a b V).const_mul Cop
+      (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 b V).const_mul Cop
     have hmono := MeasureTheory.integral_mono_of_nonneg
       (Filter.Eventually.of_forall (fun x =>
-        riemannianFiberNormSq_nonneg (I := I) (M := M) g a c x (Z.toSection x)))
+        riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 c x (Z.toSection x)))
       hg_int
-      (Filter.Eventually.of_forall hpointwise)
+      (Filter.Eventually.of_forall (fun x => hCop V x))
     rw [MeasureTheory.integral_const_mul] at hmono
     linarith
   have hZnn : 0 ≤ ‖Z‖ := norm_nonneg _
@@ -173,82 +163,6 @@ theorem exists_operatorFieldComposition_l2_norm_le (g : SmoothRiemannianMetric I
   calc Real.sqrt (‖Z‖ ^ 2) ≤ Real.sqrt (Cop * ‖V‖ ^ 2) := Real.sqrt_le_sqrt hZsq_le
     _ = Real.sqrt Cop * ‖V‖ := by rw [Real.sqrt_mul hCop_nn, Real.sqrt_sq hVnn]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem exists_operatorFieldComposition_iteratedCovGrad_l2_window_bound
-    (g : SmoothRiemannianMetric I M) (b c : ℕ) (Φ : SmoothCcTensor g b c) :
-    ∃ cc : ℕ → ℝ, (∀ k, 0 ≤ cc k) ∧
-      ∀ (a : ℕ) (W : SmoothCcTensor g a b) (k : ℕ),
-        ‖iteratedCovGrad g a c k (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W)‖ ≤
-          cc k * ∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b i W‖ := by
-  classical
-  choose CC hCC_nn hCC using fun (k i : ℕ) =>
-    exists_operatorFieldComposition_l2_norm_le (I := I) (M := M) g (b + i) (c + k)
-      (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
-  refine ⟨fun k => ∑ i ∈ Finset.range (k + 1), CC k i,
-    fun k => Finset.sum_nonneg (fun i _ => hCC_nn k i), fun a W k => ?_⟩
-  rw [iteratedCovGrad_operatorFieldComposition_eq (I := I) (M := M) g a b c Φ W k]
-  refine le_trans (norm_sum_le _ _) ?_
-  have hterm : ∀ i ∈ Finset.range (k + 1),
-      ‖ccOperatorFieldComp (I := I) (M := M) g a (b + i) (c + k)
-          (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
-          (iteratedCovGrad (I := I) g a b i W)‖ ≤
-        CC k i * ∑ j ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b j W‖ := by
-    intro i hi
-    refine le_trans (hCC k i a (iteratedCovGrad (I := I) g a b i W)) ?_
-    refine mul_le_mul_of_nonneg_left ?_ (hCC_nn k i)
-    exact Finset.single_le_sum
-      (f := fun j => ‖iteratedCovGrad g a b j W‖)
-      (fun j _ => norm_nonneg _) hi
-  refine le_trans (Finset.sum_le_sum hterm) ?_
-  rw [← Finset.sum_mul]
-
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem exists_operatorFieldComposition_covariantJetNormSq_le
-    (g : SmoothRiemannianMetric I M) (b c : ℕ) (Φ : SmoothCcTensor g b c) (m : ℕ) :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ (a : ℕ) (W : SmoothCcTensor g a b),
-      covariantJetNormSq (I := I) (M := M) g m
-          (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W) ≤
-        K * covariantJetNormSq (I := I) (M := M) g m W := by
-  classical
-  obtain ⟨cc, _, hcc⟩ :=
-    exists_operatorFieldComposition_iteratedCovGrad_l2_window_bound (I := I) (M := M) g b c Φ
-  let K : ℝ := ∑ k ∈ Finset.range (m + 1), (k + 1 : ℝ) * (cc k) ^ 2
-  have hK : 0 ≤ K := Finset.sum_nonneg fun k _ =>
-    mul_nonneg (by positivity) (sq_nonneg _)
-  refine ⟨K, hK, fun a W => ?_⟩
-  have hterm : ∀ k ∈ Finset.range (m + 1),
-      ‖iteratedCovGrad g a c k
-          (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W)‖ ^ 2 ≤
-        ((k + 1 : ℝ) * (cc k) ^ 2) * covariantJetNormSq (I := I) (M := M) g m W := by
-    intro k hk
-    have hkm : k ≤ m := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
-    have hcs : (∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b i W‖) ^ 2 ≤
-        (k + 1 : ℝ) * covariantJetNormSq (I := I) (M := M) g k W := by
-      have h := Finset.sum_mul_sq_le_sq_mul_sq (R := ℝ) (Finset.range (k + 1))
-        (fun i => ‖iteratedCovGrad g a b i W‖) (fun _ => (1 : ℝ))
-      simpa [covariantJetNormSq, mul_comm] using h
-    have hwindow : (∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b i W‖) ^ 2 ≤
-        (k + 1 : ℝ) * covariantJetNormSq (I := I) (M := M) g m W :=
-      le_trans hcs (mul_le_mul_of_nonneg_left
-        (covariantJetNormSq_mono (I := I) (M := M) g hkm W) (by positivity))
-    calc
-      ‖iteratedCovGrad g a c k
-          (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W)‖ ^ 2 ≤
-        (cc k * ∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b i W‖) ^ 2 :=
-        pow_le_pow_left₀ (norm_nonneg _) (hcc a W k) 2
-      _ = (cc k) ^ 2 * (∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g a b i W‖) ^ 2 :=
-        mul_pow _ _ _
-      _ ≤ (cc k) ^ 2 * ((k + 1 : ℝ) * covariantJetNormSq (I := I) (M := M) g m W) :=
-        mul_le_mul_of_nonneg_left hwindow (sq_nonneg _)
-      _ = ((k + 1 : ℝ) * (cc k) ^ 2) * covariantJetNormSq (I := I) (M := M) g m W := by ring
-  calc
-    covariantJetNormSq (I := I) (M := M) g m
-        (ccOperatorFieldComp (I := I) (M := M) g a b c Φ W) ≤
-      ∑ k ∈ Finset.range (m + 1),
-        ((k + 1 : ℝ) * (cc k) ^ 2) * covariantJetNormSq (I := I) (M := M) g m W :=
-      Finset.sum_le_sum hterm
-    _ = K * covariantJetNormSq (I := I) (M := M) g m W := by rw [← Finset.sum_mul]
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (g : SmoothRiemannianMetric I M)
     (b c : ℕ) (Φ : SmoothCcTensor g b c) :
@@ -256,13 +170,27 @@ theorem exists_operatorFieldApplication_iteratedCovGrad_l2_window_bound (g : Smo
       ∀ (W : SmoothCcTensor g 0 b) (k : ℕ),
         ‖iteratedCovGrad g 0 c k (operatorFieldApply (I := I) (M := M) g b c Φ W)‖ ≤
           cc k * ∑ i ∈ Finset.range (k + 1), ‖iteratedCovGrad g 0 b i W‖ := by
-  obtain ⟨cc, hcc_nn, hcc⟩ :=
-    exists_operatorFieldComposition_iteratedCovGrad_l2_window_bound (I := I) (M := M) g b c Φ
-  refine ⟨cc, hcc_nn, fun W k => ?_⟩
+  classical
+  choose CC hCC_nn hCC using fun (k i : ℕ) =>
+    exists_operatorFieldComposition_l2_norm_le (I := I) (M := M) g (b + i) (c + k)
+      (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
+  refine ⟨fun k => ∑ i ∈ Finset.range (k + 1), CC k i,
+    fun k => Finset.sum_nonneg (fun i _ => hCC_nn k i), fun W k => ?_⟩
   rw [iteratedCovGrad_operatorFieldApply_eq (I := I) (M := M) g b c Φ W k]
-  have h := hcc 0 W k
-  rw [iteratedCovGrad_operatorFieldComposition_eq (I := I) (M := M) g 0 b c Φ W k] at h
-  exact h
+  refine le_trans (norm_sum_le _ _) ?_
+  have hterm : ∀ i ∈ Finset.range (k + 1),
+      ‖ccOperatorFieldComp (I := I) (M := M) g 0 (b + i) (c + k)
+          (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g b c Φ k i)
+          (iteratedCovGrad (I := I) g 0 b i W)‖ ≤
+        CC k i * ∑ j ∈ Finset.range (k + 1), ‖iteratedCovGrad g 0 b j W‖ := by
+    intro i hi
+    refine le_trans (hCC k i (iteratedCovGrad (I := I) g 0 b i W)) ?_
+    refine mul_le_mul_of_nonneg_left ?_ (hCC_nn k i)
+    exact Finset.single_le_sum
+      (f := fun j => ‖iteratedCovGrad g 0 b j W‖)
+      (fun j _ => norm_nonneg _) hi
+  refine le_trans (Finset.sum_le_sum hterm) ?_
+  rw [← Finset.sum_mul]
 
 end NormedOperatorFieldApplication
 

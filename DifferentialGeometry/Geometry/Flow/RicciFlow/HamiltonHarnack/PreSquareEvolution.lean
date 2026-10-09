@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.BilinearForm.HamiltonBlock.Reaction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.BlockReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.MEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TriangularJets
 

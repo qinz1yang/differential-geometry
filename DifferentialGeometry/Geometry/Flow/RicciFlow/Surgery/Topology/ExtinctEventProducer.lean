@@ -4,9 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctEven
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionFrontierSatisfiability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapFrameReversing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureBound
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.CapCoordinates
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.SphereModel.CapDerivatives
-import DifferentialGeometry.Topology.Manifold.SphereOutwardFrameDictionary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ThreeBallChartDictionary
 
 set_option autoImplicit false
 
@@ -19,15 +17,15 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_terminalLimitMetric_of_metric
+theorem OrientedThreeStage.exists_incomingSlab_terminalLimitMetric_of_metric
     (P : OrientedThreeStage.{u}) (g : P.Metric) (a : ℝ) :
     ∃ s : ℝ, a < s ∧ ∃ G : P.IncomingSlab a s,
       Nonempty G.TerminalLimitMetric ∧ G.flow.base.metric a = g := by
   obtain ⟨b, hab, S, hS⟩ := exists_closedSlab_of_metric P g a
   exact ⟨b, hab, S.restrictIncoming le_rfl S.lt le_rfl,
-    ⟨DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.endpointTerminalLimitMetric P S⟩, hS⟩
+    ⟨OrientedThreeStage.ClosedSlab.endpointTerminalLimitMetric P S⟩, hS⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_retainedCoreEvent_of_isEmpty_output_of_attaching_eq_refl
+theorem OrientedThreeStage.exists_retainedCoreEvent_of_isEmpty_output_of_attaching_eq_refl
     {P Q D N : OrientedThreeStage.{u}} (X : SmoothCutCapTransition P Q D N) [IsEmpty Q.Carrier]
     (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2) (Sphere 2) ∞)
     (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
@@ -37,9 +35,9 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_retai
       E.incoming.flow.base.metric 0 = g ∧ E.transition.boundaryFrameReversing ∧
         E.toMetricCutCapEvent.hasCutCapCompletion := by
   obtain ⟨s, hs, G, hL, hmet⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_terminalLimitMetric_of_metric P g 0
+    OrientedThreeStage.exists_incomingSlab_terminalLimitMetric_of_metric P g 0
   let E : RetainedCoreEvent P Q 0 s :=
-    RetainedCoreEvent.ofEmptyOutput X G hL.some (DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q)
+    RetainedCoreEvent.ofEmptyOutput X G hL.some (OrientedThreeStage.metricOfIsEmpty Q)
   exact ⟨s, hs, E, hmet, X.boundaryFrameReversing_of_attaching_eq_refl h hout,
     E.toMetricCutCapEvent_hasCutCapCompletion_of_attaching_eq_refl h hout⟩
 
@@ -48,21 +46,21 @@ theorem hasExtinctRetainedCoreHistory_of_isEmpty_output_of_attaching_eq_refl
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     {Q D N : OrientedThreeStage.{u}}
     (X : SmoothCutCapTransition
-      (M.toClosedOrientedManifold) Q D N)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q D N)
     [IsEmpty Q.Carrier]
     (h : ∀ b, X.attaching b = Diffeomorph.refl (𝓡 2) (Sphere 2) ∞)
     (hout : (SphericalTubeSystem.ofSmoothCutCapTransition X)
       |>.outwardNormalFirstIsStandardSphereOrientation)
     (hctrl : ∀ q : ConnectedComponents D.Carrier,
-      DifferentialGeometry.Topology.isStandardConnectedSum
-        (D.component q).Carrier) :
+      DifferentialGeometry.Topology.isPoincareStandard
+        (D.toClosedOrientedManifold.component q).Carrier) :
     HasExtinctRetainedCoreHistory M g := by
   obtain ⟨s, hs, G, hL, hmet⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_incomingSlab_terminalLimitMetric_of_metric
-      (M.toClosedOrientedManifold) g 0
+    OrientedThreeStage.exists_incomingSlab_terminalLimitMetric_of_metric
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g 0
   let E : RetainedCoreEvent
-      (M.toClosedOrientedManifold) Q 0 s :=
-    RetainedCoreEvent.ofEmptyOutput X G hL.some (DifferentialGeometry.Topology.ClosedOrientedManifold.metricOfIsEmpty Q)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q 0 s :=
+    RetainedCoreEvent.ofEmptyOutput X G hL.some (OrientedThreeStage.metricOfIsEmpty Q)
   exact hasExtinctRetainedCoreHistory_of_extinctionEvent M g hs inferInstance E hmet
     (X.boundaryFrameReversing_of_attaching_eq_refl h hout) hctrl
 
@@ -101,7 +99,7 @@ theorem hasControlledExtinctionWithin_of_retainedCoreHistory_time
     (hctrl : ∀ i : Fin H.eventCount,
       (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) :
-    HasControlledExtinctionWithin P g
+    HasControlledExtinctionWithin P.toClosedOrientedManifold g
       (H.time (Fin.last H.eventCount)) :=
   hasControlledExtinctionWithin_of_observedHistory P g H.toHistory A
     (fun i => ((H.coreEvent i).toMetricCutCapEvent_hasCutCapCompletion (hbfr i)).some)
@@ -132,7 +130,7 @@ theorem hasControlledExtinctionWithin_of_extinctionEvent
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : 0 < s) (hQ : IsEmpty Q.Carrier)
     (E : RetainedCoreEvent
-      (M.toClosedOrientedManifold) Q 0 s)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) Q 0 s)
     (hm : E.incoming.flow.base.metric 0 = g)
     (hbfr : E.transition.boundaryFrameReversing)
     (hctrl : E.toMetricCutCapEvent.poincareStandardDiscarded)
@@ -140,7 +138,7 @@ theorem hasControlledExtinctionWithin_of_extinctionEvent
     HasControlledExtinctionWithin M.toClosedOrientedManifold g B := by
   refine hasControlledExtinctionWithin_mono (B := s) (B' := B) hB ?_
   refine @hasControlledExtinctionWithin_of_retainedCoreHistory_time
-    (M.toClosedOrientedManifold) g
+    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g
     (extinctionHistory hs E) M.connected.toNonempty (extinctionHistory_initial hs E hm)
     (fun i => ?_) (fun i => ?_) ?_
   · fin_cases i
@@ -152,10 +150,10 @@ theorem hasControlledExtinctionWithin_of_extinctionEvent
 
 end RetainedCoreEvent
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.not_singularEndpoint {P : OrientedThreeStage.{u}}
+theorem OrientedThreeStage.ClosedSlab.not_singularEndpoint {P : OrientedThreeStage.{u}}
     {u v : ℝ} (G : P.ClosedSlab u v) :
     ¬ (G.restrictIncoming le_rfl G.lt le_rfl).SingularEndpoint :=
-  fun h => DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint _
+  fun h => OrientedThreeStage.IncomingSlab.terminalRegularRegion_ne_univ_of_singularEndpoint _
     h (G.terminalRegularRegion_eq_univ P)
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold

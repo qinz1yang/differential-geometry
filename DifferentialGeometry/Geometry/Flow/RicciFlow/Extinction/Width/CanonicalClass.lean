@@ -43,15 +43,15 @@ theorem canonical_regularRepresentative_not_null
     (Γ : RegularRepresentative (I := ThreeModel) (positiveFreeContractibleClass o)) (q : M) :
     ¬ ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ.1)
       (ContinuousMap.const (Sphere 2)
-        (⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩ : DifferentialGeometry.Topology.contractibleLoop M)) := by
+        (⟨constantLoops q, isContractibleLoop_constant q⟩ : ContractibleContinuousLoop M)) := by
   intro h
   apply positiveFreeContractibleClass_nontrivial o q
-  exact Γ.2.symm.trans ((DifferentialGeometry.Topology.FreeHomotopyClass.mk_eq_mk_iff _ _).mpr h)
+  exact Γ.2.symm.trans ((FreeHomotopyClass.mk_eq_mk_iff _ _).mpr h)
 
 theorem rfs_canonical_short_loop_fillings (g : SmoothRiemannianMetric ThreeModel M)
     (o : TangentOrientationSection M) :
     ∃ σ K₀ : ℝ, 0 < σ ∧ 0 ≤ K₀ ∧
-      (∀ (γ : DifferentialGeometry.Topology.freeLoop M), IsLipschitzLoop g γ → loopLength g γ < σ →
+      (∀ (γ : ContinuousFreeLoop M), IsLipschitzLoop g γ → loopLength g γ < σ →
         ∃ u : DiskCompetitor g γ, diskArea g u.1.map ≤ K₀ * loopLength g γ ^ 2) ∧
       (∀ (K : Type uK) [TopologicalSpace K] [CompactSpace K]
         (Γ : RegularFamily (I := ThreeModel) (Q := M) K),

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Presentation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteStaticCapInclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapReparametrization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.BufferedMetricCutCapEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedMetricCutCapEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricRetainedCore
 
 section
@@ -18,54 +18,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private abbrev FinitePresentedQuotient
-    {M : Type u} [TopologicalSpace M] {ι : Type} {precision : ι → ℝ}
-    (hδ : ∀ i, 0 < precision i)
-    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
-    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
-    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j))) : Type u :=
-  FiniteCapQuotient transitionEnd_pos hδ f
-    (fun i => _root_.Topology.IsEmbedding.injective
-      (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
-
-private abbrev finitePresentedRetained
-    {M : Type u} [TopologicalSpace M] [T2Space M]
-    [LocallyPathConnectedSpace M] {ι : Type} [Fintype ι] {precision : ι → ℝ}
-    (hδ : ∀ i, 0 < precision i)
-    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
-    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
-    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
-    (R : Set (ConnectedComponents (cutCore f))) :=
-  finiteCapRetained transitionEnd_pos hδ f hf hdisj R
-
-private abbrev finitePresentedDiscarded
-    {M : Type u} [TopologicalSpace M] [T2Space M]
-    [LocallyPathConnectedSpace M]
-    {ι : Type} [Fintype ι] {precision : ι → ℝ}
-    (hδ : ∀ i, 0 < precision i)
-    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
-    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
-    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
-    (R : Set (ConnectedComponents (cutCore f))) :=
-  finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
-
-private abbrev FinitePresentedBoundaryIndex
-    {M : Type u} [TopologicalSpace M] {ι : Type} {precision : ι → ℝ}
-    (hδ : ∀ i, 0 < precision i)
-    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
-    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
-    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j)))
-    (R : Set (ConnectedComponents (cutCore f))) :=
-  {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
-
-private abbrev finitePresentedTubeSystem
-    {M : Type u} [TopologicalSpace M] {ι : Type} [Fintype ι] {precision : ι → ℝ}
-    (hδ : ∀ i, 0 < precision i) (hδ1 : ∀ i, precision i < 1)
-    (f : ∀ i : ι, bufferedCylinder (precision i) → M)
-    (hf : ∀ i, _root_.Topology.IsOpenEmbedding (f i))
-    (hdisj : Pairwise fun i j => Disjoint (range (f i)) (range (f j))) :=
-  TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
-
 variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M]
   [hSmooth : IsManifold ThreeModel ∞ M] [CompactSpace M]
   {ι : Type} [Fintype ι] {precision : ι → ℝ}
@@ -78,55 +30,42 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
-
-private abbrev finitePresentedChartedSpace : ChartedSpace ThreeSpace Q :=
-  finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
-private abbrev finitePresentedIsManifold :
-    let : ChartedSpace ThreeSpace Q := finitePresentedChartedSpace hδ f hf hdisj
-    IsManifold ThreeModel ∞ Q :=
-  finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
-private abbrev finitePresentedT2Space : T2Space Q :=
-  finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
-private abbrev finitePresentedQuotientCompactSpace : CompactSpace Q :=
-  finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
-private abbrev finitePresentedRetainedCompactSpace : CompactSpace Ret :=
-  (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
-private abbrev finitePresentedDiscardedCompactSpace : CompactSpace Disc :=
-  (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
 
 variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
@@ -154,18 +93,18 @@ theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent (hD : 
               HEq S.neck (d (e b)).oriented.toNormalizedNeck ∧
               ∀ u : standardCapWindow D,
                 S.inclusion (S.witness.window u) =
-                  finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
+                  finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos
                     hδ f hf hdisj hs R c hc (e b) ((w (e b)).window u) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace
   rcases E with @⟨discarded, capped, X, G, gLimit, gRet, old, holdc, holdr, oldcharts,
     oldsmooth, oldinduced, oldTerminal, oldTerminaleq, oldOutput, oldOutputeq,
@@ -219,26 +158,26 @@ theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent (hD : 
 
 theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
@@ -265,15 +204,15 @@ theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent (hD : 0 < D) :
               S.delta = c * precision (e b).val.1 ∧ S.order = k' (e b) ∧
               HEq S.neck (d (e b)).oriented.toNormalizedNeck := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace
     hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
   apply Exists.imp _ (exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent hδ hδ1 f hf hdisj hs R o
@@ -326,13 +265,15 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -340,28 +281,28 @@ variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_terminal (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
@@ -390,18 +331,18 @@ theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_termin
               HEq S.neck (d (e b)).oriented.toNormalizedNeck ∧
               ∀ u : standardCapWindow D,
                 S.inclusion (S.witness.window u) =
-                  finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
+                  finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos
                     hδ f hf hdisj hs R c hc (e b) ((w (e b)).window u) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E A B a hboundary hB hDisc hCap htrace hG hL
   apply terminal_data_transport E G L hG hL
   exact exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent hδ hδ1 f hf hdisj hs R o
@@ -409,28 +350,28 @@ theorem exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_termin
 
 theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent_terminal (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
@@ -458,15 +399,15 @@ theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent_terminal (hD : 0
               S.delta = c * precision (e b).val.1 ∧ S.order = k' (e b) ∧
               HEq S.neck (d (e b)).oriented.toNormalizedNeck := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E A B a hboundary hB hDisc hCap htrace hG hL
     hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
   obtain ⟨e, he, hS⟩ := exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_terminal hδ hδ1 f hf hdisj hs R o
@@ -479,26 +420,26 @@ theorem exists_presentedStaticCap_neck_heq_of_finiteMetricEvent_terminal (hD : 0
 
 def finitePresentedStaticCaps (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
@@ -526,51 +467,51 @@ def finitePresentedStaticCaps (hD : 0 < D) :
               HEq (S b).neck (d (e b)).oriented.toNormalizedNeck ∧
               ∀ u : standardCapWindow D,
                 (S b).inclusion ((S b).witness.window u) =
-                  finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
+                  finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos
                     hδ f hf hdisj hs R c hc (e b) ((w (e b)).window u)} := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace
     hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
   classical
   let hex := exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc E A B a hboundary hB
     hDisc hCap htrace hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
-  with_reducible exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
+  exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
     hex.choose_spec.1, fun b => (hex.choose_spec.2 b).choose_spec⟩⟩
 
 def finitePresentedStaticCapsOfTerminal (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
@@ -599,25 +540,25 @@ def finitePresentedStaticCapsOfTerminal (hD : 0 < D) :
               HEq (S b).neck (d (e b)).oriented.toNormalizedNeck ∧
               ∀ u : standardCapWindow D,
                 (S b).inclusion ((S b).witness.window u) =
-                  finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos
+                  finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos
                     hδ f hf hdisj hs R c hc (e b) ((w (e b)).window u)} := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E A B a hboundary hB hDisc hCap htrace hG hL
     hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
   classical
   let hex := exists_presentedStaticCap_neck_heq_window_eq_of_finiteMetricEvent_terminal
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc G L E A B a hboundary hB
     hDisc hCap htrace hG hL hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput
-  with_reducible exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
+  exact ⟨hex.choose, ⟨fun b => (hex.choose_spec.2 b).choose,
     hex.choose_spec.1, fun b => (hex.choose_spec.2 b).choose_spec⟩⟩
 
 
@@ -638,24 +579,24 @@ private theorem cap_output_of_trace_heq
 
 theorem finite_presented_static_cap_inclusion_cap (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       ∀ (c : ℝ) (hc : 4 ≤ c) (x₀ : ι → E.incoming.terminalRegularOpen) (order : ι → ℕ)
@@ -670,18 +611,18 @@ theorem finite_presented_static_cap_inclusion_cap (hD : 0 < D) :
           ∀ (b : E.RetainedBoundaryIndex) (S : E.PresentedStaticCap fixed D m ε b)
             (z : ThreeBall),
             S.inclusion (S.witness.cap z) =
-              finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+              finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos hδ f hf hdisj hs
                 R c hc (e b) ((w (e b)).cap (B (e b).val z)) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc E B a hboundary hDisc hCap htrace c hc x₀ order d₀ k' d w e he b S z
   have hp := (cap_output_of_trace_heq
     hDisc hCap htrace (he b) z
@@ -697,26 +638,26 @@ theorem finite_presented_static_cap_inclusion_cap (hD : 0 < D) :
 
 theorem finite_presented_static_cap_inclusion_cap_terminal (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
@@ -732,18 +673,18 @@ theorem finite_presented_static_cap_inclusion_cap_terminal (hD : 0 < D) :
           ∀ (b : E.RetainedBoundaryIndex) (S : E.PresentedStaticCap fixed D m ε b)
             (z : ThreeBall),
             S.inclusion (S.witness.cap z) =
-              finiteFullWitnessMap ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+              finiteFullWitnessMap ThreeModel (by simp) transitionEnd_pos hδ f hf hdisj hs
                 R c hc (e b) ((w (e b)).cap (B (e b).val z)) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E B a hboundary hDisc hCap htrace hG hL
   apply terminal_data_transport E G L hG hL
   exact finite_presented_static_cap_inclusion_cap (fixed := fixed) (D := D) (m := m) (ε := ε)
@@ -784,14 +725,16 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
-private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨finrank_threeSpace_eq_three⟩
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -799,16 +742,16 @@ variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_metricCutCapEvent_presentedStaticCap_neck_heq (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
-    ∀ (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
       (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
         (fun x : M => G.terminalRegularRegion x))
@@ -834,10 +777,10 @@ theorem exists_metricCutCapEvent_presentedStaticCap_neck_heq (hD : 0 < D) :
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b, A b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ A b = LinearIsometryEquiv.neg ℝ) ∧
       (∀ b x, (B b x : ThreeSpace) = A b x) ∧
-      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
-        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
-        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ ∧
+      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
             hnontrivial).reparametrizeCaps
@@ -852,15 +795,15 @@ theorem exists_metricCutCapEvent_presentedStaticCap_neck_heq (hD : 0 < D) :
               S.delta = c * precision (e b).val.1 ∧ S.order = k' (e b) ∧
               HEq S.neck (d (e b)).oriented.toNormalizedNeck := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro G L hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w
   let : Nonempty M := hnontrivial.elim
     (fun ⟨i⟩ => ⟨(x₀ i).val⟩) (fun ⟨p⟩ => ⟨p.val.val⟩)
@@ -915,13 +858,15 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -929,26 +874,26 @@ variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_presentedStaticCap_of_finiteMetricEvent (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       ∀ (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
@@ -971,15 +916,15 @@ theorem exists_presentedStaticCap_of_finiteMetricEvent (hD : 0 < D) :
         ∀ b : E.RetainedBoundaryIndex,
           Nonempty (E.PresentedStaticCap fixed D m ε b) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc E A B a hboundary hB hDisc hCap htrace hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput b
   obtain ⟨e, he, hcap⟩ := exists_presentedStaticCap_neck_heq_of_finiteMetricEvent
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc E A B a hboundary
@@ -1018,13 +963,15 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -1032,28 +979,28 @@ variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_presentedStaticCap_of_finiteMetricEvent_terminal (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
     ∀ (oQ : SmoothOrientation ThreeModel Q) (oRet : SmoothOrientation ThreeModel Ret)
       (oDisc : SmoothOrientation ThreeModel Disc)
-      (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
-      (E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁)
+      (E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁)
       (A : (ι × Bool) → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
       (B : (ι × Bool) → ThreeBall ≃ₜ ThreeBall)
       (a : (ι × Bool) → Sphere 2 ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sphere 2)
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b x, (B b x : ThreeSpace) = A b x) →
-      E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc →
-      E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ →
+      E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc →
+      E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ →
       HEq E.transition.trace
         ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R hnontrivial).reparametrizeCaps B (fun b => (a b).toHomeomorph) hboundary) →
       E.incoming = G → HEq E.terminal L →
@@ -1077,15 +1024,15 @@ theorem exists_presentedStaticCap_of_finiteMetricEvent_terminal (hD : 0 < D) :
         ∀ b : E.RetainedBoundaryIndex,
           Nonempty (E.PresentedStaticCap fixed D m ε b) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro oQ oRet oDisc G L E A B a hboundary hB hDisc hCap htrace hG hL hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w hOutput b
   obtain ⟨e, he, hcap⟩ := exists_presentedStaticCap_neck_heq_of_finiteMetricEvent_terminal
     hδ hδ1 f hf hdisj hs R o hnontrivial hD oQ oRet oDisc G L E A B a hboundary
@@ -1125,14 +1072,16 @@ variable {M : Type u} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace 
   (o : SmoothOrientation ThreeModel M)
   (hnontrivial : Nonempty ι ∨ Nonempty (retainedCore f Rᶜ))
 
-local notation "Q" => FinitePresentedQuotient hδ f hf hdisj
-local notation "T" => finitePresentedTubeSystem hδ hδ1 f hf hdisj
-private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨finrank_threeSpace_eq_three⟩
+local notation "Q" => FiniteCapQuotient transitionEnd_pos hδ f
+  (fun i => _root_.Topology.IsEmbedding.injective
+    (_root_.Topology.IsOpenEmbedding.toIsEmbedding (hf i))) hdisj
+local notation "T" => TubeSystem.ofBufferedCharts hδ hδ1 f hf hdisj
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 3) := ⟨by simp⟩
 private local instance : LocallyPathConnectedSpace M :=
   originalModel_locallyPathConnected ThreeModel finrank_threeSpace_eq_three
-local notation "Ret" => finitePresentedRetained hδ f hf hdisj R
-local notation "Disc" => finitePresentedDiscarded hδ f hf hdisj R
-local notation "Bidx" => FinitePresentedBoundaryIndex hδ f hf hdisj R
+local notation "Ret" => finiteCapRetained transitionEnd_pos hδ f hf hdisj R
+local notation "Disc" => finiteCapDiscarded transitionEnd_pos hδ f hf hdisj R
+local notation "Bidx" => {b : ι × Bool // cuttingSphereComponent hδ f hf hdisj b ∈ R}
 
 attribute [local instance] threeBallChartedSpace threeBall_isManifold
 
@@ -1140,16 +1089,16 @@ variable {t₀ t₁ : ℝ} {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
 
 theorem exists_metricCutCapEvent_presentedStaticCap (hD : 0 < D) :
     letI : ChartedSpace ThreeSpace Q :=
-      finitePresentedChartedSpace hδ f hf hdisj
+      finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
     letI : IsManifold ThreeModel ∞ Q :=
-      finitePresentedIsManifold hδ f hf hdisj hs
-    letI : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-    letI : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+      finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+    letI : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+    letI : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
     letI : CompactSpace Ret :=
-      finitePresentedRetainedCompactSpace hδ f hf hdisj R
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
     letI : CompactSpace Disc :=
-      finitePresentedDiscardedCompactSpace hδ f hf hdisj R
-    ∀ (G : (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
+      (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
+    ∀ (G : (OrientedThreeStage.ofSmoothOrientation M o).IncomingSlab t₀ t₁)
       (L : G.TerminalLimitMetric)
       (hRet : MapsTo (Subtype.val : cutCore f → M) (retainedCore f R)
         (fun x : M => G.terminalRegularRegion x))
@@ -1175,10 +1124,10 @@ theorem exists_metricCutCapEvent_presentedStaticCap (hD : 0 < D) :
       (hboundary : ∀ b y, B b (sphereToThreeBall y) = sphereToThreeBall (a b y)),
       (∀ b, A b = LinearIsometryEquiv.refl ℝ ThreeSpace ∨ A b = LinearIsometryEquiv.neg ℝ) ∧
       (∀ b x, (B b x : ThreeSpace) = A b x) ∧
-      ∃ E : MetricCutCapEvent (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation M o)
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Ret oRet) t₀ t₁,
-        E.discarded = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Disc oDisc ∧
-        E.capped = DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation Q oQ ∧
+      ∃ E : MetricCutCapEvent (OrientedThreeStage.ofSmoothOrientation M o)
+        (OrientedThreeStage.ofSmoothOrientation Ret oRet) t₀ t₁,
+        E.discarded = OrientedThreeStage.ofSmoothOrientation Disc oDisc ∧
+        E.capped = OrientedThreeStage.ofSmoothOrientation Q oQ ∧
         HEq E.transition.trace
           ((CutCapTopology.ofBufferedFiniteCaps transitionEnd_pos hδ hδ1 f hf hdisj R
             hnontrivial).reparametrizeCaps
@@ -1188,15 +1137,15 @@ theorem exists_metricCutCapEvent_presentedStaticCap (hD : 0 < D) :
         E.transition.boundaryFrameReversing ∧
         ∀ b : E.RetainedBoundaryIndex, Nonempty (E.PresentedStaticCap fixed D m ε b) := by
   let : ChartedSpace ThreeSpace Q :=
-    finitePresentedChartedSpace hδ f hf hdisj
+    finiteCapChartedSpace ThreeModel finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj
   let : IsManifold ThreeModel ∞ Q :=
-    finitePresentedIsManifold hδ f hf hdisj hs
-  let : T2Space Q := finitePresentedT2Space hδ f hf hdisj
-  let : CompactSpace Q := finitePresentedQuotientCompactSpace hδ f hf hdisj
+    finiteCapQuotient_isManifold finrank_threeSpace_eq_three transitionEnd_pos hδ f hf hdisj hs
+  let : T2Space Q := finiteCapQuotient_t2Space transitionEnd_pos hδ f hf hdisj
+  let : CompactSpace Q := finiteCapQuotient_compactSpace transitionEnd_pos hδ f hf hdisj
   let : CompactSpace Ret :=
-    finitePresentedRetainedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).1
   let : CompactSpace Disc :=
-    finitePresentedDiscardedCompactSpace hδ f hf hdisj R
+    (finiteCapRetained_discarded_compactSpace transitionEnd_pos hδ f hf hdisj R).2
   intro G L hRet c hc x₀ order d₀ hOriginal k' hrec d hmap hside w
   obtain ⟨oQ, oRet, oDisc, A, B, a, hboundary, hchoice, hB, E, hDisc, hCap,
     htrace, hG, hL, hOutput, hOld, hBoundary, e, he, hcap⟩ :=

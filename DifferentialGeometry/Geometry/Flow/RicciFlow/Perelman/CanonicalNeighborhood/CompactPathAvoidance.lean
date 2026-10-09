@@ -1,7 +1,7 @@
 import Mathlib.Topology.Path
 import Mathlib.Topology.EMetricSpace.BoundedVariation
 import Mathlib.Topology.UniformSpace.Compact
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.RadialHessianLowerBound
 import DifferentialGeometry.Geometry.Comparison.Toponogov.RemoteTriangle
 

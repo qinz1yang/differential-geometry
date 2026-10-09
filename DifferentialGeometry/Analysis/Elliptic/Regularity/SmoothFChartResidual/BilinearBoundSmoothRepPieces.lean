@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.StrictCutoffPus
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 
 
 open DifferentialGeometry.Geometry.Curvature

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Support
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Transport
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBoundStrictMemWkpHigherOrder
-import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.CompactNeighborhood
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.ChartTransitionTransportCLM
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.Defs
 open DifferentialGeometry.Geometry.Curvature

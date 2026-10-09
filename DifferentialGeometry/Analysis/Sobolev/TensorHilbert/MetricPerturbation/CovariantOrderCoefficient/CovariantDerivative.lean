@@ -73,7 +73,7 @@ private theorem termSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Term).toSection x) A)) u =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x ((Term x) u) A := by
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Term x) u) A := by
   rw [termSlotEndoCc_toSection]
   change (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
     (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x) A)) u = _
@@ -84,14 +84,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 omit [FiniteDimensional ℝ E] in
 lemma slotInsertEndoFib_sub_left (s : ℕ) (k : Fin s) (x : M)
     (Λ₁ Λ₂ : TangentSpace I x →L[ℝ] TangentSpace I x) :
-    slotInsertEndomorphism (I := I) (M := M) s k x (Λ₁ - Λ₂) =
-      slotInsertEndomorphism (I := I) (M := M) s k x Λ₁ -
-        slotInsertEndomorphism (I := I) (M := M) s k x Λ₂ := by
+    slotInsertEndoFib (I := I) (M := M) s k x (Λ₁ - Λ₂) =
+      slotInsertEndoFib (I := I) (M := M) s k x Λ₁ -
+        slotInsertEndoFib (I := I) (M := M) s k x Λ₂ := by
   rw [sub_eq_add_neg, sub_eq_add_neg]
   rw [show (-Λ₂ : TangentSpace I x →L[ℝ] TangentSpace I x) = ((-1 : ℝ)) • Λ₂ from by
     rw [neg_one_smul]]
-  rw [slotInsertEndomorphism_add_left (I := I) (M := M) s k x Λ₁ ((-1 : ℝ) • Λ₂)]
-  rw [slotInsertEndomorphism_smul_left (I := I) (M := M) s k x (-1 : ℝ) Λ₂]
+  rw [slotInsertEndoFib_add_left (I := I) (M := M) s k x Λ₁ ((-1 : ℝ) • Λ₂)]
+  rw [slotInsertEndoFib_smul_left (I := I) (M := M) s k x (-1 : ℝ) Λ₂]
   rw [neg_one_smul]
 
 private theorem add_sub_sub_cancel_right {A : Type*} [AddCommGroup A]
@@ -235,10 +235,10 @@ private theorem tensorCovDerivAt_termSlotEndoCc_curry_curve
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Term) x v) (W x))) (Y x) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           ((endoCovariantDerivative (I := I) (M := M) g)
             (bilinEndoAppliedSection (I := I) (M := M) Term Y) x v) (W x)
-        - slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+        - slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
             ((Term x) ((LeviCivita (I := I) g) (fun y => Y y) x v)) (W x) := by
   have hbridge := termSlotEndoCc_curriedSection_eq (I := I) (M := M) g s Term W Y
   have hEndoSI := tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g s
@@ -260,11 +260,11 @@ private theorem tensorCovDerivAt_termSlotEndoCc_curry_curve
     termSlotEndoCc_curry_apply (I := I) (M := M) g s Term x (W x) NY,
     termSlotEndoCc_curry_apply (I := I) (M := M) g s Term x Lw (Y x)]
   exact add_sub_sub_cancel_right
-    (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+    (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
       ((endoCovariantDerivative (I := I) (M := M) g)
         (bilinEndoAppliedSection (I := I) (M := M) Term Y) x v) (W x))
-    (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x ((Term x) NY) (W x))
-    (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x ((Term x) (Y x)) Lw)
+    (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Term x) NY) (W x))
+    (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Term x) (Y x)) Lw)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem tensorCovDerivAt_termSlotEndoCc_curry_apply_sections
@@ -280,15 +280,15 @@ private theorem tensorCovDerivAt_termSlotEndoCc_curry_apply_sections
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Term) x v) (W x))) (Y x) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (((bilinEndoCovariantDerivative (I := I) (M := M) g) Term x v) (Y x)) (W x) := by
   rw [tensorCovDerivAt_termSlotEndoCc_curry_curve (I := I) (M := M)
     g s Term W hW Y x v]
   rw [← sub_apply
-    (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+    (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
       ((endoCovariantDerivative (I := I) (M := M) g)
         (bilinEndoAppliedSection (I := I) (M := M) Term Y) x v))
-    (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+    (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
       ((Term x) ((LeviCivita (I := I) g) (fun y => Y y) x v))) (W x)]
   rw [← slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x
     ((endoCovariantDerivative (I := I) (M := M) g)
@@ -308,7 +308,7 @@ private theorem tensorCovDerivAt_termSlotEndoCc_curry_eq_slotInsertEndoFib
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Term) x v) D)) v0 =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (((bilinEndoCovariantDerivative (I := I) (M := M) g) Term x v) v0) D := by
   obtain ⟨w, hw⟩ := ContMDiffSection.exists_eq_at (I := I)
     (F := Tensor0SModel (s + 1) ℝ E) (V := fun y : M => Tensor0SSpace (s + 1) I y)
@@ -406,7 +406,7 @@ theorem covGrad_inverseMetricDifferenceSlotCoefficient_eq_slotInsert_section
       (bilinearSlotInsertCLM (I := I) (M := M) 1 x (sharpTermEndo (I := I) g₀ g₁ x) D) v
   rw [termSlotFib_apply_eval, termSlotFib_apply_eval]
   rw [endoCov_eq_connTerm_add_sharpTerm (I := I) g₀ g₁ x (v 0)]
-  rw [slotInsertEndomorphism_add_left, add_apply,
+  rw [slotInsertEndoFib_add_left, add_apply,
     Tensor0SSpace.eval_add]
 
 omit [SigmaCompactSpace M] in

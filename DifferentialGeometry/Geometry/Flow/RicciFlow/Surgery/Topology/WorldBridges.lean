@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Neck.NormalizedDatum
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
@@ -21,24 +20,25 @@ universe u
 
 theorem finrank_threeSpace_eq_three : Module.finrank ℝ ThreeSpace = 3 := by simp
 
-noncomputable def _root_.DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation {M : Type u} [TopologicalSpace M]
+noncomputable def TangentOrientationSection.ofSmoothOrientation {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
     (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel M) :
     TangentOrientationSection M :=
+  TangentOrientationSection.ofManifoldOrientation
     (cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel M n)
         finrank_threeSpace_eq_three)
       (Classical.choose
         (DifferentialGeometry.Topology.Manifold.exists_manifoldOrientation_eq_of_smoothOrientation
           ThreeModel o)))
 
-noncomputable def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation (M : Type u) [TopologicalSpace M]
+noncomputable def OrientedThreeStage.ofSmoothOrientation (M : Type u) [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M] [T2Space M] [CompactSpace M]
     (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel M) :
     OrientedThreeStage.{u} where
   Carrier := M
-  orientation := DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o
+  orientation := TangentOrientationSection.ofSmoothOrientation o
 
-noncomputable def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ofFiniteCapQuotient {M : Type u} [TopologicalSpace M]
+noncomputable def OrientedThreeStage.ofFiniteCapQuotient {M : Type u} [TopologicalSpace M]
     {ι : Type u} {precision : ι → ℝ} {L : ℝ}
     (hL : 0 < L) (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, DifferentialGeometry.Geometry.Neck.bufferedCylinder (precision i) → M)
@@ -59,7 +59,7 @@ noncomputable def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.of
     (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel
       (DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCapQuotient hL hδ f
         (fun i => (hf i).injective) hdisj)) : OrientedThreeStage.{u} :=
-  DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation
+  OrientedThreeStage.ofSmoothOrientation
     (DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCapQuotient hL hδ f
       (fun i => (hf i).injective) hdisj) o
 
@@ -162,7 +162,7 @@ private noncomputable def threeSpaceSmoothOrientation :
 
 theorem nonempty_tangentOrientationSection_threeSpace :
     Nonempty (TangentOrientationSection ThreeSpace) :=
-  ⟨DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation threeSpaceSmoothOrientation⟩
+  ⟨TangentOrientationSection.ofSmoothOrientation threeSpaceSmoothOrientation⟩
 
 private noncomputable def sphereThreeSmoothOrientation :
     DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel (Sphere 3) :=
@@ -172,7 +172,7 @@ private noncomputable def sphereThreeSmoothOrientation :
       (DifferentialGeometry.sphereOrientation 3 (by decide)))
 
 theorem nonempty_orientedThreeStage : Nonempty OrientedThreeStage.{0} :=
-  ⟨DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation (Sphere 3) sphereThreeSmoothOrientation⟩
+  ⟨OrientedThreeStage.ofSmoothOrientation (Sphere 3) sphereThreeSmoothOrientation⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -200,15 +200,15 @@ private theorem manifoldOrientation_cast_orientation
   simp
 
 @[simp]
-theorem _root_.DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply
+theorem TangentOrientationSection.ofSmoothOrientation_apply
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M]
     (o : DifferentialGeometry.Topology.Manifold.SmoothOrientation ThreeModel M) (x : M) :
-    (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation o).orientation x =
+    (TangentOrientationSection.ofSmoothOrientation o).orientation x =
       Orientation.reindex ℝ (TangentSpace ThreeModel x)
         (finCongr finrank_threeSpace_eq_three) (o.val x) := by
-  unfold DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation
-  rw [manifoldOrientation_cast_orientation]
+  unfold TangentOrientationSection.ofSmoothOrientation
+  rw [TangentOrientationSection.ofManifoldOrientation_apply, manifoldOrientation_cast_orientation]
   exact congrArg
     (Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three))
     (congrFun (Classical.choose_spec
@@ -226,26 +226,33 @@ open DifferentialGeometry.Topology.Manifold
 open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.smoothOrientation (P : OrientedThreeStage.{u}) :
+def OrientedThreeStage.smoothOrientation (P : OrientedThreeStage.{u}) :
     SmoothOrientation ThreeModel P.Carrier :=
   smoothOrientationOfManifoldOrientation ThreeModel
     (cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel P.Carrier n)
-      finrank_threeSpace_eq_three.symm) P.orientation)
+      finrank_threeSpace_eq_three.symm) P.toClosedOrientedManifold.orientation)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation_smoothOrientation (P : OrientedThreeStage.{u}) :
-    DifferentialGeometry.Topology.ClosedOrientedManifold.ofSmoothOrientation P.Carrier P.smoothOrientation = P := by
-  have ho : DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation P.smoothOrientation = P.orientation := by
-    have heq : (DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation P.smoothOrientation).orientation =
+theorem OrientedThreeStage.ofSmoothOrientation_smoothOrientation (P : OrientedThreeStage.{u}) :
+    OrientedThreeStage.ofSmoothOrientation P.Carrier P.smoothOrientation = P := by
+  have ho : TangentOrientationSection.ofSmoothOrientation P.smoothOrientation = P.orientation := by
+    have heq : (TangentOrientationSection.ofSmoothOrientation P.smoothOrientation).orientation =
         P.orientation.orientation := by
       funext x
-      rw [DifferentialGeometry.ManifoldOrientation.ofSmoothOrientation_apply]
+      rw [TangentOrientationSection.ofSmoothOrientation_apply]
       change Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)
         ((cast (congrArg (fun n => DifferentialGeometry.ManifoldOrientation ThreeModel P.Carrier n)
-          finrank_threeSpace_eq_three.symm) P.orientation).orientation x) = _
+          finrank_threeSpace_eq_three.symm) P.toClosedOrientedManifold.orientation).orientation x) = _
+      dsimp only [OrientedThreeStage.toClosedOrientedManifold]
       rw [manifoldOrientation_cast_orientation (h := finrank_threeSpace_eq_three.symm)]
       exact (Orientation.reindex ℝ (TangentSpace ThreeModel x) (finCongr finrank_threeSpace_eq_three)).apply_symm_apply
         (P.orientation.orientation x)
-    exact DifferentialGeometry.ManifoldOrientation.ext (congrFun heq)
+    cases ha : TangentOrientationSection.ofSmoothOrientation P.smoothOrientation with
+    | mk oa hlocalA =>
+      cases hb : P.orientation with
+      | mk ob hlocalB =>
+        simp only [ha, hb] at heq
+        cases heq
+        rfl
   exact congrArg (fun orientation : TangentOrientationSection P.Carrier =>
     { P with orientation := orientation }) ho
 

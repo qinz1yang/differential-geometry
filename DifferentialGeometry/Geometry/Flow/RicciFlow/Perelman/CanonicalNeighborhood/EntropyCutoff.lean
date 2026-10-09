@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceTent
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz.Basic
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion

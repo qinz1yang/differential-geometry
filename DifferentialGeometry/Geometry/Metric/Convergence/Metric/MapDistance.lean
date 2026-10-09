@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 
 set_option autoImplicit false
 noncomputable section

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Exponential.Log.Smoothness
-import DifferentialGeometry.Geometry.Exponential.ZeroSectionNeighborhood
+import DifferentialGeometry.Geometry.Metric.SmoothLog
+import DifferentialGeometry.Geometry.Metric.ExponentialNeighborhood
 import DifferentialGeometry.Geometry.Metric.SmoothTangentScaling
 
 

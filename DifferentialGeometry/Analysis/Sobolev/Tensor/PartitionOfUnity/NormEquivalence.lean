@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.NablaTensor.NablaTensorFormula
-import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.ZerothOrderNorm
+import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.GramTwist
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.UniformChartBounds
 
 
@@ -31,9 +31,7 @@ theorem tensorPouSobolevHsNorm_equiv_tensorPouSobolevNorm
             C * (tensorPouSobolevNorm (I := I) (M := M) g k T).toReal := by
   match k with
   | 0 =>
-    refine ⟨1, 1, by norm_num, le_refl 1, fun T => ?_⟩
-    rw [tensorPouSobolevHsNorm_zero_eq_tensorPouSobolevNorm (I := I) (M := M) g r s T]
-    exact ⟨by simp, by simp⟩
+    exact fibrewise_gram_twist_estimate (I := I) (M := M) g r s
   | k' + 1 =>
     obtain ⟨Cfwd, hCfwd_nn, hCfwd_bound⟩ :=
       nabla_tensor_iterated_Hk_formula (I := I) (M := M) g r s (k' + 1)

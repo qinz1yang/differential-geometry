@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Curvature.ScalarPullback
 
 set_option autoImplicit false

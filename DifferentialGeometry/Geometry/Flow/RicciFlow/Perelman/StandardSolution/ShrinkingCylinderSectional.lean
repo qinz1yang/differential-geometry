@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RestrictedRoundCylinderSectional
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ShrinkingCylinder
 
 set_option autoImplicit false

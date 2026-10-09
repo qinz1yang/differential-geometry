@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Basic
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.CutoffDiffQuot
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.WeakDerivativeBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotient.WeakDerivativeBound
 
 noncomputable section
 

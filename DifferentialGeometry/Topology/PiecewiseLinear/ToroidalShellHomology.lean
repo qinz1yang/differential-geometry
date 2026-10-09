@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.FundamentalGroupRank
 import DifferentialGeometry.Topology.PiecewiseLinear.ToroidalShellCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.ToroidalShellFundamentalGroup
@@ -46,7 +51,7 @@ theorem IsToroidalShell.eulerChar_eq_zero_of_separates_of_fundamentalGroup_map_i
   norm_num
 
 theorem IsToroidalShell.exists_separating_surface_bettiOne_eq_two
-    (hY : IsToroidalShell Y T₀ T₁) :
+    (h252 : Moise252) (hY : IsToroidalShell Y T₀ T₁) :
     ∃ (S : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (hSfin : S.faces.Finite),
       letI := hSfin.to_subtype
       IsCombinatorialManifold 2 S ∧ IsConnected S.space ∧ IsOrientable 2 S ∧
@@ -56,7 +61,7 @@ theorem IsToroidalShell.exists_separating_surface_bettiOne_eq_two
         Function.Injective (FundamentalGroup.map
           (⟨Set.inclusion hSY, continuous_inclusion hSY⟩ : C(S.space, interior Y)) x) := by
   obtain ⟨S, hSfin, hS, hSc, ho, ht, hsep, hn, hSY, hi⟩ :=
-    hY.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective
+    hY.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective h252
   let _ : Finite S.faces := hSfin.to_subtype
   obtain ⟨x, hx⟩ := hSc.nonempty
   have hb := hY.bettiOne_eq_two_of_separates_of_fundamentalGroup_map_injective

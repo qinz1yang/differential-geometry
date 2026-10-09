@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Convergence.Subsequence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Convergence.TimeWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CGHSubsequenceClosure
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SameManifoldSlabWindowLink
 
 set_option autoImplicit false
 

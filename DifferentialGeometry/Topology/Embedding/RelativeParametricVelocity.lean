@@ -31,7 +31,7 @@ theorem exists_contDiff_compact_velocity_extension_eq_nhds
   rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hgraph
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, V) ∞
       (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) :=
-    fun p => DifferentialGeometry.contMDiffAt_partial_deriv_fst (he p) (by simp)
+    fun p => DifferentialGeometry.timeDeriv_smoothAt (he p) (by simp)
   exact hgraph.exists_contDiff_compact_extension_eq_nhds hv hK hO hKO hU hC hCU hW hWe
 
 theorem exists_contDiff_compact_velocity_extension_Icc_eq_nhds
@@ -79,7 +79,7 @@ theorem exists_contDiff_compact_velocity_extension_halfspace_eq_nhds
   rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hgraph
   have hv : ContMDiff (𝓘(ℝ, ℝ).prod (𝓡∂ (d + 1))) 𝓘(ℝ, V) ∞
       (fun q : ℝ × M => deriv (fun s => e (s, q.2)) q.1) :=
-    fun p => DifferentialGeometry.contMDiffAt_partial_deriv_fst (he p) (by simp)
+    fun p => DifferentialGeometry.timeDeriv_smoothAt (he p) (by simp)
   exact hgraph.exists_contDiff_compact_extension_prod_halfspace_eq_nhds
     hv hK hO hKO hU hC hCU hW hWe
 

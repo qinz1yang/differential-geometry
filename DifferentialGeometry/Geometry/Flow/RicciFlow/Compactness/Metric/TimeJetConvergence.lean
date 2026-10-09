@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.TimeJets
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.MixedConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.MixedCurvatureConvergence
 
 
 set_option autoImplicit false

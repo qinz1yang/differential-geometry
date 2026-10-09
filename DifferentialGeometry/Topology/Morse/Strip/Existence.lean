@@ -10,7 +10,7 @@ variable {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpac
   [ChartedSpace H M]
 
 theorem exists_morseStrip (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundaryless]
-    [IsManifold I ∞ M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) {a b : ℝ} (hab : a < b)
     (hcompact : IsCompact (f ⁻¹' Icc a b))
     (hreg : ∀ x, f x = a ∨ f x = b → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x) :

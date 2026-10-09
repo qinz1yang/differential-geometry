@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LocalBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CostLocalBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinVectorCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Length
 

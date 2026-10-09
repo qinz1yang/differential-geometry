@@ -17,17 +17,17 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreHistory
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (H : RetainedCoreHistory.{u})
     (A : InitialIdentification
-      (M.toClosedOrientedManifold) g H.toHistory)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
     (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)
     (hctrl : ∀ i : Fin H.eventCount,
       (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
   letI : Nonempty
-      (M.toClosedOrientedManifold).Carrier :=
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold).Carrier :=
     inferInstanceAs (Nonempty M.Carrier)
   exists_poincare_controlled_extinction_of_observedHistory
-    (M.toClosedOrientedManifold) g H.toHistory A
+    (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory A
     (fun i => (RetainedCoreEvent.toMetricCutCapEvent_hasCutCapCompletion (H.coreEvent i)
       (hbfr i)).some)
     (fun i =>
@@ -61,7 +61,7 @@ def HasExtinctRetainedCoreHistory
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
   ∃ (H : RetainedCoreHistory.{u})
     (_ : InitialIdentification
-      (M.toClosedOrientedManifold) g H.toHistory),
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory),
     (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) ∧
     (∀ i : Fin H.eventCount,
       (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded) ∧
@@ -79,7 +79,7 @@ theorem RetainedCoreObservationTower.hasExtinctRetainedCoreHistory
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     {g : SmoothRiemannianMetric (𝓡 3) M.Carrier}
     (T : RetainedCoreObservationTower
-      (M.toClosedOrientedManifold) g)
+      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing) (hctrl : T.hasPoincareStandardDiscarded)
     (hextinct : towerExtinct T.toObservationTower) :
     HasExtinctRetainedCoreHistory M g := by

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Geometry.Comparison.Toponogov.EscapingOppositeArms
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 

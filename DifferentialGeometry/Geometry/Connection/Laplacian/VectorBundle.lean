@@ -3,8 +3,6 @@ import DifferentialGeometry.Geometry.Connection.Subbundle
 import DifferentialGeometry.Geometry.Connection.Hessian
 import DifferentialGeometry.Geometry.Connection.HomBundle.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.HomBundleLeibniz
-import DifferentialGeometry.Geometry.Connection.HomBundle.Kernel
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -187,7 +185,7 @@ def rawBundleEndomorphismConnLap
     (g : SmoothRiemannianMetric I M) (cov : CovariantDerivative I F V)
     (A : (x : M) → V x →L[ℝ] V x) (x : M) : V x →L[ℝ] V x :=
   rawBundleConnLap (I := I) g
-    (_root_.CovariantDerivative.hom
+    (HomConnectionGen.homBundleCovariantDerivativeGen
       I M F V F V cov cov) A x
 
 @[simp] theorem rawBundleEndomorphismConnLap_def
@@ -195,7 +193,7 @@ def rawBundleEndomorphismConnLap
     (A : (x : M) → V x →L[ℝ] V x) (x : M) :
     rawBundleEndomorphismConnLap (I := I) g cov A x =
       rawBundleConnLap (I := I) g
-        (_root_.CovariantDerivative.hom
+        (HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov) A x := rfl
 
 theorem rawBundleEndomorphismConnLap_apply
@@ -207,7 +205,7 @@ theorem rawBundleEndomorphismConnLap_apply
       rawBundleConnLap (I := I) g cov (fun y => A y (w y)) x -
         A x (rawBundleConnLap (I := I) g cov (fun y => w y) x) -
         (2 : ℝ) • ∑ i : Fin (Module.finrank ℝ E),
-          (_root_.CovariantDerivative.hom
+          (HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y => A y) x
               (smoothOrthoFrame (I := I) g x i x))
             (cov (fun y => w y) x (smoothOrthoFrame (I := I) g x i x)) := by
@@ -217,7 +215,7 @@ theorem rawBundleEndomorphismConnLap_apply
       simp [hdim]
     simp [rawBundleEndomorphismConnLap, rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
-  let covHom := _root_.CovariantDerivative.hom
+  let covHom := HomConnectionGen.homBundleCovariantDerivativeGen
     I M F V F V cov cov
   simp only [rawBundleEndomorphismConnLap_def, rawBundleConnLap_def]
   simp only [_root_.sum_apply, map_sub, map_sum]
@@ -232,7 +230,7 @@ theorem rawBundleEndomorphismConnLap_apply
       smoothOrthoFrame_smooth (I := I) g x i⟩
   have hsecond := HomConnection.cov_V_toFun_covApply_pairedSection_apply
     I M F V F V cov cov Z A w (x := x) (Z x)
-  have hfirst := _root_.CovariantDerivative.hom_apply
+  have hfirst := HomConnectionGen.homBundleCovariantDerivativeGen_apply
     I M F V F V cov cov A w x
       ((LeviCivita (I := I) g) (fun y => Z y) x (Z x))
   simp only [covApply_apply] at hsecond
@@ -296,9 +294,9 @@ theorem rawBundleEndomorphismConnLap_isSymmetric_of_eventually
   let : ∀ y, CompleteSpace (V y) := fun y => FiniteDimensional.complete ℝ (V y)
   obtain ⟨U, hU, hUopen, hxU⟩ := mem_nhds_iff.mp hA
   have h := rawBundleConnLap_mem_of_isCovariantlyInvariant g
-    (_root_.CovariantDerivative.hom I M F V F V cov cov)
+    (HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov)
     (fun y => selfAdjoint.submodule ℝ (V y →L[ℝ] V y))
-    (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
+    (HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
       cov hcov) A hUopen hxU
     (fun y hy => ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mpr (hU hy))
   exact ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp h
@@ -332,7 +330,7 @@ theorem rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
   have hAlapw : A x (rawBundleConnLap (I := I) g cov (fun y => w y) x) = 0 :=
     hAk x _ hLapw
   have hcross (i : Fin (Module.finrank ℝ E)) :
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x
           (smoothOrthoFrame (I := I) g x i x))
         (cov (fun y => w y) x (smoothOrthoFrame (I := I) g x i x)) = 0 := by
@@ -348,14 +346,14 @@ theorem rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
     have huA : ∀ y ∈ U, A y (u y) = 0 := by
       intro y hy
       exact hAk y _ (huS y hy)
-    have hDA := _root_.CovariantDerivative.hom_apply_of_eventually_mem_ker
+    have hDA := HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_eventually_mem_ker
       (I := I) (M := M) (F := F) (V := V) cov A u hU hxU huA (X x)
     have hcovuS : cov (fun y => u y) x (X x) ∈ S x :=
       hS.covariantDerivative_mem u hU huS hxU (X x)
     have hcovuA : A x (cov (fun y => u y) x (X x)) = 0 :=
       hAk x _ hcovuS
     change
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x (X x)) (u x) = 0
     rw [hDA, hcovuA, neg_zero]
   rw [rawBundleEndomorphismConnLap_apply g cov A w x]
@@ -365,7 +363,7 @@ theorem rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
   simp only [zero_sub]
   have hsum :
       ∑ i : Fin (Module.finrank ℝ E),
-        (_root_.CovariantDerivative.hom
+        (HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V cov cov (fun y => A y) x
             (smoothOrthoFrame (I := I) g x i x))
           (cov (fun y => w y) x (smoothOrthoFrame (I := I) g x i x)) = 0 :=
@@ -406,16 +404,16 @@ theorem inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
     rw [hcovEq]
     exact congrArg (fun phi => phi x) cov.zero
   have hDAw (i : Fin (Module.finrank ℝ E)) :
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x
           (smoothOrthoFrame (I := I) g x i x)) (w x) =
         -A x (cov (fun y => w y) x
           (smoothOrthoFrame (I := I) g x i x)) := by
-    have happly := _root_.CovariantDerivative.hom_apply
+    have happly := HomConnectionGen.homBundleCovariantDerivativeGen_apply
       I M F V F V cov cov A w x
         (smoothOrthoFrame (I := I) g x i x)
     change
-      (_root_.CovariantDerivative.hom
+      (HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x
           (smoothOrthoFrame (I := I) g x i x)) (w x) =
         cov (fun y => Aw y) x (smoothOrthoFrame (I := I) g x i x) -
@@ -424,11 +422,11 @@ theorem inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
     rw [hcovAw] at happly
     simpa using happly
   have hDAself (i : Fin (Module.finrank ℝ E)) :
-      ((_root_.CovariantDerivative.hom
+      ((HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V cov cov (fun y => A y) x
           (smoothOrthoFrame (I := I) g x i x) : V x →L[ℝ] V x) :
         V x →ₗ[ℝ] V x).IsSymmetric :=
-    _root_.CovariantDerivative.hom_isSymmetric
+    HomConnectionGen.homBundleCovariantDerivativeGen_isSymmetric
       cov hcov A hA x (smoothOrthoFrame (I := I) g x i x)
   have hwx : A x (w x) = 0 := hw x hxU
   have hAlap :
@@ -442,7 +440,7 @@ theorem inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
       _ = 0 := by rw [hwx, inner_zero_right]
   have hcross (i : Fin (Module.finrank ℝ E)) :
       inner ℝ
-          ((_root_.CovariantDerivative.hom
+          ((HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y => A y) x
               (smoothOrthoFrame (I := I) g x i x))
             (cov (fun y => w y) x
@@ -457,7 +455,7 @@ theorem inner_rawBundleEndomorphismConnLap_apply_of_eventually_mem_ker
       _ = inner ℝ
           (cov (fun y => w y) x
             (smoothOrthoFrame (I := I) g x i x))
-          ((_root_.CovariantDerivative.hom
+          ((HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y => A y) x
               (smoothOrthoFrame (I := I) g x i x)) (w x)) :=
         hDAself i _ _

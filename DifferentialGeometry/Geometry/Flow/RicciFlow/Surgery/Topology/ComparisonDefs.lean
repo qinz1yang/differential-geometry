@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalRegion
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
+
+
 
 noncomputable section
 
@@ -28,9 +28,9 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 abbrev transition (_G : GeometricCutoffRecord H i parameters) := (H.event i).transition
 
-abbrev Parent := ((H.stage i.castSucc).component (G.transition.childParent c)).toClosedOrientedManifold
+abbrev Parent := (H.stage i.castSucc).component (G.transition.childParent c)
 abbrev Child (_G : GeometricCutoffRecord H i parameters)
-    (c : ConnectedComponents (H.stage i.succ).Carrier) := ((H.stage i.succ).component c).toClosedOrientedManifold
+    (c : ConnectedComponents (H.stage i.succ).Carrier) := (H.stage i.succ).component c
 
 
 abbrev ChildBoundary := {b : (H.event i).RetainedBoundaryIndex // ∀ y : Sphere 2,

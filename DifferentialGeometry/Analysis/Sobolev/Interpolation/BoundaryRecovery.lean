@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.MetricSpace.LipschitzExtension
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.Complex.Basic
 import DifferentialGeometry.Analysis.Calculus.Interpolation.RadialCone
-import DifferentialGeometry.Analysis.Complex.Annulus.ThinAttachment
+import DifferentialGeometry.Topology.LoopSpace.ThinAnnulus
 import DifferentialGeometry.Topology.MetricSpace.CompactInterpolation
 import Mathlib.Topology.UniformSpace.HeineCantor
 import Mathlib.Analysis.Calculus.MeanValue

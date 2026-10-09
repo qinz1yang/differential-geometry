@@ -29,7 +29,7 @@ theorem w_square_form
     {tau : Real} (htau : 0 < tau) (scalarCurvature : M -> Real)
     {v : M -> Real} (hv : ContMDiff I 𝓘(Real, Real) ∞ v)
     (hpos : ∀ x : M, 0 < v x) :
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional mu n tau scalarCurvature
+    wFunctional mu n tau scalarCurvature
         (fun x =>
           g.inner x
             (gradientFun (I := I) g
@@ -43,7 +43,7 @@ theorem w_square_form
             (gradientFun (I := I) g v x) +
           tau * scalarCurvature x * (v x * v x) -
           (v x * v x) * Real.log (v x * v x) +
-          (Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) - (n : Real)) *
+          (Real.log (perelmanDensityPrefactor n tau) - (n : Real)) *
             (v x * v x) ∂mu := by
   let density : M -> Real := fun x => v x * v x
   let potential : M -> Real := perelmanPotential n tau density
@@ -51,15 +51,15 @@ theorem w_square_form
     g.inner x
       (gradientFun (I := I) g potential x)
       (gradientFun (I := I) g potential x)
-  have hdensity : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau potential = density := by
+  have hdensity : perelmanDensity n tau potential = density := by
     exact density_potential n density htau fun x => mul_pos (hpos x) (hpos x)
   have hmeas :
       AEMeasurable
-        (fun x : M => ENNReal.ofReal (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau potential x)) mu := by
+        (fun x : M => ENNReal.ofReal (perelmanDensity n tau potential x)) mu := by
     rw [hdensity]
     exact (ENNReal.continuous_ofReal.comp (hv.mul hv).continuous).aemeasurable
   rw [show
-    DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional mu n tau scalarCurvature
+    wFunctional mu n tau scalarCurvature
         (fun x =>
           g.inner x
             (gradientFun (I := I) g
@@ -67,8 +67,8 @@ theorem w_square_form
             (gradientFun (I := I) g
               (perelmanPotential n tau (fun y => v y * v y)) x))
         (perelmanPotential n tau (fun y => v y * v y)) =
-      DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional mu n tau scalarCurvature gradSq potential by rfl]
-  rw [DifferentialGeometry.Analysis.Entropy.Perelman.wFunctional_eq_integral_density_mul mu n tau scalarCurvature gradSq potential htau.le hmeas]
+      wFunctional mu n tau scalarCurvature gradSq potential by rfl]
+  rw [wFunctional_base mu n tau scalarCurvature gradSq potential htau.le hmeas]
   apply integral_congr_ae
   filter_upwards with x
   rw [congrFun hdensity x]
@@ -76,7 +76,7 @@ theorem w_square_form
     (v x * v x) *
         (tau * (scalarCurvature x + gradSq x) + potential x - (n : Real)) = _
   rw [show potential x =
-      -Real.log (v x * v x) + Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) by
+      -Real.log (v x * v x) + Real.log (perelmanDensityPrefactor n tau) by
     exact potential_square n hpos htau x]
   have henergy :
       (v x * v x) * gradSq x =

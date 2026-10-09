@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.CutoffChartComponentMemWkp
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.SobolevComposition
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.HigherOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -106,7 +106,431 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     (hu_compactSupport : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
       ENNReal.ofReal (Φ.wkpCompositionConstant k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
-  exact Φ.wkpNorm_comp_le hp_one hp_top hΩ hΩ' k hk hu hu_compactSupport hu_support
+  classical
+  set K_const : ℝ := Φ.wkpCompositionConstant k p with hK_def
+  have hK_pos : 0 < K_const := wkpCompositionConstant_pos Φ k p
+  have hK_nonneg : 0 ≤ K_const := hK_pos.le
+  have h_approx : ∀ n : ℕ, ∃ ψ : EuclideanSpace ℝ (Fin d) → ℝ,
+      ContDiff ℝ (⊤ : ℕ∞) ψ ∧ HasCompactSupport ψ ∧ tsupport ψ ⊆ Ω' ∧
+      iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ x) Ω' ≤
+        ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
+    intro n
+    have h_pos : 0 < (1 : ℝ) / (n + 1 : ℝ) := by positivity
+    exact MemWkp.exists_smooth_compactSupport_approx
+      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_support _ h_pos
+  let ψ : ℕ → EuclideanSpace ℝ (Fin d) → ℝ := fun n => (h_approx n).choose
+  have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) := fun n =>
+    (h_approx n).choose_spec.1
+  have hψ_compact : ∀ n, HasCompactSupport (ψ n) := fun n =>
+    (h_approx n).choose_spec.2.1
+  have hψ_support : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
+    (h_approx n).choose_spec.2.2.1
+  have hψ_close : ∀ n,
+      iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' ≤
+        ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := fun n =>
+    (h_approx n).choose_spec.2.2.2
+  have hψ_mem_target : ∀ n, MemWkp (d := d) k p (ψ n) Ω' := fun n =>
+    MemWkp_of_smooth_compactSupport
+      (d := d) hΩ' (hψ_smooth n) (hψ_compact n) (hψ_support n) hp_one k
+  have hψ_comp_mem : ∀ n, MemWkp (d := d) k p (fun x => ψ n (Φ.toFun x)) Ω :=
+    fun n =>
+      MemWkp.comp_smoothDiffeoBoundedAtOrder (d := d) k hk hp_one hp_top hΩ hΩ'
+        Φ (hψ_mem_target n) (hψ_compact n) (hψ_support n)
+  have h_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ m n, N ≤ m → N ≤ n →
+      iteratedWeakSobolevNorm (d := d) k p
+        (fun x => (ψ m (Φ.toFun x)) - (ψ n (Φ.toFun x))) Ω ≤
+        ENNReal.ofReal ε := by
+    intro ε hε
+    have hε_K_pos : 0 < ε / (2 * K_const) := by positivity
+    obtain ⟨N0, hN0_real⟩ := exists_nat_gt (1 / (ε / (2 * K_const)) - 1)
+    have hN1_pos : (0 : ℝ) < (N0 : ℝ) + 1 := by
+      have : 0 < 1 / (ε / (2 * K_const)) := by positivity
+      linarith
+    have hN0_inv : (1 : ℝ) / (N0 + 1 : ℝ) ≤ ε / (2 * K_const) := by
+      rw [div_le_iff₀ hN1_pos]
+      have h1 : (1 : ℝ) = (ε / (2 * K_const)) * (1 / (ε / (2 * K_const))) := by
+        rw [mul_one_div, div_self hε_K_pos.ne']
+      rw [h1]
+      apply mul_le_mul_of_nonneg_left _ hε_K_pos.le
+      linarith
+    refine ⟨N0, ?_⟩
+    intro m n hm hn
+    let δ : EuclideanSpace ℝ (Fin d) → ℝ := fun x => ψ m x - ψ n x
+    have hδ_smooth : ContDiff ℝ (⊤ : ℕ∞) δ := (hψ_smooth m).sub (hψ_smooth n)
+    have hδ_compact : HasCompactSupport δ := (hψ_compact m).sub (hψ_compact n)
+    have hδ_support : tsupport δ ⊆ Ω' := by
+      have h_support_sub : Function.support δ ⊆
+          Function.support (ψ m) ∪ Function.support (ψ n) := by
+        intro x hx
+        by_cases hxm : x ∈ Function.support (ψ m)
+        · exact Or.inl hxm
+        · right
+          change ψ n x ≠ 0
+          intro hxn
+          apply hx
+          change ψ m x - ψ n x = 0
+          rw [Function.notMem_support.mp hxm, hxn, sub_zero]
+      have h_tsupp_sub : tsupport δ ⊆ tsupport (ψ m) ∪ tsupport (ψ n) := by
+        unfold tsupport
+        refine (closure_mono h_support_sub).trans ?_
+        rw [closure_union]
+      exact h_tsupp_sub.trans (Set.union_subset (hψ_support m) (hψ_support n))
+    have hS1 := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
+      k hk hδ_smooth hδ_compact hδ_support
+    have h_δ_alg : δ = (fun x => (u x - ψ n x) - (u x - ψ m x)) := by
+      funext x
+      change ψ m x - ψ n x = u x - ψ n x - (u x - ψ m x)
+      ring
+    have h_uψn_mem : MemWkp (d := d) k p (fun x => u x - ψ n x) Ω' :=
+      MemWkp.sub (d := d) hp_one hΩ' hu (hψ_mem_target n)
+    have h_uψm_mem : MemWkp (d := d) k p (fun x => u x - ψ m x) Ω' :=
+      MemWkp.sub (d := d) hp_one hΩ' hu (hψ_mem_target m)
+    have h_δ_wkp_le :
+        iteratedWeakSobolevNorm (d := d) k p δ Ω' ≤
+          iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+            iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ m x) Ω' := by
+      rw [h_δ_alg]
+      have hneg : MemWkp (d := d) k p (fun x => -(u x - ψ m x)) Ω' :=
+        MemWkp.neg (d := d) hp_one hΩ' h_uψm_mem
+      have h_eq :
+          (fun x => u x - ψ n x - (u x - ψ m x)) =
+            (fun x => (u x - ψ n x) + (-(u x - ψ m x))) := by
+        funext x; ring
+      rw [h_eq]
+      have h_add := wkpNorm_add_le (d := d) hp_one hΩ' h_uψn_mem hneg
+      refine h_add.trans ?_
+      have h_neg_eq :
+          iteratedWeakSobolevNorm (d := d) k p (fun x => -(u x - ψ m x)) Ω' =
+            iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ m x) Ω' := by
+        have h_eq_smul : (fun x => -(u x - ψ m x)) =
+            (fun x => (-1 : ℝ) * (u x - ψ m x)) := by funext x; ring
+        rw [h_eq_smul, wkpNorm_const_smul (d := d) hp_one hΩ' h_uψm_mem (-1)]
+        simp
+      rw [h_neg_eq]
+    have hψm_close := hψ_close m
+    have hψn_close := hψ_close n
+    have h_n_le : ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) ≤
+        ENNReal.ofReal ((1 : ℝ) / (N0 + 1 : ℝ)) := by
+      refine ENNReal.ofReal_le_ofReal ?_
+      apply div_le_div_of_nonneg_left zero_le_one hN1_pos
+      have hN0n : (N0 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+      linarith
+    have h_m_le : ENNReal.ofReal ((1 : ℝ) / (m + 1 : ℝ)) ≤
+        ENNReal.ofReal ((1 : ℝ) / (N0 + 1 : ℝ)) := by
+      refine ENNReal.ofReal_le_ofReal ?_
+      apply div_le_div_of_nonneg_left zero_le_one hN1_pos
+      have hN0m : (N0 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
+      linarith
+    have h_δ_le_2N0 :
+        iteratedWeakSobolevNorm (d := d) k p δ Ω' ≤
+          ENNReal.ofReal (2 * ((1 : ℝ) / (N0 + 1 : ℝ))) := by
+      refine h_δ_wkp_le.trans ?_
+      refine (add_le_add hψn_close hψm_close).trans ?_
+      refine (add_le_add h_n_le h_m_le).trans ?_
+      have h2 : (2 * ((1 : ℝ) / (N0 + 1 : ℝ))) =
+          ((1 : ℝ) / (N0 + 1 : ℝ)) + ((1 : ℝ) / (N0 + 1 : ℝ)) := by ring
+      rw [h2]
+      have h_pos : 0 ≤ (1 : ℝ) / (N0 + 1 : ℝ) := by positivity
+      rw [ENNReal.ofReal_add h_pos h_pos]
+    have h_δcomp_eq : (fun x => δ (Φ.toFun x)) =
+        (fun x => ψ m (Φ.toFun x) - ψ n (Φ.toFun x)) := by
+      funext x; rfl
+    rw [h_δcomp_eq] at hS1
+    refine hS1.trans ?_
+    refine (mul_le_mul_of_nonneg_left h_δ_le_2N0 (zero_le)).trans ?_
+    rw [← ENNReal.ofReal_mul hK_nonneg]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc K_const * (2 * ((1 : ℝ) / (N0 + 1 : ℝ)))
+        = (2 * K_const) * ((1 : ℝ) / (N0 + 1 : ℝ)) := by ring
+      _ ≤ (2 * K_const) * (ε / (2 * K_const)) := by
+            apply mul_le_mul_of_nonneg_left hN0_inv
+            positivity
+      _ = ε := by
+            have h_pos : 0 < 2 * K_const := by positivity
+            field_simp
+  obtain ⟨v, hv_mem, hv_tendsto⟩ :=
+    MemWkp.exists_limit_of_wkpNorm_cauchy (d := d) hΩ k p hp_one
+      hψ_comp_mem h_cauchy
+  have h_Lp_close : ∀ n,
+      eLpNorm (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) p
+        (volume.restrict Ω) ≤
+        ENNReal.ofReal
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
+          ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
+    intro n
+    have h_chg := Φ.eLpNorm_comp_toFun_le_const hp_one hp_top hΩ
+      (fun x => u x - ψ n x)
+    have h_uψn_mem : MemWkp (d := d) k p (fun x => u x - ψ n x) Ω' :=
+      MemWkp.sub (d := d) hp_one hΩ' hu (hψ_mem_target n)
+    have h_eLp_le_wkp :
+        eLpNorm (fun x => u x - ψ n x) p (volume.restrict Ω') ≤
+          iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' := by
+      have h_zero_le :
+          eLpNorm (fun x => u x - ψ n x) p (volume.restrict Ω') =
+            iteratedWeakSobolevNorm (d := d) 0 p (fun x => u x - ψ n x) Ω' := by
+        rw [wkpNorm_zero]
+      rw [h_zero_le]
+      unfold iteratedWeakSobolevNorm
+      refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
+      · intro j hj
+        rw [Finset.mem_range] at hj ⊢; omega
+      · intros _ _ _; exact zero_le
+    have h_arg_eq : (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) =
+        (fun x => (fun y => u y - ψ n y) (Φ.toFun x)) := by funext x; rfl
+    rw [h_arg_eq]
+    refine h_chg.trans ?_
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
+    exact h_eLp_le_wkp.trans (hψ_close n)
+  have h_uΦ_aestrong :
+      AEStronglyMeasurable (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
+    have hu_aestrong : AEStronglyMeasurable u (volume.restrict Ω') :=
+      hu.memLp.aestronglyMeasurable
+    exact hu_aestrong.comp_quasiMeasurePreserving Φ.toFun_quasiMeasurePreserving
+  have h_v_eq_uΦ : v =ᵐ[volume.restrict Ω] (fun x => u (Φ.toFun x)) := by
+    have h_v_aestrong : AEStronglyMeasurable v (volume.restrict Ω) :=
+      hv_mem.memLp.aestronglyMeasurable
+    have hp_zero_ne : p ≠ 0 := by
+      intro hpz; rw [hpz] at hp_one
+      exact absurd hp_one (by norm_num)
+    have h_zero :
+        eLpNorm (fun x => v x - u (Φ.toFun x)) p (volume.restrict Ω) = 0 := by
+      have h_bound : ∀ n,
+          eLpNorm (fun x => v x - u (Φ.toFun x)) p (volume.restrict Ω) ≤
+            iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
+            ENNReal.ofReal
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
+              ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
+        intro n
+        have h_ψn_comp_aestrong : AEStronglyMeasurable
+            (fun x => ψ n (Φ.toFun x)) (volume.restrict Ω) :=
+          (hψ_smooth n).continuous.aestronglyMeasurable.comp_quasiMeasurePreserving
+            Φ.toFun_quasiMeasurePreserving
+        have h_decomp :
+            (fun x => v x - u (Φ.toFun x)) = (fun x =>
+              (v x - ψ n (Φ.toFun x)) + (ψ n (Φ.toFun x) - u (Φ.toFun x))) := by
+          funext x; ring
+        rw [h_decomp]
+        have h_tri := eLpNorm_add_le (μ := volume.restrict Ω)
+          (f := fun x => v x - ψ n (Φ.toFun x))
+          (g := fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) hp_one
+        refine h_tri.trans ?_
+        have h_first :
+            eLpNorm (fun x => v x - ψ n (Φ.toFun x)) p (volume.restrict Ω) ≤
+              iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω := by
+          rw [show eLpNorm (fun x => v x - ψ n (Φ.toFun x)) p (volume.restrict Ω) =
+            iteratedWeakSobolevNorm (d := d) 0 p (fun x => v x - ψ n (Φ.toFun x)) Ω from
+            (wkpNorm_zero p _ _).symm]
+          unfold iteratedWeakSobolevNorm
+          refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
+          · intro j hj; rw [Finset.mem_range] at hj ⊢; omega
+          · intros _ _ _; exact zero_le
+        have h_second :
+            eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
+                (volume.restrict Ω) ≤
+              ENNReal.ofReal
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
+                ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
+          have h_eq :
+              (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) =
+                (fun x => -(u (Φ.toFun x) - ψ n (Φ.toFun x))) := by
+            funext x; ring
+          rw [h_eq]
+          have h_neg :
+              eLpNorm (fun x => -(u (Φ.toFun x) - ψ n (Φ.toFun x))) p
+                  (volume.restrict Ω) =
+                eLpNorm (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) p
+                  (volume.restrict Ω) := by
+            rw [show (fun x => -(u (Φ.toFun x) - ψ n (Φ.toFun x))) =
+                fun x => -1 * (u (Φ.toFun x) - ψ n (Φ.toFun x)) from by
+              funext x; ring]
+            rw [show (fun x => -1 * (u (Φ.toFun x) - ψ n (Φ.toFun x))) =
+                ((-1 : ℝ) • fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) from by
+              funext x; simp [Pi.smul_apply, smul_eq_mul]]
+            rw [eLpNorm_const_smul]
+            simp
+          rw [h_neg]
+          exact h_Lp_close n
+        exact add_le_add h_first h_second
+      apply le_antisymm _ (zero_le)
+      have h_tendsto_first :
+          Filter.Tendsto
+            (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω)
+            atTop (𝓝 0) := by
+        have h_eq : ∀ n, (fun x => v x - ψ n (Φ.toFun x)) =
+            (fun x => -(ψ n (Φ.toFun x) - v x)) := by
+          intro n; funext x; ring
+        have h_norm_eq : ∀ n,
+            iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω =
+              iteratedWeakSobolevNorm (d := d) k p (fun x => ψ n (Φ.toFun x) - v x) Ω := by
+          intro n
+          rw [h_eq n]
+          have hf_mem : MemWkp (d := d) k p
+              (fun x => ψ n (Φ.toFun x) - v x) Ω :=
+            MemWkp.sub (d := d) hp_one hΩ (hψ_comp_mem n) hv_mem
+          rw [show (fun x => -(ψ n (Φ.toFun x) - v x)) =
+              (fun x => (-1 : ℝ) * (ψ n (Φ.toFun x) - v x)) from by
+            funext x; ring]
+          rw [wkpNorm_const_smul (d := d) hp_one hΩ hf_mem (-1)]
+          simp
+        rw [show (fun n => iteratedWeakSobolevNorm (d := d) k p
+              (fun x => v x - ψ n (Φ.toFun x)) Ω) =
+            (fun n => iteratedWeakSobolevNorm (d := d) k p
+              (fun x => ψ n (Φ.toFun x) - v x) Ω) from funext h_norm_eq]
+        exact hv_tendsto
+      have h_tendsto_second :
+          Filter.Tendsto
+            (fun n : ℕ => ENNReal.ofReal
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
+              ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
+            atTop (𝓝 0) := by
+        have h_inner_tendsto :
+            Filter.Tendsto
+              (fun n : ℕ => ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
+              atTop (𝓝 0) := by
+          have h_real : Filter.Tendsto
+              (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
+            tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+          have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
+          simpa only [Function.comp_def, ENNReal.ofReal_zero] using h_ofReal
+        set C : ℝ≥0∞ := ENNReal.ofReal
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) with hC_def
+        have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
+        have h_const_mul := ENNReal.Tendsto.const_mul (a := C) (b := 0)
+          h_inner_tendsto (Or.inr hC_ne_top)
+        simpa using h_const_mul
+      have h_tendsto_sum :
+          Filter.Tendsto
+            (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
+              ENNReal.ofReal
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
+                ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
+            atTop (𝓝 0) := by
+        have := h_tendsto_first.add h_tendsto_second
+        simpa using this
+      exact ge_of_tendsto h_tendsto_sum (Filter.Eventually.of_forall h_bound)
+    have h_diff_zero : (fun x => v x - u (Φ.toFun x)) =ᵐ[volume.restrict Ω]
+        0 := by
+      exact (eLpNorm_eq_zero_iff hp_zero_ne).mp h_zero
+    filter_upwards [h_diff_zero] with x hx
+    have : v x - u (Φ.toFun x) = 0 := hx
+    linarith
+  have h_norm_uΦ_eq_v :
+      iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω =
+        iteratedWeakSobolevNorm (d := d) k p v Ω :=
+    (wkpNorm_congr_ae (d := d) hp_one hΩ h_v_eq_uΦ).symm
+  rw [h_norm_uΦ_eq_v]
+  have h_smooth_bound : ∀ n,
+      iteratedWeakSobolevNorm (d := d) k p (fun x => ψ n (Φ.toFun x)) Ω ≤
+        ENNReal.ofReal K_const *
+          (iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+            iteratedWeakSobolevNorm (d := d) k p u Ω') := by
+    intro n
+    have h_smooth := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
+      k hk (hψ_smooth n) (hψ_compact n) (hψ_support n)
+    refine h_smooth.trans ?_
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
+    have hψn_alg : (ψ n) = (fun x => (ψ n x - u x) + u x) := by funext x; ring
+    have h_sub_mem : MemWkp (d := d) k p (fun x => ψ n x - u x) Ω' :=
+      MemWkp.sub (d := d) hp_one hΩ' (hψ_mem_target n) hu
+    have h_uψn_mem : MemWkp (d := d) k p (fun x => u x - ψ n x) Ω' :=
+      MemWkp.sub (d := d) hp_one hΩ' hu (hψ_mem_target n)
+    have h_tri := wkpNorm_add_le (d := d) hp_one hΩ' h_sub_mem hu
+    rw [← hψn_alg] at h_tri
+    refine h_tri.trans ?_
+    refine add_le_add ?_ (le_refl _)
+    have h_neg_eq :
+        iteratedWeakSobolevNorm (d := d) k p (fun x => ψ n x - u x) Ω' =
+          iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' := by
+      have h_eq_smul : (fun x => ψ n x - u x) =
+          (fun x => (-1 : ℝ) * (u x - ψ n x)) := by funext x; ring
+      rw [h_eq_smul, wkpNorm_const_smul (d := d) hp_one hΩ' h_uψn_mem (-1)]
+      simp
+    rw [h_neg_eq]
+  have h_v_bound : ∀ n,
+      iteratedWeakSobolevNorm (d := d) k p v Ω ≤
+        iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
+          ENNReal.ofReal K_const *
+            (iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+              iteratedWeakSobolevNorm (d := d) k p u Ω') := by
+    intro n
+    have hv_alg : v = (fun x => (v x - ψ n (Φ.toFun x)) + ψ n (Φ.toFun x)) := by
+      funext x; ring
+    have h_sub_mem : MemWkp (d := d) k p
+        (fun x => v x - ψ n (Φ.toFun x)) Ω :=
+      MemWkp.sub (d := d) hp_one hΩ hv_mem (hψ_comp_mem n)
+    have h_tri := wkpNorm_add_le (d := d) hp_one hΩ h_sub_mem (hψ_comp_mem n)
+    rw [← hv_alg] at h_tri
+    exact h_tri.trans (add_le_add (le_refl _) (h_smooth_bound n))
+  have h_rhs_tendsto :
+      Filter.Tendsto
+        (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
+          ENNReal.ofReal K_const *
+            (iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+              iteratedWeakSobolevNorm (d := d) k p u Ω'))
+        atTop (𝓝 (ENNReal.ofReal K_const * iteratedWeakSobolevNorm (d := d) k p u Ω')) := by
+    have h_first_tendsto :
+        Filter.Tendsto
+          (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω)
+          atTop (𝓝 0) := by
+      have h_eq : ∀ n, (fun x => v x - ψ n (Φ.toFun x)) =
+          (fun x => -(ψ n (Φ.toFun x) - v x)) := by
+        intro n; funext x; ring
+      have h_norm_eq : ∀ n,
+          iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω =
+            iteratedWeakSobolevNorm (d := d) k p (fun x => ψ n (Φ.toFun x) - v x) Ω := by
+        intro n
+        rw [h_eq n]
+        have hf_mem : MemWkp (d := d) k p
+            (fun x => ψ n (Φ.toFun x) - v x) Ω :=
+          MemWkp.sub (d := d) hp_one hΩ (hψ_comp_mem n) hv_mem
+        rw [show (fun x => -(ψ n (Φ.toFun x) - v x)) =
+            (fun x => (-1 : ℝ) * (ψ n (Φ.toFun x) - v x)) from by
+          funext x; ring]
+        rw [wkpNorm_const_smul (d := d) hp_one hΩ hf_mem (-1)]
+        simp
+      rw [show (fun n => iteratedWeakSobolevNorm (d := d) k p
+            (fun x => v x - ψ n (Φ.toFun x)) Ω) =
+          (fun n => iteratedWeakSobolevNorm (d := d) k p
+            (fun x => ψ n (Φ.toFun x) - v x) Ω) from funext h_norm_eq]
+      exact hv_tendsto
+    have h_inner_tendsto :
+        Filter.Tendsto
+          (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+            iteratedWeakSobolevNorm (d := d) k p u Ω')
+          atTop (𝓝 (iteratedWeakSobolevNorm (d := d) k p u Ω')) := by
+      have h_first :
+          Filter.Tendsto
+            (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω')
+            atTop (𝓝 0) := by
+        have h_close_tendsto :
+            Filter.Tendsto
+              (fun n : ℕ => ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
+              atTop (𝓝 0) := by
+          have h_real : Filter.Tendsto
+              (fun n : ℕ => (1 : ℝ) / (n + 1 : ℝ)) atTop (𝓝 0) :=
+            tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+          have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
+          simpa only [Function.comp_def, ENNReal.ofReal_zero] using h_ofReal
+        refine tendsto_of_tendsto_of_tendsto_of_le_of_le
+          tendsto_const_nhds h_close_tendsto
+          (fun n => zero_le) (fun n => hψ_close n)
+      have h_const :
+          Filter.Tendsto
+            (fun _ : ℕ => iteratedWeakSobolevNorm (d := d) k p u Ω')
+            atTop (𝓝 (iteratedWeakSobolevNorm (d := d) k p u Ω')) := tendsto_const_nhds
+      have h_add := h_first.add h_const
+      simpa using h_add
+    have h_const_ne_top : ENNReal.ofReal K_const ≠ ⊤ := ENNReal.ofReal_ne_top
+    have h_prod_tendsto :
+        Filter.Tendsto
+          (fun n => ENNReal.ofReal K_const *
+            (iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' +
+              iteratedWeakSobolevNorm (d := d) k p u Ω'))
+          atTop (𝓝 (ENNReal.ofReal K_const * iteratedWeakSobolevNorm (d := d) k p u Ω')) :=
+      ENNReal.Tendsto.const_mul h_inner_tendsto (Or.inr h_const_ne_top)
+    have h_sum := h_first_tendsto.add h_prod_tendsto
+    simpa using h_sum
+  exact ge_of_tendsto h_rhs_tendsto (Filter.Eventually.of_forall h_v_bound)
 
 omit [CompleteSpace E] in
 private lemma wkpNorm_chartTransitionTransportCLM_le

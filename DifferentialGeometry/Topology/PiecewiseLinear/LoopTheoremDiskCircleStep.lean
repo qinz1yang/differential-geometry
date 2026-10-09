@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.HandlePieceChart
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.InnermostDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InnermostCleanDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheoremDiskMeetsPseudoCells
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheoremDiskPushOff
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarOuterCollar

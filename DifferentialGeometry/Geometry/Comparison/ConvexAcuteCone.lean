@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.ConvexTangentSpace
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
-import DifferentialGeometry.Geometry.Variation.SecondVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 
 set_option autoImplicit false
 noncomputable section

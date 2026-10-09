@@ -16,12 +16,9 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivativeBoundBefore_of_derivativeBoundOn {Ctime : ℝ≥0} {qcan t₀ η t : ℝ}
+theorem derivativeBoundBefore_of_derivativeBoundOn {Ctime : ℝ≥0} {qcan t₀ η t : ℝ}
     (hB : G.DerivativeBoundBefore Ctime qcan t₀) (hO : G.DerivativeBoundOn Ctime qcan t₀ η)
     (htη : t ≤ t₀ + η) (hts : t ≤ s) : G.DerivativeBoundBefore Ctime qcan t := by
   intro y t' ht' hR
@@ -29,7 +26,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · exact hB y t' ⟨ht'.1, h⟩ hR
   · exact hO y t' ht'.1 h (ht'.2.trans_le htη) (ht'.2.trans_le hts) hR
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatialCanonicalWitness_of_canonicalOn {ε C1 C2 C1s C2s qcan qs τmin t₀ η : ℝ}
+theorem exists_spatialCanonicalWitness_of_canonicalOn {ε C1 C2 C1s C2s qcan qs τmin t₀ η : ℝ}
     (h1 : C1 ≤ C1s) (h2 : C2 ≤ C2s) (hq : qcan ≤ qs)
     (hcan : G.CanonicalOn ε C1 C2 qcan τmin t₀ η) {y : P.Carrier} {t : ℝ} (hat : a < t)
     (ht₀ : t₀ ≤ t) (htη : t < t₀ + η) (hts : t < s) (hR : qs < G.flow.scalar t y)

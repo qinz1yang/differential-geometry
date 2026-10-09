@@ -162,7 +162,6 @@ private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
                 (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne))) by module,
     h0, h1]
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem exists_backgroundConnectionDifferenceLowering_pairing_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
@@ -724,7 +723,6 @@ private lemma two_three_mul_eq
       (2 * C * A) * X + (3 * C * K) * Y := by
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
 private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_raw_secondOrder_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :

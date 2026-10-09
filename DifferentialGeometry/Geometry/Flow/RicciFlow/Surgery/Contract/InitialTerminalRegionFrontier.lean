@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExteriorRegion
 import DifferentialGeometry.Geometry.Neck.Chart
 
@@ -289,23 +289,25 @@ theorem exists_terminalRegion_of_hasInitialTerminalRegion {τ : ℝ}
     Nonempty (InitialTerminalRegion D h.epsilon h.Lambda) :=
   h.region D hD
 
-theorem exists_uniform_terminalCorePresentation_of_initialTerminalRegion {τ : ℝ}
+theorem hasInitialSphericalFrontier_of_hasInitialTerminalRegion {τ : ℝ}
     (h : HasInitialTerminalRegion.{u} τ)
     (hc : TerminalRegionCompletion.{u} h.epsilon h.Lambda) :
-    ∃ ε Λ : ℝ, 0 < ε ∧ ε < 1 ∧ 1 ≤ Λ ∧
-      ∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
-        Nonempty (TerminalCorePresentation D ε Λ) :=
+    HasInitialSphericalFrontier.{u} τ :=
   ⟨h.epsilon, h.Lambda, h.epsilon_pos, h.epsilon_lt_one, h.one_le_Lambda,
     fun D hD => hc.complete D (h.region D hD)⟩
 
-theorem exists_uniform_terminalCorePresentation_of_reduction
+theorem exists_hasInitialSphericalFrontier_of_reduction
     (h : InitialSphericalFrontierReduction.{u}) :
-    ∃ τ ε Λ : ℝ, 0 < τ ∧ 0 < ε ∧ ε < 1 ∧ 1 ≤ Λ ∧
-      ∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
-        Nonempty (TerminalCorePresentation D ε Λ) := by
-  obtain ⟨ε, Λ, hε, hε1, hΛ, hP⟩ :=
-    exists_uniform_terminalCorePresentation_of_initialTerminalRegion h.barrier h.completion
-  exact ⟨h.tau, ε, Λ, h.tau_pos, hε, hε1, hΛ, hP⟩
+    ∃ τ : ℝ, 0 < τ ∧ HasInitialSphericalFrontier.{u} τ :=
+  ⟨h.tau, h.tau_pos,
+    hasInitialSphericalFrontier_of_hasInitialTerminalRegion h.barrier h.completion⟩
+
+theorem exists_terminalCorePresentationInput_of_reduction
+    (h : InitialSphericalFrontierReduction.{u}) :
+    ∃ τ ε : ℝ, 0 < τ ∧ 0 < ε ∧ ε < 1 ∧
+      Nonempty (TerminalCorePresentationInput.{u} τ ε) := by
+  obtain ⟨τ, hτ, hS⟩ := exists_hasInitialSphericalFrontier_of_reduction h
+  exact hasInitialSphericalFrontier_iff_exists_terminalCorePresentationInput.mp ⟨τ, hτ, hS⟩
 
 theorem exists_one_le_forall_le_of_finite {ι : Type u} [Finite ι] (f : ι → ℝ)
     (hf : ∀ i, 1 ≤ f i) : ∃ Λ : ℝ, 1 ≤ Λ ∧ ∀ i, f i ≤ Λ := by

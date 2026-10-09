@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.Cutoff.FluxIntegrability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointRadialCutoffFluxIntegrable
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.GradientFlux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineGramContinuity
 import DifferentialGeometry.Geometry.Metric.Distance.RadialCutoff

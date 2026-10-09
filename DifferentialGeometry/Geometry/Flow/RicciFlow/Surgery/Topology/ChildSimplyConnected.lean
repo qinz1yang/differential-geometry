@@ -15,7 +15,7 @@ variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
 theorem child_simplyConnected_of_childCore_simplyConnected
     (c : ConnectedComponents Q.Carrier) [SimplyConnectedSpace (E.ChildCore c)] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier := by
+    SimplyConnectedSpace (Q.component c).Carrier := by
   let r : ℝ := 1 / 2
   have hr : 0 ≤ r := by norm_num [r]
   have hr1 : r < 1 := by norm_num [r]
@@ -33,8 +33,8 @@ theorem child_simplyConnected_of_childCore_simplyConnected
     (E.pairwise_disjoint_childCapInterior c)
 
 theorem child_simplyConnected (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier := by
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier := by
   let : SimplyConnectedSpace (E.ChildCore c) :=
     E.simplyConnectedSpace_childCore_of_parent_simplyConnected c
   exact E.child_simplyConnected_of_childCore_simplyConnected c
@@ -42,8 +42,8 @@ theorem child_simplyConnected (c : ConnectedComponents Q.Carrier)
 include E in
 theorem capped_children_simply_connected
     (hSC : ∀ p : ConnectedComponents P.Carrier,
-      SimplyConnectedSpace (P.component p).toClosedOrientedManifold.Carrier) :
-    ∀ c : ConnectedComponents Q.Carrier, SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier := by
+      SimplyConnectedSpace (P.component p).Carrier) :
+    ∀ c : ConnectedComponents Q.Carrier, SimplyConnectedSpace (Q.component c).Carrier := by
   intro c
   let := hSC (E.childParent c)
   exact E.child_simplyConnected c

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Compression.DiskTrace
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialGenerators
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34DiskTraceDeletion
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialGenerator
 
 open Set Topology
 
@@ -33,7 +33,7 @@ theorem exists_section34_strict_trace_subfamily_after_disk
         ⋃ j : I, Pg e j.1.val ∧
       (∀ j : I, Disjoint D (Pg e j.1.val)) ∧
       IsClosed ((G (ends e).1 '' CpBd (ends e).1 ∩ G (ends e).2 '' CpBd (ends e).2) \ D) := by
-  obtain ⟨k, hk, -, hgen, -⟩ := exists_piercing_circle_carrying_generators hprep hpack e
+  obtain ⟨k, hk, -, hgen, -⟩ := exists_section34_piercing_circle_carrying_generators hprep hpack e
   have htor := (section34_tubes_are_topological_solid_tori hprep hpack e).2
   obtain ⟨-, -, -, -, hCp, -, -, -, -, -, -, -, -, -, hAa, hBb, -⟩ := hprep
   obtain ⟨-, -, -, htube, -, -, hbound, -, -, -, hG, -, -, -, -, -, hcount, hPg, hdis, -⟩ :=

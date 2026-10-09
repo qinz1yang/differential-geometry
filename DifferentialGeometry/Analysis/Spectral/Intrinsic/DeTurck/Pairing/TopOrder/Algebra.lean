@@ -208,7 +208,7 @@ theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
           (endoSlotZeroCcTensor (I := I) (M := M) g (s + 1)
             (metricComparisonEndomorphismField (I := I) (M := M) g gm))).toSection x) Z) =
         cometricDoubleTraceFib (I := I) g s x
-          (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+          (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
             (metricComparisonEndomorphismField (I := I) (M := M) g gm x) Z) from by
       rw [operatorFieldComposition_toSection]
       rfl]
@@ -217,10 +217,10 @@ theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
       (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (s + 2) 0 x
+        (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g gm x) Z)) mm]
     refine Finset.sum_congr rfl fun a _ => ?_
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [Fin.update_cons_zero]
     rfl
   rw [hRHS]
@@ -344,7 +344,7 @@ theorem pairSlot2_eval (g : SmoothRiemannianMetric I M)
   rw [pairSlot2, domDomCongrSection_unitModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
-    slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
+    slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 2 I x from
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) j) S).toSection x)

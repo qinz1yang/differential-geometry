@@ -163,16 +163,44 @@ theorem subsingleton_compl_singleton_three_of_infiniteCyclicTopHomology
     (x₀ : M) (hpd : noncompactPoincareDualityTwoOne ({x₀}ᶜ : Set M))
     (he : Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ)) :
     Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3) := by
+  obtain ⟨e⟩ := he
+  let e' : integralSingularHomology 3 M ≃ₗ[ℤ] ℤ := e
+  let g' : integralRelativeHomology 3 ({x₀}ᶜ : Set M) ≃ₗ[ℤ] ℤ :=
+    localIntegralHomologyEquivInt (M := M) x₀
   have hsurj : Function.Surjective (integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M)) :=
     absoluteToRelative_surjective_of_noncompactPoincareDuality_punctured x₀ hpd
-  let modelHomeomorph : ThreeSpace ≃ₜ liftedSphereSpace.{u} 1 :=
-    (Homeomorph.ulift (X := ThreeSpace)).symm
-  let _ : ChartedSpace (liftedSphereSpace.{u} 1) ThreeSpace :=
-    modelHomeomorph.toOpenPartialHomeomorph.singletonChartedSpace (by simp)
-  let _ : ChartedSpace (liftedSphereSpace.{u} 1) M :=
-    ChartedSpace.comp (liftedSphereSpace.{u} 1) ThreeSpace M
-  exact DifferentialGeometry.Topology.subsingleton_compl_singleton_of_nonempty_linearEquiv_int
-    (E := liftedSphereSpace.{u} 1) 1 (liftedSphereSpace_finrank 1) M x₀ hsurj he
+  let ψ : ℤ →ₗ[ℤ] ℤ := g'.toLinearMap.comp
+    ((integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M)).comp e'.symm.toLinearMap)
+  have hψ : Function.Surjective ψ := by
+    intro y
+    obtain ⟨c, hc⟩ := hsurj (g'.symm y)
+    refine ⟨e' c, ?_⟩
+    change g' ((integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M)) (e'.symm (e' c))) = y
+    rw [LinearEquiv.symm_apply_apply, hc, LinearEquiv.apply_symm_apply]
+  have hinjψ : Function.Injective ψ := injective_of_surjective_intLinearMap_int ψ hψ
+  have hrange : LinearMap.range (integralSingularHomologyMap 3
+      (singularSubspaceInclusion ({x₀}ᶜ : Set M))) = ⊥ := by
+    rw [Submodule.eq_bot_iff]
+    intro c hc
+    have hc0 : integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M) c = 0 := by
+      refine LinearMap.mem_ker.mp ?_
+      rw [LinearMap.exact_iff.mp (integralRelative_exact_absolute (X := M) 3 ({x₀}ᶜ))]
+      exact hc
+    have h2 : ψ (e' c) = 0 := by
+      change g' ((integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M)) (e'.symm (e' c))) = 0
+      rw [LinearEquiv.symm_apply_apply, hc0, map_zero]
+    have h3 : e' c = 0 := hinjψ (by rw [h2, map_zero])
+    exact e'.injective (by rw [h3, map_zero])
+  have hinj : Function.Injective (integralAbsoluteToRelative 3 ({x₀}ᶜ : Set M)) := by
+    intro a b hab
+    have hsub : a - b ∈ LinearMap.range (integralSingularHomologyMap 3
+        (singularSubspaceInclusion ({x₀}ᶜ : Set M))) := by
+      rw [← LinearMap.exact_iff.mp (integralRelative_exact_absolute (X := M) 3 ({x₀}ᶜ))]
+      exact LinearMap.mem_ker.mpr (by rw [map_sub, hab, sub_self])
+    rw [hrange, Submodule.mem_bot] at hsub
+    exact sub_eq_zero.mp hsub
+  exact (subsingleton_integralHomology_compl_singleton_three_iff_injective_absoluteToRelative
+    x₀).mpr hinj
 
 theorem nonempty_integralHomology_linearEquiv_int_of_punctured_subsingleton
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]

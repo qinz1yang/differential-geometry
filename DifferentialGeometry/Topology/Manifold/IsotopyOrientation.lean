@@ -1,5 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Model
-import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartStraightening
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Topology.Order.IntermediateValue
 
@@ -53,14 +52,14 @@ private theorem orientation_map_coordinates_comp {U : Type u} [TopologicalSpace 
       = Orientation.map (Fin 3) T' (Orientation.map (Fin 3)
           (T.symm.trans (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv)
           (Orientation.map (Fin 3) T (o.orientation x₀))) :=
-        (DifferentialGeometry.orientation_map_trans
+        (DifferentialGeometry.VectorBundle.map_orientation_trans_between
           (T.symm.trans (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv) T'
-          (Orientation.map (Fin 3) T (o.orientation x₀)))
+          (Orientation.map (Fin 3) T (o.orientation x₀))).symm
     _ = Orientation.map (Fin 3) T'
           (Orientation.map (Fin 3) (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv
             (o.orientation x₀)) := by
         congr 1
-        rw [DifferentialGeometry.orientation_map_trans T.symm
+        rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between T.symm
           (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv
           (Orientation.map (Fin 3) T (o.orientation x₀)), hsymm]
 
@@ -241,5 +240,9 @@ theorem preservesOrientation_of_jointlySmooth_isotopy {U : Type u} [TopologicalS
     by_contra hcon
     simp only [f, hcon, ite_false] at hpos
     norm_num at hpos
+
+theorem isotopyPreservesOrientation_holds : isotopyPreservesOrientation.{u} := by
+  intro U _ _ _ _ _ o J hJ0 hJc _
+  exact preservesOrientation_of_jointlySmooth_isotopy o J hJ0 hJc 1
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

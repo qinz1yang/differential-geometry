@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Framed
-import DifferentialGeometry.Geometry.Curve.Length.Radial
+import DifferentialGeometry.Geometry.Comparison.RadialLength
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
 open Set

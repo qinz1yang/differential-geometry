@@ -1371,11 +1371,11 @@ private lemma sieZero (g₀ : SmoothRiemannianMetric I M) (s : ℕ) :
     rw [← hY]
     exact endoCovariantDerivative_fullRaised_id_eq_zero (I := I) (M := M) g₀ Y x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
         (0 : ℝ) • (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from (zero_smul ℝ _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in

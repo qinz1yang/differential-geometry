@@ -1264,7 +1264,6 @@ theorem riemannCurvatureCoefficientField_sub
   rw [operatorFieldComposition_sub_right, operatorFieldComposition_sub_right]
   module
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_riemannCurvatureCoefficientField_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1331,7 +1330,6 @@ private theorem covariantJetNormSq_connectionDifferenceQuadraticCurvatureTerm_de
     (by rw [covariantJetNormSq_domDomCongrSection]; exact hY) (by rw [covariantJetNormSq_domDomCongrSection]; exact hY)
     (by rw [covariantJetNormSq_domDomCongrSection]; exact hY) (by rw [covariantJetNormSq_domDomCongrSection]; exact hY)
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -1418,7 +1416,6 @@ theorem connectionDifferenceQuadraticComposedTensor_sub
   rw [domDomCongrSection_sub, operatorFieldComposition_sub_right, operatorFieldComposition_sub_left]
   module
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -2520,7 +2517,7 @@ open DifferentialGeometry.Analysis.Spectral
    slotExtendFib_apply slotExtend_toSection slotExtendIter ccTensor02Symm_eq_self
    tail_base_split toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc slotInsertEndoCc_toSection)
-open DifferentialGeometry.Tensor0SBundle (slotInsertEndomorphism_apply_eval)
+open DifferentialGeometry.Geometry.Curvature (slotInsertEndoFib_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -3411,13 +3408,13 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
     ContinuousLinearEquiv.symm_apply_apply]
   rw [smoothCcTensorBilinForm_ccTensor02Symm]
   change _ = Tensor0SSpace.toModel
-    (DifferentialGeometry.Tensor0SBundle.slotInsertEndomorphism (I := I) (M := M) 3 0 x
+    (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib (I := I) (M := M) 3 0 x
       (symmRaiseEndo (I := I) (M := M) g W x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (domDomCongrSection (I := I) g (finRotate 3)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)).toSection x)
         (unitTensor (I := I) (M := M) x))) m
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   change _ = unitModel (I := I) (M := M) g 3
     (domDomCongrSection (I := I) g (finRotate 3)
       (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)) x

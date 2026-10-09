@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedDomainMetricConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 
 

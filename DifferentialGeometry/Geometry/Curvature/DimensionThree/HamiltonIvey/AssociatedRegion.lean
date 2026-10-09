@@ -3,10 +3,9 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvar
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Associated
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.SelfAdjointRegion
-import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Associated
-import DifferentialGeometry.Geometry.Metric.VectorBundle.SelfAdjoint.Basic
+import DifferentialGeometry.Geometry.Metric.SelfAdjointAssociated
+import DifferentialGeometry.Geometry.Metric.SelfAdjointSubbundle
 import DifferentialGeometry.Bundle.SmoothSubbundle.VectorBundle
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 noncomputable section
 
@@ -202,8 +201,8 @@ theorem isParallelSet_selfAdjoint_hamiltonIveyRegion
   let := S.fiberBundle
   let := S.vector_bundle
   let := S.contMDiffVectorBundle
-  let D := _root_.CovariantDerivative.hom I M F V F V cov cov
-  let hS := _root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
+  let D := HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
+  let hS := HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
     cov hmetric
   have hinc := (ContMDiff.clm_bundle_of_map
     (φ := fun x => (S.fiber x).subtypeL) S.contMDiff_subtypeVal).mdifferentiable (by simp)

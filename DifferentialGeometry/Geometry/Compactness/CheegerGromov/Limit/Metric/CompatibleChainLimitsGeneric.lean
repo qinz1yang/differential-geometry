@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.CompatibleChainLimits
-import DifferentialGeometry.Geometry.Metric.Approximation.Congruence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Congruence
 
 set_option autoImplicit false
 noncomputable section

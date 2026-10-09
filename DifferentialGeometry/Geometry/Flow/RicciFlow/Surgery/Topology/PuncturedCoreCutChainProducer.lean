@@ -370,7 +370,7 @@ theorem puncturedCoreCutChainProducer_of_isEmpty_index
 
 def PuncturedCoreCutSystemProducer : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       Nonempty (E.trace.tubes.PuncturedCoreCutSystem (E.childCoreComponent c))
 
 theorem puncturedCoreCutChainProducer_of_cutSystemProducer

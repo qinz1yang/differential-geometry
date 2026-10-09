@@ -90,13 +90,13 @@ def bilinearSlotInsertCurriedCLM (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
-    { toFun := fun v0 => slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) D
+    { toFun := fun v0 => slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) D
       map_add' := fun a b => by
-        rw [map_add (Term), slotInsertEndomorphism_add_left (I := I) (M := M) (s+1) 0 x (Term a) (Term b),
+        rw [map_add (Term), slotInsertEndoFib_add_left (I := I) (M := M) (s+1) 0 x (Term a) (Term b),
           add_apply]
       map_smul' := fun c a => by
         rw [map_smul (Term)]
-        rw [slotInsertEndomorphism_smul_left (I := I) (M := M) (s+1) 0 x c (Term a)]
+        rw [slotInsertEndoFib_smul_left (I := I) (M := M) (s+1) 0 x c (Term a)]
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -105,7 +105,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     (Term : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
     bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Term D v0 =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) D := by
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) D := by
   unfold bilinearSlotInsertCurriedCLM
   rfl
 
@@ -163,7 +163,7 @@ lemma termSlotFib_apply_eval (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → TangentSpace I x) :
     Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.eval
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term (v 0)) D) (Matrix.vecTail v) := by
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term (v 0)) D) (Matrix.vecTail v) := by
   rw [termSlotFib_apply]
   have hkey := tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
     (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
@@ -195,7 +195,7 @@ private lemma fiberComponent_bilinearSlotInsertCLM_eq
           (coframeS (I := I) (M := M) g₀ x (s + 1) e K))
         (fun l => e (J l)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, termSlotFib_apply_eval, slotInsertEndomorphism_apply_natural]
+  rw [hcomp, termSlotFib_apply_eval, slotInsertEndoFib_apply_natural]
   change coframeS (I := I) (M := M) g₀ x (s + 1) e K
         (Function.update (Matrix.vecTail (fun l => e (J l))) 0
           (Term (e (J 0)) (Matrix.vecTail (fun l => e (J l)) 0))) = _
@@ -495,7 +495,7 @@ theorem termSlotFib_contMDiff (s : ℕ)
     change Tensor0SSpace.eval (bilinearSlotInsertCLM (I := I) (M := M) s x (Term x) (D x))
         (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j))) = _
     rw [termSlotFib_apply_eval]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
     have htail0 : Matrix.vecTail (fun j : Fin (s + 1 + 1) => e₁.symmL ℝ x (b (σ j))) 0 =
         (Y (σ 1)) x := by
       change e₁.symmL ℝ x (b (σ (Fin.succ 0))) = _

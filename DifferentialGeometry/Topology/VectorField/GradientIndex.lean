@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.VectorField.GradientLinearization
-import DifferentialGeometry.Topology.VectorField.Index.Linearization
+import DifferentialGeometry.Topology.VectorField.IndexLinearization
 
 set_option autoImplicit false
 noncomputable section

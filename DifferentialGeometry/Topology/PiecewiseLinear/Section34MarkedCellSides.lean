@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.BicollarSides
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.CellChain
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCircleSides
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeChain
 
 open Set Topology
 

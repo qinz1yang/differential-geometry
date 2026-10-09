@@ -1,5 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.Basic
-import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTowerExistence
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
 
 open Set Topology
 
@@ -308,5 +312,30 @@ theorem exists_isPLHomeomorphInto_dist_lt_of_stages (T : LocallyFinitePieceTower
 end Assembly
 
 end LocallyFinitePieceTower
+
+section Reduction
+
+universe u
+
+def Moise352Stages (n : ℕ) : Prop :=
+  ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
+    [MetricSpace M₂] [SecondCountableTopology M₂]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁]
+    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
+    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)]
+    {K : Set M₁} (T : LocallyFinitePieceTower n M₁ K),
+    (∀ i, IsCombinatorialManifoldWithBoundary n (T.piece i).piece.complex) →
+    ∀ {h : M₁ → M₂}, Topology.IsEmbedding (K.domRestrict h) →
+    ∀ ε : ℕ → ℝ, (∀ i, 0 < ε i) → ∃ f : ℕ → M₁ → M₂,
+      (∀ i, EqOn (f (i + 1)) (f i) (T.coreSpace i)) ∧
+      (∀ i, IsPLHomeomorphInto n (f i) (T.coreSpace i)) ∧
+      ∀ i, ∀ x ∈ T.coreSpace i, dist (f i x) (h x) < ε i
+
+theorem moise352_of_stages {n : ℕ} (H : Moise352Stages.{u} n) : Moise352.{u} n := by
+  intro M₁ M₂ _ _ _ _ _ _ _ _ _ K hK h hh φ hφ hpos
+  obtain ⟨T, hT⟩ := hK
+  exact T.exists_isPLHomeomorphInto_dist_lt_of_stages hh hφ hpos (H T hT hh)
+
+end Reduction
 
 end DifferentialGeometry.Topology.PiecewiseLinear

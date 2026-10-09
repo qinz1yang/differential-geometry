@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.Connected
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkDimension
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteSplittingDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
@@ -125,6 +129,17 @@ theorem LocallyFinitePLPieceIn.subset_openStar_of_isPreconnected [FiniteDimensio
   exact ⟨hY𝒦 hy, hsub (show (⟨y, hY𝒦 hy⟩ : 𝒦.complex.space) ∈ Y' from hy)⟩
 
 end OpenStar
+
+theorem IsPLCellOn.isConnected {M : Type*} [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] {d : ℕ} {S B : Set M} (hS : IsPLCellOn d S B) :
+    IsConnected S := by
+  obtain ⟨P, r, v, hr, hv, rfl, -⟩ := hS
+  have hP : IsConnected P := by
+    have h1 : IsConnected (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) :=
+      (Convexity.StdSimplex.convex_coordinateSet ℝ _).isConnected ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (d + 1))⟩
+    have h2 := h1.image r hr.isPiecewiseAffineOn.continuousOn
+    rwa [hr.bijOn.image_eq] at h2
+  exact hP.image v hv.continuousOn
 
 section Frames
 

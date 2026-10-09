@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PairedCornerCollarModel
-import DifferentialGeometry.Topology.PiecewiseLinear.Collar.CrossingExtension
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34FillingBoundaryCollarExterior
 
 open Set Topology
 

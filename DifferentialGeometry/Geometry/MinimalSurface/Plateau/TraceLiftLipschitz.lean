@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Periodic.ImmersionLift
 import DifferentialGeometry.Topology.Manifold.Embedding.CompactNeighborhood
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothTraceLift
 
 section

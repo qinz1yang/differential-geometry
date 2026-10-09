@@ -2,9 +2,9 @@ import DifferentialGeometry.Bundle.Frame
 import DifferentialGeometry.Bundle.SmoothSubbundle.Basic
 import DifferentialGeometry.Geometry.Connection.Subbundle
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Kernel
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 
 set_option autoImplicit false

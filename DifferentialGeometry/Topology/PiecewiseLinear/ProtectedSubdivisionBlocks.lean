@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ProtectedSubdivisionStarInj
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlockRecentre
 import DifferentialGeometry.Topology.PiecewiseLinear.WallSystemBlocks
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.DoubleLocus.CrossingCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetOfCrossing
 
 open Set Topology Metric
 

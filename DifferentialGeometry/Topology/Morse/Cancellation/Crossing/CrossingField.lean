@@ -12,7 +12,7 @@ variable {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpac
   [ChartedSpace H M]
 
 theorem exists_modification_of_crossing (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundaryless]
-    [IsManifold I ∞ M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     {f : M → ℝ} {a' b' : ℝ} (hf : MorseStrip I f a' b') {V' : (x : M) → TangentSpace I x}
     (hV' : isCrossingField I f a' b' V') :
     ∃ g : M → ℝ, ModifiedWithin f a' b' g ∧ MorseStrip I g a' b' ∧

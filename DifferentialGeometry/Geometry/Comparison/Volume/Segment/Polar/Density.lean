@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Density
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Gram
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Gram
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.Intrinsic

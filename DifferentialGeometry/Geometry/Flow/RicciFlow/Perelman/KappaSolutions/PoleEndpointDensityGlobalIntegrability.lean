@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.WeakEquation.PartitionOfUnity
 import DifferentialGeometry.Geometry.Coordinates.Calculus.ParametricZeroExtension
 import DifferentialGeometry.Topology.Manifold.CompactChartNeighborhood
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Integrability
-import DifferentialGeometry.Analysis.Integration.L2.Gradient.ChartIdentification
+import DifferentialGeometry.Geometry.Operator.Gradient.ChartFamilyIdentification
 import Mathlib.Analysis.Calculus.Deriv.Support
 import Mathlib.Topology.Algebra.Support
 import Mathlib.MeasureTheory.Integral.Prod

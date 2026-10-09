@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Boundary.Flow.Local
+import DifferentialGeometry.Geometry.Boundary.LocalFlow
 import DifferentialGeometry.Geometry.Boundary.InwardVector
 import DifferentialGeometry.Geometry.Boundary.Gradient
 import DifferentialGeometry.Geometry.Metric.Basic

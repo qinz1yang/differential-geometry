@@ -314,9 +314,9 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (slotInsertEndoCc (I := I) (M := M) g 0
             (symmRaiseEndo (I := I) (M := M) g T)).toSection x) om) =
-        slotInsertEndomorphism (I := I) (M := M) 1 0 x
+        slotInsertEndoFib (I := I) (M := M) 1 0 x
           (symmRaiseEndo (I := I) (M := M) g T x) om from rfl]
-    rw [slotInsertEndomorphism_apply_eval]
+    rw [slotInsertEndoFib_apply_eval]
     rw [toModel_om_single (I := I) (M := M) x om
       (Function.update w 0
         (tangentLinearMapToModel

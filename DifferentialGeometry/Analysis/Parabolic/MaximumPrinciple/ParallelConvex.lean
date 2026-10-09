@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.HessianSupport
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Lipschitz
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
+import DifferentialGeometry.Geometry.Metric.BundleLipschitz
+import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Bundle.Fiberwise
 import DifferentialGeometry.Analysis.ODE.InvariantSetLocal
 import DifferentialGeometry.Analysis.ODE.MaximalSolution

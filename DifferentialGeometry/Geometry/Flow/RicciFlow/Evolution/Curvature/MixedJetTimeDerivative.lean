@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CurvatureExpression
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Intrinsic
 import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Expressions.Residual
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ResidualExpression
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.MixedJetCovariantDerivative
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.FieldComponents
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz

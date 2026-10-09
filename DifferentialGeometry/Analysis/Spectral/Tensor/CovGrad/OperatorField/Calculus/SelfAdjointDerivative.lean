@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 noncomputable section
 
@@ -43,7 +42,7 @@ theorem endoCovariantDerivative_g0_self_adjoint
       E _ _ H _ I M _ _ E _ _ (TangentSpace I) _ tangentNorm _ _ (LeviCivita g₀) _ _ _ _ _).mpr
     intro y X Y Z _ hY hZ
     exact (LeviCivita_isMetricCompatible g₀).apply hY hZ (X y)
-  exact @_root_.CovariantDerivative.hom_isSymmetric_of_eventually
+  exact @HomConnectionGen.homBundleCovariantDerivativeGen_isSymmetric_of_eventually
     E _ _ _ H _ I M _ _ _ _ E _ _ _ (TangentSpace I) _ tangentNorm _ _ _ _ _
     (LeviCivita g₀) hmetric Λ x (Filter.Eventually.of_forall hΛ) v a b
 

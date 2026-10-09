@@ -77,7 +77,7 @@ def multilinear (cov : CovariantDerivative I F V) : (k : ℕ) →
       (fun x => (Bundle.continuousMultilinearMap.curryLeftEquiv
         (𝕜 := ℝ) (F := F) (E := V) k x).toLinearEquiv)
       ((contMDiff_curry_succ k).of_le (by norm_num))
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
         (Bundle.continuousMultilinearMap ℝ k F V) cov (multilinear cov k))
 
@@ -88,7 +88,7 @@ private theorem multilinear_succ_contMDiff (cov : CovariantDerivative I F V)
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
   let : CompleteSpace F := FiniteDimensional.complete ℝ F
   let := ih
-  let covH := _root_.CovariantDerivative.hom
+  let covH := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
     I M F V (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
     (Bundle.continuousMultilinearMap ℝ k F V) cov (multilinear cov k)
   have hH : ContMDiffCovariantDerivative covH ∞ := inferInstance
@@ -138,14 +138,14 @@ theorem multilinear_apply_succ (cov : CovariantDerivative I F V) (k : ℕ)
     (𝕜 := ℝ) (F := F) (E := V) k y (T y)
   obtain ⟨W, hWx⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := (TangentSpace I : M → Type _)) (n := (⊤ : ℕ∞)) x X
-  have h := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  have h := DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt
     I M F V (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
     (Bundle.continuousMultilinearMap ℝ k F V) cov (multilinear cov k) A
     hT.multilinear_bundle_curry_left W.mdifferentiableAt hY
   rw [hWx] at h
   change (Bundle.continuousMultilinearMap.curryLeftEquiv
     (𝕜 := ℝ) (F := F) (E := V) k x).symm
-      (_root_.CovariantDerivative.hom
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen
         I M F V (ContinuousMultilinearMap ℝ (fun _ : Fin k => F) ℝ)
         (Bundle.continuousMultilinearMap ℝ k F V) cov (multilinear cov k) A x X)
       (Fin.cons (Y x) v) = _

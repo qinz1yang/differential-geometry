@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TraceLiftLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TracePhaseAnnulus.Lipschitz
-import DifferentialGeometry.Geometry.Metric.LoopSpace.Lipschitz
+import DifferentialGeometry.Geometry.Metric.LoopLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
 import DifferentialGeometry.Geometry.Measure.Area.SmoothDensity
 

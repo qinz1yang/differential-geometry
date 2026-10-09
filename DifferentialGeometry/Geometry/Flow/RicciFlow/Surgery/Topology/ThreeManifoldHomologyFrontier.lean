@@ -24,10 +24,17 @@ def EuclideanStandardSimplexNormalization : Prop :=
       -integralEuclideanLocalTopGenerator (liftedSphereSpace.{u} 1) 1
         (liftedSphereSpace_finrank 1) 0
 
-private theorem eq_or_eq_neg_iff_bijective_zsmul_of_coordinate_one
-    {A : Type*} [AddCommGroup A] [Module ℤ A]
-    (e : A ≃ₗ[ℤ] ℤ) (c g : A) (hgen : e g = 1) :
-    c = g ∨ c = -g ↔ Function.Bijective (fun z : ℤ => z • c) := by
+theorem euclideanStandardSimplexNormalization_iff_bijective_zsmul :
+    EuclideanStandardSimplexNormalization.{u} ↔
+      Function.Bijective (fun z : ℤ => z • euclideanStandardSimplexClass.{u}) := by
+  let E := liftedSphereSpace.{u} 1
+  let hd : Module.finrank ℝ E = 1 + 2 := liftedSphereSpace_finrank 1
+  let e := integralEuclideanLocalTopEquiv E 1 hd 0
+  let g := integralEuclideanLocalTopGenerator E 1 hd 0
+  have hgen : e g = 1 := by
+    change (integralEuclideanLocalTopEquiv E 1 hd 0)
+      ((integralEuclideanLocalTopEquiv E 1 hd 0).symm 1) = 1
+    exact LinearEquiv.apply_symm_apply _ 1
   constructor
   · rintro (h | h)
     · rw [h]
@@ -36,24 +43,13 @@ private theorem eq_or_eq_neg_iff_bijective_zsmul_of_coordinate_one
       exact (isUnit_apply_iff_bijective_zsmul e (-g)).mp
         (by rw [map_neg, hgen]; exact Int.isUnit_iff.mpr (Or.inr rfl))
   · intro hb
-    have hu : IsUnit (e c) :=
+    have hu : IsUnit (e euclideanStandardSimplexClass.{u}) :=
       (isUnit_apply_iff_bijective_zsmul e _).mpr hb
     rcases Int.isUnit_iff.mp hu with h | h
     · left
       exact e.injective (by rw [h, hgen])
     · right
       exact e.injective (by rw [h, map_neg, hgen])
-
-theorem euclideanStandardSimplexNormalization_iff_bijective_zsmul :
-    EuclideanStandardSimplexNormalization.{u} ↔
-      Function.Bijective (fun z : ℤ => z • euclideanStandardSimplexClass.{u}) := by
-  exact eq_or_eq_neg_iff_bijective_zsmul_of_coordinate_one
-    (integralEuclideanLocalTopEquiv (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0) euclideanStandardSimplexClass.{u}
-    (integralEuclideanLocalTopGenerator (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0)
-    (integralEuclideanLocalTopGenerator_coordinate (liftedSphereSpace.{u} 1) 1
-      (liftedSphereSpace_finrank 1) 0)
 
 theorem euclideanStandardSimplexNormalization_iff_puncturedBoundaryClassDetectingFunctional :
     EuclideanStandardSimplexNormalization.{u} ↔

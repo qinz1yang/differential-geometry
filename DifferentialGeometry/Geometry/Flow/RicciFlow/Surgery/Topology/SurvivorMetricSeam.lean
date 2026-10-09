@@ -117,7 +117,7 @@ theorem exists_survivor_solution_across_event
     erw [hr] at hd
     exact hd
   have hmatch : gL s = S.base.metric s := by
-    simpa only [gL, DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    simpa only [gL, OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
       using hstart.symm
   exact ⟨F, S, hsource, hS, hcross, hstart, hpull,
     E.terminal.closedSolution_isSolutionOn W hac hcs,

@@ -34,7 +34,7 @@ theorem map_selfAdjoint_hessian_conjugate
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
     [ContMDiffCovariantDerivative D ∞] [ContMDiffCovariantDerivative C ∞]
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0)
     (base : CovariantDerivative I E (TangentSpace I : M → Type _)) :
     let S₁ := selfAdjointSubbundle (I := I) (F := F₁) (V := V₁) (n := ∞)
@@ -118,7 +118,7 @@ theorem map_rawBundleConnLap_selfAdjoint_conjugate
     (D : CovariantDerivative I F₁ V₁) (hD : D.IsMetricCompatible)
     (C : CovariantDerivative I F₂ V₂) (hC : C.IsMetricCompatible)
     [ContMDiffCovariantDerivative D ∞] [ContMDiffCovariantDerivative C ∞]
-    (hparallel : _root_.CovariantDerivative.hom I M F₁ V₁ F₂ V₂ D C
+    (hparallel : homBundleCovariantDerivativeGen I M F₁ V₁ F₂ V₂ D C
       (fun x => (φ x).toContinuousLinearEquiv.toContinuousLinearMap) = 0)
     (g : SmoothRiemannianMetric I M) :
     let S₁ := selfAdjointSubbundle (I := I) (F := F₁) (V := V₁) (n := ∞)

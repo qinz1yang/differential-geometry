@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Shape
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Shape
 import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 import DifferentialGeometry.Geometry.Connection.MetricTrace.LineSplit

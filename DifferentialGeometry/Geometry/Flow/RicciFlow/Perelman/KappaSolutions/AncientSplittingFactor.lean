@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Splitting.TerminalProductExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Trace.TerminalScalar
-import DifferentialGeometry.Geometry.Metric.Product.UniversalCoverScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientSplitting.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalProductScalar
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Topology.Homotopy.Contractible
 

@@ -36,7 +36,7 @@ theorem local_orientation_of_comp_eq_at
     rw [← mfderiv_comp_apply x (hg.mdifferentiable (by simp) _) (hf.mdifferentiable (by simp) _) v]
     exact congrArg (fun k : A → C => mfderiv (𝓡 n) (𝓡 n) k x v) heq
   rw [← hfo]
-  erw [← DifferentialGeometry.orientation_map_trans, hlin]
+  erw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, hlin]
   have hp : g (f x) = h x := congrFun heq x
   rw [hp]
   exact hho
@@ -65,7 +65,7 @@ theorem local_orientation_of_comp
     change mfderiv (𝓡 n) (𝓡 n) g (f x) (mfderiv (𝓡 n) (𝓡 n) f x v) = mfderiv (𝓡 n) (𝓡 n) h x v
     rw [← mfderiv_comp_apply x (hg.mdifferentiable (by simp) _) (hf.mdifferentiable (by simp) _) v]
     exact congrArg (fun k : A → C => mfderiv (𝓡 n) (𝓡 n) k x v) heq
-  erw [← DifferentialGeometry.orientation_map_trans, hlin, hho, hgo]
+  erw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, hlin, hho, hgo]
   congr 1
   exact (congrFun heq x).symm
 

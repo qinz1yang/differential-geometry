@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.Combinatorics.Finset
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactClawBall
 
 open Set
@@ -158,7 +162,7 @@ theorem Section34CompactCutFrame.exists_edgeIndex_mem_subset_segment
   · rw [he0, Finset.coe_pair, convexHull_pair]
     exact (convex_segment u v).segment_subset (left_mem_segment ℝ u v) hp₁
   · intro e' hue' he'
-    obtain ⟨q, hq, hsub⟩ := Finset.exists_mem_subset_pair_of_card_le_two e'.2.2.1.le hue'
+    obtain ⟨q, hq, hsub⟩ := exists_subset_pair_of_card_le_two e'.2.2.1.le hue'
     have hqu : q ≠ u := by
       intro hqu'
       rw [hqu'] at hsub

@@ -48,7 +48,7 @@ section Split
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasBinaryBiproducts C] (X : C)
 
-@[reassoc]
+@[reassoc (attr := simp)]
 lemma split_lift_desc :
     biprod.lift (𝟙 X) (-𝟙 X) ≫ biprod.desc (𝟙 X) (𝟙 X) = 0 := by
   simp
@@ -149,14 +149,13 @@ abbrev r₁ : A.pair.chainComplex R ⟶ (A ⊔ B).pair.chainComplex R :=
 abbrev r₂ : B.pair.chainComplex R ⟶ (A ⊔ B).pair.chainComplex R :=
   quotMap R (le_sup_right : B ≤ A ⊔ B)
 
-@[reassoc (attr := simp)]
 lemma q₁_r₁ : q₁ A B R ≫ r₁ A B R = q₂ A B R ≫ r₂ A B R := by
   simp only [q₁, r₁, q₂, r₂, quotMap_comp]
 
-@[reassoc]
+@[reassoc (attr := simp)]
 lemma quot_lift_desc :
     biprod.lift (q₁ A B R) (-(q₂ A B R)) ≫ biprod.desc (r₁ A B R) (r₂ A B R) = 0 := by
-  simp
+  simp [q₁_r₁]
 
 def quotMV : ShortComplex (ChainComplex (ModuleCat.{u} ℤ) ℕ) :=
   ShortComplex.mk (biprod.lift (q₁ A B R) (-(q₂ A B R))) (biprod.desc (r₁ A B R) (r₂ A B R))

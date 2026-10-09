@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 import DifferentialGeometry.Topology.ThreeManifold.CutCapCappedPresentationRealization
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapUncutComponentRealization
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
 
@@ -382,12 +382,12 @@ theorem noTubeRealization_of_retained_of_discarded_cappedPresentation
   E.noTubeRealization_of_uncutCappingRealization_of_retained_of_discarded
     E.uncutCappingRealization h₁ h₂
 
-theorem isStandardConnectedSum_of_capped (C : ConnectedComponents M.Carrier)
+theorem isPoincareStandard_of_capped (C : ConnectedComponents M.Carrier)
     (hC : E.cutIndices C = ∅) (x : E.tubes.core) (hx : x ∈ E.coreComponentSet C)
-    (hstd : isStandardConnectedSum ((E.capped.component
+    (hstd : isPoincareStandard ((E.capped.component
       (ConnectedComponents.mk (E.capping.coreInclusion x))).toClosedOrientedManifold).Carrier) :
-    isStandardConnectedSum (M.component C).Carrier :=
-  E.isStandardConnectedSum_of_capped_of_uncutCappingRealization E.uncutCappingRealization
+    isPoincareStandard (M.component C).Carrier :=
+  E.isPoincareStandard_of_capped_of_uncutCappingRealization E.uncutCappingRealization
     C hC x hx hstd
 
 theorem noTubeRealization : E.NoTubeRealization :=
@@ -419,16 +419,16 @@ theorem exists_core_presentation_eq_inr_component_of_isEmpty_index [IsEmpty E.tu
     E.exists_cutIndices_eq_empty_of_isEmpty_index _⟩
 
 
-theorem isStandardConnectedSum_discardedComponent_of_cutIndices_eq_empty
+theorem isPoincareStandard_discardedComponent_of_cutIndices_eq_empty
     (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C = ∅)
     (x : E.tubes.core) (hx : x ∈ E.coreComponentSet C)
     (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d)
-    (hstd : isStandardConnectedSum (M.component C).Carrier) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+    (hstd : isPoincareStandard (M.component C).Carrier) :
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨e⟩ := E.uncutCappingRealization C hC x hx
   obtain ⟨f⟩ := E.cappedDiscardedPresentationRealization x d hd
-  exact isStandardConnectedSum_of_diffeomorph (e.val.trans f.val).symm hstd
+  exact isPoincareStandard_of_diffeomorph (e.val.trans f.val).symm hstd
 
 
 end SphericalCutCapTransition

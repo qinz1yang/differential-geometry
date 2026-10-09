@@ -123,24 +123,3 @@ theorem ContinuousOn.exists_uniform_bilin_quadratic_bounds_nhds
   exact ⟨C, hC, W, hW, hKW, hWU, hcW, hb⟩
 
 end
-
-noncomputable section
-
-namespace DifferentialGeometry
-
-theorem exists_pos_mul_norm_sq_le_bilinear_of_isCompact
-    {X E : Type*} [TopologicalSpace X]
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    {K : Set X} (hK : IsCompact K) (A : X → E →L[ℝ] E →L[ℝ] ℝ)
-    (hA : ContinuousOn A K)
-    (hpos : ∀ x ∈ K, ∀ v : E, v ≠ 0 → 0 < A x v v) :
-    ∃ c : ℝ, 0 < c ∧ ∀ x ∈ K, ∀ v : E, c * ‖v‖ ^ 2 ≤ A x v v := by
-  have hQ : ContinuousOn (fun p : X × E => A p.1 p.2 p.2)
-      (K ×ˢ (univ : Set E)) :=
-    ((hA.comp continuousOn_fst (fun _ hp => hp.1)).clm_apply
-      continuousOn_snd).clm_apply continuousOn_snd
-  exact hQ.exists_uniform_bilin_quadratic_lower_bound hK hpos
-
-end DifferentialGeometry
-
-end

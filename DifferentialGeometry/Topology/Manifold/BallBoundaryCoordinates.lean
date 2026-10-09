@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.BallChart.Defs
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
 
 noncomputable section

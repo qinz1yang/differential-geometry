@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
-import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NonnegativeCurvatureScalarNorm
 
 set_option autoImplicit false
 noncomputable section
@@ -75,7 +75,7 @@ theorem ancientKappa_rmNormLeScalar_finrank {kappa : ℝ}
     have h := hF.nonnegativeCurvatureOperator t ht x n c v w
     simpa only [algebraicCurvatureOperatorQuadraticEval, metricAlgebraicCurvatureTensorAt,
       tensor04StandardAt, SolutionFamily.rm04, metricRm04_apply] using h
-  have hbound := DifferentialGeometry.Geometry.Curvature.sqrt_metricRm_normSq_le_finrank_sq_mul_scalar (I := I)
+  have hbound := sqrt_metricRm_normSq_le_finrank_sq_mul_scalar (I := I)
     (F.S.base.metric t) x hoperator
   simpa only [PointedFlowData.rmNormSq, SolutionOn.family, SolutionFamily.rm04,
     metricRm04_apply, SolutionOn.scalar, SolutionFamily.scalar] using hbound

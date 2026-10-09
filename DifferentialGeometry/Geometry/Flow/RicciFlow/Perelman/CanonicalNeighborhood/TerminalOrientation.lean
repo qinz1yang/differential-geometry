@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Exhaustion
+import DifferentialGeometry.Topology.Manifold.OrientationExhaustion
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 noncomputable section
@@ -63,7 +63,7 @@ theorem exists_subsequence_preserves_tangentOrientation
       orientation := (o (f i)).orientation
       locally_constant := (o (f i)).locally_constant }
   obtain ⟨σ, hσ, O, hO⟩ := hmain 3 (by simp [ThreeSpace]) oN
-  exact ⟨σ, hσ, O, hO⟩
+  exact ⟨σ, hσ, ⟨O.orientation, O.locally_constant⟩, hO⟩
 
 theorem exists_oriented_subsequence_with_canonical_domains
     {X : PointedRiemannianSeq.{u, 0, 0} I3}

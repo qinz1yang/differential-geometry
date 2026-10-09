@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoub
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.UnitModel
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.MixedChartEquality
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
 
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
@@ -39,7 +39,7 @@ theorem unitModel_basisChart_eq_tensorChartComponentRaw (g : SmoothRiemannianMet
       tensorChartComponentRaw (I := I) (M := M) g 0 s W x ![] Jdx x := by
   rw [tensorChartComponentRaw_def, tensorChartComponentProjection_apply]
   unfold tensorTrivProj
-  rw [DifferentialGeometry.Tensor.tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_of_chartAt_eq
+  rw [DifferentialGeometry.Tensor.tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
         (I := I) (M := M) 0 s x (b := x) rfl (mem_chart_source H x)
         (W.toSection x) (dualCoordinateProductMultilinearMap (E := E) 0 ![])]
   unfold unitModel

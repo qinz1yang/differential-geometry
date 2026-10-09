@@ -81,7 +81,7 @@ theorem RetainedCoreHistory.exists_crossing_bad_point_terminal
         fun y t => G.flow.scalar t y * (t - H.time (Fin.last H.eventCount)) < θ ∧
           ¬ H.CapWindowPoint records (Fin.last H.eventCount) y t Dcap θcap :=
       fun hb => hfail ⟨η, hηpos, hb⟩
-    simp only [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.CanonicalBoundsOn, not_forall, exists_prop] at hnot
+    simp only [OrientedThreeStage.IncomingSlab.CanonicalBoundsOn, not_forall, exists_prop] at hnot
     obtain ⟨y, t, hat, ht0, htη, -, hR, ⟨hθ, hcwp⟩, hbad⟩ := hnot
     exact ⟨y, t, hat, ht0, htη, hR, hθ, hcwp, hbad⟩
 

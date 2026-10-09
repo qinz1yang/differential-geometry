@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticVolumeRatio
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.VolumeLowerBound
 

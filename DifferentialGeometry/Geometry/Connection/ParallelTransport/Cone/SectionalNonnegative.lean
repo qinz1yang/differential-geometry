@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Cones.SectionalNonnegative
+import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Endpoint
 
 set_option autoImplicit false

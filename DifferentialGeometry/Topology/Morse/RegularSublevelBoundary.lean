@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Morse.RegularLevel.Sublevel
-import DifferentialGeometry.Topology.Manifold.Boundary.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 import DifferentialGeometry.Topology.Morse.CriticalPoints
 import DifferentialGeometry.Topology.Manifold.ModelWithCorners
 import DifferentialGeometry.Topology.Manifold.InteriorBoundary

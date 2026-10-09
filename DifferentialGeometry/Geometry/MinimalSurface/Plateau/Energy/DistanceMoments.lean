@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Poincare.Lipschitz
 import DifferentialGeometry.Topology.EMetricSpace.FiniteDistanceLipschitz
-import DifferentialGeometry.Topology.LoopSpace.DiskExtensionSupport
+import DifferentialGeometry.Geometry.Measure.Area.DiskExtensionSupport
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ScalarProbe
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Lipschitz
 import Mathlib.Analysis.InnerProductSpace.Dual

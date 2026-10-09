@@ -51,6 +51,32 @@ theorem hasTopHomologyDegreeFunctional_of_punctured_subsingleton_two (x₀ : M)
       (absoluteToRelative_surjective_of_subsingleton_punctured x₀ h₂)⟩
 
 omit [IsManifold ThreeModel ∞ M] in
+theorem hasTopHomologyDegreeFunctional_iff_nontrivial_of_punctured_subsingleton_three
+    (x₀ : M) (h₃ : Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3)) :
+    HasTopHomologyDegreeFunctional M ↔ Nontrivial (IntegralHomology M 3) := by
+  have hf : Function.Injective
+      ((localIntegralHomologyEquivInt (M := M) x₀).toLinearMap.comp
+        (absoluteToRelative M ({x₀}ᶜ) 3).hom) :=
+    (localIntegralHomologyEquivInt (M := M) x₀).injective.comp
+      ((subsingleton_integralHomology_compl_singleton_three_iff_injective_absoluteToRelative
+        x₀).mp h₃)
+  constructor
+  · rintro ⟨φ, hφ⟩
+    obtain ⟨a, ha⟩ := hφ 1
+    refine ⟨0, a, fun h0 => ?_⟩
+    have hzero : φ a = 0 := by rw [← h0, map_zero]
+    rw [hzero] at ha
+    exact one_ne_zero ha.symm
+  · intro h
+    obtain ⟨a, b, hab⟩ := h
+    obtain ⟨e⟩ :=
+      DifferentialGeometry.Algebra.Module.nonempty_linearEquiv_int_of_injective_of_exists_ne_zero
+        ((localIntegralHomologyEquivInt (M := M) x₀).toLinearMap.comp
+          (absoluteToRelative M ({x₀}ᶜ) 3).hom) hf
+        ⟨a - b, fun h0 => hab (sub_eq_zero.mp h0)⟩
+    exact HasTopHomologyDegreeFunctional.of_linearEquiv e
+
+omit [IsManifold ThreeModel ∞ M] in
 theorem nonempty_linearEquiv_int_iff_hasTopHomologyDegreeFunctional
     (x₀ : M) (h₃ : Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3)) :
     Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ) ↔ HasTopHomologyDegreeFunctional M := by
@@ -74,13 +100,6 @@ theorem nonempty_linearEquiv_int_iff_nontrivial_of_punctured_subsingleton_three
     ((localIntegralHomologyEquivInt (M := M) x₀).injective.comp
       ((subsingleton_integralHomology_compl_singleton_three_iff_injective_absoluteToRelative
         x₀).mp h₃))
-
-omit [IsManifold ThreeModel ∞ M] in
-theorem hasTopHomologyDegreeFunctional_iff_nontrivial_of_punctured_subsingleton_three
-    (x₀ : M) (h₃ : Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3)) :
-    HasTopHomologyDegreeFunctional M ↔ Nontrivial (IntegralHomology M 3) := by
-  exact (nonempty_linearEquiv_int_iff_hasTopHomologyDegreeFunctional x₀ h₃).symm.trans
-    (nonempty_linearEquiv_int_iff_nontrivial_of_punctured_subsingleton_three x₀ h₃)
 
 omit [IsManifold ThreeModel ∞ M] in
 theorem nonempty_linearEquiv_int_of_punctured_subsingleton (x₀ : M)
@@ -125,6 +144,12 @@ theorem nonempty_linearEquiv_int_iff_exists_ne_zero_generator (x₀ : M)
     (h₃ : Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3)) :
     Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ) ↔
       ∃ z : IntegralHomology M 3, z ≠ 0 ∧ Function.Bijective (fun k : ℤ => k • z) := by
+  have hf : Function.Injective
+      ((localIntegralHomologyEquivInt (M := M) x₀).toLinearMap.comp
+        (absoluteToRelative M ({x₀}ᶜ) 3).hom) :=
+    (localIntegralHomologyEquivInt (M := M) x₀).injective.comp
+      ((subsingleton_integralHomology_compl_singleton_three_iff_injective_absoluteToRelative
+        x₀).mp h₃)
   constructor
   · rintro ⟨e⟩
     refine ⟨e.symm 1, fun h0 => ?_, ?_⟩
@@ -134,8 +159,9 @@ theorem nonempty_linearEquiv_int_iff_exists_ne_zero_generator (x₀ : M)
       rw [e.apply_symm_apply 1]
       exact isUnit_one
   · rintro ⟨z, hz, -⟩
-    exact (nonempty_linearEquiv_int_iff_nontrivial_of_punctured_subsingleton_three
-      x₀ h₃).mpr ⟨0, z, fun h => hz h.symm⟩
+    exact DifferentialGeometry.Algebra.Module.nonempty_linearEquiv_int_of_injective_of_exists_ne_zero
+      ((localIntegralHomologyEquivInt (M := M) x₀).toLinearMap.comp
+        (absoluteToRelative M ({x₀}ᶜ) 3).hom) hf ⟨z, hz⟩
 
 omit [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M] in
 theorem exists_ne_zero_topHomologyClass_of_isSphereHurewiczIsomorphism

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Gradient.ScaledChartDifferential
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 
 noncomputable section

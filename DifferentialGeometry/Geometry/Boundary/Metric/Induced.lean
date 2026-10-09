@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Boundary.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.Hom
 import DifferentialGeometry.Analysis.FiniteDimensional.Coercivity

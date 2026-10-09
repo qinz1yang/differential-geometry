@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Length
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.FundamentalClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildLengthComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseFundamentalClass
 
 noncomputable section
 
@@ -40,7 +40,7 @@ end ComparisonSupport
 
 theorem rfs_child_comparison
     (hSC : ∀ p : ConnectedComponents (H.stage i.castSucc).Carrier,
-      SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier) :
+      SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
     (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧

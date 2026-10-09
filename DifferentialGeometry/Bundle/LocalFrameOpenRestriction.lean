@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.LocalFrame.Pushforward
+import DifferentialGeometry.Bundle.LocalFramePullback
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 import Mathlib.Geometry.Manifold.VectorField.Pullback
 

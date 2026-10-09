@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ImageLine
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Subbundle.Orthogonal
+import DifferentialGeometry.Geometry.Metric.SmoothSubbundle
 
 set_option autoImplicit false
 

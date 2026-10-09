@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Restriction
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 
 
 noncomputable section
@@ -22,7 +22,7 @@ theorem laplacian_restrictOpen_of_contMDiffOn
     laplacian (Connection.LeviCivita (g.restrictOpen U)) (g.restrictOpen U)
       (fun y : U => f (y : M)) x =
         laplacian (Connection.LeviCivita g) g f (x : M) := by
-  obtain ⟨F, hF, heq⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn hV hxV hf
+  obtain ⟨F, hF, heq⟩ := exists_smooth_germ hV hxV hf
   have hinc : ContMDiffAt I I ∞ (Subtype.val : U → M) x :=
     (contMDiff_subtype_val (I := I) (U := U)).contMDiffAt
   have hfU : ContMDiffAt I 𝓘(ℝ, ℝ) ∞ (fun y : U => f (y : M)) x :=

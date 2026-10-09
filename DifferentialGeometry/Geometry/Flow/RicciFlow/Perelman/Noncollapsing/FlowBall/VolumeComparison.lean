@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.MetricComparison
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
+import DifferentialGeometry.Geometry.Metric.Completeness
 
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.FlowMetricBall

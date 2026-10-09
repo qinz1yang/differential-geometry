@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeck
-import DifferentialGeometry.Geometry.Metric.Construction.Immersion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ImmersionInducedMetric
 import DifferentialGeometry.Geometry.Metric.Scaling
 
 set_option autoImplicit false

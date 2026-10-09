@@ -1,5 +1,4 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
-import Mathlib.Geometry.Manifold.IntegralCurve.UniformTime
 
 
 namespace DifferentialGeometry.Analysis.ODE
@@ -17,7 +16,7 @@ omit [FiniteDimensional ℝ E] in
 omit [CompleteSpace E] in
 theorem flowValid_chain_step
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hXC1 : autonomizedFieldJointC1 (I := I) X)
+    (hXC1 : AutonomizedFieldJointC1 (I := I) X)
     (Φ : ℝ → M → M) {lo hi : ℝ}
     (hΦ0 : ∀ x : M, Φ 0 x = x)
     (hΦsm : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.1 q.2)
@@ -441,7 +440,7 @@ private theorem autonomized_time_comp_eq_self
 omit [FiniteDimensional ℝ E] [CompactSpace M] [CompleteSpace E] [I.Boundaryless] in
 private theorem global_bareFlow_of_uniform_localExistence
     (Xt : ℝ → ∀ x : M, TangentSpace I x)
-    (hXtC1 : autonomizedFieldJointC1 (I := I) Xt)
+    (hXtC1 : AutonomizedFieldJointC1 (I := I) Xt)
     {ε : ℝ} (hε : 0 < ε)
     (huniform : ∀ pt : ℝ × M, ∃ γ : ℝ → ℝ × M, γ 0 = pt ∧
       IsMIntegralCurveOn γ (autonomizedFlowVF Xt) (Set.Ioo (-ε) ε)) :
@@ -465,7 +464,7 @@ private theorem cutoffFlow_slice_contMDiff
     (Xt : ℝ → ∀ x : M, TangentSpace I x)
     (hXt_sm : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)))
-    (hXtC1 : autonomizedFieldJointC1 (I := I) Xt)
+    (hXtC1 : AutonomizedFieldJointC1 (I := I) Xt)
     (Φ : ℝ → M → M) (hΦ0 : ∀ x : M, Φ 0 x = x)
     (hΦbare : ∀ t : ℝ, ∀ x : M, HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ s x) t
       ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φ t x))))
@@ -583,7 +582,7 @@ private theorem cutoffFlow_jointContMDiffOn
     (Xt : ℝ → ∀ x : M, TangentSpace I x)
     (hXt_sm : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)))
-    (hXtC1 : autonomizedFieldJointC1 (I := I) Xt)
+    (hXtC1 : AutonomizedFieldJointC1 (I := I) Xt)
     (Φ : ℝ → M → M) (hΦ0 : ∀ x : M, Φ 0 x = x)
     (hΦbare : ∀ t : ℝ, ∀ x : M, HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ s x) t
       ((1 : ℝ →L[ℝ] ℝ).smulRight (Xt t (Φ t x))))
@@ -680,7 +679,7 @@ theorem global_flow_on_closed_interval_of_closed_manifold
   have hXt_sm : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)) :=
     cutoffField_contMDiff X hX (-1) (T + 1)
-  have hXtC1 : autonomizedFieldJointC1 (I := I) Xt :=
+  have hXtC1 : AutonomizedFieldJointC1 (I := I) Xt :=
     autonomizedFieldJointC1_of_contMDiff Xt hXt_sm
   have hXt_eq : ∀ s ∈ Set.Icc (-1 : ℝ) (T + 1), ∀ x : M, Xt s x = X s x := by
     intro s hs x
@@ -707,7 +706,7 @@ private theorem autonomizedFlow_slice_contMDiff
     (Xt : ℝ → ∀ x : M, TangentSpace I x)
     (hXt_sm : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)))
-    (hXtC1 : autonomizedFieldJointC1 (I := I) Xt)
+    (hXtC1 : AutonomizedFieldJointC1 (I := I) Xt)
     (ψ : (ℝ × M) → ℝ → (ℝ × M))
     (hψ0 : ∀ p : ℝ × M, ψ p 0 = p)
     (hψcurve : ∀ p : ℝ × M, IsMIntegralCurve (ψ p) (autonomizedFlowVF Xt))
@@ -849,7 +848,7 @@ theorem global_flow_with_reverse_on_closed_interval_of_closed_manifold
   have hXt_sm : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (Xt q.1 q.2) : TangentBundle I M)) :=
     cutoffField_contMDiff X hX (-1) (T + 1)
-  have hXtC1 : autonomizedFieldJointC1 (I := I) Xt :=
+  have hXtC1 : AutonomizedFieldJointC1 (I := I) Xt :=
     autonomizedFieldJointC1_of_contMDiff Xt hXt_sm
   have hXt_eq : ∀ s ∈ Set.Icc (-1 : ℝ) (T + 1), ∀ x : M, Xt s x = X s x := by
     intro s hs x

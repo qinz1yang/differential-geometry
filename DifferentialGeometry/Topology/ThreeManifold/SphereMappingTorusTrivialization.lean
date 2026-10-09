@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorus.SmoothStructure
+import DifferentialGeometry.Topology.ThreeManifold.SphereMappingTorusSmooth
 import DifferentialGeometry.Topology.Manifold.SphereDiffeomorphDegree
 import DifferentialGeometry.Topology.Manifold.AddCircle.Circle
 

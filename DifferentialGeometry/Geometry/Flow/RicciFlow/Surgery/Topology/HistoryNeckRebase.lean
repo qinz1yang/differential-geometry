@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckRebaseS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckCylindricalChartBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import Mathlib.Topology.Algebra.GroupWithZero
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Topology.Constructions.SumProd

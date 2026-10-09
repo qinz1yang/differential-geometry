@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.CurvatureDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.SmoothAlongExpansion
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Minimality.InitialSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Matching.SameChartMomentum
-import DifferentialGeometry.Analysis.Sobolev.Time.Chart.OverlapDerivative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.OverlapDerivative
 import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 

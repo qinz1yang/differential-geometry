@@ -23,14 +23,14 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 def CurveShorteningLeastAreaAttainment (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∃ u : Width.DiskCompetitor (B.family.metric t) (γ t),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 def CurveShorteningLipschitzBoundaryIsotopy (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∃ φ : ℝ → M → M,
     (∀ x : M, φ 0 x = x) ∧
     (∀ h : ℝ, Continuous (φ h)) ∧
@@ -43,7 +43,7 @@ def CurveShorteningLipschitzBoundaryIsotopy (B : RicciBackground (I := I) (M := 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty
   [SigmaCompactSpace M] in
 def CurveShorteningTransportedAreaVariation (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∀ u : Width.DiskCompetitor (B.family.metric t) (γ t),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t →
     ∀ φ : ℝ → M → M,
@@ -64,7 +64,7 @@ def CurveShorteningTransportedAreaVariation (B : RicciBackground (I := I) (M := 
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningLeastAreaAttainment_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     CurveShorteningLeastAreaAttainment (I := I) (M := M) B γ := by
   intro t ht
@@ -73,7 +73,7 @@ theorem curveShorteningLeastAreaAttainment_of_minimalDiskAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningLipschitzBoundaryIsotopy_of_minimalDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : MinimalDiskAreaVariation (I := I) (M := M) B γ) :
     CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ := by
   intro t ht
@@ -82,7 +82,7 @@ theorem curveShorteningLipschitzBoundaryIsotopy_of_minimalDiskAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem minimalDiskAreaVariation_of_attainment_and_areaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hmin : CurveShorteningLeastAreaAttainment (I := I) (M := M) B γ)
     (hiso : CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ)
     (hvar : CurveShorteningTransportedAreaVariation (I := I) (M := M) B γ) :
@@ -95,9 +95,9 @@ theorem minimalDiskAreaVariation_of_attainment_and_areaVariation
 
 omit hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningLeastAreaAttainment_of_plateauDiskDensity
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hslice : ∀ t ∈ Ico a b, ∃ (u : Width.SmoothDisk (I := I) (Q := M))
         (σ : Width.SmoothWeaklyMonotoneCircleMap),
       (∀ θ : Surgery.Topology.Circle, u.map (Width.diskBoundary θ) = γ t (σ.map θ)) ∧
@@ -113,20 +113,20 @@ theorem curveShorteningLeastAreaAttainment_of_plateauDiskDensity
 omit hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningLeastAreaAttainment_constLoops
     (B : RicciBackground (I := I) (M := M) D a b) (q : M) :
-    CurveShorteningLeastAreaAttainment (I := I) (M := M) B (fun _ => DifferentialGeometry.Topology.FreeLoop.constants q) := by
+    CurveShorteningLeastAreaAttainment (I := I) (M := M) B (fun _ => constantLoops q) := by
   intro t ht
   refine ⟨Width.constantDiskCompetitor (B.family.metric t) q, ?_⟩
   have hD : Width.diskArea (B.family.metric t)
       (Width.constantDiskCompetitor (B.family.metric t) q).1.map = 0 :=
     Width.diskArea_const (B.family.metric t) q
-  have hA : loopFamilyLeastArea B.family.metric (fun _ => DifferentialGeometry.Topology.FreeLoop.constants q) t = 0 := by
-    change sInf (Width.competitorAreas (B.family.metric t) (DifferentialGeometry.Topology.FreeLoop.constants q)) = 0
+  have hA : loopFamilyLeastArea B.family.metric (fun _ => constantLoops q) t = 0 := by
+    change sInf (Width.competitorAreas (B.family.metric t) (constantLoops q)) = 0
     exact Width.leastArea_const (B.family.metric t) q
   rw [hD, hA]
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningLipschitzBoundaryIsotopy_of_subsingleton
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     [Subsingleton M] :
     CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ := by
   intro t ht
@@ -140,7 +140,7 @@ theorem curveShorteningLipschitzBoundaryIsotopy_of_subsingleton
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem not_curveShorteningTransportedAreaVariation_of_eventually_eq
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     {t : ℝ} (ht : t ∈ Ico a b)
     (hmin : ∃ u : Width.DiskCompetitor (B.family.metric t) (γ t),
       Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t)
@@ -169,7 +169,7 @@ theorem not_curveShorteningTransportedAreaVariation_of_eventually_eq
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningTransportedAreaVariation_of_eventually_eq_of_nonneg
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hRHS : ∀ t ∈ Ico a b, 0 ≤ -2 * Real.pi - scalarMinimum B.family t *
         loopFamilyLeastArea B.family.metric γ t / 2 +
         (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)

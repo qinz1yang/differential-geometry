@@ -1,9 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceRegion
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellPush
 import DifferentialGeometry.Topology.ConvexFrontier
-import DifferentialGeometry.Topology.Connected.RegularClosed
+import DifferentialGeometry.Topology.RegularClosed
 
 open Set
 

@@ -85,7 +85,7 @@ theorem exists_cutoff_negative_minimum_eigenvalue_lower_support
         -φ t x * inner ℝ
           ((derivWithin (fun s => A s x) (Icc 0 T) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
-            _root_.CovariantDerivative.hom I M F V F V cov cov
+            HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
               (fun y => A t y) x (X t x)) (v x)) (v x) -
         ν * parabolicOperatorWithDrift (I := I) G T X φ t x +
         2 * (G.metric t).inner x (gradientAt (I := I) G t (φ t) x)
@@ -228,7 +228,7 @@ theorem exists_cutoff_negative_minimum_eigenvalue_parabolic_inequality_at_spacet
       φ t x ^ 2 * inner ℝ
           ((derivWithin (fun s => A s x) (Icc 0 t) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov (fun y => A t y) x -
-            _root_.CovariantDerivative.hom I M F V F V cov cov
+            HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V cov cov
               (fun y => A t y) x (X t x)) (v x)) (v x) +
         ν * φ t x * parabolicOperatorWithDrift (I := I) G t X φ t x +
         2 * ν * (G.metric t).inner x (gradientAt (I := I) G t (φ t) x)

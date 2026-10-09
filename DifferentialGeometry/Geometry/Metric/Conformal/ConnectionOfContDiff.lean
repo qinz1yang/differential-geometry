@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Evaluation
+import DifferentialGeometry.Geometry.Metric.Evaluation
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszul
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.Section

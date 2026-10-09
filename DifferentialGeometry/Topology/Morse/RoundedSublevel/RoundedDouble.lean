@@ -8,6 +8,7 @@ import Mathlib.Geometry.Manifold.Algebra.Monoid
 
 namespace DifferentialGeometry.Topology.RoundedDouble
 
+set_option linter.unusedSectionVars false
 
 open scoped Manifold ContDiff
 
@@ -15,13 +16,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M]
     [ChartedSpace H M] (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
 
-omit [IsManifold I ∞ M] in
 theorem contMDiff_height {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g) :
     ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞ (fun p : M × ℝ => g p.1 + p.2 ^ 2) := by
   exact (hg.comp contMDiff_fst).add
     ((show ContDiff ℝ ∞ (fun t : ℝ => t ^ 2) by fun_prop).contMDiff.comp contMDiff_snd)
 
-omit [IsManifold I ∞ M] in
 theorem isCriticalPointAt_iff_mvfderiv_eq_zero {g : M → ℝ} (x : M) :
     DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x ↔ mvfderiv I g x = 0 := by
   change mfderiv I 𝓘(ℝ, ℝ) g x = 0 ↔ _
@@ -34,7 +33,6 @@ theorem isCriticalPointAt_iff_mvfderiv_eq_zero {g : M → ℝ} (x : M) :
     apply (NormedSpace.fromTangentSpace (𝕜 := ℝ) (g x)).injective
     exact congrArg (fun L : TangentSpace I x →L[ℝ] ℝ => L v) h
 
-omit [IsManifold I ∞ M] in
 theorem mvfderiv_height {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g) (p : M × ℝ) :
     mvfderiv (I.prod 𝓘(ℝ, ℝ)) (fun p : M × ℝ => g p.1 + p.2 ^ 2) p =
       (mvfderiv I g p.1).comp (mfderiv (I.prod 𝓘(ℝ, ℝ)) I Prod.fst p) +
@@ -53,7 +51,6 @@ theorem mvfderiv_height {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g) 
   congr 2
   ring
 
-omit [IsManifold I ∞ M] in
 theorem isCriticalPointAt_height_iff {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g)
     (p : M × ℝ) :
     DifferentialGeometry.Topology.Morse.IsCriticalPointAt (I.prod 𝓘(ℝ, ℝ)) (fun p : M × ℝ => g p.1 + p.2 ^ 2) p ↔
@@ -106,7 +103,6 @@ theorem isCriticalPointAt_height_iff {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ,
     rw [mvfderiv_height I hg, hg0, ht, mul_zero, zero_smul, add_zero]
     exact ContinuousLinearMap.zero_comp _
 
-omit [IsManifold I ∞ M] in
 theorem regular_height_zero {g : M → ℝ} (hg : ContMDiff I 𝓘(ℝ, ℝ) ∞ g)
     (hreg : ∀ x, g x = 0 → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x) :
     ∀ p : M × ℝ, g p.1 + p.2 ^ 2 = 0 →

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareSta
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardModels
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere
 
 set_option autoImplicit false
@@ -40,18 +40,18 @@ theorem componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoun
 
 theorem MetricCutCapEvent.poincareStandardDiscarded_of_discardedComponentsRoundOrSphereProduct
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
-    (h : DiscardedComponentsRoundOrSphereProduct E.discarded) :
+    (h : DiscardedComponentsRoundOrSphereProduct E.discarded.toClosedOrientedManifold) :
     E.poincareStandardDiscarded :=
   MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     E
     (componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoundOrSphereProduct
-      E.discarded h)
+      E.discarded.toClosedOrientedManifold h)
 
 def RetainedCoreObservationTower.discardedSideGeometry {P : OrientedThreeStage.{u}}
     {g : P.Metric} (T : RetainedCoreObservationTower P g) : Prop :=
   ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
     DiscardedComponentsRoundOrSphereProduct
-      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded
+      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
 
 theorem RetainedCoreObservationTower.hasPoincareStandardDiscarded_of_discardedSideGeometry
     {P : OrientedThreeStage.{u}} {g : P.Metric} (T : RetainedCoreObservationTower P g)
@@ -93,7 +93,8 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 theorem exists_poincare_controlled_extinction_of_retainedCoreTower_discardedSideGeometry
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (T : RetainedCoreObservationTower (M.toClosedOrientedManifold) g)
+    (T : RetainedCoreObservationTower (OrientedThreeStage.ofClosedOrientedManifold
+      M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
     (h : T.discardedSideGeometry)
     (hextinct : towerExtinct T.toObservationTower) :

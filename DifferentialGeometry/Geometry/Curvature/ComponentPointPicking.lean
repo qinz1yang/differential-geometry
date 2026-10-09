@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RescaledPointPicking
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import Mathlib.Topology.Maps.Proper.Basic

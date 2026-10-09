@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
-import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood.EdgeTrace
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeTraces
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleEndpoints
 import DifferentialGeometry.Topology.PiecewiseLinear.UpperLinkBoundary
 

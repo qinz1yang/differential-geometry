@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Collar.CrossedBicollars
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCircleCore
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.Connected.ClosedCover
 

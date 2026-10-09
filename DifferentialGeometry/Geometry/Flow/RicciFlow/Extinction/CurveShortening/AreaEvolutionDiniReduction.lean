@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {D : RealTimeInterval} {a b : ℝ}
 
 def CurveShorteningTransportedAreaDiniBound (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∀ u : Width.DiskCompetitor (B.family.metric t) (γ t),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t →
     ∀ φ : ℝ → M → M,
@@ -40,7 +40,7 @@ def CurveShorteningTransportedAreaDiniBound (B : RicciBackground (I := I) (M := 
             (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t + ε
 
 def LoopFamilyDiskAreaDiniVariation (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) : Prop :=
+    (γ : ℝ → ContinuousFreeLoop M) : Prop :=
   ∀ t ∈ Ico a b, ∃ (u : Width.DiskCompetitor (B.family.metric t) (γ t))
       (φ : ℝ → M → M),
     Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t ∧
@@ -60,7 +60,7 @@ def LoopFamilyDiskAreaDiniVariation (B : RicciBackground (I := I) (M := M) D a b
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningTransportedAreaDiniBound_of_transportedAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : CurveShorteningTransportedAreaVariation (I := I) (M := M) B γ) :
     CurveShorteningTransportedAreaDiniBound (I := I) (M := M) B γ := by
   intro t ht u hu φ hid hcont htraj hlip ε hε
@@ -77,7 +77,7 @@ theorem curveShorteningTransportedAreaDiniBound_of_transportedAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyDiskAreaDiniVariation_of_loopFamilyDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : LoopFamilyDiskAreaVariation (I := I) (M := M) B γ) :
     LoopFamilyDiskAreaDiniVariation (I := I) (M := M) B γ := by
   intro t ht
@@ -96,7 +96,7 @@ theorem loopFamilyDiskAreaDiniVariation_of_loopFamilyDiskAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem curveShorteningTransportedAreaDiniBound_of_eventually_eq_of_nonneg
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hRHS : ∀ t ∈ Ico a b, 0 ≤ -2 * Real.pi - scalarMinimum B.family t *
         loopFamilyLeastArea B.family.metric γ t / 2 +
         (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)
@@ -118,7 +118,7 @@ theorem curveShorteningTransportedAreaDiniBound_of_eventually_eq_of_nonneg
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem not_curveShorteningTransportedAreaDiniBound_of_eventually_eq
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     {t : ℝ} (ht : t ∈ Ico a b)
     (hmin : ∃ u : Width.DiskCompetitor (B.family.metric t) (γ t),
       Width.diskArea (B.family.metric t) u.1.map = loopFamilyLeastArea B.family.metric γ t)
@@ -163,7 +163,7 @@ theorem not_curveShorteningTransportedAreaDiniBound_of_eventually_eq
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_embedded_area_of_loopFamilyDiskAreaDiniVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hvar : LoopFamilyDiskAreaDiniVariation (I := I) (M := M) B γ) :
     ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
       (loopFamilyLeastArea B.family.metric γ (t + h) -
@@ -210,10 +210,10 @@ theorem rfs_csf_embedded_area_of_loopFamilyDiskAreaDiniVariation
 
 omit [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_loopFamilyDiskAreaDiniVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hvar : LoopFamilyDiskAreaDiniVariation (I := I) (M := M) B γ) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
       (∀ s ∈ Icc a b, ∀ t ∈ Icc s b,
@@ -231,10 +231,10 @@ theorem rfs_csf_immersed_area_of_loopFamilyDiskAreaDiniVariation
 
 omit [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_loopFamilyDiskAreaDiniVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hvar : LoopFamilyDiskAreaDiniVariation (I := I) (M := M) B γ) :
     LoopFamilyWindowComparison (I := I) (M := M) B γ :=
   (rfs_csf_immersed_area_of_slope B γ hγ hi hctr
@@ -242,10 +242,10 @@ theorem loopFamilyWindowComparison_of_loopFamilyDiskAreaDiniVariation
 
 omit [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_loopFamilyDiskAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hvar : LoopFamilyDiskAreaVariation (I := I) (M := M) B γ) :
     LoopFamilyWindowComparison (I := I) (M := M) B γ :=
   loopFamilyWindowComparison_of_loopFamilyDiskAreaDiniVariation B γ hγ hi hctr
@@ -253,7 +253,7 @@ theorem loopFamilyWindowComparison_of_loopFamilyDiskAreaVariation
 
 omit hBoundary hCompact hNonempty [SigmaCompactSpace M] in
 theorem loopFamilyDiskAreaDiniVariation_of_attainment_and_transportedAreaDiniBound
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hmin : CurveShorteningLeastAreaAttainment (I := I) (M := M) B γ)
     (hiso : CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ)
     (hvar : CurveShorteningTransportedAreaDiniBound (I := I) (M := M) B γ) :
@@ -275,10 +275,10 @@ theorem loopFamilyDiskAreaDiniVariation_of_attainment_and_transportedAreaDiniBou
 
 omit [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_attainment_and_transportedAreaDiniBound
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hmin : CurveShorteningLeastAreaAttainment (I := I) (M := M) B γ)
     (hiso : CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ)
     (hvar : CurveShorteningTransportedAreaDiniBound (I := I) (M := M) B γ) :
@@ -289,10 +289,10 @@ theorem loopFamilyWindowComparison_of_attainment_and_transportedAreaDiniBound
 
 omit [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_attainment_and_transportedAreaVariation
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hmin : CurveShorteningLeastAreaAttainment (I := I) (M := M) B γ)
     (hiso : CurveShorteningLipschitzBoundaryIsotopy (I := I) (M := M) B γ)
     (hvar : CurveShorteningTransportedAreaVariation (I := I) (M := M) B γ) :
@@ -303,10 +303,10 @@ theorem loopFamilyWindowComparison_of_attainment_and_transportedAreaVariation
 
 omit [SigmaCompactSpace M] in
 theorem not_loopFamilyDiskAreaDiniVariation_of_static_family
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hstatic : ∀ t, B.family.metric t = B.family.metric a)
     (hfixed : ∀ t, γ t = γ a)
     (hErr : (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) a = 0)
@@ -318,10 +318,10 @@ theorem not_loopFamilyDiskAreaDiniVariation_of_static_family
 
 omit [SigmaCompactSpace M] in
 theorem loopFamilyWindowComparison_of_plateauDiskDensity_of_boundaryIsotopy_of_areaDiniBound
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hslice : ∀ t ∈ Ico a b, ∃ (u : Width.SmoothDisk (I := I) (Q := M))
         (σ : Width.SmoothWeaklyMonotoneCircleMap),
       (∀ θ : Surgery.Topology.Circle, u.map (Width.diskBoundary θ) = γ t (σ.map θ)) ∧

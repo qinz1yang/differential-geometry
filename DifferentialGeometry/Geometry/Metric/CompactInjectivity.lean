@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.InjectivityRadius.Intrinsic
+import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Intrinsic
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness
 

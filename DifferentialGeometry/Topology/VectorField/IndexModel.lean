@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.VectorField.Index.Basic
+import DifferentialGeometry.Topology.VectorField.Index
 
 set_option autoImplicit false
 open Bundle Filter Set

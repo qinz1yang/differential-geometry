@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 
 noncomputable section
 
@@ -44,7 +44,7 @@ theorem laplacian_eq_chartVossWeyl_of_contMDiffOn
     (hU : IsOpen U) (hxU : x ∈ U) (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U)
     (hx : x ∈ (chartAt H a).source) :
     laplacian (Connection.LeviCivita g) g f x = chartVossWeylLaplacian g a f x := by
-  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn hU hxU hf
+  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ hU hxU hf
   calc
     laplacian (Connection.LeviCivita g) g f x =
         laplacian (Connection.LeviCivita g) g F x :=

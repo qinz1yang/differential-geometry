@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.StereographicClosedBall
 import DifferentialGeometry.Topology.Manifold.StereographicCylinder
-import DifferentialGeometry.Geometry.Metric.Euclidean.PolarCoordinates
+import DifferentialGeometry.Geometry.Metric.PolarCoordinates
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SphereUnitFilling
 import Mathlib.Geometry.Manifold.Instances.Icc
 

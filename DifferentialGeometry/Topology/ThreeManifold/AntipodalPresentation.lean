@@ -113,18 +113,18 @@ private abbrev E3 := EuclideanSpace ℝ (Fin 3)
 private abbrev E4 := EuclideanSpace ℝ (Fin 4)
 private abbrev S3 := Metric.sphere (0 : E4) 1
 
-theorem isStandardConnectedSum_of_antipodal_presentation
+theorem isPoincareStandard_of_antipodal_presentation
     {Z : Type u} [TopologicalSpace Z] [ChartedSpace E3 Z]
     (p : S3 → Z) (hp : IsLocalDiffeomorph (𝓡 3) (𝓡 3) ∞ p)
     (hsurj : Surjective p)
     (hfibers : ∀ x y : S3,
       p x = p y ↔ x = y ∨ (x : E4) = -(y : E4)) :
-    isStandardConnectedSum Z := by
+    isPoincareStandard Z := by
   obtain ⟨e, _, _⟩ := SphericalSpaceFormGroup.exists_antipodal_diffeomorph_of_presentation
     p hp hsurj hfibers
   let L := ClosedOrientedManifold.uliftOrientedDiffeomorph
     SphericalSpaceFormGroup.antipodal.manifold.toClosedOrientedManifold
-  exact isStandardConnectedSum_of_diffeomorph (e.symm.trans L.val)
-    isStandardConnectedSum_projectiveThreeSpaceLift
+  exact isPoincareStandard_of_diffeomorph (e.symm.trans L.val)
+    isPoincareStandard_projectiveThreeSpaceLift
 
 end DifferentialGeometry.Topology

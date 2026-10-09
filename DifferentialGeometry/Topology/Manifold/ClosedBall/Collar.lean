@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.ClosedBall
 import DifferentialGeometry.Topology.Manifold.HalfCollarExtension
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 
 set_option autoImplicit false
 noncomputable section

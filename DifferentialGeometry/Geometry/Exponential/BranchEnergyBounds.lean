@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Inverse.BranchLaplacian
+import DifferentialGeometry.Geometry.Comparison.Volume.RadialTransport
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseBranch
 
 noncomputable section

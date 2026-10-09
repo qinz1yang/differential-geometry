@@ -1,0 +1,417 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HrestStageSeedVolP6F4
+
+/-!
+# HP3 stage 的 gate 孪生：hfootE″ 的 gate 块在 joint prefix 上实付（O-CH11-FOOT4 G4，后缀 `_P6F4`）
+
+`hbd_stage_jointPrefix_P6HP3` 逐字，`hfootE` 槽 → `hfootE″`（`∀ Aseed > 1` + `hseedVol` + gate 块，与
+`P6TerminalBCDGateP6F4.lean` 逐字同一行）。在 `Aseed := A` 处由 joint prefix 实付：
+* `hseedVol(A)` ⇐ `hvolo`（`seedVol_of_orig_P6F4`）；
+* `2 < Tn` ⇐ `htime : 2r² < Tno`（`tn_gt_two_of_orig_P6F4`）；
+* nr 兼容 ⇐ `hQρ : R ≤ ((q.rescale c).nr(Tn)²)⁻¹` + `hanti` + `R ≥ 1`（`nrGate_of_rescale_P6F4`）；
+* top gate `hdσ` = joint prefix `hdistσ` 逐字。
+其余 binder 与证明逐字。陈述由 build-logs/scratch/O-CH11-FOOT4/gen/gen_g4b.py 生成。
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Filter Function
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open DifferentialGeometry.Geometry.Collapse
+open scoped Manifold NNReal Topology ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+open Perelman.CanonicalNeighborhood.FiniteHorn
+
+namespace ObservedHistory
+
+/-- **seed 尺度 gate（`_P6F4`，PROVED）**：joint prefix `2r² < Tno` ⇒ 重标度 `2 < Tn`（`Tn = Tno/r²`）。 -/
+theorem tn_gt_two_of_orig_P6F4 (H : RetainedCoreHistory.{u}) {r : ℝ} (hc : 0 < r ^ 2)
+    {v : Icc (0 : ℝ) H.toHistory.horizon} (h : 2 * r ^ 2 < (v : ℝ)) :
+    2 < (H.rescaleTime_P6X hc v : ℝ) := by
+  change 2 < (v : ℝ) / r ^ 2
+  rw [lt_div_iff₀ hc]
+  linarith
+
+/-- **nr gate（`_P6F4`，PROVED）**：joint prefix `R ≤ ((q.rescale c).nr(Tn)²)⁻¹`、`R ≥ 1`、`Tn ≥
+  2`、`hanti` ⇒
+FRESH 的 nr 兼容（`nr = q.neckRadius (4·/3)` 在重标度 history 上）：`Tn − 1/2 ≤ w ≤ Tn` ⇒
+`q.neckRadius (4·(c w)/3)/√c ≤ 1`（`4cw/3 ≥ c·Tn` + 单调 + `(q.rescale c).nr(Tn) ≤ 1`）。 -/
+theorem nrGate_of_rescale_P6F4 {q : CutoffParameters} (hanti : AntitoneOn q.neckRadius (Ici 0))
+    {c : ℝ} (hc : 0 < c) {Tn R : ℝ} (hTn : 2 ≤ Tn) (hR1 : 1 ≤ R)
+    (hR : R ≤ ((q.rescale_P6N c hc).neckRadius Tn ^ 2)⁻¹) :
+    ∀ w : ℝ, Tn - 1 ^ 2 / 2 ≤ w → w ≤ Tn →
+      q.neckRadius (4 * (c * w) / 3) / Real.sqrt c ≤ 1 := by
+  intro w hw1 _
+  have hpos : 0 < (q.rescale_P6N c hc).neckRadius Tn :=
+    (q.rescale_P6N c hc).neckRadius_pos Tn (by linarith)
+  have hle1 : (q.rescale_P6N c hc).neckRadius Tn ≤ 1 := by
+    have h2 : 1 ≤ ((q.rescale_P6N c hc).neckRadius Tn ^ 2)⁻¹ := le_trans hR1 hR
+    have hp2 : 0 < (q.rescale_P6N c hc).neckRadius Tn ^ 2 := by positivity
+    have h3 := mul_le_mul_of_nonneg_left h2 hp2.le
+    rw [mul_one, mul_inv_cancel₀ hp2.ne'] at h3
+    nlinarith
+  have hw0 : 0 ≤ w := by linarith
+  have hmono : q.neckRadius (4 * (c * w) / 3) ≤ q.neckRadius (c * Tn) :=
+    hanti (Set.mem_Ici.mpr (mul_nonneg hc.le (by linarith)))
+      (Set.mem_Ici.mpr (by positivity))
+      (by nlinarith [mul_nonneg hc.le (show 0 ≤ 4 * w - 3 * Tn by linarith)])
+  have hrw : (q.rescale_P6N c hc).neckRadius Tn = q.neckRadius (c * Tn) / Real.sqrt c := rfl
+  calc q.neckRadius (4 * (c * w) / 3) / Real.sqrt c ≤ q.neckRadius (c * Tn) / Real.sqrt c :=
+        div_le_div_of_nonneg_right hmono (Real.sqrt_nonneg c)
+    _ = (q.rescale_P6N c hc).neckRadius Tn := hrw.symm
+    _ ≤ 1 := hle1
+
+/-- **HP3 stage gate 孪生（`_P6F4`，PROVISIONAL：binder 同 HP3 stage）**：结论逐字；`hfootE` 槽 →
+`hfootE″`；`Aseed := A`，`hseedVol`、`2 < Tn`、nr 兼容、top gate 全部由 joint prefix 实付。 -/
+theorem hbd_stage_jointPrefix_gate_P6F4 {P : OrientedThreeStage.{u}} {g : P.Metric}
+    {F : GC.Interface.RawSurgery P g} {q : CutoffParameters} {T₀ Qt : ℕ → ℝ}
+    {ε C1 C2 : ℝ} {Ctime : ℝ≥0}
+    {C1f C2f m η₁ C1₁ C2₁ : ℝ} {kk : ℕ} {Ctime₁ : ℝ≥0}
+    (hcapWL : ∀ (ind : ℕ → ℕ) (c : ℕ → ℝ) (hc : ∀ k, 0 < c k),
+      let Kh : ℕ → ObservedHistory.{u} := fun k =>
+        ((F.tower.history (ind k)).rescale_P6N (c k) (hc k)).toHistory
+      ∀ i : ∀ k, Fin (Kh k).eventCount,
+        Tendsto (fun k => c k * (Kh k).time (i k).succ) atTop atTop →
+        ∀ᶠ k in atTop, ∃ (pp : CutoffParameters) (Rc : GeometricCutoffRecord (Kh k) (i k) pp),
+          ∀ (b : ((Kh k).event (i k)).RetainedBoundaryIndex) (x : ThreeBall),
+            ∃ W : SpatialCanonicalWitness ((Kh k).event (i k)).outputMetric ε C1 C2
+              ((Rc.static b).inclusion ((Rc.static b).witness.cap x)), W.capTubeHasNeckChart ε)
+    (hcenE :
+      ∀ (ind : ℕ → ℕ) (c : ℕ → ℝ) (hc : ∀ k, 0 < c k),
+        let Kh : ℕ → ObservedHistory.{u} := fun k =>
+          ((F.tower.history (ind k)).rescale_P6N (c k) (hc k)).toHistory
+        ∀ (Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier),
+          (∀ k : ℕ, (k : ℝ) + 1 ≤ c k * (Tn k : ℝ)) →
+        ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
+          (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ (2 : ℕ)) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
+          (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
+        ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
+            ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
+          (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
+          (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
+          (∀ k, R k =
+            metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
+          (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) →
+          Tendsto L atTop atTop →
+          (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime (σ k) (y k)) →
+          (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
+            (σ k : ℝ) - L k ^ (2 : ℕ) / R k ≤ (v : ℝ) →
+            ∀ z : ((Kh k).stageAt v).Carrier,
+              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
+                  ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
+                    ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
+                riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                    ((seedTrace k).point ((Kh k).activeStage (σ k))
+                      ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+                  ENNReal.ofReal (L k / Real.sqrt (R k)) →
+              4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
+              (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ (2 : ℕ) / 2 ≤ (σ k : ℝ) - T / R k) →
+          Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ (2 : ℕ) / 2))) atTop atTop →
+          Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
+        ∀ i : ∀ k, Fin (Kh k).eventCount, (∀ k, (σ k : ℝ) = (Kh k).time (i k).succ) →
+        ∀ᶠ k in atTop, ∀ (p' : ((Kh k).stage (i k).castSucc).Carrier)
+          (q : ((Kh k).stage (i k).succ).Carrier), HEq (y k) q →
+          ((Kh k).event (i k)).RegularCrossing p' q →
+          ∀ D : ((Kh k).event (i k)).BufferedFootprintData_P6ST2 p' q ε C1f C2f m kk,
+          ∀ᶠ n in atTop, ∀ (t : Icc (0 : ℝ) (Kh k).horizon) (z : ((Kh k).stageAt t).Carrier),
+            (t : ℝ) = D.v n → HEq z p' → ∀ (hav : aSeed k ≤ t) (hvt : t ≤ Tn k),
+            riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage t) t)
+                ((seedTrace k).point ((Kh k).activeStage t) ((Kh k).activeStage_mono hav)
+                  ((Kh k).activeStage_mono hvt)) z ≤
+              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                  ((seedTrace k).point ((Kh k).activeStage (σ k))
+                    ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+                ENNReal.ofReal (L k / (4 * Real.sqrt (R k))))
+    (hfootE : ∀ Aseed : ℝ, 1 < Aseed →
+      ∀ (ind : ℕ → ℕ) (c : ℕ → ℝ) (hc : ∀ k, 0 < c k),
+        let Kh : ℕ → ObservedHistory.{u} := fun k =>
+          ((F.tower.history (ind k)).rescale_P6N (c k) (hc k)).toHistory
+        ∀ (Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier),
+          (∀ k : ℕ, (k : ℝ) + 1 ≤ c k * (Tn k : ℝ)) →
+        ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
+          (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ (2 : ℕ)) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
+          (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
+          (∀ k, ENNReal.ofReal (Aseed⁻¹ * 1 ^ 3) ≤
+            riemannianVolumeMeasure ThreeModel ((Kh k).stageAt (Tn k)).Carrier
+              ((Kh k).stageMetric ((Kh k).activeStage (Tn k)) (Tn k))
+              (riemannianBallOf ((Kh k).stageMetric ((Kh k).activeStage (Tn k)) (Tn k))
+                (pT k) 1)) →
+          (∀ k, 2 < (Tn k : ℝ)) →
+          (∀ k (w : ℝ), (Tn k : ℝ) - 1 ^ 2 / 2 ≤ w → w ≤ (Tn k : ℝ) →
+            q.neckRadius (4 * (c k * w) / 3) / Real.sqrt (c k) ≤ 1) →
+        ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
+            ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
+          (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
+          (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
+          (∀ k, R k =
+            metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
+          (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) →
+          Tendsto L atTop atTop →
+          (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime (σ k) (y k)) →
+          (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
+            (σ k : ℝ) - L k ^ (2 : ℕ) / R k ≤ (v : ℝ) →
+            ∀ z : ((Kh k).stageAt v).Carrier,
+              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
+                  ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
+                    ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
+                riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                    ((seedTrace k).point ((Kh k).activeStage (σ k))
+                      ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+                  ENNReal.ofReal (L k / Real.sqrt (R k)) →
+              4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
+              (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ (2 : ℕ) / 2 ≤ (σ k : ℝ) - T / R k) →
+          Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ (2 : ℕ) / 2))) atTop atTop →
+          Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
+          (∀ᶠ k in atTop,
+            riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+                  ((Kh k).activeStage_mono (hsT k))) (y k) +
+              ENNReal.ofReal ((L k + 1) / Real.sqrt (R k)) ≤ ENNReal.ofReal ((Aseed + 3) * 1)) →
+        ∀ i : ∀ k, Fin (Kh k).eventCount, (∀ k, (σ k : ℝ) = (Kh k).time (i k).succ) →
+        ∀ᶠ k in atTop, ∀ (p' : ((Kh k).stage (i k).castSucc).Carrier)
+          (q : ((Kh k).stage (i k).succ).Carrier), HEq (y k) q →
+          ((Kh k).event (i k)).RegularCrossing p' q →
+          Nonempty (((Kh k).event (i k)).BufferedFootprintData_P6ST2 p' q ε C1f C2f m kk))
+    (htransE :
+      ∀ (ind : ℕ → ℕ) (c : ℕ → ℝ) (hc : ∀ k, 0 < c k),
+        let Kh : ℕ → ObservedHistory.{u} := fun k =>
+          ((F.tower.history (ind k)).rescale_P6N (c k) (hc k)).toHistory
+        ∀ (Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier),
+          (∀ k : ℕ, (k : ℝ) + 1 ≤ c k * (Tn k : ℝ)) →
+        ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
+          (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ (2 : ℕ)) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
+          (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
+        ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
+            ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
+          (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
+          (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
+          (∀ k, R k =
+            metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
+          (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) →
+          Tendsto L atTop atTop →
+          (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime (σ k) (y k)) →
+          (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
+            (σ k : ℝ) - L k ^ (2 : ℕ) / R k ≤ (v : ℝ) →
+            ∀ z : ((Kh k).stageAt v).Carrier,
+              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
+                  ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
+                    ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
+                riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                    ((seedTrace k).point ((Kh k).activeStage (σ k))
+                      ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+                  ENNReal.ofReal (L k / Real.sqrt (R k)) →
+              4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
+              (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
+          (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ (2 : ℕ) / 2 ≤ (σ k : ℝ) - T / R k) →
+          Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ (2 : ℕ) / 2))) atTop atTop →
+          Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
+        ∀ i : ∀ k, Fin (Kh k).eventCount, (∀ k, (σ k : ℝ) = (Kh k).time (i k).succ) →
+        ∀ᶠ k in atTop, ∀ (p' : ((Kh k).stage (i k).castSucc).Carrier)
+          (q : ((Kh k).stage (i k).succ).Carrier), HEq (y k) q →
+          ((Kh k).event (i k)).RegularCrossing p' q →
+          ∀ D : ((Kh k).event (i k)).BufferedFootprintData_P6ST2 p' q ε C1f C2f m kk,
+          (¬ ∃ W : SpatialCanonicalWitness ((Kh k).event (i k)).outputMetric ε C1 C2 q,
+            W.capTubeHasNeckChart ε) →
+          ∃ᶠ n in atTop, ¬ ∃ W : SpatialCanonicalWitness
+            (((Kh k).event (i k)).incoming.flow.base.metric (D.v n)) η₁ C1₁ C2₁ p',
+            W.capTubeHasNeckChart η₁)
+    (hrerunE8' :
+      ∀ A : ℝ, 1 < A → ∀ (ind : ℕ → ℕ),
+      let Ho : ℕ → RetainedCoreHistory.{u} := fun k => F.tower.history (ind k)
+      ∀ (Tno : ∀ k, Icc (0 : ℝ) (Ho k).toHistory.horizon)
+        (pTo : ∀ k, ((Ho k).toHistory.stageAt (Tno k)).Carrier) (r : ℕ → ℝ)
+        (hr : ∀ k, 0 < r k), (∀ k : ℕ, (k : ℝ) + 1 ≤ (Tno k : ℝ)) →
+        (∀ k, 2 * r k ^ 2 < (Tno k : ℝ)) →
+        (∀ k, GC.LongTime.hasSmallParabolicCurvature (Ho k).toHistory (Tno k) (pTo k) (r k)) →
+        (∀ k, ENNReal.ofReal (A⁻¹ * r k ^ 3) ≤ ballVolume ((Ho k).toHistory.stageMetric
+          ((Ho k).toHistory.activeStage (Tno k)) (Tno k)) (pTo k) (r k)) →
+      let c : ℕ → ℝ := fun k => r k ^ 2
+      let hc : ∀ k, 0 < c k := fun k => pow_pos (hr k) 2
+      let K : ℕ → RetainedCoreHistory.{u} := fun k => (Ho k).rescale_P6N (c k) (hc k)
+      let Kh : ℕ → ObservedHistory.{u} := fun k => (K k).toHistory
+      let Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon := fun k => (Ho k).rescaleTime_P6X (hc k) (Tno k)
+      let pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier := fun k =>
+        (Ho k).castRescale_P6X (hc k) (Tno k) (pTo k)
+      ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
+        (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ 2) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
+        (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
+        (∀ k, T₀ k ≤ c k * (aSeed k : ℝ)) →
+      ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
+          ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
+        (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
+        (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
+        (∀ k, R k =
+          metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
+        (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) → (∀ k, Qt k < R k) →
+        Tendsto L atTop atTop →
+        (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl η₁ C1₁ C2₁ Ctime₁ (σ k) (y k)) →
+        (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
+          (σ k : ℝ) - L k ^ 2 / R k ≤ (v : ℝ) →
+          ∀ z : ((Kh k).stageAt v).Carrier,
+            riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
+                ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
+                  ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
+              riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                  ((seedTrace k).point ((Kh k).activeStage (σ k))
+                    ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+                ENNReal.ofReal (L k / Real.sqrt (R k)) →
+            8 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
+            (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
+        (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
+        (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ 2 / 2 ≤ (σ k : ℝ) - T / R k) →
+        Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ 2 / 2))) atTop atTop →
+        Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
+        (∀ k, R k ≤ ((q.rescale_P6N (c k) (hc k)).neckRadius (Tn k) ^ 2)⁻¹) →
+        (∀ k, (Tn k : ℝ) - 1 ^ 2 / 2 ≤ σ k - L k ^ 2 / R k) →
+        (∀ k, y k ∈ riemannianBallOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+          ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+            ((Kh k).activeStage_mono (hsT k))) ((A + 1) * 1)) →
+        (∀ᶠ k in atTop,
+          riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+              ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+                ((Kh k).activeStage_mono (hsT k))) (y k) +
+            ENNReal.ofReal ((L k + 1) / Real.sqrt (R k)) ≤ ENNReal.ofReal ((A + 3) * 1)) →
+        (∀ k, ∃ j : Fin (Kh k).eventCount, (Kh k).time j.castSucc < (σ k : ℝ) ∧
+        (σ k : ℝ) < (Kh k).time j.succ) →
+        (∀ k : ℕ, (k : ℝ) + 1 < R k) →
+      False)
+    (hcan₁ : GC.LongTime.Ch11.HistoryCanonicalSupply_C11S F q.neckRadius η₁ C1₁ C2₁)
+    (hanti : AntitoneOn q.neckRadius (Ici 0)) (hT₀m : Monotone T₀) :
+    ∀ A : ℝ, 1 < A → ∀ (ind : ℕ → ℕ),
+    let Ho : ℕ → RetainedCoreHistory.{u} := fun k => F.tower.history (ind k)
+    ∀ (Tno : ∀ k, Icc (0 : ℝ) (Ho k).toHistory.horizon)
+      (pTo : ∀ k, ((Ho k).toHistory.stageAt (Tno k)).Carrier) (r : ℕ → ℝ)
+      (hr : ∀ k, 0 < r k), (∀ k : ℕ, (k : ℝ) + 1 ≤ (Tno k : ℝ)) →
+      (∀ k, 2 * r k ^ 2 < (Tno k : ℝ)) →
+      (∀ k, GC.LongTime.hasSmallParabolicCurvature (Ho k).toHistory (Tno k) (pTo k) (r k)) →
+      (∀ k, ENNReal.ofReal (A⁻¹ * r k ^ 3) ≤ ballVolume ((Ho k).toHistory.stageMetric
+        ((Ho k).toHistory.activeStage (Tno k)) (Tno k)) (pTo k) (r k)) →
+    let c : ℕ → ℝ := fun k => r k ^ 2
+    let hc : ∀ k, 0 < c k := fun k => pow_pos (hr k) 2
+    let K : ℕ → RetainedCoreHistory.{u} := fun k => (Ho k).rescale_P6N (c k) (hc k)
+    let Kh : ℕ → ObservedHistory.{u} := fun k => (K k).toHistory
+    let Tn : ∀ k, Icc (0 : ℝ) (Kh k).horizon := fun k => (Ho k).rescaleTime_P6X (hc k) (Tno k)
+    let pT : ∀ k, ((Kh k).stageAt (Tn k)).Carrier := fun k =>
+      (Ho k).castRescale_P6X (hc k) (Tno k) (pTo k)
+    ∀ (aSeed : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (haT : ∀ k, aSeed k ≤ Tn k),
+      (∀ k, (aSeed k : ℝ) = (Tn k : ℝ) - 1 ^ 2) → (∀ k, 1 ≤ (aSeed k : ℝ)) →
+      (∀ k, GC.LongTime.hasSmallParabolicCurvature (Kh k) (Tn k) (pT k) 1) →
+      (∀ k, T₀ k ≤ c k * (aSeed k : ℝ)) →
+    ∀ (seedTrace : ∀ k, BackwardPointTrace (Kh k) ((Kh k).activeStage (aSeed k))
+        ((Kh k).activeStage (Tn k)) ((Kh k).activeStage_mono (haT k)) (pT k))
+      (σ : ∀ k, Icc (0 : ℝ) (Kh k).horizon) (y : ∀ k, ((Kh k).stageAt (σ k)).Carrier)
+      (R : ℕ → ℝ) (hsT : ∀ k, σ k ≤ Tn k) (has : ∀ k, aSeed k ≤ σ k) (L : ℕ → ℝ),
+      (∀ k, R k =
+        metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k)) (y k)) →
+      (∀ k, 0 < R k) → (∀ k : ℕ, (k : ℝ) + 1 ≤ R k) → (∀ k, Qt k < R k) →
+      Tendsto L atTop atTop →
+      (∀ k, ¬ (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime (σ k) (y k)) →
+      (∀ k, ∀ (v : Icc (0 : ℝ) (Kh k).horizon) (hav : aSeed k ≤ v) (hvs : v ≤ σ k),
+        (σ k : ℝ) - L k ^ 2 / R k ≤ (v : ℝ) →
+        ∀ z : ((Kh k).stageAt v).Carrier,
+          riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage v) v)
+              ((seedTrace k).point ((Kh k).activeStage v) ((Kh k).activeStage_mono hav)
+                ((Kh k).activeStage_mono (hvs.trans (hsT k)))) z ≤
+            riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+                ((seedTrace k).point ((Kh k).activeStage (σ k))
+                  ((Kh k).activeStage_mono (has k)) ((Kh k).activeStage_mono (hsT k))) (y k) +
+              ENNReal.ofReal (L k / Real.sqrt (R k)) →
+          4 * R k ≤ metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage v) v) z →
+          (Kh k).HasSpatialCanonicalTimeControl ε C1 C2 Ctime v z) →
+      (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (aSeed k : ℝ) ≤ σ k - T / R k) →
+      (∀ T : ℝ, 0 < T → ∀ᶠ k in atTop, (Tn k : ℝ) - 1 ^ 2 / 2 ≤ (σ k : ℝ) - T / R k) →
+      Tendsto (fun k => R k * ((σ k : ℝ) - ((Tn k : ℝ) - 1 ^ 2 / 2))) atTop atTop →
+      Tendsto (fun k => 1 / 200 * Real.sqrt (R k)) atTop atTop →
+      (∀ k, R k ≤ ((q.rescale_P6N (c k) (hc k)).neckRadius (Tn k) ^ 2)⁻¹) →
+      (∀ k, (Tn k : ℝ) - 1 ^ 2 / 2 ≤ σ k - L k ^ 2 / R k) →
+      (∀ k, y k ∈ riemannianBallOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+        ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+          ((Kh k).activeStage_mono (hsT k))) ((A + 1) * 1)) →
+      (∀ᶠ k in atTop,
+        riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+            ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+              ((Kh k).activeStage_mono (hsT k))) (y k) +
+          ENNReal.ofReal ((L k + 1) / Real.sqrt (R k)) ≤ ENNReal.ofReal ((A + 3) * 1)) →
+    (∀ k, ∃ i : Fin (Kh k).eventCount, (σ k : ℝ) = (Kh k).time i.succ) → False := by
+  intro A hA ind Ho Tno pTo r hr hlate htime hsmallo hvolo c hc K Kh Tn pT aSeed haT hclock h1 hsm
+    hT₀l seedTrace σ y R hsT has L hRdef hRpos hRr hQR hL hsel hgood hwin hwin' hroomT hradii hQρ
+    hroom hball hdistσ hS
+  choose i hi using hS
+  have hvolK := fun k => seedVol_of_orig_P6F4 (Ho k) (hr k) (hc k) (hvolo k)
+  have hTn2K : ∀ k, 2 < (Tn k : ℝ) := fun k =>
+    tn_gt_two_of_orig_P6F4 (Ho k) (hc k) (htime k)
+  have hnrK : ∀ k (w : ℝ), (Tn k : ℝ) - 1 ^ 2 / 2 ≤ w → w ≤ (Tn k : ℝ) →
+      q.neckRadius (4 * (c k * w) / 3) / Real.sqrt (c k) ≤ 1 := fun k =>
+    nrGate_of_rescale_P6F4 hanti (hc k) (hTn2K k).le (by linarith [hRr k]) (hQρ k)
+  have hTc : ∀ k : ℕ, (k : ℝ) + 1 ≤ c k * (Tn k : ℝ) := fun k => by
+    have e : c k * (Tn k : ℝ) = Tno k := by
+      change r k ^ 2 * ((Tno k : ℝ) / r k ^ 2) = Tno k
+      field_simp [(hr k).ne']
+    rw [e]
+    exact hlate k
+  have hlate' : Tendsto (fun k => c k * (Kh k).time (i k).succ) atTop atTop := by
+    refine tendsto_atTop_mono (fun k => ?_)
+      ((tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop).atTop_div_const
+        two_pos)
+    have hck := hc k
+    have has' : (aSeed k : ℝ) ≤ σ k := Subtype.coe_le_coe.mpr (has k)
+    have hcl := hclock k
+    have h1k := h1 k
+    have hT := hTc k
+    rw [← hi k]
+    nlinarith [mul_le_mul_of_nonneg_left has' hck.le,
+      mul_nonneg hck.le (by nlinarith : (0 : ℝ) ≤ (Tn k : ℝ) - 2)]
+  have hloc : ∀ᶠ k in atTop, aSeed k < σ k → 0 < L k →
+      LeftLocalizedBadAt_CXST (fun t : Icc (0 : ℝ) (Kh k).horizon => (t : ℝ))
+        (fun t z => ¬ ∃ W : SpatialCanonicalWitness
+          ((Kh k).stageMetric ((Kh k).activeStage t) t) η₁ C1₁ C2₁ z,
+          W.capTubeHasNeckChart η₁)
+        (fun t z => metricScalarAt ((Kh k).stageMetric ((Kh k).activeStage t) t) z)
+        (fun t z => if h : aSeed k ≤ t ∧ t ≤ Tn k then
+          riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage t) t)
+            ((seedTrace k).point ((Kh k).activeStage t) ((Kh k).activeStage_mono h.1)
+              ((Kh k).activeStage_mono h.2)) z
+          else 0)
+        (σ k) (R k) (L k)
+        (riemannianEDistOf ((Kh k).stageMetric ((Kh k).activeStage (σ k)) (σ k))
+          ((seedTrace k).point ((Kh k).activeStage (σ k)) ((Kh k).activeStage_mono (has k))
+            ((Kh k).activeStage_mono (hsT k))) (y k)) := by
+    filter_upwards [hcapWL ind c hc i hlate', hcenE ind c hc Tn pT hTc aSeed haT hclock h1 hsm
+      seedTrace σ y R hsT has L hRdef hRpos hRr hL hsel hgood hwin hwin' hroomT hradii i hi,
+      hfootE A hA ind c hc Tn pT hTc aSeed haT hclock h1 hsm hvolK hTn2K hnrK seedTrace σ y R hsT
+          has L hRdef hRpos hRr
+      hL hsel hgood hwin hwin' hroomT hradii hdistσ i hi,
+      htransE ind c hc Tn pT hTc aSeed haT hclock h1 hsm seedTrace σ y R hsT has L hRdef hRpos hRr
+      hL hsel hgood hwin hwin' hroomT hradii i hi]
+      with k hW hE hF hT
+    intro hak _
+    choose pp Rc hW using hW
+    rw [hRdef k] at hE ⊢
+    exact Rc.stage_localizedBad_trans_P6HB4 hW (haT k) (seedTrace k) (hsT k) (has k) (y k)
+      (hi k) hak hE hF hT (hsel k)
+  have hlo : ∀ k, (Kh k).time (i k).castSucc < σ k := fun k => by
+    rw [hi k]
+    exact (Kh k).time_strictMono (Fin.castSucc_lt_succ (i := i k))
+  exact false_of_rerun_jointPrefix_P6HP
+    (fun H s => ∃ j : Fin H.eventCount, H.time j.castSucc < (s : ℝ) ∧ (s : ℝ) < H.time j.succ)
+    hrerunE8' hcan₁ hanti hT₀m A hA ind Tno pTo r hr hlate htime hsmallo hvolo aSeed haT hclock
+    h1 hsm hT₀l seedTrace σ y R hsT has L hRdef hRpos hRr hQR hL hsel hgood hwin hwin' hroomT
+    hradii hQρ hroom hball hdistσ
+    (fun k => (Kh k).time (i k).castSucc) hlo
+    (fun k s hs1 hs2 => ⟨i k, hs1, hs2.trans_eq (hi k)⟩) hloc
+
+end ObservedHistory
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

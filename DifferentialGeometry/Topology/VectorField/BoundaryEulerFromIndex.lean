@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativePoincareHopf
-import DifferentialGeometry.Topology.VectorField.PoincareHopf.ClosedPoincareHopf
+import DifferentialGeometry.Topology.VectorField.RelativePoincareHopf
+import DifferentialGeometry.Topology.VectorField.ClosedPoincareHopf
 
 set_option autoImplicit false
 noncomputable section

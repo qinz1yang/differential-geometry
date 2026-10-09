@@ -37,21 +37,21 @@ private theorem secondCovDeriv_hom_conjugate_of_first
     (hfirst : ∀ (S : ContMDiffSection I (F₂ →L[ℝ] F₂) ∞ (fun y => V₂ y →L[ℝ] V₂ y))
       (y : M) (v : TangentSpace I y),
       (Q y).toContinuousLinearMap.comp
-          (_root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁ D D
+          (homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁ D D
             (fun z => (Q z).symm.toContinuousLinearMap.comp
               ((S z).comp (Q z).toContinuousLinearMap)) y v) =
-        (_root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ C C S y v).comp
+        (homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ C C S y v).comp
           (Q y).toContinuousLinearMap)
     (base : CovariantDerivative I E (TangentSpace I : M → Type _))
     (A : ContMDiffSection I (F₂ →L[ℝ] F₂) ∞ (fun y => V₂ y →L[ℝ] V₂ y))
     (Y : ContMDiffSection I E ∞ (TangentSpace I : M → Type _)) (x : M) (X : TangentSpace I x) :
-    let DE := _root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁ D D
-    let CE := _root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ C C
+    let DE := homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁ D D
+    let CE := homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ C C
     let B := fun y => (Q y).symm.toContinuousLinearMap.comp ((A y).comp (Q y).toContinuousLinearMap)
     (Q x).toContinuousLinearMap.comp (DE (covApply DE Y B) x X - DE B x (base Y x X)) =
       (CE (covApply CE Y (fun y => A y)) x X - CE A x (base Y x X)).comp (Q x).toContinuousLinearMap := by
-  let DE := _root_.CovariantDerivative.hom I M F₁ V₁ F₁ V₁ D D
-  let CE := _root_.CovariantDerivative.hom I M F₂ V₂ F₂ V₂ C C
+  let DE := homBundleCovariantDerivativeGen I M F₁ V₁ F₁ V₁ D D
+  let CE := homBundleCovariantDerivativeGen I M F₂ V₂ F₂ V₂ C C
   let B := fun y => (Q y).symm.toContinuousLinearMap.comp ((A y).comp (Q y).toContinuousLinearMap)
   let T : ContMDiffSection I (F₂ →L[ℝ] F₂) ∞ (fun y => V₂ y →L[ℝ] V₂ y) :=
     ⟨covApply CE Y (fun y => A y), contMDiffOn_univ.mp
@@ -88,8 +88,8 @@ theorem map_secondCovDeriv_hom_exteriorPower_conjugate
       let Q := fun y => _root_.exteriorPower.mapContinuousLinearEquiv k (φ y)
       let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
       let C := cov.exteriorPower k
-      let DE := _root_.CovariantDerivative.hom I M _ _ _ _ D D
-      let CE := _root_.CovariantDerivative.hom I M _ _ _ _ C C
+      let DE := homBundleCovariantDerivativeGen I M _ _ _ _ D D
+      let CE := homBundleCovariantDerivativeGen I M _ _ _ _ C C
       let B := fun y => (Q y).symm.toContinuousLinearMap.comp ((A y).comp (Q y).toContinuousLinearMap)
       (Q x).toContinuousLinearMap.comp
           (DE (covApply DE Y B) x X - DE B x (base Y x X)) =
@@ -136,8 +136,8 @@ theorem map_rawBundleConnLap_hom_exteriorPower_conjugate
       let Q := fun y => _root_.exteriorPower.mapContinuousLinearEquiv k (φ y)
       let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
       let C := cov.exteriorPower k
-      let DE := _root_.CovariantDerivative.hom I M _ _ _ _ D D
-      let CE := _root_.CovariantDerivative.hom I M _ _ _ _ C C
+      let DE := homBundleCovariantDerivativeGen I M _ _ _ _ D D
+      let CE := homBundleCovariantDerivativeGen I M _ _ _ _ C C
       let B := fun y => (Q y).symm.toContinuousLinearMap.comp ((A y).comp (Q y).toContinuousLinearMap)
       (Q x).toContinuousLinearMap.comp (rawBundleConnLap g DE B x) =
         (rawBundleConnLap g CE (fun y => A y) x).comp (Q x).toContinuousLinearMap := by

@@ -225,7 +225,7 @@ theorem cometricDoubleTraceCoefficient_eq_doubleTrace_add_ccOperatorFieldComp
       cometricDoubleTraceField_toSection, cometricDoubleTraceFib_toModel,
       modelDoubleTrace_apply]
     refine Finset.sum_congr rfl (fun k _ => ?_)
-    rw [slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval, Fin.cons_zero,
+    rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval, Fin.cons_zero,
       Fin.update_cons_zero]
     rfl
   rw [← hsub]; abel

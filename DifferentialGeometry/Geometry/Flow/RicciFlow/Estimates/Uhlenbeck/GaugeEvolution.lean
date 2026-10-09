@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.GaugeCov
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Pullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ExteriorConjugation
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Pullback.Smooth
+import DifferentialGeometry.Geometry.Metric.BundlePullbackSmooth
 
 set_option autoImplicit false
 

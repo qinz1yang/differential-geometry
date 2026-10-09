@@ -11,6 +11,7 @@ open scoped ContinuousMap BigOperators
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {ι E : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -18,14 +19,13 @@ variable {ι E : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
 def simplexBoundary (v : ι → E) : Set E := ⋃ i, simplexFacet v i
 
 omit [DecidableEq ι] [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem simplexFacet_subset_convexHull [Finite ι] (v : ι → E) (i : ι) :
     simplexFacet v i ⊆ convexHull ℝ (range v) := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
   exact convexHull_mono (image_subset_range _ _)
 
-omit [DecidableEq ι] [Fintype ι] [Nonempty ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] [Fintype ι] in
 theorem simplexBoundary_subset_convexHull [Finite ι] (v : ι → E) :
     simplexBoundary v ⊆ convexHull ℝ (range v) := by
   classical
@@ -33,7 +33,6 @@ theorem simplexBoundary_subset_convexHull [Finite ι] (v : ι → E) :
   exact iUnion_subset (simplexFacet_subset_convexHull v)
 
 omit [DecidableEq ι] [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem isCompact_simplexBoundary [Finite ι] (v : ι → E) : IsCompact (simplexBoundary v) := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
@@ -60,7 +59,6 @@ def simplexHullHomeomorph (v : ι → E) (hv : AffineIndependent ℝ v) :
     (((continuous_simplexPoint v).comp continuous_subtype_val).subtype_mk _)
 
 omit [DecidableEq ι] in
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem simplexHullHomeomorph_apply (v : ι → E) (hv : AffineIndependent ℝ v)
     (x : standardBarycentricSimplex ι) :
     (simplexHullHomeomorph v hv x).1 = simplexPoint v x := by
@@ -68,7 +66,6 @@ omit [FiniteDimensional ℝ E] in
   exact rfl
 
 omit [DecidableEq ι] in
-omit [FiniteDimensional ℝ E] in
 theorem simplexPoint_mem_boundary_iff (v : ι → E) (hv : AffineIndependent ℝ v)
     (x : standardBarycentricSimplex ι) :
     simplexPoint v x ∈ simplexBoundary v ↔ ∃ i, x.1 i = 0 := by
@@ -77,14 +74,13 @@ theorem simplexPoint_mem_boundary_iff (v : ι → E) (hv : AffineIndependent ℝ
   exact exists_congr (fun i => simplexPoint_mem_facet_iff v hv x.2 i)
 
 omit [DecidableEq ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem affineBasis_coord_simplexPoint (b : AffineBasis ι ℝ E)
     (x : standardBarycentricSimplex ι) (i : ι) : b.coord i (simplexPoint b x) = x.1 i := by
   classical
   rw [simplexPoint, ← Finset.affineCombination_eq_linear_combination _ _ _ x.2.2]
   exact b.coord_apply_combination_of_mem (Finset.mem_univ i) x.2.2
 
-omit [DecidableEq ι] [Fintype ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] [Fintype ι] in
 theorem affineBasis_frontier_eq_simplexBoundary [Finite ι] (b : AffineBasis ι ℝ E) :
     frontier (convexHull ℝ (range b)) = simplexBoundary b := by
   classical
@@ -106,7 +102,7 @@ theorem affineBasis_frontier_eq_simplexBoundary [Finite ι] (b : AffineBasis ι 
       hy (hclosed.closure_eq ▸ frontier_subset_closure h)
     simp [hn, hn']
 
-omit [DecidableEq ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] in
 theorem exists_simplex_disk_parameterization_of_card {q : ℕ}
     (v : ι → E) (hv : AffineIndependent ℝ v) (hcard : Fintype.card ι = q + 1) :
     ∃ e : Disk q ≃ₜ convexHull ℝ (range v),
@@ -127,14 +123,13 @@ theorem exists_simplex_disk_parameterization_of_card {q : ℕ}
   change (d x).1 ∈ simplexBoundary b ↔ simplexPoint v w ∈ simplexBoundary v
   rw [← hw, simplexPoint_mem_boundary_iff b b.ind w, simplexPoint_mem_boundary_iff v hv w]
 
-omit [FiniteDimensional ℝ E] in
 theorem exists_simplex_disk_parameterization {q : ℕ}
     (v : Fin (q + 1) → E) (hv : AffineIndependent ℝ v) :
     ∃ e : Disk q ≃ₜ convexHull ℝ (range v),
       ∀ x, x ∈ diskSphere q ↔ (e x).1 ∈ simplexBoundary v :=
   exists_simplex_disk_parameterization_of_card v hv (by simp)
 
-omit [DecidableEq ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] in
 theorem exists_simplex_boundary_extension_of_card {q : ℕ} {M : Type*} [TopologicalSpace M]
     (v : ι → E) (hv : AffineIndependent ℝ v) (hcard : Fintype.card ι = q + 2)
     (f : C(simplexBoundary v, M))
@@ -160,7 +155,6 @@ theorem exists_simplex_boundary_extension_of_card {q : ℕ} {M : Type*} [Topolog
   congr 1
   exact Subtype.ext (congrArg (fun z : convexHull ℝ (range v) => z.1) (e.apply_symm_apply y))
 
-omit [FiniteDimensional ℝ E] in
 theorem exists_simplex_boundary_extension {q : ℕ} {M : Type*} [TopologicalSpace M]
     (v : Fin (q + 2) → E) (hv : AffineIndependent ℝ v)
     (f : C(simplexBoundary v, M))
@@ -170,7 +164,6 @@ theorem exists_simplex_boundary_extension {q : ℕ} {M : Type*} [TopologicalSpac
   exists_simplex_boundary_extension_of_card v hv (by simp) f hM
 
 omit [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem convexHull_image_inter_of_independent [Finite ι] (v : ι → E) (hv : AffineIndependent ℝ v)
     (s t : Finset ι) :
     convexHull ℝ (v '' (s : Set ι)) ∩ convexHull ℝ (v '' (t : Set ι)) =
@@ -190,7 +183,6 @@ theorem convexHull_image_inter_of_independent [Finite ι] (v : ι → E) (hv : A
 def facetVertices (v : ι → E) (a : ι) : {i : ι // i ≠ a} → E := fun i => v i.1
 
 omit [DecidableEq ι] [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem convexHull_facetVertices [Finite ι] (v : ι → E) (a : ι) :
     convexHull ℝ (range (facetVertices v a)) = simplexFacet v a := by
   classical
@@ -199,14 +191,13 @@ theorem convexHull_facetVertices [Finite ι] (v : ι → E) (a : ι) :
   rfl
 
 omit [DecidableEq ι] [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem facetVertices_independent [Finite ι] (v : ι → E) (hv : AffineIndependent ℝ v) (a : ι) :
     AffineIndependent ℝ (facetVertices v a) := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
   exact hv.comp_embedding (.subtype _)
 
-omit [DecidableEq ι] [Fintype ι] [Nonempty ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] [Fintype ι] in
 theorem simplexFacet_facetVertices [Finite ι] (v : ι → E) (hv : AffineIndependent ℝ v) (a : ι)
     (j : {i : ι // i ≠ a}) :
     simplexFacet (facetVertices v a) j = simplexFacet v a ∩ simplexFacet v j.1 := by
@@ -233,17 +224,14 @@ namespace SimplexSplit
 def upperRoof (s : SimplexSplit ι) (v : ι → E) : Set E :=
   ⋃ i ∈ s.left, simplexFacet v i
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem lowerRoof_subset_simplex (s : SimplexSplit ι) (v : ι → E) :
     s.lowerRoof v ⊆ convexHull ℝ (range v) :=
   iUnion_subset (fun i => iUnion_subset (fun _ => simplexFacet_subset_convexHull v i))
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem upperRoof_subset_simplex (s : SimplexSplit ι) (v : ι → E) :
     s.upperRoof v ⊆ convexHull ℝ (range v) :=
   iUnion_subset (fun i => iUnion_subset (fun _ => simplexFacet_subset_convexHull v i))
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem lowerRoof_union_upperRoof (s : SimplexSplit ι) (v : ι → E) :
     s.lowerRoof v ∪ s.upperRoof v = simplexBoundary v := by
   ext x
@@ -323,13 +311,11 @@ def coneSplit [Nontrivial ι] (a : ι) : SimplexSplit ι where
     obtain ⟨b, hb⟩ := exists_ne a
     exact ⟨b, by simpa using hb⟩
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem coneSplit_upperRoof [Nontrivial ι] (v : ι → E) (a : ι) :
     (coneSplit a).upperRoof v = simplexFacet v a := by
   ext x
   simp [SimplexSplit.upperRoof, coneSplit]
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem facet_boundary_eq_inter_roof [Nontrivial ι]
     (v : ι → E) (hv : AffineIndependent ℝ v) (a : ι) :
     simplexBoundary (facetVertices v a) = simplexFacet v a ∩ (coneSplit a).lowerRoof v := by
@@ -349,13 +335,11 @@ theorem facet_boundary_eq_inter_roof [Nontrivial ι]
     exact ⟨hxa, hxj⟩
 
 omit [DecidableEq ι] [Fintype ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem isCompact_simplexFacet [Finite ι] (v : ι → E) (a : ι) : IsCompact (simplexFacet v a) := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
   exact ((toFinite ({a}ᶜ : Set ι)).image v).isCompact_convexHull ℝ
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem SimplexSplit.isCompact_lowerRoof (s : SimplexSplit ι) (v : ι → E) :
     IsCompact (s.lowerRoof v) :=
   s.right.finite_toSet.isCompact_biUnion (fun i _ => isCompact_simplexFacet v i)
@@ -503,7 +487,6 @@ theorem exists_affine_cone_membrane_glue {q : ℕ} {M : Type*} [TopologicalSpace
 variable [DecidableEq E]
 
 omit [DecidableEq ι] in
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem convexHull_erase_vertex_image (v : ι → E) (hv : AffineIndependent ℝ v) (i : ι) :
     convexHull ℝ (((Finset.univ.image v).erase (v i) : Finset E) : Set E) =
       simplexFacet v i := by
@@ -513,7 +496,7 @@ theorem convexHull_erase_vertex_image (v : ι → E) (hv : AffineIndependent ℝ
   rw [← image_univ, ← image_singleton, ← image_sdiff hv.injective]
   rw [← compl_eq_univ_sdiff]
 
-omit [DecidableEq ι] [Nonempty ι] [FiniteDimensional ℝ E] in
+omit [DecidableEq ι] in
 theorem simplexRoof_image_vertices (v : ι → E) (hv : AffineIndependent ℝ v) (B : Finset ι) :
     simplexRoof (Finset.univ.image v) (B.image v) = ⋃ i ∈ B, simplexFacet v i := by
   classical
@@ -525,7 +508,6 @@ theorem simplexRoof_image_vertices (v : ι → E) (hv : AffineIndependent ℝ v)
   · rintro ⟨i, hi, hx⟩
     exact ⟨v i, ⟨i, hi, rfl⟩, (convexHull_erase_vertex_image v hv i).symm ▸ hx⟩
 
-omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem SimplexSplit.finiteSimplexExpansion_roof (s : SimplexSplit ι)
     (v : ι → E) (hv : AffineIndependent ℝ v) :
     FiniteSimplexExpansion (s.lowerRoof v) (convexHull ℝ (range v)) := by

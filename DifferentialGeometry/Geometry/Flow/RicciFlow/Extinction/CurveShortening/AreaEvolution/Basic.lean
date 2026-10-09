@@ -3,13 +3,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegula
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.LeastArea
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.ClassWidth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LocalExistence
-import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.Velocity
-import DifferentialGeometry.Topology.LoopSpace.SmoothFamily.ManifoldVelocity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyVelocityExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionChartReading
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
-import DifferentialGeometry.Topology.LoopSpace.Isotopy.CompactAmbient
 
 noncomputable section
 
@@ -679,7 +678,7 @@ end CurveMap
 
 
 def loopFamilyLeastArea (g : ℝ → SmoothRiemannianMetric I M)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (t : ℝ) : ℝ :=
+    (γ : ℝ → ContinuousFreeLoop M) (t : ℝ) : ℝ :=
   sInf (Width.competitorAreas (g t) (γ t))
 
 variable [hBoundary : I.Boundaryless] [hT2 : T2Space M]
@@ -687,12 +686,12 @@ variable [hBoundary : I.Boundaryless] [hT2 : T2Space M]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty in
 theorem loopFamilyLeastArea_eq (g : ℝ → SmoothRiemannianMetric I M)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) (t : ℝ) (hctr : ContinuousMap.Nullhomotopic (γ t))
+    (γ : ℝ → ContinuousFreeLoop M) (t : ℝ) (hctr : IsContractibleLoop (γ t))
     (hlip : Width.IsLipschitzLoop (g t) (γ t)) :
     loopFamilyLeastArea g γ t = Width.leastArea (g t) (γ t) hctr hlip := rfl
 
 
-def regularLoopSlice (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ}
+def regularLoopSlice (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J) (t : ℝ) (ht : t ∈ J) :
     Width.RegularLoop I M where
   toContinuousLoop := γ t
@@ -700,24 +699,24 @@ def regularLoopSlice (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J 
 
 omit [CompleteSpace E] hNonempty in
 theorem loopFamilyLeastArea_nonneg (g : ℝ → SmoothRiemannianMetric I M)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ}
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J)
-    (hctr : ∀ t ∈ J, ContinuousMap.Nullhomotopic (γ t)) (t : ℝ) (ht : t ∈ J) :
+    (hctr : ∀ t ∈ J, IsContractibleLoop (γ t)) (t : ℝ) (ht : t ∈ J) :
     0 ≤ loopFamilyLeastArea g γ t :=
   Width.leastArea_nonneg (g t) (γ t) (hctr t ht)
     ((regularLoopSlice γ hγ t ht).isLipschitz (g t))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty in
 theorem loopFamilyLeastArea_eq_regularLeastAreaSlice
-    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (g : ℝ → SmoothRiemannianMetric I M) (γ : ℝ → ContinuousFreeLoop M)
     {J : Set ℝ} (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) J)
-    (hctr : ∀ t ∈ J, ContinuousMap.Nullhomotopic (γ t)) (t : ℝ) (ht : t ∈ J) :
+    (hctr : ∀ t ∈ J, IsContractibleLoop (γ t)) (t : ℝ) (ht : t ∈ J) :
     loopFamilyLeastArea g γ t =
       Width.regularLeastArea (g t) ⟨regularLoopSlice γ hγ t ht, hctr t ht⟩ := rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] hBoundary hT2 hCompact hNonempty in
 theorem loopFamily_spacetimeMap_injective
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M) {J : Set ℝ}
+    (γ : ℝ → ContinuousFreeLoop M) {J : Set ℝ}
     (hemb : ∀ t ∈ J, Topology.IsEmbedding (γ t)) :
     Set.InjOn (fun p : ℝ × Surgery.Topology.Circle => (p.1, γ p.1 p.2))
       (J ×ˢ univ) := by
@@ -776,7 +775,7 @@ theorem RicciBackground.continuousOn_scalarMinimum
 omit [SigmaCompactSpace M] in
 theorem continuousOn_loopFamilyLeastArea_of_continuousRegularFamily
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (Γ : ℝ → Width.ContractibleRegularLoop (I := I) (Q := M))
     (hΓ : ContinuousOn Γ (Icc a b))
     (hagree : ∀ t ∈ Icc a b, (Γ t).1.toContinuousLoop = γ t) :
@@ -786,7 +785,7 @@ theorem continuousOn_loopFamilyLeastArea_of_continuousRegularFamily
       simp only [Width.regularLeastArea, Width.leastArea, loopFamilyLeastArea,
         hagree t ht]
 
-theorem rfs_csf_boundary_isotopy (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+theorem rfs_csf_boundary_isotopy (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
@@ -884,7 +883,7 @@ theorem continuousOn_areaError_of_smoothOn_curvatureVector {D : RealTimeInterval
 
 omit hBoundary hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_slope_le_of_window_comparison (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
     (hF : ContinuousOn (fun t => (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)
       (Icc a b))
@@ -1103,7 +1102,7 @@ theorem rfs_csf_area_comparison_ode (A rho F : ℝ → ℝ) (s t : ℝ) (hst : s
 
 omit hCompact hNonempty [SigmaCompactSpace M] in
 theorem continuousOn_loopFamily_areaError (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b)) :
     ContinuousOn (fun t => (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t)
@@ -1118,7 +1117,7 @@ theorem continuousOn_loopFamily_areaError (B : RicciBackground (I := I) (M := M)
 omit hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_slope
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))
@@ -1181,7 +1180,7 @@ theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_slope
 omit hNonempty [SigmaCompactSpace M] in
 theorem rfs_csf_immersed_area_of_continuousOn_leastArea_of_window
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hA : ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b))

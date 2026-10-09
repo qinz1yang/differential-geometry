@@ -10,22 +10,20 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ}
 
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalSigmaCompact (G : P.IncomingSlab a s) :
+private local instance terminalSigmaCompact (G : P.IncomingSlab a s) :
     SigmaCompactSpace G.terminalRegularOpen :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
       G.terminalRegularOpen.isOpen)
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC1 (G : P.IncomingSlab a s) :
+private local instance terminalC1 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 1 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
-private local instance _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.terminalC2 (G : P.IncomingSlab a s) :
+private local instance terminalC2 (G : P.IncomingSlab a s) :
     IsManifold ThreeModel 2 G.terminalRegularOpen := IsManifold.of_le (n := ∞) (by decide)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_metric_limit_on_terminalRegularOpen
+theorem IncomingSlab.exists_metric_limit_on_terminalRegularOpen
     (G : P.IncomingSlab a s) :
     ∃ gInf : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen,
       ∀ K : Set G.terminalRegularOpen, IsCompact K → ∀ p : ℕ,
@@ -83,7 +81,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     have hprod := mul_le_mul_of_nonneg_left habs.le hL
     exact lt_of_le_of_lt htriangle (by change _ < ε; linarith)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.nonempty_terminalLimitMetric (G : P.IncomingSlab a s) :
+theorem IncomingSlab.nonempty_terminalLimitMetric (G : P.IncomingSlab a s) :
     Nonempty G.TerminalLimitMetric := by
   obtain ⟨gInf, hconv⟩ := G.exists_metric_limit_on_terminalRegularOpen
   refine ⟨⟨gInf, ?_⟩⟩

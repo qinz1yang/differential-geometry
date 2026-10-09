@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.Dirichlet.HeatWeakEquationChart
 import DifferentialGeometry.Analysis.Sobolev.WeakDerivativeWeight
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeProduct
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeWeakDerivativeUniqueness
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.Smoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 
 noncomputable section
 

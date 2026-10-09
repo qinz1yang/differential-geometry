@@ -2,7 +2,7 @@ import Mathlib.Geometry.Manifold.Instances.Real
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 
 set_option autoImplicit false
 noncomputable section

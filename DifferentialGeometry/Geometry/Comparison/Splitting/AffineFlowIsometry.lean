@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Splitting.AffineFlowRegularity
-import DifferentialGeometry.Geometry.Variation.Field.Smoothness
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Smoothness
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 
 set_option autoImplicit false

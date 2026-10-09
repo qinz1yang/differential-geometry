@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCyclePatchDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalReturningAnnulusDeletion
 
@@ -51,7 +56,7 @@ theorem IsCanonicalSurface.bridge_component_inter_even
 theorem IsCanonicalSurface.isSeparatorIn_after_delete_bridge_component
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (hI : IsOpen I)
+    (h314 : Moise314) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c d : ConnectedComponents (X i).space) (hcd : c ≠ d)
     {J₀ J₁ K₀ K₁ : Set E3}
@@ -84,13 +89,13 @@ theorem IsCanonicalSurface.isSeparatorIn_after_delete_bridge_component
   have hsolid (k : ℤ) : IsCombinatorialSolidTorus (S'' (2 * k)) := by
     simpa using (htw.config (2 * k)).isPolyhedralSolidTorus 0
   have hJlo : ¬ boundsDiskIn J₀ (T'' (2 * i)) :=
-    fun hd => hJess₀ ((hX.lower_component_boundsDiskIn_iff htw i c hJ₀).mp hd)
+    fun hd => hJess₀ ((hX.lower_component_boundsDiskIn_iff htw h314 i c hJ₀).mp hd)
   have hJhi : ¬ boundsDiskIn J₁ (T'' (2 * (i + 1))) :=
-    fun hd => hJess₁ ((hX.upper_component_boundsDiskIn_iff htw i c hJ₁).mp hd)
+    fun hd => hJess₁ ((hX.upper_component_boundsDiskIn_iff htw h314 i c hJ₁).mp hd)
   have hKlo : ¬ boundsDiskIn K₀ (T'' (2 * i)) :=
-    fun hd => hKess₀ ((hX.lower_component_boundsDiskIn_iff htw i d hK₀).mp hd)
+    fun hd => hKess₀ ((hX.lower_component_boundsDiskIn_iff htw h314 i d hK₀).mp hd)
   have hKhi : ¬ boundsDiskIn K₁ (T'' (2 * (i + 1))) :=
-    fun hd => hKess₁ ((hX.upper_component_boundsDiskIn_iff htw i d hK₁).mp hd)
+    fun hd => hKess₁ ((hX.upper_component_boundsDiskIn_iff htw h314 i d hK₁).mp hd)
   have hdislo : Disjoint J₀ K₀ := hLR.mono
     ((traceCircles_subset hJ₀).trans inter_subset_left)
     ((traceCircles_subset hK₀).trans inter_subset_left)

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphNeighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphRecognition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualCutFrame
@@ -19,7 +24,7 @@ variable {C V : Set (EuclideanSpace ℝ (Fin 3))}
   {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
   {env : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
 
-theorem exists_compactCutAndGraph (hC : IsPLBall 3 C) (hV : IsOpen V)
+theorem exists_compactCutAndGraph (h331 : Moise331OnTube) (hC : IsPLBall 3 C) (hV : IsOpen V)
     (hCV : C ⊆ V) (hh : Topology.IsEmbedding (V.domRestrict h)) (hε : 0 < ε) :
     ∃ (K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
       (src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3)))
@@ -39,7 +44,7 @@ theorem exists_compactCutAndGraph (hC : IsPLBall 3 C) (hV : IsOpen V)
   have hBemb : IsEmbedding ((interior B).domRestrict h) :=
     hh.comp (IsEmbedding.inclusion (interior_subset.trans hBV))
   obtain ⟨M, hMfin, hM, hMB, hCM, hKC, hmesh, happ⟩ :=
-    exists_compactGraphApproximation hC isOpen_interior hCB hBemb hδ
+    exists_compactGraphApproximation h331 hC isOpen_interior hCB hBemb hδ
   let _ : Finite M.faces := hMfin.to_subtype
   let K := restrict M C
   let L := restrict K (section34CompactGraphSkeleton K)

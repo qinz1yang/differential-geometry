@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.TubeSystem.Empty
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCoreDeformationRetract
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapTransitionSkeleton
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Topology.Connected.TotallyDisconnected
 

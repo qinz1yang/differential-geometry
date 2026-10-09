@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
+import DifferentialGeometry.Topology.ThreeManifold.CutCap
 import DifferentialGeometry.Topology.Manifold.Components
 import DifferentialGeometry.Topology.Manifold.InteriorBoundary
 import Mathlib.Analysis.Convex.PathConnected

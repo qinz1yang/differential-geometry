@@ -1,0 +1,203 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.FwdPersist_S134
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.HAbs_S105
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.MicroWholeBallShi_O13
+
+/-!
+# CH12-S134, groups 2-3: `hbirth` from the survival/location clause `hsurv` (forward persistence = P2 half)
+
+`hbirth_of_hsurv_S134 Hp Ctime hP2 hsurv : <S131 hbirth verbatim>`.  `hsurv` is the hbirth binder with the conclusion
+replaced by: the cap point `w = window x` has a forward trace `A` (a `BackwardPointTrace` from stage `j.succ` to the last
+stage, passing through `w`) ending at a point `yf ∈ B(p, 2ρ)` of the slice.  The P2 half (`fwd_scalar_lower_S134`)
+and the comparison with `R ≤ C0/ρ²` on `B(p,2ρ)` are proved here: `Cb := (1 + Ctime) max C0 1 / c₀`.
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Manifold DifferentialGeometry DifferentialGeometry.Topology
+  DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+  DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+  DifferentialGeometry.Geometry.Collapse DifferentialGeometry.Geometry.Curvature
+  DifferentialGeometry.Geometry.Riemannian
+open scoped Manifold ContDiff ENNReal NNReal
+
+namespace GC.LongTime.Ch12
+
+universe u
+
+variable {δ : ℝ → ℝ}
+
+theorem hbirth_of_hsurv_S134 {P : OrientedThreeStage.{u}} {g : P.Metric} {F : GC.Interface.RawSurgery P g}
+    (Hp : GC.LongTime.AnalyticSurgeryProfile F δ) (Ctime : ℝ≥0) (hP2 : P2_O2 Hp Ctime)
+    (hsurv : ∀ w : ℝ, 0 < w → ∀ Λ : ℝ, 1 ≤ Λ → ∀ (θ Dcap C0 : ℝ), 0 < θ → 0 < C0 →
+      StandardCap.transitionEnd + 3 < Dcap → ∀ K : ℝ, 0 < K →
+      ∃ (bH TH θH εH : ℝ), 0 < bH ∧ 0 < θH ∧ 0 < εH ∧
+      ∀ s : RegularSlice F.observation, TH ≤ s.time → ∀ T₀ : ℝ, TH ≤ T₀ → T₀ ≤ s.time →
+      ∀ (pp : CutoffParameters)
+        (records : ∀ i : Fin (sliceHistoryR_O3 F s).eventCount,
+          T₀ - θ ≤ (sliceHistoryR_O3 F s).time i.succ →
+          GeometricCutoffRecord (sliceHistoryR_O3 F s).toHistory i pp),
+        pp.delta = Hp.parameters.delta → pp.neckRadius = Hp.parameters.neckRadius →
+        pp.fixed = Hp.parameters.fixed → pp.recenterConstant = Hp.parameters.recenterConstant →
+        32 * (Dcap + 1) + 2 ≤ pp.modelRadius →
+        pp.modelAccuracy ≤ εH → 4 ≤ pp.modelOrder →
+        (∀ i hi b, linkedCanonicalWindow_O2 ((records i hi).static b)) →
+      ∀ (p : s.stage.Carrier) (ρ : ℝ), 0 < ρ → ρ ≤ bH * Real.sqrt s.time →
+        (∃ n, ∃ i : Fin (F.tower.history n).eventCount, ∃ h,
+          (F.tower.history n).time i.succ ∈ Icc (s.time / 2) s.time ∧
+          ρ < Λ * (Hp.records n i).nominalRadius h) →
+        (∃ z ∈ connectedComponent p, ¬ SectionalBoundedBelowAt s.metric z 0) →
+        (∀ q ∈ riemannianBallOf s.metric p ρ,
+          SectionalBoundedBelowAt s.metric q (-(ρ ^ 2)⁻¹)) →
+        ENNReal.ofReal (w * ρ ^ 3) ≤ ballVolume s.metric p ρ →
+        (∀ x ∈ riemannianBallOf s.metric p (2 * ρ), metricScalarAt s.metric x ≤ C0 / ρ ^ 2) →
+        ∀ q ∈ riemannianBallOf s.metric p ρ,
+          ¬ (∃ (j : Fin (sliceHistoryR_O3 F s).eventCount)
+            (hj : T₀ - θ ≤ (sliceHistoryR_O3 F s).time j.succ)
+            (hl : j.succ ≤ Fin.last (sliceHistoryR_O3 F s).eventCount)
+            (B : BackwardPointTrace (sliceHistoryR_O3 F s).toHistory j.succ
+              (Fin.last (sliceHistoryR_O3 F s).eventCount) hl q)
+            (b : ((sliceHistoryR_O3 F s).toHistory.event j).RetainedBoundaryIndex)
+            (x : standardCapWindow pp.modelRadius),
+            B.point j.succ le_rfl hl = ((records j hj).static b).window x ∧
+              ‖x.val‖ < Dcap + 1 ∧
+              s.time - (sliceHistoryR_O3 F s).time j.succ ≤
+                θ * (((records j hj).static b).neck.scale)⁻¹) →
+          ∀ θ' : ℝ, 0 < θ' → θ' ≤ θH → ∀ τ : ℝ, 0 < τ → 9 * K * τ ≤ 1 →
+          ∀ (j : Fin (sliceHistoryR_O3 F s).eventCount)
+            (hj : T₀ - θ ≤ (sliceHistoryR_O3 F s).time j.succ)
+            (B : BackwardPointTrace (sliceHistoryR_O3 F s).toHistory j.succ
+              (Fin.last (sliceHistoryR_O3 F s).eventCount) (Fin.le_last _) q)
+            (b : ((sliceHistoryR_O3 F s).toHistory.event j).RetainedBoundaryIndex)
+            (x : standardCapWindow pp.modelRadius), ‖x.val‖ < Dcap - 1 + 1 →
+            ((records j hj).static b).window x ∈
+              riemannianBallOf ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+                (B.point j.succ le_rfl (Fin.le_last _)) (20 * (θ' * ρ)) →
+            metricScalarAt ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+              (((records j hj).static b).window x) ≤ 9 * K / (θ' * ρ) ^ 2 →
+            s.time - (sliceHistoryR_O3 F s).time j.succ < τ * (θ' * ρ) ^ 2 →
+            ∃ yf ∈ riemannianBallOf s.metric p (2 * ρ),
+              ∃ A : BackwardPointTrace (sliceHistoryR_O3 F s).toHistory j.succ
+                (Fin.last (sliceHistoryR_O3 F s).eventCount) (Fin.le_last _) yf,
+                A.point j.succ le_rfl (Fin.le_last _) = ((records j hj).static b).window x)
+    :
+    ∀ w : ℝ, 0 < w → ∀ Λ : ℝ, 1 ≤ Λ → ∀ (θ Dcap C0 : ℝ), 0 < θ → 0 < C0 →
+      StandardCap.transitionEnd + 3 < Dcap → ∀ K : ℝ, 0 < K →
+      ∃ (Cb bH TH θH εH : ℝ), 0 < Cb ∧ 0 < bH ∧ 0 < θH ∧ 0 < εH ∧
+      ∀ s : RegularSlice F.observation, TH ≤ s.time → ∀ T₀ : ℝ, TH ≤ T₀ → T₀ ≤ s.time →
+      ∀ (pp : CutoffParameters)
+        (records : ∀ i : Fin (sliceHistoryR_O3 F s).eventCount,
+          T₀ - θ ≤ (sliceHistoryR_O3 F s).time i.succ →
+          GeometricCutoffRecord (sliceHistoryR_O3 F s).toHistory i pp),
+        pp.delta = Hp.parameters.delta → pp.neckRadius = Hp.parameters.neckRadius →
+        pp.fixed = Hp.parameters.fixed → pp.recenterConstant = Hp.parameters.recenterConstant →
+        32 * (Dcap + 1) + 2 ≤ pp.modelRadius →
+        pp.modelAccuracy ≤ εH → 4 ≤ pp.modelOrder →
+        (∀ i hi b, linkedCanonicalWindow_O2 ((records i hi).static b)) →
+      ∀ (p : s.stage.Carrier) (ρ : ℝ), 0 < ρ → ρ ≤ bH * Real.sqrt s.time →
+        (∃ n, ∃ i : Fin (F.tower.history n).eventCount, ∃ h,
+          (F.tower.history n).time i.succ ∈ Icc (s.time / 2) s.time ∧
+          ρ < Λ * (Hp.records n i).nominalRadius h) →
+        (∃ z ∈ connectedComponent p, ¬ SectionalBoundedBelowAt s.metric z 0) →
+        (∀ q ∈ riemannianBallOf s.metric p ρ,
+          SectionalBoundedBelowAt s.metric q (-(ρ ^ 2)⁻¹)) →
+        ENNReal.ofReal (w * ρ ^ 3) ≤ ballVolume s.metric p ρ →
+        (∀ x ∈ riemannianBallOf s.metric p (2 * ρ), metricScalarAt s.metric x ≤ C0 / ρ ^ 2) →
+        ∀ q ∈ riemannianBallOf s.metric p ρ,
+          ¬ (∃ (j : Fin (sliceHistoryR_O3 F s).eventCount)
+            (hj : T₀ - θ ≤ (sliceHistoryR_O3 F s).time j.succ)
+            (hl : j.succ ≤ Fin.last (sliceHistoryR_O3 F s).eventCount)
+            (B : BackwardPointTrace (sliceHistoryR_O3 F s).toHistory j.succ
+              (Fin.last (sliceHistoryR_O3 F s).eventCount) hl q)
+            (b : ((sliceHistoryR_O3 F s).toHistory.event j).RetainedBoundaryIndex)
+            (x : standardCapWindow pp.modelRadius),
+            B.point j.succ le_rfl hl = ((records j hj).static b).window x ∧
+              ‖x.val‖ < Dcap + 1 ∧
+              s.time - (sliceHistoryR_O3 F s).time j.succ ≤
+                θ * (((records j hj).static b).neck.scale)⁻¹) →
+          ∀ θ' : ℝ, 0 < θ' → θ' ≤ θH → ∀ τ : ℝ, 0 < τ → 9 * K * τ ≤ 1 →
+          ∀ (j : Fin (sliceHistoryR_O3 F s).eventCount)
+            (hj : T₀ - θ ≤ (sliceHistoryR_O3 F s).time j.succ)
+            (B : BackwardPointTrace (sliceHistoryR_O3 F s).toHistory j.succ
+              (Fin.last (sliceHistoryR_O3 F s).eventCount) (Fin.le_last _) q)
+            (b : ((sliceHistoryR_O3 F s).toHistory.event j).RetainedBoundaryIndex)
+            (x : standardCapWindow pp.modelRadius), ‖x.val‖ < Dcap - 1 + 1 →
+            ((records j hj).static b).window x ∈
+              riemannianBallOf ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+                (B.point j.succ le_rfl (Fin.le_last _)) (20 * (θ' * ρ)) →
+            metricScalarAt ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+              (((records j hj).static b).window x) ≤ 9 * K / (θ' * ρ) ^ 2 →
+            s.time - (sliceHistoryR_O3 F s).time j.succ < τ * (θ' * ρ) ^ 2 →
+            ((records j hj).static b).neck.scale ≤ Cb / ρ ^ 2 := by
+  intro w hw Λ hΛ θ Dcap C0 hθ hC0 hD K hK
+  obtain ⟨bH, TH, θH, εH, hb, hθH, hεH, h⟩ := hsurv w hw Λ hΛ θ Dcap C0 hθ hC0 hD K hK
+  obtain ⟨ε₀', c₀, hε₀', hc₀, hscaleR⟩ := hscale_of_record_S105.{u}
+  obtain ⟨T₁, hT₁, hmic⟩ := micro_scale_le_neckRadius_O13 Hp Λ 1 (by linarith) one_pos
+  have hm : 0 < max C0 1 := lt_max_of_lt_right one_pos
+  refine ⟨(1 + Ctime) * max C0 1 / c₀, bH, max TH T₁, θH, min εH ε₀', by positivity, hb, hθH,
+    lt_min hεH hε₀', ?_⟩
+  intro s hs T₀ hT₀ hT₀s pp records e1 e2 e3 e4 hmr hacc hord hlink p ρ hρ hρb h2 h3 h4 h5 h6 q hq hno
+    θ' hθ' hθ'H τ hτ hτK j hj B b x hx hmem hsc hage
+  obtain ⟨hsTH, hsT₁⟩ := max_le_iff.mp hs
+  obtain ⟨hTH₀, -⟩ := max_le_iff.mp hT₀
+  have hacc1 : pp.modelAccuracy ≤ εH := hacc.trans (min_le_left _ _)
+  have hacc2 : pp.modelAccuracy ≤ ε₀' := hacc.trans (min_le_right _ _)
+  obtain ⟨yf, hyf, A, hA⟩ := h s hsTH T₀ hTH₀ hT₀s pp records e1 e2 e3 e4 hmr hacc1 hord hlink p ρ hρ hρb h2
+    h3 h4 h5 h6 q hq hno θ' hθ' hθ'H τ hτ hτK j hj B b x hx hmem hsc hage
+  -- the threshold q₀ := max C0 1 / ρ²
+  have hρ' : ρ ≤ Hp.parameters.neckRadius s.time := by simpa using hmic s hsT₁ ρ h2
+  have hnr : 0 < Hp.parameters.neckRadius s.time := Hp.parameters.neckRadius_pos _ s.positive.le
+  have hρ2 : 0 < ρ ^ 2 := by positivity
+  have hq₀ : 0 < max C0 1 / ρ ^ 2 := by positivity
+  have hqth : (Hp.parameters.neckRadius s.time ^ 2)⁻¹ ≤ max C0 1 / ρ ^ 2 := by
+    calc (Hp.parameters.neckRadius s.time ^ 2)⁻¹ ≤ (ρ ^ 2)⁻¹ :=
+          inv_anti₀ hρ2 (pow_le_pow_left₀ hρ.le hρ' 2)
+      _ = 1 / ρ ^ 2 := (one_div _).symm
+      _ ≤ max C0 1 / ρ ^ 2 := by gcongr; exact le_max_right _ _
+  have hfwd := fwd_scalar_lower_S134 Hp s Ctime hP2 hq₀ hqth j.succ (Fin.le_last _) yf A
+  have hout : metricScalarAt ((sliceHistoryR_O3 F s).initialMetric j.succ)
+      (A.point j.succ le_rfl (Fin.le_last _)) =
+      metricScalarAt ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+        (((records j hj).static b).window x) := by
+    rw [hA]
+    exact congrArg (fun m => metricScalarAt m (((records j hj).static b).window x))
+      ((sliceHistoryR_O3 F s).toHistory.event_output j).symm
+  rw [hout] at hfwd
+  have hqpos : 0 < ((records j hj).static b).neck.scale := ((records j hj).static b).neck.scale_pos
+  have hlow := hscaleR hacc2 hord (records j hj) b x (by
+    have hte := StandardCap.transitionEnd_pos
+    linarith only [hx, hmr, hD, hte])
+  set a : ℝ := metricScalarAt ((sliceHistoryR_O3 F s).toHistory.event j).outputMetric
+    (((records j hj).static b).window x) with ha
+  have hapos : 0 < a := lt_of_lt_of_le (mul_pos hc₀ hqpos) hlow
+  have hts : (sliceHistoryR_O3 F s).time j.succ ≤ s.time :=
+    (((sliceHistoryR_O3 F s).time_strictMono.monotone (Fin.le_last _)).trans
+      (sliceSlabR_O3 F s).lt.le)
+  have hT0 : 0 ≤ s.time - (sliceHistoryR_O3 F s).time j.succ := sub_nonneg.2 hts
+  have hr2 : 0 < (θ' * ρ) ^ 2 := by positivity
+  have haT : a * (s.time - (sliceHistoryR_O3 F s).time j.succ) ≤ 1 := by
+    have h1 : a ≤ 9 * K / (θ' * ρ) ^ 2 := hsc
+    have h2' : a * (s.time - (sliceHistoryR_O3 F s).time j.succ) ≤
+        9 * K / (θ' * ρ) ^ 2 * (τ * (θ' * ρ) ^ 2) :=
+      mul_le_mul h1 hage.le hT0 (by positivity)
+    have h3' : 9 * K / (θ' * ρ) ^ 2 * (τ * (θ' * ρ) ^ 2) = 9 * K * τ := by field_simp
+    linarith only [h2', h3', hτK]
+  have hml := maxlower_S134 (q₀ := max C0 1 / ρ ^ 2) hapos hq₀ Ctime.coe_nonneg haT hfwd
+  have hyf' : metricScalarAt s.metric yf ≤ C0 / ρ ^ 2 := h6 yf hyf
+  have hmax : max (max C0 1 / ρ ^ 2) (metricScalarAt s.metric yf) ≤ max C0 1 / ρ ^ 2 :=
+    max_le le_rfl (hyf'.trans (by gcongr; exact le_max_left _ _))
+  have hfin : a ≤ (1 + Ctime) * (max C0 1 / ρ ^ 2) := by
+    have := hml.trans hmax
+    rw [div_le_iff₀ (by positivity)] at this
+    linarith only [this]
+  have hc : c₀ * ((records j hj).static b).neck.scale ≤ (1 + Ctime) * (max C0 1 / ρ ^ 2) :=
+    hlow.trans hfin
+  rw [le_div_iff₀ hρ2, le_div_iff₀ hc₀]
+  have e2 : (1 + (Ctime : ℝ)) * max C0 1 = (1 + Ctime) * (max C0 1 / ρ ^ 2) * ρ ^ 2 := by
+    field_simp
+  rw [e2]
+  have := mul_le_mul_of_nonneg_right hc hρ2.le
+  nlinarith only [this]
+
+end GC.LongTime.Ch12

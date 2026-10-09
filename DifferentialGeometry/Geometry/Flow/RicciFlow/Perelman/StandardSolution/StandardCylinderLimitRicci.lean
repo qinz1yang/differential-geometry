@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RicciNonnegativeConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Compactness.ReferenceBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Curvature.Nonnegative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardClosedReferenceBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureOperator
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34InnerFirstMotionStep
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TargetFirstDiskCancellation
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.DiskRimAvoidance
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingDiskRims
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingDiskTraceDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ContactSupport
 
@@ -115,7 +115,7 @@ theorem exists_section34_removal_step_of_interior_disk_pair
     ((hFT.trans inter_subset_right).trans interior_subset) hDF
   have hCint := hC.subset_interior_of_boundary_subset hCT
     (union_subset (hDT.trans inter_subset_right) (hFT.trans inter_subset_right))
-  obtain ⟨k, hk, -, hgen, -⟩ := exists_piercing_circle_carrying_generators hprep hpack e₀
+  obtain ⟨k, hk, -, hgen, -⟩ := exists_section34_piercing_circle_carrying_generators hprep hpack e₀
   have htor := (section34_tubes_are_topological_solid_tori hprep hpack e₀).2
   obtain ⟨-, -, -, -, hCp, -, -, -, -, -, -, -, -, -, hAa, hBb, -⟩ := id hprep
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hG, -, -, -, -, -, -, hPg, -⟩ := id hpack

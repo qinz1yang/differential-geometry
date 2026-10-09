@@ -18,7 +18,7 @@ variable {M N : ConnectedClosedOrientedManifold.{u} 3}
   (d : OrientedBallChart N.toClosedOrientedManifold)
   {P : Type u} [TopologicalSpace P] [ChartedSpace E3 P]
 
-theorem isStandardConnectedSum_of_outer_caps_cylinder_cover
+theorem isPoincareStandard_of_outer_caps_cylinder_cover
     [T2Space P]
     (F₀ : PartialDiffeomorph (𝓡 3) (𝓡 3) M.Carrier P ∞)
     (F₁ : PartialDiffeomorph (𝓡 3) (𝓡 3) N.Carrier P ∞)
@@ -37,12 +37,12 @@ theorem isStandardConnectedSum_of_outer_caps_cylinder_cover
         range (fun x : outerPunctured d => F₁ x.val.val)) = univ)
     (hzero : ∀ z : S2, T (z,0) = F₀ (outerLeftBoundary c z).val.val)
     (hone : ∀ z : S2, T (z,1) = F₁ (outerRightBoundary d boundaryAttachment z).val.val)
-    (hM : isStandardConnectedSum M.Carrier) (hN : isStandardConnectedSum N.Carrier) :
-    isStandardConnectedSum P := by
+    (hM : isPoincareStandard M.Carrier) (hN : isPoincareStandard N.Carrier) :
+    isPoincareStandard P := by
   obtain ⟨_, _, _, _, D, _, _, _, _, _, _⟩ :=
     exists_diffeomorph_of_outer_caps_cylinder_cover c d boundaryAttachment F₀ F₁ T
       hF₀ hF₁ hTs hdisj hcross₀ hcross₁ hcover hzero hone
-  exact isStandardConnectedSum_of_diffeomorph D.symm
-    (isStandardConnectedSum_smoothConnectedSum M N c d hM hN)
+  exact isPoincareStandard_of_diffeomorph D.symm
+    (isPoincareStandard_smoothConnectedSum M N c d hM hN)
 
 end DifferentialGeometry.Topology.ConnectedSumQuotient

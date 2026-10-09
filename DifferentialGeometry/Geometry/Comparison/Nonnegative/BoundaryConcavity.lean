@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulConvexCore
-import DifferentialGeometry.Analysis.Convex.ApproximateLowerSupport
+import DifferentialGeometry.Geometry.Comparison.Busemann.Support.ApproximateSupportConvexity
 import Mathlib.Topology.MetricSpace.HausdorffDistance
 
 set_option autoImplicit false

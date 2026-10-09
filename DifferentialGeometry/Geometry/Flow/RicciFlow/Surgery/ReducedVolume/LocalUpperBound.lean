@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Exponentia
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.CoreEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryScalarFloor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryHorizonExtension
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.TangentGaussian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.MetricGaussianTail
 
 set_option autoImplicit false
 
@@ -31,7 +31,7 @@ private local instance : BorelSpace ThreeSpace := ⟨rfl⟩
 theorem historyReducedVolumeLocalUpperBound_holds :
     HistoryReducedVolumeLocalUpperBound.{u} := by
   refine ⟨(4 * Real.pi) ^ (-(3 : ℝ) / 2) * Real.exp 36, by positivity, fun η hη => ?_⟩
-  obtain ⟨R, -, htail⟩ := DifferentialGeometry.Integral.Measure.exists_uniform_tangent_gaussian_tail_three.{u} (ENNReal.ofReal η)
+  obtain ⟨R, -, htail⟩ := exists_uniform_tail_gaussian_metric.{u} (ENNReal.ofReal η)
     (ENNReal.ofReal_pos.mpr hη)
   obtain ⟨σ, hσ, hσ1, hcore⟩ :=
     ObservedHistory.exists_lintegral_image_historyMinDomain_core_le.{u} R

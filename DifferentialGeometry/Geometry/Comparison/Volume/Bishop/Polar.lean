@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Polar.Evaluation
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Radial
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Density.Basic
+import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

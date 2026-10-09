@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.Collar
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ExteriorCollarCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CollaredFillingCylinderSquare
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PlanarDiskBoundary
 

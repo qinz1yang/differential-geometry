@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Extinction.SingularEvents
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SingularEventExtinction
 
 set_option autoImplicit false
 
@@ -106,7 +106,7 @@ def UniformDebitSurgeryStep (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
 theorem exists_poincare_controlled_extinction_of_uniformDebitSurgeryStep_of_canonicalNeighborhoods
     (P₀ : OrientedThreeStage.{u}) [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric)
     (hstep : UniformDebitSurgeryStep P₀ g₀) (hcn : CanonicalNeighborhoodsThroughSurgery P₀ g₀) :
-    Nonempty (PoincareControlledExtinction P₀ g₀) := by
+    Nonempty (PoincareControlledExtinction P₀.toClosedOrientedManifold g₀) := by
   apply exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants P₀ g₀
   intro B hB
   obtain ⟨ε, hε, hε', hstepB⟩ := hstep B hB

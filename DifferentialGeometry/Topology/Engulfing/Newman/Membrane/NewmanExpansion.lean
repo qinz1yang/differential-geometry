@@ -11,11 +11,11 @@ open scoped ContinuousMap
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E M : Type*} [DecidableEq E] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M]
 
-omit [FiniteDimensional ℝ E] in
 theorem FiniteSimplexExpansionIn.isCompact {K : SimplicialComplex ℝ E} {A C : Set E}
     (h : FiniteSimplexExpansionIn K A C) (hA : IsCompact A) : IsCompact C := by
   induction h with
@@ -33,7 +33,6 @@ def mapSimplexAttachmentStep (K L : SimplicialComplex ℝ E) (X U : Set M)
         X ∪ g' '' (Subtype.val ⁻¹' (C ∪ convexHull ℝ (V : Set E))) ⊆ G '' (H '' U) ∧
         IsCompact (closure {x | G x ≠ x})
 
-omit [FiniteDimensional ℝ E] in
 theorem exists_map_engulfing_of_expansion
     (K L : SimplicialComplex ℝ E) (f : C(K.space, M))
     (X U : Set M) (Good : C(K.space, M) → Prop) (hfGood : Good f)
@@ -69,7 +68,6 @@ theorem exists_map_engulfing_of_expansion
       obtain ⟨y, ⟨z, hz, rfl⟩, hy⟩ := hg'cover hx
       exact ⟨z, hz, hy⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem simplexRoof_subset_skeleton (K : SimplicialComplex ℝ E) {V B : Finset E} {q : ℕ}
     (hV : V ∈ K.faces) (hB : B ⊆ V) (hcard : V.card ≤ q + 2) :
     simplexRoof V B ⊆ (skeleton K q).space := by
@@ -84,7 +82,6 @@ theorem simplexRoof_subset_skeleton (K : SimplicialComplex ℝ E) {V B : Finset 
   omega
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeleton_space_mono (K : SimplicialComplex ℝ E) {q p : ℕ} (hqp : q ≤ p) :
     (skeleton K q).space ⊆ (skeleton K p).space := by
   classical
@@ -97,21 +94,18 @@ def skeletalCovered (K : SimplicialComplex ℝ E) (A C : Set E) (q : ℕ) : Set 
   A ∪ (C ∩ (skeleton K q).space)
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeletalCovered_self (K : SimplicialComplex ℝ E) (A : Set E) (q : ℕ) :
     skeletalCovered K A A q = A := by
   classical
   exact union_eq_left.mpr inter_subset_left
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeletalCovered_subset {K : SimplicialComplex ℝ E} {A C : Set E} {q : ℕ}
     (hAC : A ⊆ C) : skeletalCovered K A C q ⊆ C := by
   classical
   exact union_subset hAC inter_subset_left
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeletalCovered_union (K : SimplicialComplex ℝ E) (A C S : Set E) (q : ℕ) :
     skeletalCovered K A (C ∪ S) q = skeletalCovered K A C q ∪ (S ∩ (skeleton K q).space) := by
   classical
@@ -120,7 +114,6 @@ theorem skeletalCovered_union (K : SimplicialComplex ℝ E) (A C S : Set E) (q :
   tauto
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeletalCovered_union_of_subset (K : SimplicialComplex ℝ E) (A C S : Set E) (q : ℕ)
     (hSA : S ⊆ A) : skeletalCovered K A (C ∪ S) q = skeletalCovered K A C q := by
   classical
@@ -128,7 +121,6 @@ theorem skeletalCovered_union_of_subset (K : SimplicialComplex ℝ E) (A C S : S
   exact union_eq_left.mpr (inter_subset_left.trans (hSA.trans subset_union_left))
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 theorem skeletalCovered_isCompact {K : SimplicialComplex ℝ E} (hK : K.faces.Finite)
     {A C : Set E} (hA : IsCompact A) (hC : IsCompact C) (q : ℕ) :
     IsCompact (skeletalCovered K A C q) := by
@@ -137,7 +129,6 @@ theorem skeletalCovered_isCompact {K : SimplicialComplex ℝ E} (hK : K.faces.Fi
   exact hA.union (hC.inter_right
     (hsk.isCompact_biUnion (fun t _ => t.finite_toSet.isCompact_convexHull ℝ)).isClosed)
 
-omit [FiniteDimensional ℝ E] in
 theorem SimplexAttachment.skeletalCovered {K : SimplicialComplex ℝ E}
     {A C : Set E} {V B : Finset E} {q : ℕ}
     (h : SimplexAttachment C V B) (hV : V ∈ K.faces)
@@ -152,7 +143,6 @@ theorem SimplexAttachment.skeletalCovered {K : SimplicialComplex ℝ E}
     exact ⟨Or.inr ⟨hroof.1, simplexRoof_subset_skeleton K hV h.properRoof.subset hcard hx⟩,
       hroof.2⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem FiniteSimplexExpansionIn.isSubcomplexSpace {K : SimplicialComplex ℝ E}
     {A C : Set E} (h : FiniteSimplexExpansionIn K A C) (hA : isSubcomplexSpace K A) :
     isSubcomplexSpace K C := by
@@ -173,7 +163,6 @@ def mapSkeletalSimplexStep (K L : SimplicialComplex ℝ E) (X U : Set M)
           (convexHull ℝ (V : Set E) ∩ (skeleton K q).space))) ⊆ G '' (H '' U) ∧
         IsCompact (closure {x | G x ≠ x})
 
-omit [FiniteDimensional ℝ E] in
 theorem exists_map_engulfing_of_skeletal_expansion
     (K L : SimplicialComplex ℝ E) (hK : K.faces.Finite) (f : C(K.space, M))
     (X U : Set M) (Good : C(K.space, M) → Prop) (hfGood : Good f)

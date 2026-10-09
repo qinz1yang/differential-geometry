@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
-import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
+import DifferentialGeometry.Bundle.HomNorm
+import DifferentialGeometry.Geometry.Metric.BundleContinuity
 
 set_option autoImplicit false
 
@@ -115,7 +115,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_continuous_endo
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q) :
     (∀ t ∈ Ioc 0 T, ∀ x y,
@@ -179,7 +179,7 @@ theorem rank_finite_interval_partition_of_continuous_endomorphism
       HasDerivAt (fun r ↦ A r z)
         (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun w ↦ A q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) +
           reaction q z (A q z)) q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b ≤ T) :
@@ -238,7 +238,7 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
     (hreg : Ico 0 T ⊆ D.regular)
     (hX : ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) (Ico 0 T ×ˢ (Set.univ : Set M)))
     (hGconnClosed : ∀ q ∈ Ico 0 T, G.connection q = LeviCivita (I := I) (G.metric q))
-    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + _root_.CovariantDerivative.hom I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t < T) (x y : M) :
     Module.finrank ℝ (A s x).range ≤ Module.finrank ℝ (A t y).range := by
   classical
@@ -312,7 +312,7 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
       HasDerivAt (fun r ↦ A' r z)
         (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov' q)
             (fun w ↦ A' q w) z +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov' q) (cov' q) (fun w ↦ A' q w) z (X q z) +
           reaction' q z (A' q z)) q := by
     intro q hq z
@@ -360,7 +360,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_on_Ioo
     (hreg : Ico 0 T ⊆ D.regular)
     (hX : ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) (Ico 0 T ×ˢ (Set.univ : Set M)))
     (hGconnClosed : ∀ q ∈ Ico 0 T, G.connection q = LeviCivita (I := I) (G.metric q))
-    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + _root_.CovariantDerivative.hom I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
  :
     (∀ t ∈ Ioo 0 T, ∀ x y,
       Module.finrank ℝ (A t x).range = Module.finrank ℝ (A t y).range) ∧
@@ -418,7 +418,7 @@ theorem rank_finite_interval_partition_on_Ioo
     (hreg : Ico 0 T ⊆ D.regular)
     (hX : ContinuousOn (fun p : ℝ × M => (TotalSpace.mk' E p.2 (X p.1 p.2) : TangentBundle I M)) (Ico 0 T ×ˢ (Set.univ : Set M)))
     (hGconnClosed : ∀ q ∈ Ico 0 T, G.connection q = LeviCivita (I := I) (G.metric q))
-    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + _root_.CovariantDerivative.hom I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
+    (hevolution : ∀ q ∈ Ioo 0 T, ∀ z, HasDerivAt (fun r ↦ A r z) (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q) (fun w ↦ A q w) z + HomConnectionGen.homBundleCovariantDerivativeGen I M F V F V (cov q) (cov q) (fun w ↦ A q w) z (X q z) + reaction q z (A q z)) q)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (hb : b < T) :
     ∃ Q : Finset ℕ,
       Icc a b = ⋃ q ∈ Q, {t | t ∈ Icc a b ∧ ∀ x,

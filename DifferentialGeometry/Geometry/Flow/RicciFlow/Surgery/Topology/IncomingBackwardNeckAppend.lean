@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedRegularity
 import DifferentialGeometry.Geometry.Metric.Family.CoefficientExtension
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventExtension

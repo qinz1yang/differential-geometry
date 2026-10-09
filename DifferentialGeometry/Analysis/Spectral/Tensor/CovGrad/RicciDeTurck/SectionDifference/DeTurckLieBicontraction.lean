@@ -910,8 +910,8 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff (
 
 def deTurckLieCovariantDerivativeInsertionFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndomorphism (I := I) (M := M) 2 0 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) +
-    slotInsertEndomorphism (I := I) (M := M) 2 1 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) +
+    slotInsertEndoFib (I := I) (M := M) 2 1 x (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -929,7 +929,7 @@ theorem deTurckLieCovariantDerivativeInsertionFib_toModel (g₁ g_bg : SmoothRie
               (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (v 1))) := by
   rw [deTurckLieCovariantDerivativeInsertionFib, add_apply, Tensor0SSpace.toModel_add,
     add_apply,
-    slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval]
+    slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -947,10 +947,10 @@ theorem deTurckLieCovariantDerivativeInsertionFib_contMDiff (g₁ g_bg : SmoothR
     (deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff (I := I) g₁ g_bg)
   have hadd := ContMDiff.add_section
     (s := fun x => (show TensorRSSpace 2 2 I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x))))
     (t := fun x => (show TensorRSSpace 2 2 I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 1 x
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 1 x
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x))))
     h0 h1
   refine hadd.congr ?_

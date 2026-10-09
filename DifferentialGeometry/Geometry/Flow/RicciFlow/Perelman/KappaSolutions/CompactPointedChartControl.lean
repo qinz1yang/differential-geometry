@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.OpenCharts
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OpenChartTimeJets
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 

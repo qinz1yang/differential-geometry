@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Separation.ThreeSurfaces
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.UnboundedComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.PLAnnulusEnds
 
@@ -8,7 +12,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem exists_exterior_pair_of_annuli (M : Fin 3 → Set E3)
+theorem exists_exterior_pair_of_annuli (h267 : Moise267) (M : Fin 3 → Set E3)
     {J₀ J₁ : Set E3} (hM : ∀ i, IsPLAnnulusWithEnds (M i) J₀ J₁)
     (hmeet : ∀ i j, i ≠ j → M i ∩ M j = J₀ ∪ J₁) :
     ∃ x, x ∉ ⋃ i, M i ∧ ¬ Bornology.IsBounded (connectedComponentIn (⋃ i, M i)ᶜ x) ∧
@@ -35,7 +39,7 @@ theorem exists_exterior_pair_of_annuli (M : Fin 3 → Set E3)
     exact disjoint_left.mpr fun _ hi hj => hi.2 ((hmeet i j hij).subset ⟨hi.1, hj.1⟩)
   have hunion : (⋃ i, (K i).space) = ⋃ i, M i := iUnion_congr hspace
   obtain ⟨i, j, k, hij, hik, hjk, hfront, hbounded⟩ :=
-    exists_pair_frontier_unbounded_component_three_surfaces K hKfin hK hKconn (fun i j => (hboundary i).trans (hboundary j).symm)
+    h267 K hKfin hK hKconn (fun i j => (hboundary i).trans (hboundary j).symm)
       hboundaryNe hdis x (hunion ▸ hx) (hunion ▸ hunbounded)
   refine ⟨x, hx, hunbounded, i, j, k, hij, hik, hjk, ?_, ?_⟩
   · simpa only [hunion, hspace] using hfront
@@ -43,7 +47,7 @@ theorem exists_exterior_pair_of_annuli (M : Fin 3 → Set E3)
 
 theorem IsPLAnnulusWithEnds.exists_exterior_complementary_annulus
     {C B₀ B₁ J₀ J₁ : Set E3} (hC : IsPLAnnulusWithEnds C J₀ J₁)
-    (hB₀ : IsPLAnnulusWithEnds B₀ J₀ J₁)
+    (h267 : Moise267) (hB₀ : IsPLAnnulusWithEnds B₀ J₀ J₁)
     (hB₁ : IsPLAnnulusWithEnds B₁ J₀ J₁)
     (hC₀ : C ∩ B₀ = J₀ ∪ J₁) (hC₁ : C ∩ B₁ = J₀ ∪ J₁)
     (h₀₁ : B₀ ∩ B₁ = J₀ ∪ J₁) :
@@ -73,7 +77,7 @@ theorem IsPLAnnulusWithEnds.exists_exterior_complementary_annulus
       | exact (inter_comm _ _).trans hC₁
       | exact (inter_comm _ _).trans h₀₁
   obtain ⟨x, hx, hunbounded, i, j, k, hij, hik, hjk, hfront, hbounded⟩ :=
-    exists_exterior_pair_of_annuli M hM hmeet
+    exists_exterior_pair_of_annuli h267 M hM hmeet
   have hchoice : ∃ B : Set E3, (B = B₀ ∨ B = B₁) ∧ (B = M i ∨ B = M j) := by
     by_cases hi : i = 0
     · have hj : j ≠ 0 := fun hj => hij (hi.trans hj.symm)

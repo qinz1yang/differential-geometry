@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.Area.ConformalMetricDerivative
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.DiskMetricCoefficient
-import DifferentialGeometry.Geometry.Metric.Family.Regularity.SectionPairing
-import DifferentialGeometry.Topology.Manifold.Calculus.ParameterDerivative
+import DifferentialGeometry.Geometry.Metric.FamilySectionPairing
+import DifferentialGeometry.Geometry.Metric.ParameterDerivative
 
 
 

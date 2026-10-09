@@ -1,0 +1,133 @@
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryBCF03RowBCF
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryFaceCountsBCF
+
+/-!
+# Consumers of the BCF03 G7 whole row (lane S-BCF03c, G30)
+
+* `bcf03_counts_of_rows_BCF`: the row's partition of every component of `∂M₂` together with the
+  counts G7' (`bcf03_counts_BCF03`, G11) on THAT partition: a sphere component has two disks, a
+  torus component none (FC40);
+* `boundaryGeometricExports74V32_of_rows_BCF`: the V32 exports of ANY v2b decomposition `dec`, with
+  the two fields `partition` (`hG7`) and `cuspFace` (`hdisk`) discharged by the row instead of
+  being hypotheses of `boundaryGeometricExports74b_of_rows_OBD`.
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Function Metric Bundle Manifold Filter Topology
+open scoped ContDiff Manifold Topology ENNReal
+open DifferentialGeometry.Topology.Ehresmann DifferentialGeometry.Topology.Manifold
+open DifferentialGeometry.Geometry.Riemannian GC.MetricGeometry
+open DifferentialGeometry GC.Endpoint DifferentialGeometry.Geometry.Hyperbolic
+open DifferentialGeometry.Analysis DifferentialGeometry.Topology
+
+namespace DifferentialGeometry.Geometry.Collapse
+
+local notation "E3" => EuclideanSpace ℝ (Fin 3)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+attribute [local instance] nezero_finrank_euclideanThree_LC87
+
+attribute [local instance] interiorCharted_BDRY1 interiorManifold_BDRY1
+  connectedSpace_interior_BDRY2
+
+variable {K : ℕ} {A : ℝ → ℝ} {β : ℕ → ℝ}
+  {βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz θ : ℝ}
+  {W : CompactCarrier.{0}} [ConnectedSpace W.Carrier] {g : SmoothRiemannianMetric W.model W.Carrier}
+  {δn : ℝ} {n : ℕ} {B : NearlyCuspidalBoundary W g K δn}
+  {oM : ManifoldOrientation 𝓘(ℝ, E3) (W.pieceInterior ⊤) 3}
+  {S : BoundarySupply K A β βd εN Λ w Δ σs σc μ b s b' s' ε γc βc Lmax τ γ δ εr e T V vs ζ Λz θ W g
+    δn n B oM} {Γ Sg eg : Fin 3 → ℝ}
+  {DP : BoundaryAugmentedDataPV3 S (actualSlotsV2_BAUGD S) Γ Sg eg} {Kj : ℕ}
+  {Ξ c cw : Fin 3 → ℝ} {bcut bder κ cadj : ℝ}
+
+namespace BoundaryGaf02ChainE
+
+variable (C : BoundaryGaf02ChainE DP Kj Ξ c cw bcut bder κ cadj)
+
+/-- **The row with the counts** (G7 then G7'): for every component of `∂M₂` there is a partition
+with the frozen disk and piece identification, and every partition has two disks on a sphere and
+none on a torus. -/
+theorem bcf03_counts_of_rows_BCF {Bs : BoundaryGaf02BasesV2 C.toChain}
+    (WF : BoundaryWholeFiberSpecV2b C.toChain Bs) (Z : BoundaryActualZeroDomains_BIFc C.toChain Bs)
+    {rd : ℝ} (hrd : 0 < rd) (hrd4 : rd < 1 / 10000) (hrdc : 20 * (c 2 + 1) * rd < 1 / 1000000)
+    (hprem : 1000 * δn ^ 2 < w / (2 * (1 + 2 * Λ⁻¹) ^ 3) * min (1 / 2) (rd / 4) ^ 2)
+    (hθ : θ < 1 / 100) (Kc : BoundaryCompactSlimChoiceV2 Bs)
+    (er : BoundaryRelativeEdgeRestrictionV2 Kc)
+    (hΔ : 2 ≤ Δ) (hΛ : 0 ≤ Λ) (hμ : μ ≤ 1 / 10 ^ 8) (hτ : τ ≤ 1 / 10 ^ 8) (hσc : σc ≤ 1 / 1000)
+    (hn : 1140 * Δ ≤ 35 * (n : ℝ)) (hT : 1000 * Δ ≤ T) (hσs : 0 ≤ σs) (hσs1 : σs ≤ 1 / 100)
+    (hb : b < 1 / 1000000) (hs : s < 1 / 1000000) (hβ2 : β 2 < 1 / 1000000)
+    (hσL : (bcf02Sigma_BCF2K Δ)⁻¹ ≤ Lmax) (hbη : b ≤ bcf02Eta_BCF2K Δ)
+    (h3b : 3 * b ≤ bcf02Sigma_BCF2K Δ) (hbH : b * (2 * (20 * Δ + 1)) ≤ 1)
+    (hLΛ : 1000000 * Δ * Λ < 1 / 100000) (hμΔ : μ * Δ < 1 / 10000)
+    (h3βc : 3 * βc ≤ β 2) (hγ : 0 ≤ γ) (hγ34 : γ ≤ 3 / 4)
+    (hC : 100 * (bder + 1) * (1 + bcut + cw 0 / Sg 0) * Λ * Δ < 1 / 1000000)
+    (hG6 : Kc.remainder ⊆ Bs.source 0 ∧ Kc.edgePiece ∩ Kc.remainder = Kc.verticalFace ∧
+      Kc.remainder ∩ frontier Kc.M₂ =
+        frontier Kc.M₂ \ relInterior_BIF (frontier Kc.M₂) Kc.horizontalFace ∧
+      Kc.remainder = Bs.source 0 ∩
+        C.toChain.stageMap 0 ⁻¹' (C.toChain.stageMap 0 '' Kc.remainder) ∧
+      ∀ p ∈ Kc.verticalFace ∩ Kc.horizontalFace, ∃! ℓ, er.faceFun ℓ (C.toChain.stageMap 1 p) = 0)
+    (hG6c : CircleBaseCornersV32 Kc) :
+    ∀ x ∈ frontier Kc.M₂, ∃ P : Surface.EmbeddedFacePartition_BCF
+        (connectedComponentIn (frontier Kc.M₂) x),
+      (∀ i, ∃ y ∈ C.toChain.stageMap 1 '' Kc.horizontalFace,
+        Subtype.val '' P.disk i = connectedComponentIn (frontier Kc.M₂) x ∩ Bs.fibre 1 y) ∧
+      Subtype.val '' (⋃ j, P.piece j) = connectedComponentIn (frontier Kc.M₂) x ∩ Kc.remainder ∧
+      ∀ Q : Surface.EmbeddedFacePartition_BCF (connectedComponentIn (frontier Kc.M₂) x),
+        (Nonempty (connectedComponentIn (frontier Kc.M₂) x ≃ₜ SphereTwo) → Q.diskCount = 2) ∧
+          (Nonempty (connectedComponentIn (frontier Kc.M₂) x ≃ₜ Circle × Circle) →
+            Q.diskCount = 0) := by
+  intro x hx
+  obtain ⟨P, hdisk, hpiece⟩ :=
+    (C.bcf03_face_partition_of_rows_BCF WF Z hrd hrd4 hrdc hprem hθ Kc er hΔ hΛ hμ hτ hσc hn hT
+      hσs hσs1 hb hs hβ2 hσL hbη h3b hbH hLΛ hμΔ h3βc hγ hγ34 hC hG6 hG6c).1 x hx
+  exact ⟨P, hdisk, hpiece, Kc.bcf03_counts_BCF03 x hx⟩
+
+/-- **The V32 exports of a v2b decomposition from the rows**: `hG7` (partition) and `hdisk`
+(cusp branch) of `boundaryGeometricExports74b_of_rows_OBD` are produced by the BCF03 row; the corner
+record enters as the V32 record (`hG6c`), the exports are the V32 exports. -/
+theorem boundaryGeometricExports74V32_of_rows_BCF
+    (dec : BoundaryActualDecompositionV2b C.toChain) (hεr : εr < 1 / 2) {rd : ℝ} (hrd : 0 < rd)
+    (hrd4 : rd < 1 / 10000) (hrdc : 20 * (c 2 + 1) * rd < 1 / 1000000)
+    (hprem : 1000 * δn ^ 2 < w / (2 * (1 + 2 * Λ⁻¹) ^ 3) * min (1 / 2) (rd / 4) ^ 2)
+    (hθ : θ < 1 / 100) (hΔ : 2 ≤ Δ)
+    (hΛ : 0 ≤ Λ) (hμ : μ ≤ 1 / 10 ^ 8) (hτ : τ ≤ 1 / 10 ^ 8) (hσc : σc ≤ 1 / 1000)
+    (hn : 1140 * Δ ≤ 35 * (n : ℝ)) (hT : 1000 * Δ ≤ T) (hσs : 0 ≤ σs) (hσs1 : σs ≤ 1 / 100)
+    (hb : b < 1 / 1000000) (hs : s < 1 / 1000000) (hβ2 : β 2 < 1 / 1000000)
+    (hσL : (bcf02Sigma_BCF2K Δ)⁻¹ ≤ Lmax) (hbη : b ≤ bcf02Eta_BCF2K Δ)
+    (h3b : 3 * b ≤ bcf02Sigma_BCF2K Δ) (hbH : b * (2 * (20 * Δ + 1)) ≤ 1)
+    (hLΛ : 1000000 * Δ * Λ < 1 / 100000) (hμΔ : μ * Δ < 1 / 10000)
+    (h3βc : 3 * βc ≤ β 2) (hγ : 0 ≤ γ) (hγ34 : γ ≤ 3 / 4)
+    (hC : 100 * (bder + 1) * (1 + bcut + cw 0 / Sg 0) * Λ * Δ < 1 / 1000000)
+    (hG4s : ∀ ℓ, ∀ y ∈ dec.bases.base 1, dec.edge.faceFun ℓ y = 0 →
+      ∃ O : Set (BoundaryAmbient_BIF S.IntTag_BAUGA (Fin S.packet.cusp.count)), IsOpen O ∧
+        y ∈ O ∧ ContDiffOn ℝ ∞ (dec.edge.faceFun ℓ) O)
+    (hG6 : dec.slim.remainder ⊆ dec.bases.source 0 ∧
+      dec.slim.edgePiece ∩ dec.slim.remainder = dec.slim.verticalFace ∧
+      dec.slim.remainder ∩ frontier dec.slim.M₂ =
+        frontier dec.slim.M₂ \ relInterior_BIF (frontier dec.slim.M₂) dec.slim.horizontalFace ∧
+      dec.slim.remainder =
+        dec.bases.source 0 ∩ C.toChain.stageMap 0 ⁻¹' (C.toChain.stageMap 0 '' dec.slim.remainder) ∧
+      ∀ p ∈ dec.slim.verticalFace ∩ dec.slim.horizontalFace,
+        ∃! ℓ, dec.edge.faceFun ℓ (C.toChain.stageMap 1 p) = 0)
+    (hG6c : CircleBaseCornersV32 dec.slim) :
+    BoundaryGeometricExports74V32 C.toChain dec := by
+  have hrow := C.bcf03_face_partition_of_rows_BCF dec.fibres dec.zero hrd hrd4 hrdc hprem hθ
+    dec.slim dec.edge hΔ hΛ hμ hτ hσc hn hT hσs hσs1 hb hs hβ2 hσL hbη h3b hbH hLΛ hμΔ h3βc hγ
+    hγ34 hC hG6 hG6c
+  exact BoundaryGeometricExports74V32.ofExports74b_OBD
+    (C.boundaryGeometricExports74b_of_rows_OBD dec hεr hrd hrd4 hrdc hprem hθ hΔ hΛ hμ hτ hσc hn
+      hT hσs hσs1 hb hs hβ2 hσL hbη h3b hbH hLΛ hμΔ h3βc hγ hγ34 hC hG4s hG6 hG6c.toCorners74
+      hrow.1
+      (C.hdisk_of_partition_BCF dec.fibres dec.zero hrd hrd4 hrdc hprem hθ dec.slim dec.edge h3βc
+        hβ2 hγ hγ34 hC hG6 hG6c))
+    hG6c
+
+end BoundaryGaf02ChainE
+
+end DifferentialGeometry.Geometry.Collapse

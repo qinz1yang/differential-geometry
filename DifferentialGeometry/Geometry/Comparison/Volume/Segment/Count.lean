@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Polar.Basic
-import DifferentialGeometry.Analysis.Integration.Measure.Packing
+import DifferentialGeometry.Geometry.Comparison.Volume.Packing
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 open DifferentialGeometry.Geometry.Curvature
 

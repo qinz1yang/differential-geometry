@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowScalarBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.ScalingLimit
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 
 noncomputable section
 

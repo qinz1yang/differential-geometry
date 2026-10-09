@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Restriction
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 
 set_option autoImplicit false

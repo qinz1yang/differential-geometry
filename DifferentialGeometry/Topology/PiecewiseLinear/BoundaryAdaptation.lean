@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Cell
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Properness
-import DifferentialGeometry.Topology.PiecewiseLinear.DoubleManifold.HalfSpace
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCellProperness
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace
 
 open Set Topology
 

@@ -8,13 +8,10 @@ open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_connected_compact_neighborhood_scalar_sublevel_component_with_bound
+theorem TerminalLimitMetric.exists_connected_compact_neighborhood_scalar_sublevel_component_with_bound
     (L : G.TerminalLimitMetric) {A B : ℝ}
     (y : G.terminalRegularOpen)
     (hyA : metricScalarAt L.metric y ≤ A) :
@@ -46,7 +43,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       ((le_max_right _ _).trans (le_max_right _ _)))
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_connected_compact_region_covering_scalar_sublevel_of_compact_connected_neighborhood
+theorem TerminalLimitMetric.exists_connected_compact_region_covering_scalar_sublevel_of_compact_connected_neighborhood
     (L : G.TerminalLimitMetric) :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧

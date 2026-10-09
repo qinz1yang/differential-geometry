@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNonc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabContinuationDeepInside
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ForwardTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.BallVolumeComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Witness.CapCollar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalCapCollar
 
 noncomputable section
 
@@ -17,12 +17,9 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.inner_le_exp_two_mul_inner_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀) (hτ : t₀ ≤ τ)
+theorem inner_le_exp_two_mul_inner_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀) (hτ : t₀ ≤ τ)
     (hτb : τ ≤ b) (hbs : b < s) (hK : 0 ≤ K)
     (hRm : ∀ u ∈ Icc t₀ b, ∀ x : P.Carrier,
       Tensor0SBundle.normSq0S (G.flow.base.metric u) x 4 (G.flow.base.rm04 u x) ≤ K ^ 2)
@@ -41,7 +38,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   push_cast
   nlinarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.riemannianBallOf_subset_exp_one_mul_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀)
+theorem riemannianBallOf_subset_exp_one_mul_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀)
     (hτ : t₀ ≤ τ) (hτb : τ ≤ b) (hbs : b < s) (hK : 0 ≤ K)
     (hRm : ∀ u ∈ Icc t₀ b, ∀ x : P.Carrier,
       Tensor0SBundle.normSq0S (G.flow.base.metric u) x 4 (G.flow.base.rm04 u x) ≤ K ^ 2)
@@ -55,7 +52,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (fun q _ v => G.inner_le_exp_two_mul_inner_of_normSq_le ha hτ hτb hbs hK hRm hKτ q v)
   rwa [h2] at h
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.volume_riemannianBallOf_le_exp_three_mul_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀)
+theorem volume_riemannianBallOf_le_exp_three_mul_of_normSq_le {t₀ τ b K : ℝ} (ha : a ≤ t₀)
     (hτ : t₀ ≤ τ) (hτb : τ ≤ b) (hbs : b < s) (hK : 0 ≤ K)
     (hRm : ∀ u ∈ Icc t₀ b, ∀ x : P.Carrier,
       Tensor0SBundle.normSq0S (G.flow.base.metric u) x 4 (G.flow.base.rm04 u x) ≤ K ^ 2)
@@ -79,7 +76,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   · nlinarith
   · nlinarith
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.ofReal_mul_exp_neg_six_mul_pow_le {κ r : ℝ} {V : ENNReal} (hκ : 0 < κ)
+private theorem ofReal_mul_exp_neg_six_mul_pow_le {κ r : ℝ} {V : ENNReal} (hκ : 0 < κ)
     (hr : 0 < r)
     (h : ENNReal.ofReal κ * ENNReal.ofReal (r / Real.exp 1) ^ 3 ≤
       ENNReal.ofReal (Real.exp 3) * V) :
@@ -106,7 +103,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]
       norm_num
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_isKappaNoncollapsed_forward_of_before {κ ρ t₀ : ℝ} (ht₀ : a < t₀) (ht₀s : t₀ < s)
+theorem exists_isKappaNoncollapsed_forward_of_before {κ ρ t₀ : ℝ} (ht₀ : a < t₀) (ht₀s : t₀ < s)
     (hnc : ∀ (τ : (RealTimeInterval.closedOpen a s G.lt).FlowTime)
       (B : Perelman.FlowMetricBall G.flow τ), (τ : ℝ) ≤ t₀ → B.radius ≤ ρ →
         B.IsParabolicallyRmControlled → B.IsKappaNoncollapsed κ) :
@@ -211,7 +208,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 
 end OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
+open OrientedThreeStage.IncomingSlab
   (exists_uniform_canonical_threshold_of_parabolically_noncollapsed) in
 theorem deepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     DeepContinuation P₀ g₀ := by

@@ -10,6 +10,12 @@ namespace DifferentialGeometry.Topology.SingularPair
 
 variable (R : ModuleCat.{u} ℤ)
 
+lemma relativeHomologyMap_id_comp_relativeHomologyMap_id {X : TopCat.{u}} {A B C : Set X} (h₁ : Set.MapsTo (𝟙 X) A B)
+    (h₂ : Set.MapsTo (𝟙 X) B C) (h₃ : Set.MapsTo (𝟙 X) A C) (k : ℕ) :
+    relativeHomologyMap R (𝟙 X) h₁ k ≫ relativeHomologyMap R (𝟙 X) h₂ k = relativeHomologyMap R (𝟙 X) h₃ k := by
+  rw [← relativeHomologyMap_comp R (𝟙 X) (𝟙 X) h₁ h₂ (mapsTo_comp h₁ h₂) k]
+  exact relativeHomologyMap_eq_of_eq R (Category.id_comp (𝟙 X)) _ k
+
 lemma iso_inv_comp_eq_comp_inv {𝒞 : Type*} [Category 𝒞] {a b c d : 𝒞} (i : a ≅ b) (i' : c ≅ d)
     {f : a ⟶ c} {g : b ⟶ d} (h : i.hom ≫ g = f ≫ i'.hom) : i.inv ≫ f = g ≫ i'.inv := by
   rw [Iso.inv_comp_eq, ← Category.assoc, h, Category.assoc, Iso.hom_inv_id, Category.comp_id]

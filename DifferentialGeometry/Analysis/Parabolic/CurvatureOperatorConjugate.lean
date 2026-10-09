@@ -60,7 +60,7 @@ private theorem hom_exterior_pulled_leviCivita_initial_map_eq_zero
     letI := Bundle.ExteriorPower.fiberBundle G W k
     letI := Bundle.ExteriorPower.vector_bundle G W k
     letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) G W k
-    _root_.CovariantDerivative.hom I M _ _ _ _ (d.exteriorPower k) (c.exteriorPower k)
+    homBundleCovariantDerivativeGen I M _ _ _ _ (d.exteriorPower k) (c.exteriorPower k)
       (fun y => exteriorPower.mapContinuousLinearMap k (U y).toContinuousLinearMap) = 0 := by
   let d := pullbackFiberwiseLinearEquiv (fun y => (κ y).toLinearEquiv) hκ.clm_bundle_map
     (LeviCivita g)
@@ -77,7 +77,7 @@ private theorem hom_exterior_pulled_leviCivita_initial_map_eq_zero
   let _ := Bundle.ExteriorPower.fiberBundle G W k
   let _ := Bundle.ExteriorPower.vector_bundle G W k
   let _ := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) G W k
-  change _root_.CovariantDerivative.hom I M _ _ _ _ (d.exteriorPower k) (c.exteriorPower k)
+  change homBundleCovariantDerivativeGen I M _ _ _ _ (d.exteriorPower k) (c.exteriorPower k)
     (fun y => exteriorPower.mapContinuousLinearMap k (U y).toContinuousLinearMap) = 0
   have hd : d = pullbackFiberwiseLinearEquiv (fun y => (U y).toLinearEquiv) hU.clm_bundle_map c :=
     hconn

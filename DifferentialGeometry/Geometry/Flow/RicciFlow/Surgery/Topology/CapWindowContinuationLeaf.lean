@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowContinuationAssembly
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.Endpoint
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardClosenessEndpointWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DerivativeBoundExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartDerivativeBounds
@@ -57,14 +57,14 @@ theorem exists_capWindowPoint_bounds (P₀ : OrientedThreeStage.{u}) (g₀ : P�
             Real.sqrt ((Gk.flow.base.metric t).inner y v v) := by
   obtain ⟨a₀, ha₀, hHI⟩ := exists_pos_fixedHamiltonIveyRegion_for_identified_histories P₀ g₀
   obtain ⟨Cε, δ0, hCε, hδ0, hδ01, hpipe⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_canonicalWitness_of_orientedWitness.{u} hε hε'
+    OrientedThreeStage.IncomingSlab.exists_canonicalWitness_of_orientedWitness.{u} hε hε'
   set δ := min δ0 (1 / 4) with hδdef
   have hδ : 0 < δ := lt_min hδ0 (by norm_num)
   have hδ4 : δ ≤ 1 / 4 := min_le_right _ _
   have hδ1 : δ < 1 := hδ4.trans_lt (by norm_num)
   obtain ⟨τQ, hτQ, hL6⟩ := exists_uniform_orientedWitness_of_standard_close_endpoint hδ hδ1
   obtain ⟨CA, hCA, hA⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_scalar_derivative_bounds_of_window_orientedWitness.{u}
+    OrientedThreeStage.IncomingSlab.exists_scalar_derivative_bounds_of_window_orientedWitness.{u}
   obtain ⟨c₀, hc₀, hQlow⟩ := exists_standard_scalar_lower_bound
   set Θ₃ := 2 * τQ / (c₀ + 2 * τQ) with hΘ₃def
   have hΘ₃ : 0 < Θ₃ := by positivity

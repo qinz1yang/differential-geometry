@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.SpatialContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialJetTimeContinuity
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Topology.UniformSpace.HeineCantor

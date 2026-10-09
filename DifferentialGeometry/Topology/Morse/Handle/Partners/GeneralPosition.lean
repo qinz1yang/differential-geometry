@@ -130,7 +130,7 @@ theorem isOpen_periodic_imp {E X : Type*} [NormedAddCommGroup E] [NormedSpace �
   exact (hS.isOpen_compl.prod isOpen_univ).union (isOpen_univ.prod hV)
 
 theorem exists_smooth_rel_euclid {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {g : E → F} (hg : Continuous g) {U : Set E} (hU : IsOpen U) (hgU : ContDiffOn ℝ ∞ g U)
     {P C N : Set E} (hP : IsClosed P) (hPU : P ⊆ U) (hC : IsCompact C) (hN : IsOpen N)
     (hCN : C ⊆ N) {η : ℝ} (hη : 0 < η) :
@@ -189,7 +189,7 @@ theorem exists_smooth_rel_euclid {E F : Type*} [NormedAddCommGroup E] [NormedSpa
 
 theorem dimH_affine_zeros_lt {E P F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
-    [NormedAddCommGroup F] [NormedSpace ℝ F] {S : Submodule ℝ F}
+    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] {S : Submodule ℝ F}
     (hdim : Module.finrank ℝ E < Module.finrank ℝ S)
     (hSP : Module.finrank ℝ S ≤ Module.finrank ℝ P) {Z : Set E} (hZ : IsOpen Z)
     {Φ₀ : E → F} (hΦ₀ : ContDiffOn ℝ 1 Φ₀ Z) {L : E → P →L[ℝ] F} (hL : ContDiffOn ℝ 1 L Z)
@@ -2613,7 +2613,7 @@ theorem exists_periodic_closed_nhds {P U : Set (ℝ × ℝ)} (hP : IsClosed P) (
     exact ⟨ha, hb⟩
 
 theorem eventually_locallyInjective {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
-    {Hf : ℝ × ℝ → P → M}
+    [FiniteDimensional ℝ P] {Hf : ℝ × ℝ → P → M}
     (hH : ContMDiff 𝓘(ℝ, (ℝ × ℝ) × P) I ∞ (fun q : (ℝ × ℝ) × P => Hf q.1 q.2))
     (hper : ∀ θ s w, Hf (θ + 1, s) w = Hf (θ, s) w) {Q : Set (ℝ × ℝ)}
     (hQper : ∀ θ s, (θ, s) ∈ Q ↔ (θ + 1, s) ∈ Q)
@@ -2797,7 +2797,7 @@ theorem eventually_locallyInjective {P : Type*} [NormedAddCommGroup P] [NormedSp
     linarith
 
 theorem eventually_isEmbeddedOn {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
-    {Hf : ℝ × ℝ → P → M}
+    [FiniteDimensional ℝ P] {Hf : ℝ × ℝ → P → M}
     (hH : ContMDiff 𝓘(ℝ, (ℝ × ℝ) × P) I ∞ (fun q : (ℝ × ℝ) × P => Hf q.1 q.2))
     (hper : ∀ θ s w, Hf (θ + 1, s) w = Hf (θ, s) w) {Q : Set (ℝ × ℝ)} (hQ : IsClosed Q)
     (hQper : ∀ θ s, (θ, s) ∈ Q ↔ (θ + 1, s) ∈ Q)

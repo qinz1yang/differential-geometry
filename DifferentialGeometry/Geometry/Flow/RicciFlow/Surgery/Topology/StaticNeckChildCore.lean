@@ -1,7 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.RetainedOutput
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.ChildComponents
-import DifferentialGeometry.Geometry.Metric.ThreeManifold.Stage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 
 noncomputable section
@@ -13,6 +10,33 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
+namespace CutCapTopology
+
+variable {M Q D N : Type*} [TopologicalSpace M] [TopologicalSpace Q] [TopologicalSpace D]
+  [TopologicalSpace N]
+
+theorem isClopen_retainedCore (E : CutCapTopology M Q D N) : IsClopen E.retainedCore := by
+  have hcont : Continuous
+      (fun x : E.tubes.core => E.presentation (E.capping.coreInclusion x)) :=
+    E.presentation.continuous.comp E.capping.coreInclusion.continuous
+  have hset : E.retainedCore =
+      (fun x : E.tubes.core => E.presentation (E.capping.coreInclusion x)) ⁻¹'
+        Set.range (Sum.inl : Q → Q ⊕ D) := by
+    ext x
+    constructor
+    · rintro ⟨q, hq⟩
+      exact ⟨q, hq.symm⟩
+    · rintro ⟨q, hq⟩
+      exact ⟨q, hq.symm⟩
+  rw [hset]
+  exact isClopen_range_inl.preimage hcont
+
+theorem connectedComponent_subset_compl_retainedCore (E : CutCapTopology M Q D N)
+    (x : E.tubes.core) (hx : x ∉ E.retainedCore) :
+    connectedComponent x ⊆ E.retainedCoreᶜ :=
+  (isClopen_retainedCore E).compl.connectedComponent_subset hx
+
+end CutCapTopology
 
 namespace GeometricCutoffRecord
 

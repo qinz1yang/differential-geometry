@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Sobolev
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.AddCircleTameComposition
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 
 noncomputable section
 open Set MeasureTheory Filter

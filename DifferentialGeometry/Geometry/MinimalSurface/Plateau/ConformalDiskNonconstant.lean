@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AngleTrace
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.Reparametrization
+import DifferentialGeometry.Geometry.Metric.CurveUnitReparametrization
 import Mathlib.Analysis.Calculus.MeanValue
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.HomModelNorm
+import DifferentialGeometry.Geometry.Metric.HomModelNorm
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Metric
 
 noncomputable section

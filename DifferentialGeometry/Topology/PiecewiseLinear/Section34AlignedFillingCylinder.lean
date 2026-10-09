@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.FillingLongitudes
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedFillingFoliation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FullLongitudeStraightening
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalReparametrization
 
@@ -55,7 +55,7 @@ theorem exists_section34_aligned_filling_cylinder
       (u ∘ g') '' ({(a 1 : E)} ×ˢ Icc (0 : ℝ) 1) = Pg e j := by
   obtain ⟨g₀, q, a, γ, hg₀, hends₀, hq, hqfront, hinj, hPg₀, hPg₁,
     hdis, hcover, hγ⟩ :=
-    exists_longitude_family_of_marked_annular_filling hprep hpack e hi hj hij hiess hjess
+    exists_section34_marked_filling_longitude_family hprep hpack e hi hj hij hiess hjess
       B R hB hR hu hRP hg hends hF hRT hfront
   have hxy : a 0 ≠ a 1 := fun h => (by decide : (0 : Fin 2) ≠ 1) (hinj h)
   obtain ⟨Φ, hΦ, hfix, hmap⟩ :=

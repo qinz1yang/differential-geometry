@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Hamilton
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Restriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Blowup.HighCurvature.Sequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 
 set_option autoImplicit false

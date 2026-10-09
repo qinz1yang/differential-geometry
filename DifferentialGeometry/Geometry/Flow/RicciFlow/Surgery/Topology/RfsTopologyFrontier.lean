@@ -93,8 +93,8 @@ def ChildSimplicityFrontier (E : SmoothCutCapTransition P Q D N) : Prop :=
 
 theorem child_simplyConnected_of_childSimplicityFrontier (E : SmoothCutCapTransition P Q D N)
     (h : ChildSimplicityFrontier E) (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.child_simplyConnected_of_puncturedCoreProducer h.1 h.2 c
 
 theorem childSimplicityFrontier_of_isEmpty_childCapBoundary

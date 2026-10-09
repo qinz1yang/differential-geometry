@@ -468,13 +468,13 @@ theorem MetricCutCapEvent.exists_poincareStandardDiscarded_tolerance_of_spatial_
                 riemannianBallOf (E.incoming.flow.base.metric t) x
                   (1000 / Real.sqrt (metricScalarAt (E.incoming.flow.base.metric t) x)) ⊆ interior V)) →
         (∀ (c : ConnectedComponents P.Carrier) (t : ℝ), t ∈ Ioo a s →
-          ∀ x : (P.component c).Carrier, q < E.incoming.flow.scalar t x.val →
+          ∀ x : (P.toClosedOrientedManifold.component c).Carrier, q < E.incoming.flow.scalar t x.val →
           ¬ Nonempty (SpatialNeck ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) eps x) →
-          Nonempty (PositiveComponent (M := (P.component c).Carrier) univ) ∨
+          Nonempty (PositiveComponent (M := (P.toClosedOrientedManifold.component c).Carrier) univ) ∨
           admitsConstantPositiveSectionalCurvature (I := ThreeModel)
-            (M := (P.component c).Carrier) ∨
-          ∃ (K : CompactDomain (P.component c).Carrier)
-            (v : (P.component c).Carrier)
+            (M := (P.toClosedOrientedManifold.component c).Carrier) ∨
+          ∃ (K : CompactDomain (P.toClosedOrientedManifold.component c).Carrier)
+            (v : (P.toClosedOrientedManifold.component c).Carrier)
             (nk : SpatialNeck ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) eps v)
             (level : ℝ),
             0 < metricScalarAt ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) x ∧
@@ -825,13 +825,13 @@ theorem exists_horn_cutoff_with_volume_decrease_and_standard_discard_of_spatial_
                 riemannianBallOf (G.flow.base.metric t) x
                   (1000 / Real.sqrt (metricScalarAt (G.flow.base.metric t) x)) ⊆ interior V)) →
         (∀ (c : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) (t : ℝ), t ∈ Ioo (H.time (Fin.last H.eventCount)) s →
-          ∀ x : ((H.stage (Fin.last H.eventCount)).component c).Carrier, qcan < G.flow.scalar t x.val →
+          ∀ x : ((H.stage (Fin.last H.eventCount)).toClosedOrientedManifold.component c).Carrier, qcan < G.flow.scalar t x.val →
           ¬ Nonempty (SpatialNeck ((G.flow.base.metric t).restrictOpen ((H.stage (Fin.last H.eventCount)).componentOpen c)) epsSpatial x) →
-          Nonempty (PositiveComponent (M := ((H.stage (Fin.last H.eventCount)).component c).Carrier) univ) ∨
+          Nonempty (PositiveComponent (M := ((H.stage (Fin.last H.eventCount)).toClosedOrientedManifold.component c).Carrier) univ) ∨
           admitsConstantPositiveSectionalCurvature (I := ThreeModel)
-            (M := ((H.stage (Fin.last H.eventCount)).component c).Carrier) ∨
-          ∃ (K : CompactDomain ((H.stage (Fin.last H.eventCount)).component c).Carrier)
-            (v : ((H.stage (Fin.last H.eventCount)).component c).Carrier)
+            (M := ((H.stage (Fin.last H.eventCount)).toClosedOrientedManifold.component c).Carrier) ∨
+          ∃ (K : CompactDomain ((H.stage (Fin.last H.eventCount)).toClosedOrientedManifold.component c).Carrier)
+            (v : ((H.stage (Fin.last H.eventCount)).toClosedOrientedManifold.component c).Carrier)
             (nk : SpatialNeck ((G.flow.base.metric t).restrictOpen ((H.stage (Fin.last H.eventCount)).componentOpen c)) epsSpatial v)
             (level : ℝ),
             0 < metricScalarAt ((G.flow.base.metric t).restrictOpen ((H.stage (Fin.last H.eventCount)).componentOpen c)) x ∧

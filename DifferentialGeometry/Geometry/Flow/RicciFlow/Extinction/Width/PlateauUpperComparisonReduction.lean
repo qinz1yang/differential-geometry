@@ -110,7 +110,7 @@ theorem transportedArea_at_base_eq_loopFamilyLeastArea
     (gamma : ℝ → RegularLoop I Q)
     (hgamma : (curveOfLoopFamily (fun t => (gamma t).toContinuousLoop)).SmoothOn
       (I := I) (Icc a b))
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) =
       (gamma t₀).toContinuousLoop (sigma.map theta))
@@ -193,7 +193,7 @@ theorem rfs_plateau_upper_comparison_of_smoothDiskDensity_and_transportedAreaDer
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))
@@ -284,7 +284,7 @@ omit [FiniteDimensional ℝ E] hBoundary hT2 hCompact hSigma in
 theorem exists_smoothDiskApproximation_of_constant
     (g : SmoothRiemannianMetric I Q) (q : Q) :
     ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
-      (∀ j theta, (w j).map (diskBoundary theta) = DifferentialGeometry.Topology.FreeLoop.constants q theta) ∧
+      (∀ j theta, (w j).map (diskBoundary theta) = constantLoops q theta) ∧
         Tendsto (fun j => diskArea g (w j).map) atTop
           (𝓝 (diskArea g (constantLipschitzDisk g q).map)) := by
   refine ⟨fun _ => SmoothDisk.const (I := I) (Q := Q) q, ?_, ?_⟩

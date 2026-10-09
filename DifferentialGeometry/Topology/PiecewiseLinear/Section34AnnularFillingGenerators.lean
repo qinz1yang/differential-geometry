@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialEquivalence
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialEquivalence
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsIsPLBallSupersetOfExteriorCompression
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricConnectivity
 import DifferentialGeometry.Topology.VanKampen.CellAttachmentFundamentalGroup
@@ -106,7 +106,7 @@ theorem section34_annular_filling_carries_generators
     R hconn
   have himage : IsPathConnected (u '' R.space) :=
     hpath.image' (hu.continuousOn.mono hRP)
-  have hgen := piercing_generators_of_essential_second hprep hpack e hi hess
+  have hgen := section34_piercing_generators_of_essential_second hprep hpack e hi hess
   have hne := hF.ends_nonempty.1
   have hRS := hRT.trans
     ((section34_inner_tube_subset_interior_outer hprep hpack e).trans interior_subset)

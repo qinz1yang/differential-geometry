@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.QuadraticForm
 import DifferentialGeometry.Analysis.Normed.Matrix.WeightedInverseCovector
 import DifferentialGeometry.Analysis.Normed.Matrix.InverseCovector
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.GramOperator
+import DifferentialGeometry.Geometry.Measure.Chart.GramOperator
 
 noncomputable section
 

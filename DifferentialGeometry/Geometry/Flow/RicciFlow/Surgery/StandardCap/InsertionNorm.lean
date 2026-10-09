@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InsertionMetric
-import DifferentialGeometry.Geometry.Metric.Perturbation.Interpolation
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.ReferenceComparison
+import DifferentialGeometry.Geometry.Metric.InterpolationNorm
+import DifferentialGeometry.Geometry.Metric.ReferenceNormComparison
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
-import DifferentialGeometry.Geometry.Metric.Cylinder.RoundMetric
+import DifferentialGeometry.Geometry.Metric.RoundCylinder
 
 set_option autoImplicit false
 noncomputable section

@@ -85,7 +85,7 @@ section Isolation
 variable {I : ModelWithCorners ℝ (Fin n → ℝ) H} [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
   {f : M → ℝ} {a b : ℝ} {crit : Finset M}
 
-theorem exists_nocommon_radius (hf : MorseStrip I f a b)
+theorem exists_nocommon_radius [SigmaCompactSpace M] (hf : MorseStrip I f a b)
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)
     (D : GradientLikeStrip I f a b crit) {q : M} (hq : q ∈ crit) {ε c : ℝ} (hε : 0 < ε)
     (hcst : (D.chart q hq).r₀ ^ 2 < 2 * ε ∧ 8 * ε < D.rm q hq ^ 2)
@@ -396,7 +396,7 @@ theorem exists_partner_below {p q : M} (h : isPartnerConfig I f a b p q) {ρ : �
     by linarith [(hrad q hq).2.2.2], by rw [hE3]; exact hq2, hpq, hsep,
     fun x hx hxp y hy => hballs x hx hxp y (hball_sub x hx hy), hdesc', c, hc1, hc2, hmeet'⟩
 
-theorem exists_small_partner {p q : M}
+theorem exists_small_partner [SigmaCompactSpace M] {p q : M}
     (h : isPartnerConfig I f a b p q) : isSmallPartnerConfig I f a b p q := by
   obtain ⟨hf, C, hC, hp, hq, D, hkq, hkp, εp, εq, hεp, hεq, hr₀p, hrmp, hr₀q, hrmq, hpq, hsep,
     hballs, hdesc, c, hc1, hc2, hmeet⟩ := h
@@ -644,7 +644,7 @@ theorem exists_small_partner {p q : M}
       rw [hεdef]
       linarith
 
-theorem exists_fine_partner {p q : M}
+theorem exists_fine_partner [SigmaCompactSpace M] {p q : M}
     (h : isSmallPartnerConfig I f a b p q) : isFinePartnerConfig I f a b p q := by
   obtain ⟨hf, crit, hcrit, hp, hq, D, hkq, hkp, ε, δ, hε, hεδ, hD, hR, hgap1, hgap2, hgap3,
     hsep, hdesc, c, hc1, hc2, hmeet⟩ := h

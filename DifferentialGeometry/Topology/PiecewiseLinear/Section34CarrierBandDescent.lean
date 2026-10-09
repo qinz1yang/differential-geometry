@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.CarrierBandStep
-import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.SupportedComposition
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentCarrierBandStep
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentMotionComposition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RetainedTraceNonempty
 
 open Set Topology
@@ -53,7 +53,7 @@ theorem exists_section34_singleton_carrier_family_of_current_trace
   by_cases hlt : 1 < Nat.card I
   · obtain ⟨J, Φ, K₁, hdec, hK₁, hK₁S, hfix₁, hΦ, hArim₁, hBrim₁, hout₁,
         hkeep₁, -, htrace₁⟩ :=
-      exists_trace_cancellation_of_carrier_band hprep hpack e I hlt Ψ hK hKS hfix hΨ
+      exists_section34_current_carrier_band_step hprep hpack e I hlt Ψ hK hKS hfix hΨ
         hBrim hout hkeep hcarry htrace
     obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, hSnCc, -⟩ := id hprep
     obtain ⟨-, -, -, htube, -⟩ := id hpack
@@ -64,7 +64,7 @@ theorem exists_section34_singleton_carrier_family_of_current_trace
     have hZ₁ := disjoint_union_right.mpr
       ⟨disjoint_union_right.mpr ⟨hArim₁, hBrim₁⟩, hout₁⟩
     obtain ⟨hIsub, -, hK', hK'S, hfix', hPL', -, -, hkeep', -, htrace'⟩ :=
-      supported_trace_motion_comp (Γ := fun k : Fin (cnt e) => Pg e k.val)
+      supported_second_trace_motion_comp (Γ := fun k : Fin (cnt e) => Pg e k.val)
         Ψ Φ hK hK₁ hKS hK₁S (interior_mono hSpCc)
         hfix hfix₁ hΨ hΦ hZ hZ₁ I J hkeep hkeep₁ htrace₁
     have hArim' := disjoint_union_left.mpr ⟨hArim, hArim₁⟩

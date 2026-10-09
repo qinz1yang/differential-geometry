@@ -25,7 +25,7 @@ theorem ContMDiffAt.fiberwise_time_deriv {p₀ : ℝ × M}
   let e := trivializationAt F V p₀.2
   have hcoord : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, F) n
       (fun p : ℝ × M => (e ⟨p.2, f p.1 p.2⟩).2) p₀ := hf.2
-  have hd := DifferentialGeometry.contMDiffAt_partial_deriv_fst hcoord hmn
+  have hd := DifferentialGeometry.timeDeriv_smoothAt hcoord hmn
   apply hd.congr_of_eventuallyEq
   have hbase : ∀ᶠ p : ℝ × M in 𝓝 p₀, p.2 ∈ e.baseSet :=
     continuous_snd.continuousAt (e.open_baseSet.mem_nhds

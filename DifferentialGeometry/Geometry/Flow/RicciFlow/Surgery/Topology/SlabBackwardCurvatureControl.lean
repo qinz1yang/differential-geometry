@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureBounds.ClosedWindowScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowScalarPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
@@ -18,10 +18,7 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_on_backward_cylinder_of_canonicalWitness
+theorem scalar_le_on_backward_cylinder_of_canonicalWitness
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     {eps C1 C2 Q t' : ℝ} {x' : P.Carrier} (hC2 : 0 ≤ C2) (hQ : 0 < Q)
     (hx' : G.flow.scalar t' x' ≤ Q) (ht' : t' < s)
@@ -60,7 +57,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (by rwa [mul_comm Q 2])
   linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.sqrt_rmNormSq_le_on_backward_cylinder_of_canonicalWitness
+theorem sqrt_rmNormSq_le_on_backward_cylinder_of_canonicalWitness
     {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
     {eps C1 C2 Q t' : ℝ} {x' : P.Carrier} {Phi : ℝ → ℝ} (hC2 : 0 ≤ C2) (hQ : 0 < Q)
     (hPhi : Perelman.AdmissiblePinchingFunction Phi)

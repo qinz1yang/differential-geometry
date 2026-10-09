@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.RestrictedRoundCylinderLeastRicci
 import DifferentialGeometry.Geometry.Curvature.LeastRicciTransport
 import DifferentialGeometry.Geometry.Curvature.LeastRicciScaling
 import DifferentialGeometry.Geometry.Gradient.ScaledChart
-import DifferentialGeometry.Geometry.Metric.Cylinder.Height
+import DifferentialGeometry.Geometry.Metric.RestrictedCylinderHeight
 
 noncomputable section
 open Set Bundle

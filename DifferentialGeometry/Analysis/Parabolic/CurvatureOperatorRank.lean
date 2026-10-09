@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionRegularity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
-import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
-import DifferentialGeometry.Geometry.Metric.VectorBundle.Continuity
+import DifferentialGeometry.Bundle.HomNorm
+import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 
 set_option autoImplicit false
@@ -144,7 +144,7 @@ theorem curvatureOperator_kernel_parallel_and_reaction_annihilated_of_constant_r
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t) :
     (∀ t ∈ Ioo a b,
@@ -191,7 +191,7 @@ theorem curvatureOperator_kernel_and_range_eq_of_constant_rank
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {x : M} {s t : ℝ} (hs : s ∈ Ioo a b) (ht : t ∈ Ioo a b) :
@@ -236,7 +236,7 @@ theorem curvatureOperator_finrank_range_le_at_later_time
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {s t : ℝ} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T) (x y : M) :
@@ -298,7 +298,7 @@ theorem curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t) :
     (∀ t ∈ Ioc 0 T, ∀ x y,
@@ -351,7 +351,7 @@ theorem curvatureOperator_kernel_and_range_locally_constant_from_left
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {t : ℝ} (ht : t ∈ Ioc 0 T) :
@@ -434,7 +434,7 @@ theorem curvatureOperator_deriv_annihilates_kernel_at_positive_time
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {t : ℝ} (ht : t ∈ Ioc 0 T) (x : M) (v : V x) (hv : A t x v = 0) :
@@ -478,7 +478,7 @@ theorem curvatureOperator_kernel_parallel_at_positive_time
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {t : ℝ} (ht : t ∈ Ioc 0 T) :
@@ -525,7 +525,7 @@ theorem curvatureOperator_reaction_annihilates_kernel_at_positive_time
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {t : ℝ} (ht : t ∈ Ioc 0 T) (x : M) (v : V x) (hv : A t x v = 0) :
@@ -593,7 +593,7 @@ theorem curvatureOperator_finrank_range_trichotomy_at_positive_time
       HasDerivAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) t)
     {t : ℝ} (ht : t ∈ Ioc 0 T) (x : M) :
@@ -629,7 +629,7 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
       HasDerivWithinAt (fun s ↦ A s x)
         (rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y ↦ A t y) x (X t x) +
           Q x (A t x)) (Ioc a b) t) :
     ∃ K : ContMDiffVectorSubbundle (I := I) (F := F) (V := V) (n := ∞),
@@ -679,7 +679,7 @@ theorem curvatureOperator_smooth_parallel_kernel_at_right_endpoint
     exact hrigidity.2.1 t ht x v (LinearMap.mem_ker.mp ((hK x t ht).symm ▸ hvC))
   have hder (x : M) (v : V x) (hv : A b x v = 0) :
       (rawBundleEndomorphismConnLap (I := I) (g b) (cov b) (fun y => A b y) x +
-        _root_.CovariantDerivative.hom
+        HomConnectionGen.homBundleCovariantDerivativeGen
           I M F V F V (cov b) (cov b) (fun y => A b y) x (X b x) +
         Q x (A b x)) v = 0 := by
     have hvC : v ∈ (A c x).ker := (hKb x).symm ▸ LinearMap.mem_ker.mpr hv

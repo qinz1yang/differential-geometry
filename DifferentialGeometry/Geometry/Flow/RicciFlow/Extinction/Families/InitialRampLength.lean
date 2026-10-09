@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
 
 theorem initialRamp_speed_eq (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (lambda x t : ℝ) :
+    (γ : ContinuousFreeLoop Q) (lambda x t : ℝ) :
     (initialRamp γ).speed (fun _ => g) lambda x t =
       Real.sqrt (g.inner (loopLift γ x) (loopVelocity (I := I) γ x)
         (loopVelocity (I := I) γ x) + lambda ^ 2) := by
@@ -22,7 +22,7 @@ theorem initialRamp_speed_eq (g : SmoothRiemannianMetric I Q)
   rfl
 
 theorem initialRamp_speed_le (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) (lambda x t : ℝ) :
+    (γ : ContinuousFreeLoop Q) (lambda x t : ℝ) :
     (initialRamp γ).speed (fun _ => g) lambda x t ≤
       Real.sqrt (g.inner (loopLift γ x) (loopVelocity (I := I) γ x)
         (loopVelocity (I := I) γ x)) + |lambda| := by

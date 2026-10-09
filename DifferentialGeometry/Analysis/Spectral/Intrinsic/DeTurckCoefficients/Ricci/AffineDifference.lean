@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
-import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Perturbation
+import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -25,6 +25,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+private lemma abs_sub_le_abs_add_abs (a b : ℝ) : |a - b| ≤ |a| + |b| := by
+  calc |a - b| = |a + (-b)| := by ring_nf
+    _ ≤ |a| + |(-b)| := abs_add_le _ _
+    _ = |a| + |b| := by rw [abs_neg]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 private lemma exists_bound_of_contDiffOn_int
@@ -79,6 +84,33 @@ private lemma partial_chartGramOnE_contDiffOn_int'
   partialDeriv_contDiffOn_int_of_contDiffOn (I := I) α
     ((chartGramOnE_contDiffOn (I := I) g α l b).mono interior_subset) a
 
+def chartRicciSecondOrderTerm (g : SmoothRiemannianMetric I M) (α : M)
+    (i k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
+  ∑ j : Fin (Module.finrank ℝ E),
+    (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g α i k j) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g α i j j) y)
+
+def chartRicciFirstOrderTerm (g : SmoothRiemannianMetric I M) (α : M)
+    (i k : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
+  ∑ j : Fin (Module.finrank ℝ E),
+    ∑ m : Fin (Module.finrank ℝ E),
+      (chartChristoffel (I := I) g α j m j y *
+          chartChristoffel (I := I) g α i k m y -
+        chartChristoffel (I := I) g α k m j y *
+          chartChristoffel (I := I) g α i j m y)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartRicciTensor_eq_secondOrder_add_firstOrder
+    (g : SmoothRiemannianMetric I M) (α : M)
+    (i k : Fin (Module.finrank ℝ E)) (y : E) :
+    chartRicciTensor (I := I) g α i k y =
+      chartRicciSecondOrderTerm (I := I) g α i k y +
+        chartRicciFirstOrderTerm (I := I) g α i k y := by
+  classical
+  rw [chartRicciTensor_def, chartRicciSecondOrderTerm, chartRicciFirstOrderTerm]
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [chartRiemannTensor_def]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRicciSecondOrderTerm_symm
@@ -301,7 +333,183 @@ private lemma exists_chartChristoffel_bound_on_compact
       hsmooth hK hKsub
   exact ⟨C, hC_nn, fun y hy i j k => hC y hy ((i, j), k)⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartRicciSecondOrderTerm_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
+    {Cdiff : ℝ}
+    (hCdiff : ∀ m i j k : Fin (Module.finrank ℝ E),
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
+        Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y)
+    (i k : Fin (Module.finrank ℝ E)) :
+    |chartRicciSecondOrderTerm (I := I) g₁ α i k y -
+        chartRicciSecondOrderTerm (I := I) g₂ α i k y| ≤
+      2 * (Module.finrank ℝ E : ℝ) * Cdiff *
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  rw [chartRicciSecondOrderTerm, chartRicciSecondOrderTerm, ← Finset.sum_sub_distrib]
+  set jet2 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  have hjet2_nn : 0 ≤ jet2 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
+  refine le_trans (Finset.sum_le_sum
+    (g := fun _ : Fin (Module.finrank ℝ E) => 2 * Cdiff * jet2) (fun j _ => ?_)) ?_
+  · have hjk :
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k j) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j j) y) -
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k j) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j j) y) =
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k j) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k j) y) -
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j j) y -
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j j) y) := by ring
+    rw [hjk]
+    refine (abs_sub_le_abs_add_abs _ _).trans ?_
+    have h1 := hCdiff j i k j
+    have h2 := hCdiff k i j j
+    calc |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₁ α i k j) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartChristoffel (I := I) g₂ α i k j) y| +
+            |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₁ α i j j) y -
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartChristoffel (I := I) g₂ α i j j) y|
+        ≤ Cdiff * jet2 + Cdiff * jet2 := add_le_add h1 h2
+      _ = 2 * Cdiff * jet2 := by ring
+  · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+    rw [show 2 * (Module.finrank ℝ E : ℝ) * Cdiff * jet2 =
+          (Module.finrank ℝ E : ℝ) * (2 * Cdiff * jet2) by ring]
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartRicciFirstOrderTerm_sub_abs_le
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {y : E}
+    {Clip Mg : ℝ} (hClip_nn : 0 ≤ Clip) (hMg_nn : 0 ≤ Mg)
+    (hClip : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g₁ α i j k y -
+          chartChristoffel (I := I) g₂ α i j k y| ≤
+        Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y)
+    (hMg1 : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g₁ α i j k y| ≤ Mg)
+    (hMg2 : ∀ i j k : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g₂ α i j k y| ≤ Mg)
+    (i k : Fin (Module.finrank ℝ E)) :
+    |chartRicciFirstOrderTerm (I := I) g₁ α i k y -
+        chartRicciFirstOrderTerm (I := I) g₂ α i k y| ≤
+      4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg *
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  rw [chartRicciFirstOrderTerm, chartRicciFirstOrderTerm, ← Finset.sum_sub_distrib]
+  set jet1 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y with hjet1_def
+  have hjet1_nn : 0 ≤ jet1 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_nonneg _ _ _ _
+  have hprod : ∀ a₁ a₂ a₃ a₄ a₅ a₆ : Fin (Module.finrank ℝ E),
+      |chartChristoffel (I := I) g₁ α a₁ a₂ a₃ y *
+            chartChristoffel (I := I) g₁ α a₄ a₅ a₆ y -
+          chartChristoffel (I := I) g₂ α a₁ a₂ a₃ y *
+            chartChristoffel (I := I) g₂ α a₄ a₅ a₆ y| ≤
+        2 * Clip * Mg * jet1 := by
+    intro a₁ a₂ a₃ a₄ a₅ a₆
+    set A₁ := chartChristoffel (I := I) g₁ α a₁ a₂ a₃ y
+    set A₂ := chartChristoffel (I := I) g₂ α a₁ a₂ a₃ y
+    set B₁ := chartChristoffel (I := I) g₁ α a₄ a₅ a₆ y
+    set B₂ := chartChristoffel (I := I) g₂ α a₄ a₅ a₆ y
+    have hsplit : A₁ * B₁ - A₂ * B₂ = (A₁ - A₂) * B₁ + A₂ * (B₁ - B₂) := by ring
+    rw [hsplit]
+    refine (abs_add_le _ _).trans ?_
+    have hA : |A₁ - A₂| ≤ Clip * jet1 := hClip a₁ a₂ a₃
+    have hB : |B₁ - B₂| ≤ Clip * jet1 := hClip a₄ a₅ a₆
+    have hB₁ : |B₁| ≤ Mg := hMg1 a₄ a₅ a₆
+    have hA₂ : |A₂| ≤ Mg := hMg2 a₁ a₂ a₃
+    calc |(A₁ - A₂) * B₁| + |A₂ * (B₁ - B₂)|
+        = |A₁ - A₂| * |B₁| + |A₂| * |B₁ - B₂| := by rw [abs_mul, abs_mul]
+      _ ≤ (Clip * jet1) * Mg + Mg * (Clip * jet1) :=
+          add_le_add (mul_le_mul hA hB₁ (abs_nonneg _) (mul_nonneg hClip_nn hjet1_nn))
+            (mul_le_mul hA₂ hB (abs_nonneg _) hMg_nn)
+      _ = 2 * Clip * Mg * jet1 := by ring
+  have hinner : ∀ j : Fin (Module.finrank ℝ E),
+      |∑ m : Fin (Module.finrank ℝ E),
+          ((chartChristoffel (I := I) g₁ α j m j y *
+                chartChristoffel (I := I) g₁ α i k m y -
+              chartChristoffel (I := I) g₁ α k m j y *
+                chartChristoffel (I := I) g₁ α i j m y) -
+            (chartChristoffel (I := I) g₂ α j m j y *
+                chartChristoffel (I := I) g₂ α i k m y -
+              chartChristoffel (I := I) g₂ α k m j y *
+                chartChristoffel (I := I) g₂ α i j m y))| ≤
+        (Module.finrank ℝ E : ℝ) * (4 * Clip * Mg * jet1) := by
+    intro j
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    refine le_trans (Finset.sum_le_sum
+      (g := fun _ : Fin (Module.finrank ℝ E) => 4 * Clip * Mg * jet1) (fun m _ => ?_)) ?_
+    · have hrearr :
+          (chartChristoffel (I := I) g₁ α j m j y *
+                chartChristoffel (I := I) g₁ α i k m y -
+              chartChristoffel (I := I) g₁ α k m j y *
+                chartChristoffel (I := I) g₁ α i j m y) -
+            (chartChristoffel (I := I) g₂ α j m j y *
+                chartChristoffel (I := I) g₂ α i k m y -
+              chartChristoffel (I := I) g₂ α k m j y *
+                chartChristoffel (I := I) g₂ α i j m y) =
+          (chartChristoffel (I := I) g₁ α j m j y *
+                chartChristoffel (I := I) g₁ α i k m y -
+              chartChristoffel (I := I) g₂ α j m j y *
+                chartChristoffel (I := I) g₂ α i k m y) -
+            (chartChristoffel (I := I) g₁ α k m j y *
+                chartChristoffel (I := I) g₁ α i j m y -
+              chartChristoffel (I := I) g₂ α k m j y *
+                chartChristoffel (I := I) g₂ α i j m y) := by ring
+      rw [hrearr]
+      refine (abs_sub_le_abs_add_abs _ _).trans ?_
+      have h1 := hprod j m j i k m
+      have h2 := hprod k m j i j m
+      calc |chartChristoffel (I := I) g₁ α j m j y *
+                chartChristoffel (I := I) g₁ α i k m y -
+              chartChristoffel (I := I) g₂ α j m j y *
+                chartChristoffel (I := I) g₂ α i k m y| +
+            |chartChristoffel (I := I) g₁ α k m j y *
+                chartChristoffel (I := I) g₁ α i j m y -
+              chartChristoffel (I := I) g₂ α k m j y *
+                chartChristoffel (I := I) g₂ α i j m y|
+          ≤ 2 * Clip * Mg * jet1 + 2 * Clip * Mg * jet1 := add_le_add h1 h2
+        _ = 4 * Clip * Mg * jet1 := by ring
+    · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, le_refl]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+  refine le_trans (Finset.sum_le_sum
+    (g := fun _ : Fin (Module.finrank ℝ E) =>
+      (Module.finrank ℝ E : ℝ) * (4 * Clip * Mg * jet1)) (fun j _ => ?_)) ?_
+  · have hreorg : ∀ j : Fin (Module.finrank ℝ E),
+        ((∑ m : Fin (Module.finrank ℝ E),
+            (chartChristoffel (I := I) g₁ α j m j y *
+                chartChristoffel (I := I) g₁ α i k m y -
+              chartChristoffel (I := I) g₁ α k m j y *
+                chartChristoffel (I := I) g₁ α i j m y)) -
+          (∑ m : Fin (Module.finrank ℝ E),
+            (chartChristoffel (I := I) g₂ α j m j y *
+                chartChristoffel (I := I) g₂ α i k m y -
+              chartChristoffel (I := I) g₂ α k m j y *
+                chartChristoffel (I := I) g₂ α i j m y))) =
+          ∑ m : Fin (Module.finrank ℝ E),
+            ((chartChristoffel (I := I) g₁ α j m j y *
+                  chartChristoffel (I := I) g₁ α i k m y -
+                chartChristoffel (I := I) g₁ α k m j y *
+                  chartChristoffel (I := I) g₁ α i j m y) -
+              (chartChristoffel (I := I) g₂ α j m j y *
+                  chartChristoffel (I := I) g₂ α i k m y -
+                chartChristoffel (I := I) g₂ α k m j y *
+                  chartChristoffel (I := I) g₂ α i j m y)) := by
+      intro j
+      exact (Finset.sum_sub_distrib
+        (f := fun m : Fin (Module.finrank ℝ E) =>
+          chartChristoffel (I := I) g₁ α j m j y *
+              chartChristoffel (I := I) g₁ α i k m y -
+            chartChristoffel (I := I) g₁ α k m j y *
+              chartChristoffel (I := I) g₁ α i j m y)
+        (g := fun m : Fin (Module.finrank ℝ E) =>
+          chartChristoffel (I := I) g₂ α j m j y *
+              chartChristoffel (I := I) g₂ α i k m y -
+            chartChristoffel (I := I) g₂ α k m j y *
+              chartChristoffel (I := I) g₂ α i j m y)).symm
+    rw [hreorg j]
+    exact hinner j
+  · simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+    rw [show 4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg * jet1 =
+          (Module.finrank ℝ E : ℝ) *
+            ((Module.finrank ℝ E : ℝ) * (4 * Clip * Mg * jet1)) by ring]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRicci_pou_lip

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallEmbeddingIsotopy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BallEmbeddingIsotopy
 import DifferentialGeometry.Topology.Manifold.ManifoldIsotopyExtension
 
 set_option autoImplicit false

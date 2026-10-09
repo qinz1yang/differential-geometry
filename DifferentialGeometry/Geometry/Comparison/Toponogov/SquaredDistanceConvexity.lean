@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Toponogov.SharpDistanceSupport
-import DifferentialGeometry.Analysis.Convex.LowerSupport
+import DifferentialGeometry.Geometry.Comparison.Toponogov.LowerSupportConvexity
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 

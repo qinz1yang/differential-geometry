@@ -2,7 +2,7 @@ import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Euclide
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNormalization
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
 
 noncomputable section
 

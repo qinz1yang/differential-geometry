@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SmoothPaths
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.MixedLipschitzUniqueness
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Solution.StrongUniqueness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Realization.Section
@@ -687,7 +687,7 @@ theorem smoothGeom_unique
     filter_upwards [hforceRep₂, hmem] with t hrep ht
     rw [hrep]
     exact hNbound₂ t ht
-  have huniq := strong_solution_unique_of_mixed_lipschitz (I := I) (M := M) g₀ a hLip hsingle
+  have huniq := deTurckStrong_unique (I := I) (M := M) g₀ a hLip hsingle
     hT hT1 hρ hcontract force₁ force₂ u₁ u₂ field₁ field₂
     htrace₁ htrace₂ hlink₁ hlink₂ heq₁ heq₂ hforce₁ hforce₂
     hforceBall₁ hforceBall₂

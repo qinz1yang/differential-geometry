@@ -1,0 +1,8 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.SeedsKL84VolumeDeficit_O10
+import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch12.SeedsKL84Sub86Spatial_O10
+open GC.LongTime.Ch12
+#print axioms canonical_volume_deficit_O10
+#print axioms spatialNeck_ball_volume_lt_O10
+#print axioms ballVolume_le_modelVolume_component_O10
+#print axioms scalar_le_of_almost_euclidean_O10
+#print axioms slice_scalar_le_of_almost_euclidean_O10

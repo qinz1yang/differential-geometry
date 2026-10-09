@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Scalar
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapInitialLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MinimizingSegment
 

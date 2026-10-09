@@ -10,6 +10,7 @@ open scoped ContinuousMap BigOperators
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -27,30 +28,22 @@ def coneHeight : ConeSpace E →ₗ[ℝ] ℝ :=
 
 def coneApex : ConeSpace E := WithLp.toLp 2 (0, 1)
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneProjection_inclusion (x : E) : coneProjection (coneInclusion x) = x := rfl
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneHeight_inclusion (x : E) : coneHeight (coneInclusion x) = 0 := rfl
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneProjection_apex : coneProjection (coneApex : ConeSpace E) = 0 := rfl
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneHeight_apex : coneHeight (coneApex : ConeSpace E) = 1 := rfl
 
-omit [FiniteDimensional ℝ E] in
 theorem coneInclusion_injective : Function.Injective (coneInclusion : E → ConeSpace E) :=
   Function.LeftInverse.injective coneProjection_inclusion
 
 def coneVertices {m : ℕ} (v : Fin m → E) : Fin (m + 1) → ConeSpace E :=
   Fin.snoc (fun i => coneInclusion (v i)) coneApex
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneVertices_castSucc {m : ℕ} (v : Fin m → E) (i : Fin m) :
     coneVertices v i.castSucc = coneInclusion (v i) := by simp [coneVertices]
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneVertices_last {m : ℕ} (v : Fin m → E) :
     coneVertices v (Fin.last m) = coneApex := by simp [coneVertices]
 
-omit [FiniteDimensional ℝ E] in
 theorem coneVertices_independent {m : ℕ} (v : Fin m → E)
     (hv : AffineIndependent ℝ v) : AffineIndependent ℝ (coneVertices v) := by
   rw [affineIndependent_iff_of_fintype]
@@ -67,12 +60,10 @@ theorem coneVertices_independent {m : ℕ} (v : Fin m → E)
   refine Fin.lastCases hl (fun j => ?_) i
   exact hv.eq_zero_of_sum_eq_zero hw₀ hv₀ j (Finset.mem_univ j)
 
-omit [FiniteDimensional ℝ E] in
 theorem coneHeight_simplexPoint {m : ℕ} (v : Fin m → E) (w : Fin (m + 1) → ℝ) :
     coneHeight (simplexPoint (coneVertices v) w) = w (Fin.last m) := by
   simp [simplexPoint, map_sum, Fin.sum_univ_castSucc]
 
-omit [FiniteDimensional ℝ E] in
 theorem simplexFacet_coneVertices_last {m : ℕ} (v : Fin m → E) :
     simplexFacet (coneVertices v) (Fin.last m) =
       coneInclusion '' convexHull ℝ (range v) := by
@@ -89,7 +80,6 @@ theorem simplexFacet_coneVertices_last {m : ℕ} (v : Fin m → E) :
       exact ⟨j.castSucc, by simp, coneVertices_castSucc v j⟩
   rw [simplexFacet, himage, ← (coneInclusion : E →ₗ[ℝ] ConeSpace E).image_convexHull]
 
-omit [FiniteDimensional ℝ E] in
 theorem cone_inter_inclusion {m : ℕ} (v : Fin m → E)
     (hv : AffineIndependent ℝ v) (A : Set E) (hbase : convexHull ℝ (range v) ⊆ A) :
     (coneInclusion '' A) ∩ convexHull ℝ (range (coneVertices v)) =
@@ -105,10 +95,12 @@ theorem cone_inter_inclusion {m : ℕ} (v : Fin m → E)
     rw [simplexFacet_coneVertices_last] at hx
     exact image_mono hbase hx
 
-omit [FiniteDimensional ℝ E] in
-theorem simplexBoundary_reindex {ι κ : Type*} (v : κ → E) (e : ι ≃ κ) :
+theorem simplexBoundary_reindex {ι κ : Type*} [Finite ι] [Nonempty ι]
+    [Finite κ] [Nonempty κ] (v : κ → E) (e : ι ≃ κ) :
     simplexBoundary (v ∘ e) = simplexBoundary v := by
   classical
+  let : Fintype ι := Fintype.ofFinite ι
+  let : Fintype κ := Fintype.ofFinite κ
   have hfacet : ∀ i, simplexFacet (v ∘ e) i = simplexFacet v (e i) := by
     intro i
     unfold simplexFacet
@@ -131,10 +123,11 @@ def coneBaseIndex (m : ℕ) : Fin m ≃ {i : Fin (m + 1) // i ≠ Fin.last m} :=
     obtain ⟨j, rfl⟩ := Fin.eq_castSucc_of_ne_last hi
     exact ⟨j, rfl⟩⟩
 
-omit [FiniteDimensional ℝ E] in
-theorem simplexBoundary_cone_base {m : ℕ} (v : Fin m → E) :
+theorem simplexBoundary_cone_base {m : ℕ} [NeZero m] (v : Fin m → E) :
     simplexBoundary (facetVertices (coneVertices v) (Fin.last m)) =
       coneInclusion '' simplexBoundary v := by
+  have : Nonempty {i : Fin (m + 1) // i ≠ Fin.last m} :=
+    ⟨coneBaseIndex m 0⟩
   rw [← simplexBoundary_reindex _ (coneBaseIndex m)]
   have hvertices : facetVertices (coneVertices v) (Fin.last m) ∘ coneBaseIndex m =
       fun i => coneInclusion (v i) := by
@@ -152,19 +145,19 @@ def coneBaseComplex (K : SimplicialComplex ℝ E) : SimplicialComplex ℝ (ConeS
   injectiveImageComplex K coneInclusion
     (fun _ _ => ⟨coneInclusion.toAffineMap, fun _ _ => rfl⟩) coneInclusion_injective.injOn
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem coneBaseComplex_finite_faces (K : SimplicialComplex ℝ E) (hK : K.faces.Finite) :
     (coneBaseComplex K).faces.Finite := by
   classical
   exact injectiveImageComplex_finite_faces K hK _ _ _
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 @[simp] theorem coneBaseComplex_space (K : SimplicialComplex ℝ E) :
     (coneBaseComplex K).space = coneInclusion '' K.space := by
   classical
   exact injectiveImageComplex_space K _ _ _
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem coneBaseComplex_face_card_le (K : SimplicialComplex ℝ E) {d : ℕ}
     (hd : ∀ s ∈ K.faces, s.card ≤ d + 1) :
     ∀ s ∈ (coneBaseComplex K).faces, s.card ≤ d + 1 := by
@@ -262,21 +255,19 @@ def coneBaseVertexSet {m : ℕ} (v : Fin m → E) : Finset (ConeSpace E) :=
   (Finset.univ.image v).image coneInclusion
 
 omit [DecidableEq E] in
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem convexHull_coneVertexSet {m : ℕ} (v : Fin m → E) :
     convexHull ℝ (coneVertexSet v : Set (ConeSpace E)) =
       convexHull ℝ (range (coneVertices v)) := by
   classical
   simp [coneVertexSet]
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem convexHull_coneBaseVertexSet {m : ℕ} (v : Fin m → E) :
     convexHull ℝ (coneBaseVertexSet v : Set (ConeSpace E)) =
       coneInclusion '' convexHull ℝ (range v) := by
   rw [coneBaseVertexSet, Finset.coe_image, ← coneInclusion.image_convexHull]
   simp
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem coneVertexSet_independent {m : ℕ} (v : Fin m → E) (hv : AffineIndependent ℝ v) :
     AffineIndependent ℝ ((↑) : coneVertexSet v → ConeSpace E) := by
   classical
@@ -285,7 +276,6 @@ theorem coneVertexSet_independent {m : ℕ} (v : Fin m → E) (hv : AffineIndepe
     simp [coneVertexSet]
   rwa [heq] at h
 
-omit [FiniteDimensional ℝ E] in
 theorem coneBaseVertexSet_subset {m : ℕ} (v : Fin m → E) :
     coneBaseVertexSet v ⊆ coneVertexSet v := by
   rintro x hx
@@ -293,12 +283,10 @@ theorem coneBaseVertexSet_subset {m : ℕ} (v : Fin m → E) :
   obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
   exact Finset.mem_image.mpr ⟨i.castSucc, Finset.mem_univ _, coneVertices_castSucc v i⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem coneBaseVertexSet_mem {m : ℕ} (K : SimplicialComplex ℝ E) (v : Fin m → E)
     (hf : Finset.univ.image v ∈ K.faces) : coneBaseVertexSet v ∈ (coneBaseComplex K).faces :=
   ⟨_, hf, rfl⟩
 
-omit [FiniteDimensional ℝ E] in
 theorem cone_face_attachment {m : ℕ} (K : SimplicialComplex ℝ E) (v : Fin m → E)
     (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces) :
     (coneBaseComplex K).space ∩ convexHull ℝ (coneVertexSet v : Set (ConeSpace E)) =
@@ -315,25 +303,21 @@ def coneAttachmentComplex {m : ℕ} (K : SimplicialComplex ℝ E) (v : Fin m →
     (coneVertexSet_independent v hv) (coneBaseVertexSet_mem K v hf)
     (coneBaseVertexSet_subset v) (cone_face_attachment K v hv hf)
 
-omit [FiniteDimensional ℝ E] in
 theorem coneAttachmentComplex_finite_faces {m : ℕ} (K : SimplicialComplex ℝ E)
     (hK : K.faces.Finite) (v : Fin m → E) (hv : AffineIndependent ℝ v)
     (hf : Finset.univ.image v ∈ K.faces) : (coneAttachmentComplex K v hv hf).faces.Finite :=
   AdjoinSimplexAlongFace.finite_faces _ _ _ _ _ _ _ (coneBaseComplex_finite_faces K hK)
 
-omit [FiniteDimensional ℝ E] in
 theorem coneAttachmentComplex_old_faces {m : ℕ} (K : SimplicialComplex ℝ E)
     (v : Fin m → E) (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces) :
     (coneBaseComplex K).faces ⊆ (coneAttachmentComplex K v hv hf).faces :=
   AdjoinSimplexAlongFace.old_faces_subset _ _ _ _ _ _ _
 
-omit [FiniteDimensional ℝ E] in
 theorem coneAttachmentComplex_cone_face {m : ℕ} (K : SimplicialComplex ℝ E)
     (v : Fin m → E) (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces) :
     coneVertexSet v ∈ (coneAttachmentComplex K v hv hf).faces :=
   AdjoinSimplexAlongFace.simplex_mem_faces _ _ _ _ _ _ _
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem coneAttachmentComplex_space {m : ℕ} (K : SimplicialComplex ℝ E)
     (v : Fin m → E) (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces) :
     (coneAttachmentComplex K v hv hf).space =
@@ -341,7 +325,6 @@ omit [FiniteDimensional ℝ E] in
   unfold coneAttachmentComplex
   rw [AdjoinSimplexAlongFace.space, coneBaseComplex_space, convexHull_coneVertexSet]
 
-omit [FiniteDimensional ℝ E] in
 theorem coneAttachmentComplex_face_card_le {m d : ℕ} (K : SimplicialComplex ℝ E)
     (hd : ∀ s ∈ K.faces, s.card ≤ d + 1) (v : Fin m → E)
     (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces) :
@@ -350,7 +333,6 @@ theorem coneAttachmentComplex_face_card_le {m d : ℕ} (K : SimplicialComplex �
     (coneBaseComplex_face_card_le K hd)
   exact Finset.card_image_le.trans (by simp)
 
-omit [FiniteDimensional ℝ E] in
 theorem coneAttachmentComplex_expansion {m : ℕ} (K : SimplicialComplex ℝ E)
     (v : Fin m → E) (hv : AffineIndependent ℝ v) (hf : Finset.univ.image v ∈ K.faces)
     (s : SimplexSplit (Fin (m + 1))) :
@@ -426,7 +408,7 @@ theorem exists_face_cone_membrane {q : ℕ} {M : Type*} [TopologicalSpace M]
   intro x hx
   exact hG₁ ⟨x.1, hx⟩
 
-omit [DecidableEq E] [DecidableEq (ConeSpace E)] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] [DecidableEq (ConeSpace E)] in
 theorem coneHeight_mem_unitInterval {m : ℕ} (v : Fin m → E)
     {x : ConeSpace E} (hx : x ∈ convexHull ℝ (range (coneVertices v))) :
     coneHeight x ∈ Set.Icc (0 : ℝ) 1 := by
@@ -438,7 +420,7 @@ theorem coneHeight_mem_unitInterval {m : ℕ} (v : Fin m → E)
   · simp
   · simp
 
-omit [DecidableEq E] [DecidableEq (ConeSpace E)] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] [DecidableEq (ConeSpace E)] in
 theorem cone_vertex_roof (v : Fin 1 → E) :
     (coneSplit (Fin.last 1)).lowerRoof (coneVertices v) = {coneApex} := by
   classical

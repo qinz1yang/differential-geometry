@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 import Mathlib.Topology.LocallyConstant.Basic
 

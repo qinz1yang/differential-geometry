@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornRescaling
-import DifferentialGeometry.Topology.MetricSpace.Cone.Distance
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 
 section
 

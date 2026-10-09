@@ -76,7 +76,7 @@ theorem RetainedCoreHistory.exists_scalar_le_before_initial_window (P₀ : Orien
   obtain ⟨aSing, haSing, hsingTime⟩ :=
     exists_pos_le_singular_incoming_time_of_initialIdentification P₀ g₀
   obtain ⟨τ, Qb, hτ, -, hscalar⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_bound_of_isometry.{u, u} P₀ g₀
+    OrientedThreeStage.exists_uniform_initial_scalar_bound_of_isometry.{u, u} P₀ g₀
   refine ⟨min aSing τ, Qb, lt_min haSing hτ, ?_⟩
   intro B p₀ δbound ρbound H hH
   obtain ⟨A⟩ := hH.1

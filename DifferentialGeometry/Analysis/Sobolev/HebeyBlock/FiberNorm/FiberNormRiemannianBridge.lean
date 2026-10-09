@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
-import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.MixedChartEquality
+import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
 open DifferentialGeometry.Analysis.Elliptic
 
 
@@ -41,7 +41,7 @@ theorem triv_eq_toModel_at_chartCenter
       TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T := by
   ext D_α
   have h_local :=
-    tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_of_chartAt_eq
+    tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
       (I := I) (M := M) r s b₀
       (h_chart := rfl) (h_source := mem_chart_source H b₀) T D_α
   simp only [TensorRSSpace.toModel, tensorRSSpaceContinuousLinearEquiv]

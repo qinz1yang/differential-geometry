@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Topological
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.SlabGluing
@@ -50,7 +50,7 @@ private theorem capCore_cap_and_frontier (b : T.Boundary) :
     exact (hBf (sphereToClosedCell ((C.attaching b).symm q))).trans
       ((C.boundary_eq b _).trans (by simp))
 
-theorem isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges
+theorem isPoincareStandard_component_of_cylindrical_core_boundary_ranges
     (x : T.core) (U : PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
     (hU : univ ×ˢ Icc (0 : ℝ) 1 ⊆ U.source)
     (hcore : U '' (univ ×ˢ Icc (0 : ℝ) 1) = Subtype.val '' connectedComponent x)
@@ -60,7 +60,7 @@ theorem isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges
     (hboundary : ∀ b : T.Boundary,
       (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
         b = b₀ ∨ b = b₁) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   let _ := C.coreCharts
   let _ := C.coreSmooth
   have hUcore {z : Cylinder} (hz : z ∈ univ ×ˢ Icc (0 : ℝ) 1) : U z ∈ T.core := by
@@ -132,11 +132,11 @@ theorem isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges
       U.injOn (hU ⟨mem_univ _, by norm_num⟩) (hU hzt) (hw'.trans heq)
     exact (congrArg Prod.snd hcoords).symm
   obtain ⟨capK⟩ := cap₀.nonempty_union_cylinder V hV hfront hside
-  apply C.isStandardConnectedSum_component_of_capCore_union_cap capK b₁
+  apply C.isPoincareStandard_component_of_capCore_union_cap capK b₁
     (ConnectedComponents.mk (C.coreInclusion x))
   rw [himage, union_comm (range (C.cap b₀)), hcover, ClosedOrientedManifold.componentSet_mk]
 
-theorem isStandardConnectedSum_component_of_cylindrical_core
+theorem isPoincareStandard_component_of_cylindrical_core
     (x : T.core) (U : PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
     (hU : univ ×ˢ Icc (0 : ℝ) 1 ⊆ U.source)
     (hcore : U '' (univ ×ˢ Icc (0 : ℝ) 1) = Subtype.val '' connectedComponent x)
@@ -146,11 +146,11 @@ theorem isStandardConnectedSum_component_of_cylindrical_core
     (hboundary : ∀ b : T.Boundary,
       (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
         b = b₀ ∨ b = b₁) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
-  apply C.isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges x U hU hcore b₀ b₁
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+  apply C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges x U hU hcore b₀ b₁
     (by simp only [hzero]) (by simp only [hone]) hboundary
 
-theorem isStandardConnectedSum_component_of_finite_cylindrical_core
+theorem isPoincareStandard_component_of_finite_cylindrical_core
     (x : T.core) (P : ℕ → PartialDiffeomorph IC (𝓡 3) Cylinder M.Carrier ∞)
     (η : ℕ → Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2) (n : ℕ)
     (hsource : ∀ k ≤ n, univ ×ˢ Icc (0 : ℝ) 1 ⊆ (P k).source)
@@ -167,10 +167,10 @@ theorem isStandardConnectedSum_component_of_finite_cylindrical_core
     (hboundary : ∀ b : T.Boundary,
       (∃ z : Sphere 2, T.coreBoundarySphere b z ∈ connectedComponent x) →
         b = b₀ ∨ b = b₁) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   obtain ⟨R, hR, hRi, hR0, hR1⟩ :=
     Manifold.exists_finite_unit_slab_concatenation P η n hsource hseam hmeet
-  apply C.isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges x R hR
+  apply C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges x R hR
     (hRi.trans hcore) b₀ b₁
   · simp only [hR0, hzero]
   · ext y
@@ -185,7 +185,7 @@ theorem isStandardConnectedSum_component_of_finite_cylindrical_core
       rw [hR1, Diffeomorph.apply_symm_apply, hone]
   · exact hboundary
 
-theorem isStandardConnectedSum_component_of_returned_cylinder
+theorem isPoincareStandard_component_of_returned_cylinder
     (R : PartialDiffeomorph IC I3 Cylinder M.Carrier ∞)
     (hR : univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source)
     (b₀ b₁ : T.Boundary)
@@ -199,11 +199,11 @@ theorem isStandardConnectedSum_component_of_returned_cylinder
         R '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
       ⋃ b : {b : T.Boundary // b ≠ b₀ ∧ b ≠ b₁}, range (T.boundarySphere b.val))
     (x : T.core) (hx : x.val ∈ R '' (univ ×ˢ Icc (0 : ℝ) 1)) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
   obtain ⟨_, hcomponent⟩ := T.toTopological.cylinder_eq_image_coreComponent_of_return
     R hR b₀ b₁ hinter hfront
   obtain ⟨hcore, hboundary⟩ := hcomponent x hx
-  exact C.isStandardConnectedSum_component_of_cylindrical_core_boundary_ranges
+  exact C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges
     x R hR hcore b₀ b₁ hzero hone hboundary
 
 end DifferentialGeometry.Topology.SphericalCapping

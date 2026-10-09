@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Evolution.ShiBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.ShiControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.AncientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.SlabExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Restriction
@@ -7,10 +7,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.NonnegativeCurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankOneSupport
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
-import DifferentialGeometry.Geometry.Metric.Completeness.Basic
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 import DifferentialGeometry.Tensor.Alternating.Bundle.Defs

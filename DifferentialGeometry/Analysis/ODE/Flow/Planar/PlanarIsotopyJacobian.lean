@@ -28,7 +28,7 @@ theorem det_fderiv_pos_of_planar_isotopy
         (fderiv ℝ h (t, z) (0, 1)).re * (fderiv ℝ h (t, z) (0, Complex.I)).im -
         (fderiv ℝ h (t, z) (0, Complex.I)).re * (fderiv ℝ h (t, z) (0, 1)).im := by
       dsimp only [d]
-      rw [LinearMap.det_complex]
+      rw [det_complex_real_linearMap]
       change (fderiv ℝ (D t) z 1).re * (fderiv ℝ (D t) z Complex.I).im -
         (fderiv ℝ (D t) z Complex.I).re * (fderiv ℝ (D t) z 1).im = _
       rw [hcol, hcol]

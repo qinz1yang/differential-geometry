@@ -1,4 +1,3 @@
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealizationCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.OrientationDegree
@@ -21,6 +20,32 @@ def localOrientationPreservingSelfDiffeomorphismTransitive (o : TangentOrientati
     ∃ e : M ≃ₘ⟮ThreeModel, ThreeModel⟯ M, e x = y ∧
       PreservesTangentOrientation o o e ∧
       (⟨e, e.continuous⟩ : C(M, M)).Homotopic (ContinuousMap.id M)
+
+theorem preservesTangentOrientation_refl (o : TangentOrientationSection M) :
+    PreservesTangentOrientation o o (Diffeomorph.refl ThreeModel M ∞) := by
+  constructor
+  · exact contMDiff_id
+  · intro x
+    have hd : mfderiv ThreeModel ThreeModel (⇑(Diffeomorph.refl ThreeModel M ∞)) x
+        = ContinuousLinearMap.id ℝ (TangentSpace ThreeModel x) := mfderiv_id
+    have hbij : Function.Bijective
+        (mfderiv ThreeModel ThreeModel (⇑(Diffeomorph.refl ThreeModel M ∞)) x) :=
+      hd ▸ Function.bijective_id
+    refine ⟨hbij, ?_⟩
+    unfold PreservesTangentOrientationAt
+    have he : LinearEquiv.ofBijective
+        (mfderiv ThreeModel ThreeModel (⇑(Diffeomorph.refl ThreeModel M ∞)) x).toLinearMap hbij
+        = LinearEquiv.refl ℝ (TangentSpace ThreeModel x) := by
+      ext v
+      change mfderiv ThreeModel ThreeModel (⇑(Diffeomorph.refl ThreeModel M ∞)) x v = v
+      rw [hd]
+      rfl
+    have hm := congrArg (fun e : TangentSpace ThreeModel x ≃ₗ[ℝ] TangentSpace ThreeModel x =>
+      Orientation.map (Fin 3) e (o.orientation x)) he
+    have hr := congrArg (fun e : Orientation ℝ (TangentSpace ThreeModel x) (Fin 3) ≃
+      Orientation ℝ (TangentSpace ThreeModel x) (Fin 3) => e (o.orientation x))
+      (Orientation.map_refl (R := ℝ) (M := TangentSpace ThreeModel x) (Fin 3))
+    exact hm.trans hr
 
 theorem exists_orientationPreservingSelfDiffeomorphism_eq_self (o : TangentOrientationSection M)
     (x : M) :

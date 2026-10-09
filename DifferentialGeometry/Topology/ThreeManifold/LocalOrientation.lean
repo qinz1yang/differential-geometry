@@ -1,8 +1,7 @@
 import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.IntegralChainMaps
-import DifferentialGeometry.Topology.ThreeManifold.Orientation
-import DifferentialGeometry.Topology.LoopSpace.Continuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
@@ -673,6 +672,27 @@ noncomputable def localIntegralHomologyEquivInt (x : M) :
     (E := ULift.{u} ThreeSpace) 1 hfin M x
 
 
+theorem localOrientationClass_generator_of_isUnit (o : TangentOrientationSection M) (x : M)
+    (h : IsUnit (localIntegralHomologyEquivInt (M := M) x (localOrientationClass o x))) :
+    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) := by
+  let e := localIntegralHomologyEquivInt (M := M) x
+  obtain ⟨u, hu⟩ := h
+  have hfun : (fun z : ℤ => z • localOrientationClass o x) =
+      fun z : ℤ => e.symm ((z : ℤ) * (u : ℤ)) := by
+    funext z
+    apply e.injective
+    rw [map_zsmul, hu, smul_eq_mul, LinearEquiv.apply_symm_apply]
+  rw [hfun]
+  constructor
+  · intro a b hab
+    have h2 : (a : ℤ) * (u : ℤ) = (b : ℤ) * (u : ℤ) := e.symm.injective hab
+    exact mul_right_cancel₀ (Units.ne_zero u) h2
+  · intro w
+    refine ⟨e w * ((u⁻¹ : ℤˣ) : ℤ), ?_⟩
+    change e.symm ((e w * ((u⁻¹ : ℤˣ) : ℤ)) * (u : ℤ)) = w
+    rw [mul_assoc, Units.inv_mul, mul_one, e.symm_apply_apply]
+
+
 section ZsmulGenerator
 
 variable {A : Type*} [AddCommGroup A] [Module ℤ A]
@@ -750,12 +770,6 @@ theorem bijective_zsmul_iff_of_linearEquiv {B : Type*} [AddCommGroup B] [Module 
   exact Equiv.comp_bijective (fun z : ℤ => z • c) f.toEquiv
 
 end ZsmulGenerator
-
-theorem localOrientationClass_generator_of_isUnit (o : TangentOrientationSection M) (x : M)
-    (h : IsUnit (localIntegralHomologyEquivInt (M := M) x (localOrientationClass o x))) :
-    Function.Bijective (fun z : ℤ => z • localOrientationClass o x) :=
-  (isUnit_apply_iff_bijective_zsmul (localIntegralHomologyEquivInt (M := M) x)
-    (localOrientationClass o x)).mp h
 
 
 theorem localOrientationClass_generator_iff_isUnit (o : TangentOrientationSection M) (x : M) :

@@ -1,7 +1,6 @@
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
-import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.ContMDiffMap
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
@@ -383,7 +382,7 @@ theorem contMDiff_partial_deriv_fst
           (f := fun t => F (t, p.2)) (x := p.1))
     simpa only [hcast] using hderiv.symm
 
-theorem contMDiffAt_partial_deriv_fst
+theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
@@ -472,6 +471,38 @@ theorem mvfderiv_mul_at
   rw [hsmul]
   simpa [smul_eq_mul] using congr($(mvfderiv_mul (I := I) hf hg) v)
 
+theorem mdifferentiableAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := by
+  classical
+  induction t using Finset.induction_on with
+  | empty =>
+      change MDifferentiableAt I 𝓘(ℝ, ℝ) (fun _ : M ↦ (0 : ℝ)) x
+      exact mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+        (c := (0 : ℝ)) (x := x)
+  | insert i t hit ih =>
+      have hfi : MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x := hf i (by simp [hit])
+      have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f j) x := by
+        intro j hj
+        exact hf j (by simp [hj])
+      have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x := ih hft
+      simpa [Finset.sum_insert, hit] using hfi.add hsum
+
+theorem mdiffAt_finset_sum
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+    {x : M}
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
+  mdifferentiableAt_finset_sum t f hf
+
 theorem mvfderiv_finset_sum_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -490,7 +521,7 @@ theorem mvfderiv_finset_sum_at
         intro j hj
         exact hf j (by simp [hj])
       have hsum : MDifferentiableAt I 𝓘(ℝ, ℝ) (t.sum f) x :=
-        MDifferentiableAt.sum (I := I) (t := t) (f := f) hft
+        mdifferentiableAt_finset_sum t f hft
       calc
         mvfderiv (I := I) ((insert i t).sum f) x v =
             mvfderiv (I := I) (f i + t.sum f) x v := by
@@ -505,20 +536,20 @@ theorem mvfderiv_finset_sum_at
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
-theorem mvfderiv_finset_sum_apply
+theorem mvfderiv_finset_sum_apply_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {ι : Type*} (t : Finset ι) (F : ι -> M -> ℝ)
+    {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
     {x : M} (v : TangentSpace I x)
-    (hF : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x) :
-    mvfderiv (I := I) (fun y : M => ∑ i ∈ t, F i y) x v =
-      ∑ i ∈ t, mvfderiv (I := I) (F i) x v := by
-  have hfun : (fun y => ∑ i ∈ t, F i y) = t.sum F := by
+    (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (f i) x) :
+    mvfderiv (I := I) (fun y => ∑ i ∈ t, f i y) x v =
+      ∑ i ∈ t, mvfderiv (I := I) (f i) x v := by
+  have hfun : (fun y => ∑ i ∈ t, f i y) = t.sum f := by
     funext y
     simp only [Finset.sum_apply]
   rw [hfun]
-  exact mvfderiv_finset_sum_at t F v hF
+  exact mvfderiv_finset_sum_at t f v hf
 
 theorem mvfderiv_finset_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -532,9 +563,110 @@ theorem mvfderiv_finset_sum_mul_at
       ∑ i ∈ t,
         (U i x * mvfderiv (I := I) (B i) x v +
           B i x * mvfderiv (I := I) (U i) x v) := by
-  rw [mvfderiv_finset_sum_apply (I := I) t (fun i y => U i y * B i y) v
-    (fun i hi => (hU i hi).mul (hB i hi))]
-  exact Finset.sum_congr rfl fun i hi => mvfderiv_mul_at (I := I) v (hU i hi) (hB i hi)
+  classical
+  have hsumdiff :
+      ∀ (s : Finset ι), (∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i) x) →
+        (∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (B i) x) →
+          MDifferentiableAt I 𝓘(ℝ, ℝ)
+            (fun y : M => ∑ i ∈ s, U i y * B i y) x := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => intro _ _; simpa using mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+                 (c := (0 : ℝ))
+    | insert a s has ih =>
+        intro hUs hBs
+        have hUa : MDifferentiableAt I 𝓘(ℝ, ℝ) (U a) x := hUs a (by simp)
+        have hBa : MDifferentiableAt I 𝓘(ℝ, ℝ) (B a) x := hBs a (by simp)
+        have htail := ih (fun i hi => hUs i (by simp [hi])) (fun i hi => hBs i (by simp [hi]))
+        have heqfun :
+            (fun y : M => ∑ i ∈ insert a s, U i y * B i y) =
+              (fun y : M => U a y * B a y) + (fun y : M => ∑ i ∈ s, U i y * B i y) := by
+          funext y; simp only [Pi.add_apply]; rw [Finset.sum_insert has]
+        rw [heqfun]
+        exact (hUa.mul hBa).add htail
+  induction t using Finset.induction_on with
+  | empty => simp [mvfderiv_const]
+  | insert a t hat ih =>
+      have hUa : MDifferentiableAt I 𝓘(ℝ, ℝ) (U a) x := hU a (by simp)
+      have hBa : MDifferentiableAt I 𝓘(ℝ, ℝ) (B a) x := hB a (by simp)
+      have hUt : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i) x :=
+        fun i hi => hU i (by simp [hi])
+      have hBt : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (B i) x :=
+        fun i hi => hB i (by simp [hi])
+      have hsplit :
+          (fun y : M => ∑ i ∈ insert a t, U i y * B i y) =
+            (fun y : M => U a y * B a y) +
+              (fun y : M => ∑ i ∈ t, U i y * B i y) := by
+        funext y
+        simp only [Pi.add_apply]
+        rw [Finset.sum_insert hat]
+      have hsummand_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
+          (fun y : M => U a y * B a y) x := hUa.mul hBa
+      have hsumtail_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
+          (fun y : M => ∑ i ∈ t, U i y * B i y) x :=
+        hsumdiff t hUt hBt
+      rw [hsplit]
+      have hadd := congr($(mvfderiv_add (I := I)
+        (g := fun y : M => U a y * B a y)
+        (g' := fun y : M => ∑ i ∈ t, U i y * B i y)
+        (x := x) hsummand_diff hsumtail_diff) v)
+      rw [show (mvfderiv (I := I)
+            ((fun y : M => U a y * B a y) +
+              fun y : M => ∑ i ∈ t, U i y * B i y) x) v =
+          (mvfderiv (I := I) (fun y : M => U a y * B a y) x) v +
+            (mvfderiv (I := I) (fun y : M => ∑ i ∈ t, U i y * B i y) x) v from by
+        simpa [Pi.add_apply] using hadd]
+      rw [mvfderiv_mul_at (I := I) v hUa hBa]
+      rw [ih hUt hBt]
+      rw [Finset.sum_insert hat]
+
+theorem mvfderiv_finset_sum_apply
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    {ι : Type*} (t : Finset ι) (F : ι -> M -> ℝ)
+    {x : M} (v : TangentSpace I x)
+    (hF : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x) :
+    mvfderiv (I := I) (fun y : M => ∑ i ∈ t, F i y) x v =
+      ∑ i ∈ t, mvfderiv (I := I) (F i) x v := by
+  classical
+  have hsumdiff :
+      ∀ (s : Finset ι), (∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x) →
+        MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => ∑ i ∈ s, F i y) x := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => intro _; simpa using mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ)) (c := (0 : ℝ))
+    | insert a s has ih =>
+        intro hFs
+        have hFa : MDifferentiableAt I 𝓘(ℝ, ℝ) (F a) x := hFs a (by simp)
+        have htail := ih (fun i hi => hFs i (by simp [hi]))
+        have heqfun :
+            (fun y : M => ∑ i ∈ insert a s, F i y) =
+              (fun y : M => F a y) + (fun y : M => ∑ i ∈ s, F i y) := by
+          funext y; simp only [Pi.add_apply]; rw [Finset.sum_insert has]
+        rw [heqfun]
+        exact hFa.add htail
+  induction t using Finset.induction_on with
+  | empty => simp [mvfderiv_const]
+  | insert a t hat ih =>
+      have hFa : MDifferentiableAt I 𝓘(ℝ, ℝ) (F a) x := hF a (by simp)
+      have hFt : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x :=
+        fun i hi => hF i (by simp [hi])
+      have hsplit :
+          (fun y : M => ∑ i ∈ insert a t, F i y) =
+            (fun y : M => F a y) + (fun y : M => ∑ i ∈ t, F i y) := by
+        funext y; simp only [Pi.add_apply]; rw [Finset.sum_insert hat]
+      rw [hsplit]
+      have hadd := congr($(mvfderiv_add (I := I)
+        (g := fun y : M => F a y) (g' := fun y : M => ∑ i ∈ t, F i y)
+        (x := x) hFa (hsumdiff t hFt)) v)
+      rw [show (mvfderiv (I := I)
+            ((fun y : M => F a y) + fun y : M => ∑ i ∈ t, F i y) x) v =
+          (mvfderiv (I := I) (fun y : M => F a y) x) v +
+            (mvfderiv (I := I) (fun y : M => ∑ i ∈ t, F i y) x) v from by
+        simpa [Pi.add_apply] using hadd]
+      rw [ih hFt]
+      rw [Finset.sum_insert hat]
 
 theorem mvfderiv_finset_sum_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -548,23 +680,37 @@ theorem mvfderiv_finset_sum_sum_mul_at
       ∑ i ∈ s, ∑ j ∈ t,
         (U i j x * mvfderiv (I := I) (B i j) x v +
           B i j x * mvfderiv (I := I) (U i j) x v) := by
+  classical
   have hinner_diff :
       ∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ)
         (fun y : M => ∑ j ∈ t, U i j y * B i j y) x := by
     intro i hi
-    have hfun : (fun y : M => ∑ j ∈ t, U i j y * B i j y) =
-        t.sum (fun j y => U i j y * B i j y) := by
-      funext y
-      simp only [Finset.sum_apply]
-    rw [hfun]
-    exact MDifferentiableAt.sum (I := I) (t := t)
-      (f := fun j y => U i j y * B i j y)
-      (fun j hj => (hU i hi j hj).mul (hB i hi j hj))
+    have haux :
+        ∀ (r : Finset κ), (∀ j ∈ r, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i j) x) →
+          (∀ j ∈ r, MDifferentiableAt I 𝓘(ℝ, ℝ) (B i j) x) →
+            MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y : M => ∑ j ∈ r, U i j y * B i j y) x := by
+      intro r
+      induction r using Finset.induction_on with
+      | empty => intro _ _; simpa using mdifferentiableAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+                   (c := (0 : ℝ))
+      | insert a r har ih =>
+          intro hUr hBr
+          have hUa := hUr a (by simp)
+          have hBa := hBr a (by simp)
+          have htail := ih (fun j hj => hUr j (by simp [hj])) (fun j hj => hBr j (by simp [hj]))
+          have heqfun :
+              (fun y : M => ∑ j ∈ insert a r, U i j y * B i j y) =
+                (fun y : M => U i a y * B i a y) +
+                  (fun y : M => ∑ j ∈ r, U i j y * B i j y) := by
+            funext y; simp only [Pi.add_apply]; rw [Finset.sum_insert har]
+          rw [heqfun]
+          exact (hUa.mul hBa).add htail
+    exact haux t (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)
   rw [mvfderiv_finset_sum_apply (I := I) s
-    (fun i y => ∑ j ∈ t, U i j y * B i j y) v hinner_diff]
-  exact Finset.sum_congr rfl fun i hi =>
-    mvfderiv_finset_sum_mul_at (I := I) t (U i) (B i) v
-      (hU i hi) (hB i hi)
+    (fun i => fun y : M => ∑ j ∈ t, U i j y * B i j y) v hinner_diff]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  rw [mvfderiv_finset_sum_mul_at (I := I) t (fun j => U i j) (fun j => B i j) v
+    (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
 
 theorem mvfderiv_apply_contMDiff
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]

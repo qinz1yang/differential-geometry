@@ -14,16 +14,13 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 private local instance : IsManifold ThreeModel 1 G.terminalRegularOpen :=
   IsManifold.of_le (n := ∞) (by decide)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedScalar_continuousOn
+private theorem TerminalLimitMetric.extendedScalar_continuousOn
     (L : G.TerminalLimitMetric) {c : ℝ} (hac : a ≤ c) (hcs : c < s)
     (x : G.terminalRegularOpen) :
     ContinuousOn (fun t => metricScalarAt (L.extendedMetric t) x) (Icc c s) := by
@@ -33,7 +30,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact (scalarTime_of_joint L.extendedMetric (Icc c s) (uniqueDiffOn_Icc hcs) hgram
     t ht x).continuousWithinAt
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedScalar_differentiableAt
+private theorem TerminalLimitMetric.extendedScalar_differentiableAt
     (L : G.TerminalLimitMetric) {c t : ℝ} (hac : a ≤ c) (hcs : c < s)
     (ht : t ∈ Ioo c s) (x : G.terminalRegularOpen) :
     DifferentiableAt ℝ (fun t => metricScalarAt (L.extendedMetric t) x) t := by
@@ -42,7 +39,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact (scalarTime_of_joint L.extendedMetric (Icc c s) (uniqueDiffOn_Icc hcs) hgram
     t ⟨ht.1.le, ht.2.le⟩ x).differentiableAt (Icc_mem_nhds ht.1 ht.2)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedScalar_deriv_eq_incoming
+private theorem TerminalLimitMetric.extendedScalar_deriv_eq_incoming
     (L : G.TerminalLimitMetric) {c t : ℝ} (hac : a ≤ c)
     (ht : t ∈ Ioo c s) (x : G.terminalRegularOpen) :
     deriv (fun t => metricScalarAt (L.extendedMetric t) x) t =
@@ -58,7 +55,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact heq.deriv_eq.trans (hd.derivWithin (uniqueDiffWithinAt_Iic t)).symm
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.abs_scalar_time_derivWithin_le_of_incoming_bound
+theorem TerminalLimitMetric.abs_scalar_time_derivWithin_le_of_incoming_bound
     (L : G.TerminalLimitMetric) {c C q : ℝ} (hac : a ≤ c) (hcs : c < s)
     (x : G.terminalRegularOpen) (hq : q < metricScalarAt L.metric x)
     (hbound : ∀ t ∈ Ioo c s, q < G.flow.scalar t x.val →
@@ -81,7 +78,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [heq] at hqt ⊢
   exact hbound t ht hqt
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_differential_eq_chart
+private theorem scalar_differential_eq_chart
     (g : SmoothRiemannianMetric ThreeModel G.terminalRegularOpen)
     (x : G.terminalRegularOpen) (v : TangentSpace ThreeModel x) :
     (show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) (metricScalarAt g) x v) =
@@ -91,7 +88,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     x (mem_chart_source _ _) ((metricScalar_smooth g).mdifferentiableAt (by simp)) v]
   rw [fderivWithin_of_mem_nhds ((isOpen_extChartAt_target (I := ThreeModel) x).mem_nhds (mem_extChartAt_target (I := ThreeModel) x))]
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.extended_scalar_chart_fderiv_continuousOn
+private theorem extended_scalar_chart_fderiv_continuousOn
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) :
     ContinuousOn (fun z : ℝ × ThreeSpace =>
       fderiv ℝ (scalarOnE (I := ThreeModel) x (metricScalarAt (L.extendedMetric z.1))) z.2)
@@ -101,18 +98,18 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact S.scalarOnE_spatial_fderiv_continuousOn_of_joint_metric (I := ThreeModel)
     (Icc a s) (L.extendedMetric_jointContMDiffOn le_rfl G.lt) x
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.chart_self_mem_interior_target (x : G.terminalRegularOpen) :
+private theorem chart_self_mem_interior_target (x : G.terminalRegularOpen) :
     extChartAt ThreeModel x x ∈ interior (extChartAt ThreeModel x).target := by
   rw [(isOpen_extChartAt_target (I := ThreeModel) x).interior_eq]
   exact mem_extChartAt_target (I := ThreeModel) x
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousOn_fixed_snd {X Y Z : Type*}
+private theorem continuousOn_fixed_snd {X Y Z : Type*}
     [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
     {f : X × Y → Z} {J : Set X} {K : Set Y} (hf : ContinuousOn f (J ×ˢ K))
     {y : Y} (hy : y ∈ K) : ContinuousOn (fun t => f (t, y)) J :=
   hf.comp (continuous_id.prodMk continuous_const).continuousOn (fun _ ht => ⟨ht, hy⟩)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.extended_scalar_chart_fderiv_at_continuousOn
+private theorem extended_scalar_chart_fderiv_at_continuousOn
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) :
     ContinuousOn
       (fun t => fderiv ℝ (scalarOnE (I := ThreeModel) x (metricScalarAt (L.extendedMetric t)))
@@ -120,7 +117,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   continuousOn_fixed_snd (extended_scalar_chart_fderiv_continuousOn L x)
     (chart_self_mem_interior_target x)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.extended_scalar_differential_continuousOn
+private theorem extended_scalar_differential_continuousOn
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) (v : TangentSpace ThreeModel x) :
     ContinuousOn
       (fun t => (show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) (metricScalarAt (L.extendedMetric t)) x v))
@@ -141,7 +138,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   rw [heq]
   exact heval
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_scalar_differential
+theorem TerminalLimitMetric.tendsto_scalar_differential
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen) (v : TangentSpace ThreeModel x) :
     Tendsto (fun t => (show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ)
       (metricScalarAt ((G.flow.base.metric t).restrictOpen G.terminalRegularOpen)) x v))
@@ -158,7 +155,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   filter_upwards [self_mem_nhdsWithin] with t ht
   rw [L.extendedMetric_before ht]
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_differential_restrictOpen
+private theorem scalar_differential_restrictOpen
     (g : P.Metric) (x : G.terminalRegularOpen) (v : TangentSpace ThreeModel x) :
     (show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ)
       (metricScalarAt (g.restrictOpen G.terminalRegularOpen)) x v) =
@@ -173,7 +170,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     ContinuousLinearMap.comp_apply,
     DifferentialGeometry.mfderiv_subtype_val_apply]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_differential_le_of_incoming_bound
+theorem TerminalLimitMetric.scalar_differential_le_of_incoming_bound
     (L : G.TerminalLimitMetric) {c C q : ℝ} (hcs : c < s)
     (x : G.terminalRegularOpen) (hq : q < metricScalarAt L.metric x)
     (hbound : ∀ t ∈ Ioo a s, c ≤ t → q < G.flow.scalar t x.val →
@@ -194,7 +191,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [scalar_differential_restrictOpen, SmoothRiemannianMetric.restrictOpen_inner]
   exact hbound t ht hct.1.le hqt v
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_derivative_bounds_of_canonical_on_time_window
+theorem TerminalLimitMetric.scalar_derivative_bounds_of_canonical_on_time_window
     (L : G.TerminalLimitMetric) {c eps C1 C2 q : ℝ} (hac : a ≤ c) (hcs : c < s)
     (hcanonical : ∀ y : P.Carrier, ∀ t ∈ Ioo c s, q < G.flow.scalar t y →
       Nonempty (Perelman.CanonicalNeighborhood.FiniteHorn.CanonicalWitness G.flow eps C1 C2 y t))

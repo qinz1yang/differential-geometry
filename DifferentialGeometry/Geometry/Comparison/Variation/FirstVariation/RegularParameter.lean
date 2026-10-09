@@ -17,10 +17,10 @@ import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Topology.Compactness.Compact
-import DifferentialGeometry.Geometry.Curve.Length.Basic
-import DifferentialGeometry.Geometry.Variation.Curve.SpeedDerivative
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.CurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.ArcLength
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureCommutation
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

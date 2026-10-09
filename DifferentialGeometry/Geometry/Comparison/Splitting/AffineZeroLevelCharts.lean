@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Splitting.AffineFunctionNormalForm
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.Basic
+import DifferentialGeometry.Geometry.Comparison.Soul.EmbeddedSlice
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 set_option autoImplicit false

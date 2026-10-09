@@ -20,13 +20,10 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_spherical_barrier_at_level_of_spatiallyCanonical
+theorem TerminalLimitMetric.exists_spherical_barrier_at_level_of_spatiallyCanonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q A : ℝ}
     (hδsmall : δ < 1 / 20000) (hA : 0 < A)
     (hqA : q < 4 * C2 * A)
@@ -125,7 +122,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       simpa only [hlow, hhigh'] using And.intro (hfull z hz).1 (hfull z hz).2.le
     · exact Or.inr ⟨hfront, hemb, hcollar⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.spatial_neck_or_cap_core_of_spatiallyCanonical_of_not_isCompact
+theorem TerminalLimitMetric.spatial_neck_or_cap_core_of_spatiallyCanonical_of_not_isCompact
     (L : G.TerminalLimitMetric) {δ q C1 C2 : ℝ}
     (hδsmall : δ ≤ 1 / 8646) (hq : 0 < q)
     (p x : G.terminalRegularOpen)
@@ -159,7 +156,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact TerminalLimitMetric.spatial_neck_or_cap_core_of_spatial_sequence L hτ x (hq.trans hqx)
     hδsmall hepsδ hfit W hW halt nk z hlevel hxmap
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_finite_spherical_barrier_cover_of_spatiallyCanonical
+theorem TerminalLimitMetric.exists_finite_spherical_barrier_cover_of_spatiallyCanonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q : ℝ}
     (hδsmall : δ < 1 / 20000)
     (hcanonical : G.SpatiallyCanonicalBefore (δ / 4) C1 C2 q s)
@@ -273,7 +270,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     have hlo : metricScalarAt L.metric z ≤ A := hz
     linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_finite_recorded_spherical_barriers_of_spatiallyCanonical
+theorem TerminalLimitMetric.exists_finite_recorded_spherical_barriers_of_spatiallyCanonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q : ℝ}
     (hδsmall : δ < 1 / 20000)
     (hcanonical : G.SpatiallyCanonicalBefore (δ / 4) C1 C2 q s)
@@ -354,7 +351,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     refine ⟨?_, hfull p, hmetric p, hdomain p⟩
     nlinarith [(neck p).Q_pos]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_recorded_barriers_with_compact_closures_of_spatiallyCanonical
+theorem TerminalLimitMetric.exists_recorded_barriers_with_compact_closures_of_spatiallyCanonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q : ℝ}
     (hδsmall : δ < 1 / 20000)
     (hcanonical : G.SpatiallyCanonicalBefore (δ / 4) C1 C2 q s)
@@ -427,7 +424,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     hcover (fun i : {p // p ∈ s} × Fin 2 =>
       range (fun z : Sphere 2 => (neck i.1).map (z, level i))) hunion hx hRx
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_of_spatiallyCanonical :
+theorem exists_uniform_disjoint_spherical_region_of_spatiallyCanonical :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ,
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -567,12 +564,9 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.Incom
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_with_exterior_alternatives_of_spatiallyCanonical :
+theorem exists_uniform_disjoint_spherical_region_with_exterior_alternatives_of_spatiallyCanonical :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ, 0 < q →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -659,7 +653,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       (lt_div_iff₀ hCpos).mpr (by nlinarith)
     exact ⟨hAx.trans (hband w hw).1, hband w hw⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_component_spherical_region_of_spatiallyCanonical :
+theorem exists_uniform_component_spherical_region_of_spatiallyCanonical :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, δ ≤ η →
       ∀ C1 C2 q : ℝ, 0 < q →
       ∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s)
@@ -818,7 +812,7 @@ universe u
 
 namespace OneStepIncoming
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold in
+open OrientedThreeStage in
 theorem exists_neckRadius_spherical_region_with_scale_bound_of_spatiallyCanonical :
     ∃ η : ℝ, 0 < η ∧ ∀ δ : ℝ, 0 < δ → δ ≤ η →
       ∀ C1 C2 q : ℝ, 1 ≤ C2 → 0 < q →

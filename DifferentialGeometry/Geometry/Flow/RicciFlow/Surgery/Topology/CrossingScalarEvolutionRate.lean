@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Scalar.EvolutionRate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.ScalarLaplacianRicciTerms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartSliceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCrossingJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
@@ -17,12 +17,9 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.hasDerivAt_scalar_scalarEvolutionRate {t : ℝ} (ht : t ∈ Ioo a s) (y : P.Carrier) :
+theorem hasDerivAt_scalar_scalarEvolutionRate {t : ℝ} (ht : t ∈ Ioo a s) (y : P.Carrier) :
     HasDerivAt (fun v => G.flow.scalar v y) (scalarEvolutionRate (G.flow.base.metric t) y) t := by
   have h := scalar_curvature_evolution G.flow G.equation ⟨t, ht⟩ y
   have hnhds : (RealTimeInterval.closedOpen a s G.lt).carrier ∈ 𝓝 t :=
@@ -33,7 +30,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     SolutionOn.family_metric]
   rfl
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.tendsto_nhdsGT_of_continuousWithinAt_start {f : ℝ × P.Carrier → ℝ}
+private theorem tendsto_nhdsGT_of_continuousWithinAt_start {f : ℝ × P.Carrier → ℝ}
     {T : Set ℝ} (hT : T ∈ 𝓝[>] a) (y : P.Carrier)
     (hf : ContinuousWithinAt f (T ×ˢ univ) (a, y)) :
     Tendsto (fun t => f (t, y)) (𝓝[>] a) (𝓝 (f (a, y))) := by
@@ -42,7 +39,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact (ContinuousWithinAt.comp (f := fun t : ℝ => (t, y)) hf hpath
     fun t ht => ⟨ht, mem_univ y⟩).mono_of_mem_nhdsWithin hT
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivWithin_Ici_scalar_at_start_eq_scalarEvolutionRate (y : P.Carrier) :
+theorem derivWithin_Ici_scalar_at_start_eq_scalarEvolutionRate (y : P.Carrier) :
     derivWithin (fun v => G.flow.scalar v y) (Ici a) a =
       scalarEvolutionRate (G.flow.base.metric a) y := by
   have hIoo : Ioo a s ∈ 𝓝[>] a := Ioo_mem_nhdsGT G.lt
@@ -59,7 +56,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact ((G.hasDerivAt_scalar_scalarEvolutionRate ht y).hasDerivWithinAt.derivWithin
     (uniqueDiffWithinAt_Ici t)).symm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.abs_scalarEvolutionRate_le (L : G.TerminalLimitMetric) {C : ℝ≥0}
+theorem TerminalLimitMetric.abs_scalarEvolutionRate_le (L : G.TerminalLimitMetric) {C : ℝ≥0}
     {q : ℝ} (hder : G.DerivativeBoundBefore C q s) (x : G.terminalRegularOpen)
     (hx : q < metricScalarAt L.metric x) :
     |scalarEvolutionRate L.metric x| ≤ C * metricScalarAt L.metric x ^ 2 := by
@@ -127,7 +124,7 @@ theorem abs_derivWithin_Ici_scalar_le_at_slab_start_of_regularCrossing {s' : ℝ
     rw [hG, h.scalar_eq E]
   rw [G.derivWithin_Ici_scalar_at_start_eq_scalarEvolutionRate y, hG,
     ← h.scalarEvolutionRate_eq E, hR]
-  exact DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.abs_scalarEvolutionRate_le
+  exact OrientedThreeStage.IncomingSlab.TerminalLimitMetric.abs_scalarEvolutionRate_le
     E.incoming E.terminal hder p (hR ▸ hy)
 
 end MetricCutCapEvent

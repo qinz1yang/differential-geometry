@@ -68,7 +68,7 @@ theorem SmoothDisk.intervalIntegrable_boundaryNormalVelocityError_isotopy
     {D : RealTimeInterval} (G : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) Q)
     (hG : MetricFamilySmoothOn D G) {J : Set ℝ} (hJ : J ⊆ D.regular)
     (hJuniq : UniqueDiffOn ℝ J)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → Surgery.Topology.ContinuousFreeLoop Q)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := 𝓘(ℝ, E)) J)
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := 𝓘(ℝ, E)) J)
     {t : ℝ} (ht : t ∈ J)
@@ -86,7 +86,7 @@ theorem SmoothDisk.intervalIntegrable_boundaryNormalVelocityError_isotopy
     rw [hslice]
     exact htrace
   have hpoint := SmoothDisk.curveOfLoopFamily_lift_eq_map_diskBoundary u gamma sigma htrace γ t
-    (fun theta => congrArg (fun f : DifferentialGeometry.Topology.freeLoop Q => f theta) hslice)
+    (fun theta => congrArg (fun f : Surgery.Topology.ContinuousFreeLoop Q => f theta) hslice)
   have hvelocity := SmoothDisk.isotopyVelocity_boundary_eq_curve_velocity u γ sigma ht
     htraceγ Phi hid hboundary
   have hcurvature := SmoothDisk.boundaryCurvatureVelocity_eq_curve_curvatureVector
@@ -137,7 +137,7 @@ private theorem leastArea_slope_le_of_minimizingDisk_and_boundaryIsotopy
       (I := 𝓘(ℝ, E)) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (t : ℝ) (ht : t ∈ Ico a b)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t).toContinuousLoop)
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t (sigma.map theta))
     (hconformal : u.IsConformal (B.family.metric t)) (hharmonic : u.IsHarmonic (B.family.metric t))
@@ -216,7 +216,7 @@ private theorem leastArea_slope_le_of_minimizingDisk
       (I := 𝓘(ℝ, E)) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (t : ℝ) (ht : t ∈ Ico a b)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t).toContinuousLoop)
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t (sigma.map theta))
     (hconformal : u.IsConformal (B.family.metric t)) (hharmonic : u.IsHarmonic (B.family.metric t))
@@ -307,11 +307,11 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 private theorem leastArea_slope_le_of_conformal_minimizing_disk_standardModel
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := 𝓘(ℝ, E)) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := 𝓘(ℝ, E)) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := 𝓘(ℝ, E)) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
-    (t : ℝ) (ht : t ∈ Ico a b) (hctr : ContinuousMap.Nullhomotopic (γ t))
+    (t : ℝ) (ht : t ∈ Ico a b) (hctr : IsContractibleLoop (γ t))
     (u : Width.SmoothDisk (I := 𝓘(ℝ, E)) (Q := M))
     (sigma : Width.SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (Width.diskBoundary theta) = γ t (sigma.map theta))
@@ -334,21 +334,21 @@ private theorem leastArea_slope_le_of_conformal_minimizing_disk_standardModel
       (I := 𝓘(ℝ, E)) (Icc a b) := by
     apply hγ.congr
     intro p hp
-    exact congrArg (fun f : DifferentialGeometry.Topology.freeLoop M => f (p.1 : Surgery.Topology.Circle)) (hGamma p.2
+    exact congrArg (fun f : ContinuousFreeLoop M => f (p.1 : Surgery.Topology.Circle)) (hGamma p.2
       hp.2)
   have hi' : (curveOfLoopFamily (fun s => (gamma s).toContinuousLoop)).ImmersedOn
       (I := 𝓘(ℝ, E)) (Icc a b) := by
     intro x s hs
     have hX := CurveMap.X_eq_of_slice_eq (E := E)
       (c := curveOfLoopFamily (fun r => (gamma r).toContinuousLoop)) (c' := curveOfLoopFamily γ)
-      (t := s) (fun theta => congrArg (fun f : DifferentialGeometry.Topology.freeLoop M => f theta) (hGamma s hs)) x
+      (t := s) (fun theta => congrArg (fun f : ContinuousFreeLoop M => f theta) (hGamma s hs)) x
     rw [hX]
     exact hi x s hs
   have hemb' : ∀ s ∈ Icc a b, Topology.IsEmbedding (gamma s : Surgery.Topology.Circle → M) := by
     intro s hs
     rw [hGamma s hs]
     exact hemb s hs
-  have hctr' : ContinuousMap.Nullhomotopic (gamma t).toContinuousLoop := by rw [hGamma t htcc]; exact hctr
+  have hctr' : IsContractibleLoop (gamma t).toContinuousLoop := by rw [hGamma t htcc]; exact hctr
   have htrace' : ∀ theta, u.map (Width.diskBoundary theta) = gamma t (sigma.map theta) := by
     intro theta
     rw [hGamma t htcc]
@@ -367,7 +367,7 @@ private theorem leastArea_slope_le_of_conformal_minimizing_disk_standardModel
   have herr : (curveOfLoopFamily (fun s => (gamma s).toContinuousLoop)).areaError
       B.family.metric (Icc a b) t = (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t :=
     CurveMap.areaError_eq_of_eqOn B.family.metric
-      (fun s hs theta => congrArg (fun f : DifferentialGeometry.Topology.freeLoop M => f theta) (hGamma s hs)) htcc
+      (fun s hs theta => congrArg (fun f : ContinuousFreeLoop M => f theta) (hGamma s hs)) htcc
   have hA (s : ℝ) (hs : s ∈ Icc a b) :
       loopFamilyLeastArea B.family.metric (fun s => (gamma s).toContinuousLoop) s =
         loopFamilyLeastArea B.family.metric γ s := by
@@ -409,7 +409,7 @@ omit [I.Boundaryless] [T2Space M] [CompactSpace M] [SigmaCompactSpace M]
   [CompactSpace A] [SigmaCompactSpace A] in
 private theorem minimizing_comp_diffeomorph
     (g : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
-    (γ : DifferentialGeometry.Topology.freeLoop M) (u : Width.SmoothDisk (I := I) (Q := M))
+    (γ : ContinuousFreeLoop M) (u : Width.SmoothDisk (I := I) (Q := M))
     (hmin : ∀ v : Width.SmoothDisk (I := I) (Q := M),
       (∀ theta, v.map (Width.diskBoundary theta) = γ theta) →
         Width.diskArea g u.map ≤ Width.diskArea g v.map) :
@@ -438,11 +438,11 @@ omit [T2Space A] [CompactSpace A] [SigmaCompactSpace A] [IsManifold 𝓘(ℝ, E)
 theorem leastArea_slope_le_of_conformal_minimizing_disk
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b)
-    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (hdim : Module.finrank ℝ E = 3) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (γ t))
-    (t : ℝ) (ht : t ∈ Ico a b) (hctr : ContinuousMap.Nullhomotopic (γ t))
+    (t : ℝ) (ht : t ∈ Ico a b) (hctr : IsContractibleLoop (γ t))
     (u : Width.SmoothDisk (I := I) (Q := M))
     (sigma : Width.SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (Width.diskBoundary theta) = γ t (sigma.map theta))
@@ -460,7 +460,7 @@ theorem leastArea_slope_le_of_conformal_minimizing_disk
   let _ : CompactSpace c.Q := DifferentialGeometry.Geometry.Topology.StandardModelCopy.compactSpace
     c
   let Φ : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ c.Q := c.equiv
-  let γ' : ℝ → DifferentialGeometry.Topology.freeLoop c.Q :=
+  let γ' : ℝ → ContinuousFreeLoop c.Q :=
     fun s => (⟨Φ, Φ.continuous⟩ : C(M, c.Q)).comp (γ s)
   let u' : Width.SmoothDisk (I := 𝓘(ℝ, E)) (Q := c.Q) := Width.SmoothDisk.compDiffeomorph Φ u
   obtain ⟨B', hB'⟩ := exists_ricciBackground_pullback B Φ
@@ -474,7 +474,7 @@ theorem leastArea_slope_le_of_conformal_minimizing_disk
   have hemb' : ∀ s ∈ Icc a b, Topology.IsEmbedding (γ' s) := by
     intro s hs
     exact Φ.toHomeomorph.isEmbedding.comp (hemb s hs)
-  have hctr' : ContinuousMap.Nullhomotopic (γ' t) := hctr.comp_right ⟨Φ, Φ.continuous⟩
+  have hctr' : IsContractibleLoop (γ' t) := hctr.postcompose ⟨Φ, Φ.continuous⟩
   have htrace' : ∀ theta, u'.map (Width.diskBoundary theta) = γ' t (sigma.map theta) := by
     intro theta
     change Φ (u.map (Width.diskBoundary theta)) = Φ (γ t (sigma.map theta))

@@ -5,6 +5,7 @@ namespace DifferentialGeometry.Topology.Engulfing
 
 open Set _root_.Geometry _root_.Topology
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E] [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -22,19 +23,19 @@ def simplicialNeighborhood (K : SimplicialComplex ℝ E) (A : Set E) :
   indep := fun hs => K.indep hs.1
   inter_subset_convexHull := fun hs ht => K.inter_subset_convexHull hs.1 ht.1
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem simplicialNeighborhood_faces_subset (K : SimplicialComplex ℝ E) (A : Set E) :
     (simplicialNeighborhood K A).faces ⊆ K.faces := by
   classical
   exact fun _ h => h.1
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem simplicialNeighborhood_finite_faces (K : SimplicialComplex ℝ E)
     (hK : K.faces.Finite) (A : Set E) : (simplicialNeighborhood K A).faces.Finite := by
   classical
   exact hK.subset (simplicialNeighborhood_faces_subset K A)
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem subset_simplicialNeighborhood (K : SimplicialComplex ℝ E) (A : Set E) :
     A ∩ K.space ⊆ (simplicialNeighborhood K A).space := by
   classical
@@ -43,7 +44,7 @@ theorem subset_simplicialNeighborhood (K : SimplicialComplex ℝ E) (A : Set E) 
   exact (simplicialNeighborhood K A).convexHull_subset_space
     ⟨hs, s, hs, subset_rfl, x, hxs, hxA⟩ hxs
 
-omit [DecidableEq E] [FiniteDimensional ℝ E] in
+omit [DecidableEq E] in
 theorem simplicialNeighborhood_space_subset (K : SimplicialComplex ℝ E) (A U : Set E)
     (hU : ∀ s ∈ K.faces, (convexHull ℝ (s : Set E) ∩ A).Nonempty →
       convexHull ℝ (s : Set E) ⊆ U) :

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.ArcParametrization
-import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood.SurfaceTrace
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCircleMarkedCellParameters
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34InteriorSurfaceCaps
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCircleSheets
 
 open Set

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricSeam
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.ScalarLowerBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ScalarLowerBound
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapExhaustiveness
 
 set_option autoImplicit false

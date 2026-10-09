@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.Boundary.ChartTangent
+import DifferentialGeometry.Geometry.Boundary.ChartTangent
 import DifferentialGeometry.Geometry.Boundary.LevelComponents
 
 noncomputable section

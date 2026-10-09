@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Geodesic.Ray
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
+import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.Distance
+import DifferentialGeometry.Geometry.Metric.CurveSpeed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Distance
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
 import DifferentialGeometry.Analysis.Calculus.Compactness.Interval

@@ -276,6 +276,16 @@ lemma exists_global_of_ae_coherent_monotone
         h_bound_eventually h_indicator_aem h_g_aem_Ω h_indicator_tendsto
     exact lt_of_le_of_lt h_eLpNorm_g_le_C hC_lt_top
 
+omit [NeZero d] in
+theorem MemWkp_of_sigma_compact_cover_and_globalLp_zero
+    {p : ℝ≥0∞}
+    {Ω : Set E} {u : E → ℝ}
+    (h_globalLp : MemLp u p ((volume : Measure E).restrict Ω))
+    :
+    MemWkp (d := d) 0 p u Ω := by
+  rw [MemWkp_zero]
+  exact h_globalLp
+
 end Euclidean
 end Sobolev
 end Analysis

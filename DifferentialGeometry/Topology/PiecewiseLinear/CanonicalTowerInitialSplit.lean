@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerDiskPair
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSeamPolyhedral
 import DifferentialGeometry.Topology.PiecewiseLinear.TubePairInterior
@@ -13,7 +18,9 @@ variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set
   {φ : E3 → E3} {Pt : ℤ → E3} {Dp Dpint J A S T S'' T'' : ℤ → Set E3}
 
 open Classical in
-theorem exists_polyhedral_initialSurface_split
+theorem exists_polyhedral_initialSurface_split (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
@@ -23,7 +30,7 @@ theorem exists_polyhedral_initialSurface_split
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (i : ℤ)
+    (h303 : Moise303) (i : ℤ)
     (hnull : ∃ G ∈ evenTorusSeams T'' i, boundsDiskIn G (T'' (2 * i))) :
     ∃ (j : ℤ) (G M L' U : Set E3), (j = i - 1 ∨ j = i) ∧
       G ∈ traceCircles (canonicalOddPiece S'' T'' j) (T'' (2 * i)) ∧
@@ -65,6 +72,11 @@ theorem exists_polyhedral_initialSurface_split
     · intro x hx
       exact htw.subsetInterior _ (htw.boundary_subset_outer _ hx.1)
   have hP₀ : P' ∈ M₀ := Or.inr rfl
+  have huI : h u ∈ I := interior_mono subset_union_left (ht.mem_interior_image_dualCell hu)
+  have hvI : h v ∈ I := interior_mono subset_union_right (ht.mem_interior_image_dualCell hv)
+  have huv' : h u ≠ h v := fun heq => huv (ht.injOn
+    (ht.dualCell_subset hu (interior_subset (ht.mem_interior_dualCell hu)))
+    (ht.dualCell_subset hv (interior_subset (ht.mem_interior_dualCell hv))) heq)
   have hfin : (traceCircles L (T'' (2 * i))).Finite := by
     rcases hj with hj | hj
     · dsimp [L]
@@ -89,8 +101,12 @@ theorem exists_polyhedral_initialSurface_split
   have hFU : Disjoint ({P'} : Set E3) U := disjoint_left.mpr fun x hxP hxU =>
     disjoint_left.mp hUavoid hxU (Or.inl hxP)
   obtain ⟨M, L', hMsep, hprot, hMeq, -, hseams, hdecrease, hL'out, hL'poly⟩ :=
-    exists_polyhedral_disk_split_reducing_seams I {h u} {h v} R (T'' (2 * i)) L Δ D₁ D₂ U {P'}
-      r r₁ r₂ isOpen_interior
+    exists_polyhedral_disk_split_reducing_seams h303 I {h u} {h v} R (T'' (2 * i)) L Δ D₁ D₂ U {P'}
+      r r₁ r₂ isOpen_interior (ht.isConnected_interior_image_pair hu hv huv he)
+      (singleton_subset_iff.mpr huI) (singleton_subset_iff.mpr hvI)
+      (by simpa only [disjoint_singleton_left, mem_singleton_iff] using huv')
+      (isClosed_singleton.preimage continuous_subtype_val)
+      (isClosed_singleton.preimage continuous_subtype_val)
       (by rw [hCeq]; exact hM₀I) (by rw [hCeq]; exact ⟨hcl, hsep⟩)
       hr hΔT hr₁ hr₂ hpair hD₁T
       (by rw [hCeq]; exact hsub.trans inter_subset_left)
@@ -116,7 +132,9 @@ theorem exists_polyhedral_initialSurface_split
     hout, hMeq, hL'carrier, hL'out, hseams, hdecrease, hL'poly⟩
 
 open Classical in
-theorem exists_initialSurface_split
+theorem exists_initialSurface_split (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
@@ -126,7 +144,7 @@ theorem exists_initialSurface_split
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (i : ℤ)
+    (h303 : Moise303) (i : ℤ)
     (hnull : ∃ G ∈ evenTorusSeams T'' i, boundsDiskIn G (T'' (2 * i))) :
     ∃ (j : ℤ) (G M L' U : Set E3), (j = i - 1 ∨ j = i) ∧
       G ∈ traceCircles (canonicalOddPiece S'' T'' j) (T'' (2 * i)) ∧
@@ -144,9 +162,7 @@ theorem exists_initialSurface_split
         nullTraceCount (canonicalOddPiece S'' T'' j) (T'' (2 * i)) := by
   obtain ⟨j, G, M, L', U, hj, hG, hU, hUI, hMsep, hP, hMI, hout, heq,
       hcarrier, hL'out, hseams, hdecrease, -⟩ :=
-    exists_polyhedral_initialSurface_split
-      (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-      htw havoid hcl hsep i hnull
+    exists_polyhedral_initialSurface_split ht hu hv huv he htw havoid hcl hsep h303 i hnull
   exact ⟨j, G, M, L', U, hj, hG, hU, hUI, hMsep, hP, hMI, hout, heq,
     hcarrier, hL'out, hseams, hdecrease⟩
 

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroup
 import DifferentialGeometry.Topology.Algebra.Module.RankInvariant
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSumSummandCountUnique
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.SummandAbsorption
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
+import DifferentialGeometry.Topology.ThreeManifold.CutCapCutComponentRealizationReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountTopologicalAssembly
 import Mathlib.RingTheory.TensorProduct.Finite
 

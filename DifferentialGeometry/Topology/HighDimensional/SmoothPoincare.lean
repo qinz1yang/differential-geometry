@@ -38,7 +38,7 @@ theorem poincare_smooth_ge6 {n : ℕ} (h6 : 6 ≤ n) {M : Type*} [TopologicalSpa
     (isClosed_Icc.preimage hf.continuous).isCompact
   have hreg' : ∀ x, f x = -1/2 ∨ f x = 1/2 → ¬ DifferentialGeometry.Topology.Morse.IsCriticalPointAt (morseModelI (m + 1)) f x := by
     intro x hx
-    rw [isCriticalPointAt_morseModelI_iff (f := f)]
+    rw [isCriticalPointAt_morseModelI_iff hf]
     exact hreg x hx
   obtain ⟨Φ, hΦ₁, hΦ₂⟩ := hcobordism_strip (morseModelI (m + 1)) (by omega : 6 ≤ m + 1)
     f hf' (by norm_num : (-1/2 : ℝ) < 1/2) hcompact hreg' hW hS₀ hS₁ hH
@@ -66,7 +66,7 @@ theorem poincare_smooth_ge6 {n : ℕ} (h6 : 6 ≤ n) {M : Type*} [TopologicalSpa
   exact twisted_sphere_homeomorph h₀' h₁.isClosedEmbedding hcover hinter hbdry
 
 theorem poincare_smooth {n : ℕ} (h5 : 5 ≤ n) {M : Type*} [TopologicalSpace M] [T2Space M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M]
+    [CompactSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M] [IsManifold (𝓡 n) ∞ M]
     (e : M ≃ₕ sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) :
     Nonempty (M ≃ₜ sphere (0 : EuclideanSpace ℝ (Fin (n + 1))) 1) := by
   exact poincare_high_dim_topological h5 e

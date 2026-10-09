@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.BilinearForm.Determinant
+import DifferentialGeometry.Tensor.BilinearForm
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar

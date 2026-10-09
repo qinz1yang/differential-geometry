@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialSubfamily
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34EssentialSubfamilyMotion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CarrierBandDescent
 
 open Set
@@ -36,7 +36,7 @@ theorem exists_section34_single_trace_motion
       Disjoint K (Pg e k.val) ∧
       G (ends e).1 '' CpBd (ends e).1 ∩ ψ '' (G (ends e).2 '' CpBd (ends e).2) = Pg e k.val := by
   obtain ⟨I, -, -, hcarry, K₀, Ψ, hK₀, hK₀S, hfix₀, hΨ, hArim₀, hBrim₀, hout₀,
-      hkeep₀, -, htrace₀⟩ := exists_supported_motion_retaining_essential_trace_subfamily hprep hpack e
+      hkeep₀, -, htrace₀⟩ := exists_section34_essential_subfamily_motion hprep hpack e
   obtain ⟨k, K, Φ, hK, hKS, hfix, hΦ, hArim, hBrim, hout, hkeep, -, -, htrace⟩ :=
     exists_section34_single_carrier_trace_of_current_family hprep hpack e I Ψ hK₀ hK₀S
       hfix₀ hΨ hArim₀ hBrim₀ hout₀ hkeep₀ hcarry htrace₀

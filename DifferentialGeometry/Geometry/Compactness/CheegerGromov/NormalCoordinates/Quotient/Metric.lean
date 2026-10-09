@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Quotient.Smooth
 import DifferentialGeometry.Topology.Manifold.OpenTransitionDerivative
 import DifferentialGeometry.Geometry.Metric.Construction.OpenCoefficients
-import DifferentialGeometry.Geometry.Metric.Construction.Gluing.Charts
+import DifferentialGeometry.Geometry.Metric.ChartGluing
 
 section
 

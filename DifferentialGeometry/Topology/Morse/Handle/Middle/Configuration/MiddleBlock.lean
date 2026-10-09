@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.Handle.Middle.Configuration.MiddleTransport
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -1259,7 +1260,6 @@ theorem exists_merge_lowest {f : M → ℝ} {a b : ℝ} (hf : MorseStrip I f a b
   · rw [hne₂ x hx (by omega)]
     exact hβH x (Finset.mem_filter.2 ⟨hx, hxk⟩)
 
-omit [SigmaCompactSpace M] [I.Boundaryless] in
 theorem exists_blockConfig_of_levels {g : M → ℝ} {a b : ℝ} (hg : MorseStrip I g a b)
     {crit : Finset M} (hcrit : ∀ x, x ∈ crit ↔ g x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I g x)
     (D : GradientLikeStrip I g a b crit) {ε : ℝ} (hε : 0 < ε)
@@ -2542,7 +2542,6 @@ section Isolation
 variable (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M]
 
-omit [SigmaCompactSpace M] in
 theorem isCancellingPair_of_isolated [DecidableEq M] {f : M → ℝ} {a b : ℝ}
     (hf : MorseStrip I f a b) {crit : Finset M}
     (hcrit : ∀ x, x ∈ crit ↔ f x ∈ Ioo a b ∧ DifferentialGeometry.Topology.Morse.IsCriticalPointAt I f x)

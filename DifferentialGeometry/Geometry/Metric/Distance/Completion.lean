@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
+import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer
 import DifferentialGeometry.Geometry.Metric.Distance.PathLength
 import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness

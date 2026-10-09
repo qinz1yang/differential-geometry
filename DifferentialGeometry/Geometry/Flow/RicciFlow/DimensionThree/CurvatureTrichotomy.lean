@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CompleteTrichotomy
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorEigenvalues
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SectionalCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.ParallelKernel.Basic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.PositiveSurface
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureKernel
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureSurface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorKernel
 
 set_option autoImplicit false
@@ -85,7 +85,7 @@ theorem positive_time_rank_spreading
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) (G.metric t) (cov t)
             (fun y => A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y => A t y) x (X t x) +
           reaction t x (A t x)) :
     (∀ t ∈ Ioc 0 T, ∀ x y,
@@ -129,7 +129,7 @@ theorem positive_time_kernel_rigidity
       deriv (fun s => A s x) t =
         rawBundleEndomorphismConnLap (I := I) (g t) (cov t)
             (fun y => A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov t) (cov t) (fun y => A t y) x (X t x) +
           reaction t x (A t x)) :
     And

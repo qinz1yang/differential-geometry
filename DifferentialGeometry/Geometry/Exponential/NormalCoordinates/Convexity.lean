@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.MetricExtension
 import DifferentialGeometry.Geometry.Exponential.MinimizingVector
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
-import DifferentialGeometry.Geometry.Operator.Hessian.AlongGeodesic
+import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Exponential.Injectivity
 
 noncomputable section

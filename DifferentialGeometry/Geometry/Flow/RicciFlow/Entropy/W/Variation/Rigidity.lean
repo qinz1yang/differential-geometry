@@ -89,15 +89,15 @@ theorem wEntropyFirstVariation_eq_neg_two_mul_tau_integral_square
             (metricCov_smooth (I := I) (M := M) (G.metric s))
             (f s) hf x -
           (1 / (2 * s)) • metricTensor0S (I := I) (G.metric s) x)
-    DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
+    wEntropyFirstVariation
       (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f s =
       -2 * s *
-        ∫ x, DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s) x * Sq x
+        ∫ x, perelmanDensity n s (f s) x * Sq x
           ∂(volumeMeasureFamily (I := I) (M := M) G s) := by
   classical
   dsimp only
-  exact DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation_eq_of_hasFirstVariationAt
+  exact wEntropyFirstVariation_eq_of_hasFirstVariationAt
     (w_rev_square (I := I) S hS T u hu hpos hs hspos hTs)
 
 theorem wEntropyFirstVariation_eq_zero_iff_soliton_equation
@@ -128,7 +128,7 @@ theorem wEntropyFirstVariation_eq_zero_iff_soliton_equation
           (fun r x =>
             (conjCoeff (I := I) (M := M) S (T - r) : M -> Real) x)
           u n hu hs hspos (hpos s ⟨hs, hspos⟩)
-    DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
+    wEntropyFirstVariation
       (volumeMeasureFamily (I := I) (M := M) G)
       n (fun r : Real => r) R q f s = 0 ↔
       ∀ x : M,
@@ -156,7 +156,7 @@ theorem wEntropyFirstVariation_eq_zero_iff_soliton_equation
           (conjCoeff (I := I) (M := M) S (T - r) : M -> Real) x)
         u n hu hs hspos (hpos s ⟨hs, hspos⟩)
   let μ := volumeMeasureFamily (I := I) (M := M) G s
-  let ρ : M -> Real := DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n s (f s)
+  let ρ : M -> Real := perelmanDensity n s (f s)
   let A : (x : M) → Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 x := fun x =>
     metricRicciAt (I := I) (M := M) g x +
@@ -167,7 +167,7 @@ theorem wEntropyFirstVariation_eq_zero_iff_soliton_equation
       (1 / (2 * s)) • metricTensor0S (I := I) g x
   let Sq : M -> Real := fun x => normSq0S (I := I) g x 2 (A x)
   have hident :
-      DifferentialGeometry.Analysis.Entropy.Perelman.wEntropyFirstVariation
+      wEntropyFirstVariation
         (volumeMeasureFamily (I := I) (M := M) G)
         n (fun r : Real => r) R q f s =
         -2 * s * ∫ x, ρ x * Sq x ∂μ := by

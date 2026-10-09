@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
@@ -315,6 +320,56 @@ theorem IsCanonicalConfiguration.image_circle_subset
 
 end Configuration
 
+section Statements
+
+def Moise311 : Prop :=
+  ∀ (P : Fin 4 → EuclideanSpace ℝ (Fin 3)) (D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)))
+    (J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3)))
+    (A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))) (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)),
+    IsRevolvedTorusChain P D Dint J A S T → N = ⋃ j, S j →
+    Topology.IsEmbedding (N.domRestrict h) →
+    ∃ S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)),
+      IsCanonicalConfiguration P D Dint J A S T N h S'' T''
+
+def Moise312 : Prop :=
+  ∀ (P : Fin 4 → EuclideanSpace ℝ (Fin 3)) (D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)))
+    (J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3)))
+    (A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))) (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))),
+    IsCanonicalConfiguration P D Dint J A S T N h S'' T'' →
+    ∀ (j : Fin 3) (k : Fin 4), k = j.castSucc ∨ k = j.succ →
+    ∀ hsub : h '' J k ⊆ S'' j, ∀ x : (h '' J k),
+      Function.Surjective (FundamentalGroup.map
+        (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(h '' J k, S'' j)) x)
+
+def Moise313 : Prop :=
+  ∀ (P : Fin 4 → EuclideanSpace ℝ (Fin 3)) (D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)))
+    (J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3)))
+    (A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))) (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))),
+    IsCanonicalConfiguration P D Dint J A S T N h S'' T'' → S'' 0 ∩ S'' 2 = ∅
+
+def Moise314 : Prop :=
+  ∀ (P : Fin 4 → EuclideanSpace ℝ (Fin 3)) (D Dint : Fin 3 → Set (EuclideanSpace ℝ (Fin 3)))
+    (J : Fin 4 → Set (EuclideanSpace ℝ (Fin 3)))
+    (A S T : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))) (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (S'' T'' : Fin 3 → Set (EuclideanSpace ℝ (Fin 3))),
+    IsCanonicalConfiguration P D Dint J A S T N h S'' T'' →
+    ∀ (j : Fin 2) (G : Set (EuclideanSpace ℝ (Fin 3))), IsPLSphere 1 G →
+    G ⊆ T'' j.castSucc ∩ T'' j.succ →
+    (∀ k : Fin 3, (k = j.castSucc ∨ k = j.succ) → ∀ hsub : G ⊆ S'' k, ∀ x : G,
+        Function.Surjective (FundamentalGroup.map
+          (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S'' k)) x)) ∨
+      ∀ k : Fin 3, (k = j.castSucc ∨ k = j.succ) →
+        ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
+          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' k ∧
+            G = r '' stdSimplexBoundary 2
+
+end Statements
 
 section Inhabitant
 

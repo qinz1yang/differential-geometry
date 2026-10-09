@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
-import DifferentialGeometry.Geometry.Metric.Pullback.EmbeddingComposition
-import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceEllipticity
+import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Insertion.Window
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Measure.MetricComparison
 import DifferentialGeometry.Geometry.Measure.LocalIsometry
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling

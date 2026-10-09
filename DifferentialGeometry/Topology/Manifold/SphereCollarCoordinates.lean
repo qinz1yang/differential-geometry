@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollar
-import DifferentialGeometry.Topology.Manifold.Sphere.PolarCoordinates
+import DifferentialGeometry.Topology.Manifold.SpherePolarCoordinates
 
 noncomputable section
 

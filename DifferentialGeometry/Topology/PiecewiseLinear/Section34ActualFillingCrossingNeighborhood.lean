@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ActualCrossingNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ActualFillingRegions
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingModelRegions
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.FillingQuadrants
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingTubeFillingRecognition
 
 open Set Topology
 

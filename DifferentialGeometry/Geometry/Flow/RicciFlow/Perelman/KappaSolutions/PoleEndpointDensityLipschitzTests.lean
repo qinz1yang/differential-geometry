@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.WeakEquation.LipschitzTests
-import DifferentialGeometry.Analysis.Calculus.Rademacher
+import DifferentialGeometry.Analysis.Calculus.Derivative.LocallyLipschitz
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
 import Mathlib.Analysis.Normed.Group.Bounded
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
@@ -16,8 +16,8 @@ import Mathlib.MeasureTheory.Group.Measure
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.HamiltonJacobi.TimeChart
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleLimits.ReducedLength.TimeSlices
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointHamiltonJacobiTimeChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PoleEndpointTimeChartRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineGradientCoefficients
 import DifferentialGeometry.Analysis.Calculus.Derivative.WeakIdentification
 import Mathlib.Analysis.Calculus.ContDiff.Basic
@@ -25,7 +25,7 @@ import Mathlib.Analysis.Normed.Operator.Bilinear
 import DifferentialGeometry.Analysis.Integration.Lp.BoundedLinearPairing
 import DifferentialGeometry.Analysis.Calculus.GaussianNormalizationDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineVolumeDensity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.PoleRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleRescalings
 import DifferentialGeometry.Analysis.Integration.Integral.WeightedTimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.WeakEquation.ExponentialTransform
 

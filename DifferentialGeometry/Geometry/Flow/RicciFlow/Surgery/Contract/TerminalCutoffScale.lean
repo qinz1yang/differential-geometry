@@ -1,14 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Protection
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Cutoff.Precision
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricEvent
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
-import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscarded
-import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalBarrierCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSphericalRegionExterior
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffRemainingFields
@@ -100,7 +90,7 @@ theorem exists_neckRadius_finite_spherical_barrier_cover
           Disjoint {z : D'.slab.terminalRegularOpen | metricScalarAt D'.terminal.metric z ≤ A}
             (⋃ p ∈ s, frontier (K p).carrier) := by
   obtain ⟨C2, hC2, hbarrier⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_finite_spherical_barrier_cover.{u} hη hηsmall
+    OrientedThreeStage.IncomingSlab.exists_uniform_finite_spherical_barrier_cover.{u} hη hηsmall
   refine ⟨C2, hC2, ?_⟩
   intro D
   obtain ⟨q, _, hcover⟩ := hbarrier D.stage D.startTime D.endTime D.slab
@@ -176,7 +166,7 @@ theorem exists_neckRadius_spherical_region_with_exterior_alternatives_of_canonic
                       metricScalarAt (D'.terminal.metric.restrictOpen U) w <
                         (2 * C2) * metricScalarAt (D'.terminal.metric.restrictOpen U) x) := by
   obtain ⟨η, hη, hmain⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives_of_canonical_neighborhoods.{u}
+    OrientedThreeStage.IncomingSlab.exists_uniform_disjoint_spherical_region_on_component_with_exterior_alternatives_of_canonical_neighborhoods.{u}
   refine ⟨η, hη, ?_⟩
   intro δ hδ hδη C1 C2 q hC2 hq D hcanonical q' hqq'
   let C := 2 * C2
@@ -268,7 +258,7 @@ theorem exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_a
   have heps : 0 < δ / 4 := by positivity
   have hsmall : δ / 4 < 1 / 11 := by linarith [hδη.trans (min_le_right _ _)]
   obtain ⟨C2, hC2, hcanonical⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u} heps hsmall
+    OrientedThreeStage.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u} heps hsmall
   have hΛ : 1 ≤ 8 * C2 ^ 2 * (2 * C2) := by
     have hsq : 1 ≤ C2 ^ 2 := by nlinarith
     nlinarith

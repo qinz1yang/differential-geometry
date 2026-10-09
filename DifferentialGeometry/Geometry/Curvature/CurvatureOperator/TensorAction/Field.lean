@@ -57,17 +57,17 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] in
 lemma slotInsertEndoFib_zero (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace (s + 1) I x) :
-    slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x Λ A =
+    slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A =
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ) := by
   have hcurry : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
-      (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x Λ A) =
+      (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) =
       ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
     apply ContinuousLinearMap.ext
     intro v0
     apply tensor0S_eq_of_eval_eq (I := I) (M := M)
     intro vt
-    rw [tensor0S_curry_apply_eval, slotInsertEndomorphism_apply_natural,
+    rw [tensor0S_curry_apply_eval, slotInsertEndoFib_apply_natural,
       ContinuousLinearMap.comp_apply, tensor0S_curry_apply_eval]
     congr 1
     rw [Fin.cons_zero, Fin.update_cons_zero]
@@ -77,21 +77,21 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] in
 lemma slotInsertEndoFib_succ (s : ℕ) (j : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
-    slotInsertEndomorphism (I := I) (M := M) (s + 1) j.succ x Λ =
+    slotInsertEndoFib (I := I) (M := M) (s + 1) j.succ x Λ =
       slotExtendPointwise (I := I) (M := M) s s x
-        (slotInsertEndomorphism (I := I) (M := M) s j x Λ) := by
+        (slotInsertEndoFib (I := I) (M := M) s j x Λ) := by
   apply ContinuousLinearMap.ext
   intro A
   have hcurry : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
-      (slotInsertEndomorphism (I := I) (M := M) (s + 1) j.succ x Λ A) =
-      (slotInsertEndomorphism (I := I) (M := M) s j x Λ).comp
+      (slotInsertEndoFib (I := I) (M := M) (s + 1) j.succ x Λ A) =
+      (slotInsertEndoFib (I := I) (M := M) s j x Λ).comp
         ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A) := by
     apply ContinuousLinearMap.ext
     intro v0
     apply tensor0S_eq_of_eval_eq (I := I) (M := M)
     intro vt
-    rw [tensor0S_curry_apply_eval, slotInsertEndomorphism_apply_natural,
-      ContinuousLinearMap.comp_apply, slotInsertEndomorphism_apply_natural,
+    rw [tensor0S_curry_apply_eval, slotInsertEndoFib_apply_natural,
+      ContinuousLinearMap.comp_apply, slotInsertEndoFib_apply_natural,
       tensor0S_curry_apply_eval]
     congr 1
     rw [Fin.cons_succ, ← Fin.cons_update]
@@ -108,7 +108,7 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel s s ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (TensorRSModel s s ℝ E)
           (E := fun z : M => TensorRSSpace s s I z) x
-          (TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x (φ x)))) := by
+          (TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x (φ x)))) := by
   intro s
   induction s with
   | zero => exact fun k => k.elim0
@@ -119,11 +119,11 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
           apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
             (F₁ := Tensor0SModel (s + 1) ℝ E) (V₁ := fun z : M => Tensor0SSpace (s + 1) I z)
             (F₂ := Tensor0SModel (s + 1) ℝ E) (V₂ := fun z : M => Tensor0SSpace (s + 1) I z)
-            (φ := fun x => slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (φ x))
+            (φ := fun x => slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (φ x))
           intro Y
           have heq : (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
               (E := fun z : M => Tensor0SSpace (s + 1) I z) x
-              (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (φ x) (Y x))) =
+              (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (φ x) (Y x))) =
               (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
               (E := fun z : M => Tensor0SSpace (s + 1) I z) x
               ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
@@ -166,23 +166,23 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
           set Φ : SmoothCcTensor g s s :=
             { toSection :=
                 { toFun := fun x : M =>
-                    TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s j x (φ x))
+                    TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s j x (φ x))
                   contMDiff_toFun := hIH }
               hasCompactSupport := HasCompactSupport.of_compactSpace _ } with hΦ_def
           have hext := slotExtendFib_contMDiff (I := I) (M := M) g s s Φ
           refine hext.congr ?_
           intro x
           rw [show TensorRSSpace.ofCLM
-                (slotInsertEndomorphism (I := I) (M := M) (s + 1) (Fin.succ j) x (φ x)) =
+                (slotInsertEndoFib (I := I) (M := M) (s + 1) (Fin.succ j) x (φ x)) =
               slotExtendPointwise (I := I) (M := M) s s x
-                (slotInsertEndomorphism (I := I) (M := M) s j x (φ x)) from
+                (slotInsertEndoFib (I := I) (M := M) s j x (φ x)) from
             slotInsertEndoFib_succ (I := I) (M := M) s j x (φ x)]
           rfl
 
 def curvatureTensorActionFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (u w : TangentSpace I x) :
     Tensor0SSpace s I x →L[ℝ] Tensor0SSpace s I x :=
-  -(∑ k : Fin s, slotInsertEndomorphism (I := I) (M := M) s k x
+  -(∑ k : Fin s, slotInsertEndoFib (I := I) (M := M) s k x
       (riemannOp (LeviCivita (I := I) g) x u w))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -196,7 +196,7 @@ lemma slotCurvSumFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x : 
     Tensor0SSpace.eval_neg, Tensor0SSpace.eval_sum]
   congr 1
   exact Finset.sum_congr rfl fun k _ =>
-    slotInsertEndomorphism_apply_natural (I := I) (M := M) s k x
+    slotInsertEndoFib_apply_natural (I := I) (M := M) s k x
       (riemannOp (LeviCivita (I := I) g) x u w) A m
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -211,7 +211,7 @@ lemma slotCurvSumFib_add_left (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     rw [map_add (riemannOp (LeviCivita (I := I) g) x), add_apply]
   rw [curvatureTensorActionFib, curvatureTensorActionFib, curvatureTensorActionFib, hR]
   rw [Finset.sum_congr rfl fun k _ =>
-    slotInsertEndomorphism_add_left (I := I) (M := M) s k x
+    slotInsertEndoFib_add_left (I := I) (M := M) s k x
       (riemannOp (LeviCivita (I := I) g) x u w)
       (riemannOp (LeviCivita (I := I) g) x u' w)]
   rw [Finset.sum_add_distrib, neg_add]
@@ -226,7 +226,7 @@ lemma slotCurvSumFib_smul_left (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M
     rw [map_smul (riemannOp (LeviCivita (I := I) g) x), smul_apply]
   rw [curvatureTensorActionFib, curvatureTensorActionFib, hR]
   rw [Finset.sum_congr rfl fun k _ =>
-    slotInsertEndomorphism_smul_left (I := I) (M := M) s k x c
+    slotInsertEndoFib_smul_left (I := I) (M := M) s k x c
       (riemannOp (LeviCivita (I := I) g) x u w)]
   rw [← Finset.smul_sum, ← smul_neg]
 
@@ -242,7 +242,7 @@ lemma slotCurvSumFib_add_right (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M
     map_add (riemannOp (LeviCivita (I := I) g) x u) w w'
   rw [curvatureTensorActionFib, curvatureTensorActionFib, curvatureTensorActionFib, hR]
   rw [Finset.sum_congr rfl fun k _ =>
-    slotInsertEndomorphism_add_left (I := I) (M := M) s k x
+    slotInsertEndoFib_add_left (I := I) (M := M) s k x
       (riemannOp (LeviCivita (I := I) g) x u w)
       (riemannOp (LeviCivita (I := I) g) x u w')]
   rw [Finset.sum_add_distrib, neg_add]
@@ -257,7 +257,7 @@ lemma slotCurvSumFib_smul_right (g : SmoothRiemannianMetric I M) (s : ℕ) (x : 
     map_smul (riemannOp (LeviCivita (I := I) g) x u) c w
   rw [curvatureTensorActionFib, curvatureTensorActionFib, hR]
   rw [Finset.sum_congr rfl fun k _ =>
-    slotInsertEndomorphism_smul_left (I := I) (M := M) s k x c
+    slotInsertEndoFib_smul_left (I := I) (M := M) s k x c
       (riemannOp (LeviCivita (I := I) g) x u w)]
   rw [← Finset.smul_sum, ← smul_neg]
 
@@ -463,7 +463,7 @@ theorem slotFreeCurvOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
         ContMDiff.clm_bundle_apply (b := id) hR1 W.contMDiff
       set T : Fin s → Cₛ^∞⟮I; Tensor0SModel s ℝ E, (fun z : M => Tensor0SSpace s I z)⟯ :=
         fun k =>
-          { toFun := fun x : M => slotInsertEndomorphism (I := I) (M := M) s k x
+          { toFun := fun x : M => slotInsertEndoFib (I := I) (M := M) s k x
               (riemannOp (LeviCivita (I := I) g) x (U x) (W x)) (Y x)
             contMDiff_toFun := ContMDiff.clm_bundle_apply (b := id)
               (slotInsertEndoFib_contMDiff (I := I) (M := M) g s k

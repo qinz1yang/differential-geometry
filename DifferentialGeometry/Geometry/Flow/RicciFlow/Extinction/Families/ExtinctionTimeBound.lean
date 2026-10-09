@@ -20,7 +20,7 @@ namespace ObservedHistory
 
 theorem exists_observedComparisonRecord_of_historyWidth (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
@@ -37,7 +37,7 @@ theorem exists_observedComparisonRecord_of_historyWidth (H : ObservedHistory.{u}
 
 theorem isExtinctAtHorizon_of_historyWidth (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (parameters : CutoffParameters)
     (cutoff : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters)
     {c A : ℝ} (hc : 0 < c) (hA : 0 ≤ A)
@@ -64,7 +64,7 @@ variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 theorem uniformRecordsAbove_of_historyWidth (T : ObservationTower P g)
     (h0 : ∀ (b : ℝ) (hb : 0 < b),
       ∀ c : ConnectedComponents ((T.observe b hb.le).stage 0).Carrier,
-        SimplyConnectedSpace (((T.observe b hb.le).stage 0).component c).toClosedOrientedManifold.Carrier)
+        SimplyConnectedSpace (((T.observe b hb.le).stage 0).component c).Carrier)
     (parameters : ℝ → CutoffParameters)
     (cutoff : ∀ (b : ℝ) (hb : 0 < b),
       ∀ i : Fin (T.observe b hb.le).eventCount,
@@ -84,7 +84,7 @@ theorem uniformRecordsAbove_of_historyWidth (T : ObservationTower P g)
 theorem towerExtinct_of_historyWidth (T : ObservationTower P g)
     (h0 : ∀ (b : ℝ) (hb : 0 < b),
       ∀ c : ConnectedComponents ((T.observe b hb.le).stage 0).Carrier,
-        SimplyConnectedSpace (((T.observe b hb.le).stage 0).component c).toClosedOrientedManifold.Carrier)
+        SimplyConnectedSpace (((T.observe b hb.le).stage 0).component c).Carrier)
     (parameters : ℝ → CutoffParameters)
     (cutoff : ∀ (b : ℝ) (hb : 0 < b),
       ∀ i : Fin (T.observe b hb.le).eventCount,

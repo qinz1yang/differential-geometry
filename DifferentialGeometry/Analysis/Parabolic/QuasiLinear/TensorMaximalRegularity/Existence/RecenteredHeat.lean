@@ -4,7 +4,7 @@ import Mathlib.Tactic.Linarith
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.HeatEvolutionFinite
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.FiniteProductL2
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.RecenteredTame
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.TimeDependentForcingL2
 
 namespace Real

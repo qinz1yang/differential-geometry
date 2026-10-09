@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonLocalLength
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegreeFrontierReduction
-import DifferentialGeometry.Geometry.Metric.Restriction.Completeness
+import DifferentialGeometry.Geometry.Metric.Restriction
 import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
 import Mathlib.Topology.Order.IntermediateValue
 
@@ -134,11 +134,9 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 variable (P : OrientedThreeStage.{u})
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.componentOpen_isClosed (c : ConnectedComponents P.Carrier) :
+theorem componentOpen_isClosed (c : ConnectedComponents P.Carrier) :
     IsClosed (P.componentOpen c : Set P.Carrier) := by
   obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe c
   have hset : (P.componentOpen (ConnectedComponents.mk p) : Set P.Carrier) =
@@ -148,8 +146,8 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.componentOpe
   rw [hset]
   exact isClosed_connectedComponent
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric (g : P.Metric) (c : ConnectedComponents P.Carrier)
-    (x y : (P.component c).toClosedOrientedManifold.Carrier) :
+theorem edistOf_componentMetric (g : P.Metric) (c : ConnectedComponents P.Carrier)
+    (x y : (P.component c).Carrier) :
     riemannianEDistOf (P.componentMetric g c) x y = riemannianEDistOf g x.1 y.1 :=
   DifferentialGeometry.riemannianEDistOf_restrictOpen_of_isClosed g (P.componentOpen c)
     (P.componentOpen_isClosed c) x y
@@ -238,7 +236,7 @@ theorem terminalParentRegionNoShortcut_iff_ambientConvexity
     obtain ⟨U, hU, hreg, hle⟩ := h c s hs x hx
     refine ⟨U, hU, hreg, fun y hy z hz hyr hzr => le_antisymm ?_ ?_⟩
     · exact (hle y hy z hz hyr hzr).trans_eq
-        (DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric (H.stage i.castSucc)
+        (OrientedThreeStage.edistOf_componentMetric (H.stage i.castSucc)
           ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c) y z)
     · exact DifferentialGeometry.riemannianEDistOf_le_restrictOpen
         ((H.event i).incoming.flow.base.metric s) (H.event i).incoming.terminalRegularOpen
@@ -247,7 +245,7 @@ theorem terminalParentRegionNoShortcut_iff_ambientConvexity
     obtain ⟨U, hU, hreg, heq⟩ := h c s hs x hx
     refine ⟨U, hU, hreg, fun y hy z hz hyr hzr => ?_⟩
     rw [heq y hy z hz hyr hzr]
-    exact (DifferentialGeometry.Topology.ClosedOrientedManifold.edistOf_componentMetric (H.stage i.castSucc)
+    exact (OrientedThreeStage.edistOf_componentMetric (H.stage i.castSucc)
       ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c) y z).ge
 
 theorem localTerminalParentEDistComparison_of_parentContainment

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.GaussianTail
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.CompactBall
 

@@ -1,7 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
-import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseMetricSlotCoefficient
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 noncomputable section
@@ -23,12 +20,12 @@ open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 
 variable
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
       [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
-      [T2Space M]
+      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace M := borel M
@@ -198,7 +195,6 @@ theorem operatorFieldComposition_jet_mul (g : SmoothRiemannianMetric I M) (p r c
     _ = K n * (CW ^ 2 + CΦ ^ 2) * SΦ * SW := by
         rw [hA2, hB2]; ring
 
-omit [NeZero (Module.finrank ℝ E)] in
 theorem operatorFieldComposition_hn_hn_to_hn_bound (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
     ∃ C : ℕ → ℝ, (∀ n, 0 ≤ C n) ∧
@@ -213,7 +209,6 @@ theorem operatorFieldComposition_hn_hn_to_hn_bound (hDim : Module.finrank ℝ E 
             ‖iteratedCovGrad (I := I) g p c j
               (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2) ≤ (C n * A * B) ^ 2 := by
   classical
-  let : NeZero (Module.finrank ℝ E) := ⟨by rw [hDim]; decide⟩
   obtain ⟨K, hK, hKle⟩ := operatorFieldComposition_jet_mul (I := I) (M := M) g p r c
   refine ⟨fun n => Real.sqrt (K n), fun n => Real.sqrt_nonneg _, ?_⟩
   intro n hn Φ W A B hA hB hΦ hW

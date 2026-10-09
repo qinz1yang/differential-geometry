@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.AffineMajorant
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.AffineMajorant
 import Mathlib.Analysis.Normed.Operator.Bilinear
 import Mathlib.Tactic.Module
 import Mathlib.Tactic.Ring

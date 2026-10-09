@@ -40,16 +40,16 @@ private lemma fiberComponent_slotInsertEndoFib_eq_two
     (K J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J =
       g₀.inner x (Λ (e (J 0))) (e (K 0)) * (if K 1 = J 1 then (1 : ℝ) else 0) := by
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J =
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J =
       Tensor0SSpace.eval
-        ((slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
+        ((slotInsertEndoFib (I := I) (M := M) 2 0 x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun k => e (J k)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndomorphism_apply_natural]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
   rw [Tensor0SSpace.eval_eq]
   rw [coframeS_apply, Fin.prod_univ_two, Function.update_self,
     Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
@@ -65,7 +65,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
     :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) ≤
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) ≤
       ((Module.finrank ℝ E : ℝ)) ^ 2 * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -73,11 +73,11 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ 2 2 x
     (show TensorRSSpace 2 2 I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) e bse hnE hbse horth]
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) e bse hnE hbse horth]
   have hcompsq : ∀ (K J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2 =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2 =
         (g₀.inner x (e (K 0)) (Λ (e (J 0)))) ^ 2 * (if K 1 = J 1 then (1 : ℝ) else 0) := by
     intro K J
     rw [fiberComponent_slotInsertEndoFib_eq_two (I := I) g₀ x Λ e horth K J]
@@ -88,7 +88,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
   have hsumeq : (∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
           (show TensorRSSpace 2 2 I x from
-            TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2) =
+            TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2) =
       ∑ J : Fin 2 → Fin n, g₀.inner x (Λ (e (J 0))) (Λ (e (J 0))) := by
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl (fun J _ => ?_)
@@ -138,17 +138,17 @@ private lemma fiberComponent_slotInsertEndoFib_eq
     (K J : Fin s → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x s s
         (show TensorRSSpace s s I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) n e K J =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J =
       g₀.inner x (e (K k)) (Λ (e (J k))) *
         ∏ l ∈ Finset.univ.erase k, (if K l = J l then (1 : ℝ) else 0) := by
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x s s
       (show TensorRSSpace s s I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) n e K J =
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J =
       Tensor0SSpace.eval
-        ((slotInsertEndomorphism (I := I) (M := M) s k x Λ) (coframeS (I := I) (M := M) g₀ x s e K))
+        ((slotInsertEndoFib (I := I) (M := M) s k x Λ) (coframeS (I := I) (M := M) g₀ x s e K))
         (fun l => e (J l)) := by
     unfold fiberNormSqComponent coframeS; rfl
-  rw [hcomp, slotInsertEndomorphism_apply_natural]
+  rw [hcomp, slotInsertEndoFib_apply_natural]
   rw [Tensor0SSpace.eval_eq]
   rw [coframeS_apply]
   rw [← Finset.prod_erase_mul Finset.univ
@@ -175,13 +175,13 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
     (∑ K : Fin s → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x s s
           (show TensorRSSpace s s I x from
-            TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) n e K J) ^ 2) =
+            TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J) ^ 2) =
       g₀.inner x (Λ (e (J k))) (Λ (e (J k))) := by
   classical
   have hcompsq : ∀ K : Fin s → Fin n,
       (fiberNormSqComponent (I := I) (M := M) g₀ x s s
         (show TensorRSSpace s s I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) n e K J) ^ 2 =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J) ^ 2 =
         (g₀.inner x (e (K k)) (Λ (e (J k)))) ^ 2 *
           ∏ l ∈ Finset.univ.erase k, (if K l = J l then (1 : ℝ) else 0) := by
     intro K
@@ -251,7 +251,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
     (hΛ : ∀ a : TangentSpace I x, g₀.inner x a a = 1 → g₀.inner x (Λ a) (Λ a) ≤ B) :
     riemannianFiberNormSq (I := I) (M := M) g₀ s s x
         (show TensorRSSpace s s I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) ≤
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) ≤
       ((Module.finrank ℝ E : ℝ)) ^ s * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
@@ -259,12 +259,12 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ s s x
     (show TensorRSSpace s s I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) e bse hnE hbse horth]
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) e bse hnE hbse horth]
   rw [Finset.sum_comm]
   have hsumeq : (∑ J : Fin s → Fin n, ∑ K : Fin s → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x s s
           (show TensorRSSpace s s I x from
-            TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) s k x Λ)) n e K J) ^ 2) =
+            TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) s k x Λ)) n e K J) ^ 2) =
       ∑ J : Fin s → Fin n, g₀.inner x (Λ (e (J k))) (Λ (e (J k))) := by
     refine Finset.sum_congr rfl (fun J _ => ?_)
     exact sum_compSq_slotInsertEndoFib_eq_normSq (I := I) g₀ x s k Λ e horth hpars J

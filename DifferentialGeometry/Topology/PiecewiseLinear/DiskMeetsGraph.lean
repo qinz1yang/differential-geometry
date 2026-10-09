@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.PseudoCell.TransverseDisk
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.Schoenflies.ArcComplementPrep
 import DifferentialGeometry.External.Schoenflies.Graph.Redrawing
 import DifferentialGeometry.External.Schoenflies.Graph.VertexSquares
@@ -233,7 +237,7 @@ end HandleArms
 
 section Replacement
 
-theorem IsPseudoCell.exists_replacementDisk {Ec Eint Ebd : Set E3} {P : E3}
+theorem IsPseudoCell.exists_replacementDisk (h324 : Moise324) {Ec Eint Ebd : Set E3} {P : E3}
     (hpc : IsPseudoCell Ec Eint Ebd P) {DJ DJint : Set E3}
     (hDJ : IsTopologicalCellWithInterior 2 DJ DJint) (hDJE : DJ ⊆ Ec)
     (hJ : IsPLSphere 1 (DJ \ DJint)) (hJE : DJ \ DJint ⊆ Eint) (hPDJ : P ∈ DJint)
@@ -314,7 +318,7 @@ theorem IsPseudoCell.exists_replacementDisk {Ec Eint Ebd : Set E3} {P : E3}
     rw [← hW₂eq] at hm
     exact ⟨hyE, hm.1⟩
   obtain ⟨Δ₁, Δbd₁, r₁, hr₁, hΔbd₁, hΔ₁ball, hΔbd₁E, DJ₁, DJint₁, hDJ₁cell, hDJ₁E, hDJ₁J,
-    hPDJ₁⟩ := hpc.exists_transverse_plDisk δ hδpos
+    hPDJ₁⟩ := h324 Ec Eint Ebd P hpc δ hδpos
   have hJ₁pl : IsPLSphere 1 Δbd₁ := hΔbd₁ ▸ hr₁.isPLSphere_image_stdSimplexBoundary (n := 1)
   have hJ₁sq : ∀ y ∈ Δbd₁, y ∈ Eint ∧ Ψ y ∈ Schoenflies.Plane.openSquare c rs := by
     intro y hy
@@ -773,7 +777,7 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {XK : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
   {AK : EuclideanSpace ℝ (Fin 3) → Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))}
 
-theorem section33_disk_meets_graph
+theorem section33_disk_meets_graph (h324 : Moise324)
     (hd : IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp)
     (hend : ∀ v : K.vertices, ((SimplicialComplex.edgeGraph K).neighborSet v).ncard ≠ 1)
     {v₁ : EuclideanSpace ℝ (Fin 3)} (hv₁ : v₁ ∈ K.vertices)
@@ -991,7 +995,7 @@ theorem section33_disk_meets_graph
     exact ⟨fun h' => hyO (Or.inl h'), fun h' => hyO (Or.inr h')⟩
   obtain ⟨δ, Δ₁, r₁, DJ₁, DJint₁, G, hδpos, hδδ₀, hr₁, hΔ₁ball, hΔ₁E, hDJ₁cell, hDJ₁E, hDJ₁J,
     hPDJ₁, hDJ₁DJ, hDJ₁ball, hGpre, hGE, hGδ, hGfar⟩ :=
-    hpc₁.exists_replacementDisk hDJcell hDJE (hDJJ ▸ hJpl) (hDJJ ▸ hJE) hPDJ hδ₀pos
+    hpc₁.exists_replacementDisk h324 hDJcell hDJE (hDJJ ▸ hJpl) (hDJJ ▸ hJE) hPDJ hδ₀pos
   have hΔ₁P : ∀ y ∈ Δ₁, dist y (h (e₁.centroid ℝ id)) < δ₀ := fun y hy =>
     lt_of_lt_of_le (Metric.mem_ball.mp (hΔ₁ball hy)) hδδ₀
   have hDJ₁int : DJint₁ ⊆ DJ₁ := hDJ₁cell.subset

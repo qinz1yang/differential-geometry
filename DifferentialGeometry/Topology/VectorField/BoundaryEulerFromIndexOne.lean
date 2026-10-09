@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.VectorField.PoincareHopf.RelativePoincareHopfOne
+import DifferentialGeometry.Topology.VectorField.RelativePoincareHopfOne
 import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 
 set_option autoImplicit false

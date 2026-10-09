@@ -7,7 +7,7 @@ import DifferentialGeometry.Topology.PlanarJordan.InnermostDisk
 import DifferentialGeometry.Topology.Diffeomorph.Fiberwise
 import DifferentialGeometry.Analysis.InnerProductSpace.EuclideanSplit
 import DifferentialGeometry.Topology.SphereSeparation.StandardSphere
-import DifferentialGeometry.Topology.PlanarJordan.Saddle.CapSides
+import DifferentialGeometry.Topology.PlanarJordan.SaddleCapSides
 import DifferentialGeometry.Topology.PlanarJordan.SmoothArc
 import DifferentialGeometry.Topology.Morse.NormalForm.Saddle
 import DifferentialGeometry.Topology.Embedding.Sphere

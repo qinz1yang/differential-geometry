@@ -17,10 +17,11 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 
 namespace DifferentialGeometry.Topology.Morse
 
+open Manifold
 open DifferentialGeometry.Topology.Handle
 open DifferentialGeometry.Topology.Homotopy
 open DifferentialGeometry.Analysis.ODE
-open scoped _root_.Topology _root_.Manifold ContDiff
+open scoped _root_.Topology Manifold ContDiff
 
 noncomputable section
 

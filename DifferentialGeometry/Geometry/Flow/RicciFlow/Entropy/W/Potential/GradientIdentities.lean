@@ -22,38 +22,38 @@ variable [IsManifold I ∞ M]
 private theorem density_grad_at
     (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ)
     {f : M → ℝ} {x : M} (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
-    gradientFun g (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f) x =
-      (-DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x) • gradientFun g f x := by
-  have hphi : HasDerivAt (fun r : ℝ => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau * Real.exp (-r))
-      (-DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x) (f x) := by
-    have h := (((hasDerivAt_id (f x)).neg).exp).const_mul (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau)
+    gradientFun g (perelmanDensity n tau f) x =
+      (-perelmanDensity n tau f x) • gradientFun g f x := by
+  have hphi : HasDerivAt (fun r : ℝ => perelmanDensityPrefactor n tau * Real.exp (-r))
+      (-perelmanDensity n tau f x) (f x) := by
+    have h := (((hasDerivAt_id (f x)).neg).exp).const_mul (perelmanDensityPrefactor n tau)
     apply h.congr_deriv
-    change DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau * (Real.exp (-f x) * -1) =
-      -(DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau * Real.exp (-f x))
+    change perelmanDensityPrefactor n tau * (Real.exp (-f x) * -1) =
+      -(perelmanDensityPrefactor n tau * Real.exp (-f x))
     ring
   exact (gradientFun_comp g hphi.differentiableAt hf).trans (by rw [hphi.deriv])
 
 theorem density_grad
     (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ) (f : M → ℝ) (x : M) :
-    gradientFun g (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f) x =
-      (-DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x) • gradientFun g f x := by
+    gradientFun g (perelmanDensity n tau f) x =
+      (-perelmanDensity n tau f x) • gradientFun g f x := by
   by_cases hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x
   · exact density_grad_at g n tau hf
-  by_cases hp : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau = 0
-  · have hu : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f = fun _ => 0 := by
+  by_cases hp : perelmanDensityPrefactor n tau = 0
+  · have hu : perelmanDensity n tau f = fun _ => 0 := by
       ext y
-      simp only [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity, hp, zero_mul]
+      simp only [perelmanDensity, hp, zero_mul]
     rw [hu, gradientFun_const]
     simp
-  · have hu : ¬ MDifferentiableAt I 𝓘(ℝ, ℝ) (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f) x := by
+  · have hu : ¬ MDifferentiableAt I 𝓘(ℝ, ℝ) (perelmanDensity n tau f) x := by
       intro hdu
-      have hn : DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau ≠ 0 :=
+      have hn : perelmanDensity n tau f x / perelmanDensityPrefactor n tau ≠ 0 :=
         div_ne_zero (mul_ne_zero hp (Real.exp_ne_zero _)) hp
-      have hback := (((hasDerivAt_id (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x)).div_const
-        (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau)).log hn).neg
-      have heq : (fun y => -Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f y / DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau)) = f := by
+      have hback := (((hasDerivAt_id (perelmanDensity n tau f x)).div_const
+        (perelmanDensityPrefactor n tau)).log hn).neg
+      have heq : (fun y => -Real.log (perelmanDensity n tau f y / perelmanDensityPrefactor n tau)) = f := by
         ext y
-        simp only [DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity]
+        simp only [perelmanDensity]
         rw [mul_div_cancel_left₀ _ hp, Real.log_exp, neg_neg]
       have hd := hback.differentiableAt.mdifferentiableAt.comp x hdu
       exact hf (heq ▸ hd)
@@ -62,9 +62,9 @@ theorem density_grad
 
 theorem density_grad_sq
     (g : SmoothRiemannianMetric I M) (n : ℕ) (tau : ℝ) (f : M → ℝ) (x : M) :
-    g.inner x (gradientFun g (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f) x)
-        (gradientFun g (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f) x) =
-      DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n tau f x ^ 2 * g.inner x (gradientFun g f x) (gradientFun g f x) := by
+    g.inner x (gradientFun g (perelmanDensity n tau f) x)
+        (gradientFun g (perelmanDensity n tau f) x) =
+      perelmanDensity n tau f x ^ 2 * g.inner x (gradientFun g f x) (gradientFun g f x) := by
   rw [density_grad g n tau f x]
   simp only [map_smul, smul_apply, smul_eq_mul]
   ring
@@ -75,7 +75,7 @@ theorem potential_grad
     (hpos : ∀ y : M, 0 < u y) (htau : 0 < tau) (x : M) :
     gradientFun (I := I) g (perelmanPotential n tau u) x =
       (-(u x)⁻¹) • gradientFun (I := I) g u x := by
-  let pref : Real := DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau
+  let pref : Real := perelmanDensityPrefactor n tau
   let logu : M -> Real := fun y => Real.log (u y)
   have hpref : 0 < pref := by
     simpa only [pref] using prefactor_pos n htau
@@ -126,7 +126,7 @@ theorem potential_square
     (n : Nat) {tau : Real} {v : M -> Real}
     (hpos : ∀ y : M, 0 < v y) (htau : 0 < tau) (x : M) :
     perelmanPotential n tau (fun y => v y * v y) x =
-      -Real.log (v x * v x) + Real.log (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n tau) := by
+      -Real.log (v x * v x) + Real.log (perelmanDensityPrefactor n tau) := by
   unfold perelmanPotential
   rw [Real.log_div
     (mul_ne_zero (hpos x).ne' (hpos x).ne') (prefactor_pos n htau).ne']

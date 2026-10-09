@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Pullback.Met
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Radial
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.PullbackDistance
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.EndpointPositivity
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.EndpointPositivity
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 
 set_option autoImplicit false

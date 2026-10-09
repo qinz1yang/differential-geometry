@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Complete
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 
 open Bundle Manifold Set
 open scoped ContDiff Manifold

@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.HurewiczOne
 import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
-import DifferentialGeometry.Topology.SolidTorus.FundamentalGroup
+import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 
 open Set Topology
 open scoped ContinuousMap

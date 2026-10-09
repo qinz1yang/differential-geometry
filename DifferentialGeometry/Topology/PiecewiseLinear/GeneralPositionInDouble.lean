@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlock
 import DifferentialGeometry.Topology.PiecewiseLinear.DoublePointFibreAgreement
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPosition.BoundaryHomotopy
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.RelativeCoverDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.GeneralPositionInDoubleAssembly
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoBuffered
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleHalfSpaceChart
 import DifferentialGeometry.Topology.PiecewiseLinear.TransitionSubdivisionOnOverlap
 import DifferentialGeometry.Topology.PiecewiseLinear.GluedCellInAdaptedChart
@@ -256,26 +261,18 @@ theorem exists_sheets_of_hasStableCrossingBlocks {f : EuclideanSpace ℝ (Fin 2)
     {ℓ : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ} {BdM Q : Set M} {η : ℝ}
     (h : HasStableCrossingBlocks f S ec ℓ BdM Q η) {y : M}
     (hy : y ∈ doublePointSet f S ∩ Q) :
-    ∃ (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
-      (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb : ℝ),
-      IsStableCrossingBlock f S ec ℓ BdM A r tlo SA SB a b La Lb η ∧
-        y ∈ innerChartBlock ec A r tlo ∧ SA ⊆ S ∧ SB ⊆ S ∧
-        Disjoint SA SB ∧ (SA ∩ f ⁻¹' {y}).Nonempty ∧ (SB ∩ f ⁻¹' {y}).Nonempty := by
+    ∃ SA' SB' : Set (EuclideanSpace ℝ (Fin 2)),
+      Disjoint SA' SB' ∧ (SA' ∩ f ⁻¹' {y}).Nonempty ∧ (SB' ∩ f ⁻¹' {y}).Nonempty := by
   obtain ⟨-, m, A, r, tlo, SA, SB, a, b, La, Lb, hcov, hblk⟩ := h
   obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov hy)
-  have hblock := hblk i
-  obtain ⟨hr0, -, -, -, -, -, -, hside, hpre, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblock
+  obtain ⟨hr0, -, -, -, -, -, -, hside, -, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := hblk i
   have ht : tlo i ≤ 0 := by
     rcases hside with ⟨h1, -⟩ | ⟨h1, -, -⟩
     · rw [h1]; linarith
     · exact le_of_eq h1
-  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblock hy.1
+  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock (hblk i) hy.1
     (chartBlock_mono_of_half ec (A i) (le_of_lt hr0) ht hi)
-  have hsub : SA i ∪ SB i ⊆ S := by
-    rw [← hpre]
-    exact inter_subset_left
-  exact ⟨A i, r i, tlo i, SA i, SB i, a i, b i, La i, Lb i, hblock, hi,
-    fun _ hx => hsub (Or.inl hx), fun _ hx => hsub (Or.inr hx), hdisj, hA, hB⟩
+  exact ⟨SA i, SB i, hdisj, hA, hB⟩
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem isStableCrossingBlock_of_flatSheets {f : EuclideanSpace ℝ (Fin 2) → M}
@@ -534,15 +531,15 @@ theorem wallIncidence_simplexBoundary {T : Finset Ea}
       · rw [Finset.mem_singleton.mp hzv] at hcz
         exact Or.inr hcz
 
-theorem wall_incidence_four_simplex_boundary :
-    let Q := simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3)
-    Q.faces.Finite ∧ (∀ s ∈ Q.faces, s.card ≤ 4) ∧
-      (∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) ∧
+theorem exists_wallIncidence_of_fourSimplexBoundary :
+    ∃ Q : Geometry.SimplicialComplex ℝ (Fin (3 + 2) → ℝ), Q.faces.Finite ∧
+      (∀ s ∈ Q.faces, s.card ≤ 4) ∧ (∀ s ∈ Q.faces, ∃ c ∈ wallSystemCells Q, s ⊆ c) ∧
       (wallSystemWalls Q).Nonempty ∧
       ∀ w ∈ wallSystemWalls Q, ∃ cm ∈ wallSystemCells Q, ∃ cp ∈ wallSystemCells Q,
         cm ≠ cp ∧ w ⊆ cm ∧ w ⊆ cp ∧
           ∀ c ∈ wallSystemCells Q, w ⊆ c → c = cm ∨ c = cp :=
-  wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)
+  ⟨simplexBoundary (stdVertices 3) (stdVertices_affineIndependent 3),
+    wallIncidence_simplexBoundary (stdVertices_affineIndependent 3) (card_stdVertices 3)⟩
 
 omit [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
 theorem eqOn_wallPlane_of_eqOn_transition
@@ -774,27 +771,18 @@ theorem exists_sheets_of_hasWallProductBlocks {f : EuclideanSpace ℝ (Fin 2) �
     {Q : Geometry.SimplicialComplex ℝ Ea} {ρ : M → Ea} {η : ℝ}
     (h : HasWallProductBlocks f S ec ℓ Eb BdM C Q ρ Z η) {y : M}
     (hy : y ∈ doublePointSet f S ∩ Z) :
-    ∃ (i : ι) (A : EuclideanSpace ℝ (Fin 3) ≃ᵃ[ℝ] ℝ × ℝ × ℝ) (r tlo : ℝ)
-      (SA SB : Set (EuclideanSpace ℝ (Fin 2))) (a b : ℝ × ℝ → ℝ) (La Lb : ℝ),
-      WallProductBlock f S (ec i) (ℓ i) BdM C Q ρ A r tlo SA SB a b La Lb η ∧
-        y ∈ innerChartBlock (ec i) A r tlo ∧ chartBlock (ec i) A r tlo ⊆ Eb i ∧
-        SA ⊆ S ∧ SB ⊆ S ∧ Disjoint SA SB ∧
-        (SA ∩ f ⁻¹' {y}).Nonempty ∧ (SB ∩ f ⁻¹' {y}).Nonempty := by
-  obtain ⟨-, N, m, j, A, r, tlo, SA, SB, a, b, La, Lb, -, hZN, hcov, hE, hblk⟩ := h
-  obtain ⟨i, hi⟩ := mem_iUnion.mp (hcov ⟨hy.1, hZN hy.2⟩)
-  have hblock := hblk i
-  obtain ⟨hr0, -, -, -, -, -, -, hside, hpre, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblock.1
-  have ht : tlo i ≤ 0 := by
+    ∃ SA' SB' : Set (EuclideanSpace ℝ (Fin 2)),
+      Disjoint SA' SB' ∧ (SA' ∩ f ⁻¹' {y}).Nonempty ∧ (SB' ∩ f ⁻¹' {y}).Nonempty := by
+  obtain ⟨i, A, r, tlo, SA, SB, a, b, La, Lb, hblk, hi⟩ :=
+    exists_isStableCrossingBlock_of_hasWallProductBlocks h hy
+  obtain ⟨hr0, -, -, -, -, -, -, hside, -, hdisj, -, -, -, -, -, -, -, -, -, -⟩ := id hblk
+  have ht : tlo ≤ 0 := by
     rcases hside with ⟨h1, -⟩ | ⟨h1, -, -⟩
     · rw [h1]; linarith
     · exact le_of_eq h1
-  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblock.1 hy.1
-    (chartBlock_mono_of_half (ec (j i)) (A i) (le_of_lt hr0) ht hi)
-  have hsub : SA i ∪ SB i ⊆ S := by
-    rw [← hpre]
-    exact inter_subset_left
-  exact ⟨j i, A i, r i, tlo i, SA i, SB i, a i, b i, La i, Lb i, hblock, hi, hE i,
-    fun _ hx => hsub (Or.inl hx), fun _ hx => hsub (Or.inr hx), hdisj, hA, hB⟩
+  obtain ⟨hA, hB⟩ := sheets_nonempty_of_isStableCrossingBlock hblk hy.1
+    (chartBlock_mono_of_half (ec i) A (le_of_lt hr0) ht hi)
+  exact ⟨SA, SB, hdisj, hA, hB⟩
 
 theorem exists_normalCrossing_of_hasWallProductBlocks [T2Space M] (D : SingularTwoCell M)
     {BdM C Z : Set M} {ι : Type}
@@ -886,40 +874,9 @@ theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε 
 end MetricAmbient
 
 open Classical in
-theorem NormalSystem.exists_normal_singular_cell_in_double
-    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (S : NormalSystem E) :
-  let K := S.manifoldComplex
-  letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
-  letI := combinatorialChartedSpace (double 3 K)
-    (isCombinatorialManifold_double_succ_succ K S.isManifold)
-  let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
-  let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
-  let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-    (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
-  let B := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-    (ι '' S.boundaryNeighborhood.space)
-  ∀ (G : SingularTwoCell (double 3 K).space)
-    (β : ContinuousMap loopCircle (frontier G.domain))
-    (γ : freeLoop S.boundaryNeighborhoodSpace),
-    (∀ x ∈ G.domain, ∃ U ∈ 𝓝[G.domain] x, Set.InjOn G U) →
-    (∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2) →
-    Set.range G.boundary ⊆ B →
-    (∀ z ∈ Set.range G.boundary, B ∈ 𝓝[Bd] z) →
-    G '' G.domain ∩ Bd = Set.range G.boundary →
-    MapsTo G G.domain C →
-    G.domain ∩ G ⁻¹' Bd = frontier G.domain →
-    Function.Surjective β →
-    (∀ θ, ((G (β θ) : (double 3 K).space) : E × E × ℝ) = ι (γ θ)) →
-    ¬loopClassMeets γ S.basepoint S.normalSubgroup →
-    ∃ (A : SingularTwoCell (double 3 K).space) (_ : NormalSingularCellData A Bd B),
-      A.domain = G.domain ∧ MapsTo A A.domain C ∧
-      (∀ z ∈ Set.range A.boundary, B ∈ 𝓝[Bd] z) ∧
-      ∃ (c : loopCircle ≃ₜ frontier A.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
-        (∀ θ, ((A (c θ) : (double 3 K).space) : E × E × ℝ) = ι (δ θ)) ∧
-          ¬loopClassMeets δ S.basepoint S.normalSubgroup := by
+theorem generalPositionInDoubleBuffered : GeneralPositionInDoubleBufferedStatement := by
   classical
-  intro K
+  intro E _ _ _ S K
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ := combinatorialChartedSpace (double 3 K)
     (isCombinatorialManifold_double_succ_succ K S.isManifold)

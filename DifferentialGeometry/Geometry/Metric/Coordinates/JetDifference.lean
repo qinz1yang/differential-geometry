@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Coordinates
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import DifferentialGeometry.Analysis.Normed.Matrix.Entrywise
 
 noncomputable section

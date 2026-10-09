@@ -248,14 +248,14 @@ private local instance tensor0STotalSpaceTopology (s : ℕ) :
 def bilinEndoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] (E →L[ℝ] E))
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :=
-  _root_.CovariantDerivative.hom I M
+  HomConnection.homBundleCovariantDerivative I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
 
 instance bilinEndoCovariantDerivative_contMDiff (g : SmoothRiemannianMetric I M) :
     (bilinEndoCovariantDerivative (I := I) (M := M) g).ContMDiffCovariantDerivative ∞ :=
-  _root_.CovariantDerivative.hom_contMDiff I M
+  HomConnection.homBundleCovariantDerivative_contMDiff I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g)
@@ -269,7 +269,7 @@ theorem bilinEndoCovariantDerivative_apply (g : SmoothRiemannianMetric I M)
     ((bilinEndoCovariantDerivative (I := I) (M := M) g) Term x v) (Y x) =
       (endoCovariantDerivative (I := I) (M := M) g) (fun y => (Term y) (Y y)) x v -
         (Term x) ((LeviCivita (I := I) g) (fun y => Y y) x v) :=
-  _root_.CovariantDerivative.hom_apply I M
+  HomConnection.homBundleCovariantDerivative_apply I M
     E (fun x : M => TangentSpace I x)
     (E →L[ℝ] E) (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (LeviCivita (I := I) g) (endoCovariantDerivative (I := I) (M := M) g) Term Y x v
@@ -407,14 +407,14 @@ lemma curry_termSlotFib_eq_slotInsert (s : ℕ) (x : M)
     (A : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Term A)) v0 =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) A := by
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) A := by
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).injective
   refine ContinuousMultilinearMap.ext (fun vt => ?_)
   change Tensor0SSpace.eval
       ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Term A)) v0) vt =
     Tensor0SSpace.eval
-      (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) A) vt
+      (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) A) vt
   rw [tensor0S_curry_apply_eval, termSlotFib_apply_eval]
   simp only [Fin.cons_zero]
   rfl

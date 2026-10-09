@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Comparison.Metric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildComparisonMetric
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.DistancePullback
@@ -27,15 +27,15 @@ theorem riemannianCurveLength_comp_le_of_mapsTo
     (hf : ∀ y ∈ U, ∀ z ∈ U, riemannianEDistOf h (f y) (f z) ≤
       ENNReal.ofReal ell * riemannianEDistOf g y z)
     (γ : ℝ → M) (a b : ℝ) (hγ : MapsTo γ (Icc a b) U) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation h (fun t => f (γ t)) a b ≤
-      ENNReal.ofReal ell * DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b := by
+    riemannianCurveLength h (fun t => f (γ t)) a b ≤
+      ENNReal.ofReal ell * riemannianCurveLength g γ a b := by
   exact DifferentialGeometry.Geometry.riemannianCurveVariation_comp_le_of_mapsTo g h f U hf γ a b hγ
 
 theorem curveLengthComparison_scaleMetric
     (g : SmoothRiemannianMetric I M) {ell : ℝ} (hell : 1 ≤ ell) (γ : ℝ → M) (a b : ℝ) :
-    DifferentialGeometry.Geometry.riemannianCurveVariation (scaleMetric (I := I) (ell ^ 2)
+    riemannianCurveLength (scaleMetric (I := I) (ell ^ 2)
         (pow_pos (lt_of_lt_of_le zero_lt_one hell) 2) g) γ a b ≤
-      ENNReal.ofReal ell * DifferentialGeometry.Geometry.riemannianCurveVariation g γ a b := by
+      ENNReal.ofReal ell * riemannianCurveLength g γ a b := by
   rw [riemannianCurveLength_scaleMetric (ell ^ 2)
     (pow_pos (lt_of_lt_of_le zero_lt_one hell) 2) g γ a b, Real.sqrt_sq (zero_le_one.trans hell)]
 

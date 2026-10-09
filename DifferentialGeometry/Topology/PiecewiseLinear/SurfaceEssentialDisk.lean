@@ -1,4 +1,8 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Orientable
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCutKernel
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
@@ -12,8 +16,8 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.exists_collar_and_essential_disk_of_fundamentalGroup_map_eq_one
-    {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
+theorem IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theorem
+    (h252 : Moise252) {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
     (hdim : Module.finrank ℝ E = 3)
     (hLint : L.space ⊆ K.space \ (boundaryComplex 3 K).space)
@@ -42,7 +46,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_collar_and_essential_disk_of_
         C((PiecewiseLinear.connectedComponentComplex (boundaryComplex 3 R) d).space,
           R.space)) x a ha han
   obtain ⟨D, r, hr, hDR, hDbd, hboundary, hnon⟩ :=
-    loop_theorem R inferInstance hR hRo d γ hγnull hγ
+    h252 R inferInstance hR hRo d hsub γ hγnull hγ
   have hJL : r '' stdSimplexBoundary 2 ⊆ L.space := hboundary.trans hd.subset
   have hmeet : D ∩ L.space = r '' stdSimplexBoundary 2 := by
     apply Subset.antisymm
@@ -61,7 +65,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_collar_and_essential_disk_of_
 
 open Classical in
 theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_fundamentalGroup_map_eq_one
-    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+    (h252 : Moise252) (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
     (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3)
     (hLc : IsConnected L.space) {U : Set E} (hU : IsOpen U) (hLU : L.space ⊆ U)
     (x : L.space) (g : FundamentalGroup L.space x) (hg : g ≠ 1)
@@ -81,14 +85,14 @@ theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_fundame
     rw [← frontier_space_eq_boundaryComplex_space_of_finrank hdim K hK]
     exact fun y hy => ⟨interior_subset (hLK hy), fun hz => hz.2 (hLK hy)⟩
   obtain ⟨_, _, _, D, r, hr, hDK, hmeet, hboundary, hnon⟩ :=
-    IsCombinatorialManifoldWithBoundary.exists_collar_and_essential_disk_of_fundamentalGroup_map_eq_one
-      hK hL hdim hLint hKc.isPreconnected hLc x g hg (hnull _)
+    IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theorem
+      h252 hK hL hdim hLint hKc.isPreconnected hLc x g hg (hnull _)
       (mem_nhdsSetWithin.mpr ⟨U, hU, hLU, inter_subset_left⟩)
   exact ⟨D, r, hr, hDK.trans (sdiff_subset.trans hKU), hmeet, hboundary, hnon⟩
 
 open Classical in
-theorem IsCombinatorialManifold.exists_essential_disk_in_simplyConnected_neighborhood
-    (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
+theorem IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_loop_theorem
+    (h252 : Moise252) (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces]
     (hL : IsCombinatorialManifold 2 L) (hdim : Module.finrank ℝ E = 3)
     (hLc : IsConnected L.space) (hnot : ¬ IsPLSphere 2 L.space)
     {U : Set E} (hU : IsOpen U) (hLU : L.space ⊆ U) [SimplyConnectedSpace U] :
@@ -105,15 +109,15 @@ theorem IsCombinatorialManifold.exists_essential_disk_in_simplyConnected_neighbo
       hdim L hLc hnot hU hLU s
   let _ : Finite K.faces := hKfin.to_subtype
   obtain ⟨_, _, _, D, r, hr, hDK, hmeet, hboundary, hnon⟩ :=
-    IsCombinatorialManifoldWithBoundary.exists_collar_and_essential_disk_of_fundamentalGroup_map_eq_one
-      hK hL hdim hLK hKc.isPreconnected hLc s g hg (hmap _)
+    IsCombinatorialManifoldWithBoundary.exists_essential_disk_of_loop_theorem
+      h252 hK hL hdim hLK hKc.isPreconnected hLc s g hg (hmap _)
       (mem_nhdsSetWithin.mpr ⟨U, hU, hLU, inter_subset_left⟩)
   exact ⟨D, r, hr, hDK.trans (sdiff_subset.trans hKU), hmeet, hboundary, hnon⟩
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 open Classical in
-theorem IsSphericalShell.exists_essential_disk_annulus
-    {X B₀ B₁ : Set (EuclideanSpace ℝ (Fin 3))}
+theorem IsSphericalShell.exists_essential_disk_annulus_of_loop_theorem
+    (h252 : Moise252) {X B₀ B₁ : Set (EuclideanSpace ℝ (Fin 3))}
     (hX : IsSphericalShell X B₀ B₁)
     (S : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hconn : IsConnected S.space)
@@ -150,8 +154,8 @@ theorem IsSphericalShell.exists_essential_disk_annulus
   let _ : SimplyConnectedSpace (interior X) := hX.simplyConnectedSpace_interior
   have hSX := hX.subset_interior_of_separates hconn.isPreconnected hsep
   obtain ⟨D, r, hr, hDX, hmeet, hJS, hnon⟩ :=
-    IsCombinatorialManifold.exists_essential_disk_in_simplyConnected_neighborhood
-      S hS (by simp) hconn hnot isOpen_interior hSX
+    IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_loop_theorem
+      h252 S hS (by simp) hconn hnot isOpen_interior hSX
   have hJ := hr.isPLSphere_image_stdSimplexBoundary
   obtain ⟨W, ρ, hW, hWS, hWX, hWnhds, hρ, hzero⟩ :=
     hS.exists_bicollar_of_isPLSphere_one S

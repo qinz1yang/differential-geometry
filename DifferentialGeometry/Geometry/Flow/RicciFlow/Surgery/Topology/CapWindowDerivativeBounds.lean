@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowStandardComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.CurvatureComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Closeness.ActionComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Blowup.Terminal
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardTerminalBlowup
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullbackScaling
 
 set_option autoImplicit false

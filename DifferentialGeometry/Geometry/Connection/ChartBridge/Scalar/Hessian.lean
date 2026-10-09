@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
-import DifferentialGeometry.Topology.Manifold.SmoothGerm
+import DifferentialGeometry.Bundle.SmoothScalarGerm
 import Mathlib.Analysis.Calculus.FDeriv.Congr
 
 open DifferentialGeometry.Geometry.Curvature
@@ -894,7 +894,7 @@ theorem hessFun_eq_cov_local [I.Boundaryless]
       g.inner x ((LeviCivita (I := I) g).toFun
         (fun b => gradFun (I := I) g f b) x v) w := by
   obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hgrad : (fun b => gradFun (I := I) g F b) =ᶠ[𝓝 x]
       (fun b => gradFun (I := I) g f b) := by
     filter_upwards [hFf.eventuallyEq_nhds] with y hy
@@ -942,7 +942,7 @@ theorem hessFun_add_const [I.Boundaryless]
     (hx : x ∈ U) :
     hessFun (I := I) g (fun y => c + f y) x = hessFun (I := I) g f x := by
   obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hplus : (fun y => c + F y) =ᶠ[nhds x] fun y => c + f y := by
     filter_upwards [hFf] with y hy
     rw [hy]
@@ -1031,7 +1031,7 @@ theorem hessFun_sub_eq_neg_mvfderiv_connectionDifference [I.Boundaryless]
         (CovariantDerivative.difference
           (LeviCivita (I := I) g) (LeviCivita (I := I) g') x w v) := by
   obtain ⟨F, hF, hFf⟩ :=
-    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+    DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   have hg := congrArg (fun B => B v w) (hessFun_congr (I := I) g hFf)
   have hg' := congrArg (fun B => B v w) (hessFun_congr (I := I) g' hFf)
   calc

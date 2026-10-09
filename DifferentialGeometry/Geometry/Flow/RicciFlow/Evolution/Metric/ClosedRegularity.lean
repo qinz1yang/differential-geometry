@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Family.Descent
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
-import DifferentialGeometry.Analysis.Calculus.TimeJet.JetPDE
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Regularity.Terminal.JointSpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabJetBootstrap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalJointSpatialJets
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.ChartBridge
 
 set_option autoImplicit false

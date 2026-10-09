@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.InducedSliceConnection
-import DifferentialGeometry.Geometry.Geodesic.Local.Germ
+import DifferentialGeometry.Geometry.Comparison.Soul.GeodesicGerms
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 
 set_option autoImplicit false

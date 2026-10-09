@@ -66,7 +66,7 @@ theorem exists_uniform_forward_uniqueness_cutoff_energy_bound_on_Ioo
       ∀ t ∈ Ioo a b,
       let S := forwardUniquenessSfield (I := I) g₁ g₂ t
       let A := metricNabla0S (I := I) (g₁ t) S
-      let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+      let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
         ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
           (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
         (unitZeroSec (I := I) (M := M) x)
@@ -203,7 +203,7 @@ theorem exists_uniform_forward_uniqueness_cutoff_energy_bound_on_Ioo
     (fun x _ => htransfer x _ (hD_Ric x))
   let S := forwardUniquenessSfield (I := I) g₁ g₂ t
   let A := metricNabla0S (I := I) (g₁ t) S
-  let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+  let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
     ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
       (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
     (unitZeroSec (I := I) (M := M) x)
@@ -264,7 +264,7 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound_on_Ioo
       ∀ t ∈ Ioo a b,
       let S := forwardUniquenessSfield (I := I) g₁ g₂ t
       let A := metricNabla0S (I := I) (g₁ t) S
-      let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+      let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
         ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
           (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
         (unitZeroSec (I := I) (M := M) x)
@@ -316,7 +316,7 @@ theorem forward_uniqueness_cutoff_energy_uniform_bound
       ∀ t ∈ Ioo a b,
       let S := forwardUniquenessSfield (I := I) g₁ g₂ t
       let A := metricNabla0S (I := I) (g₁ t) S
-      let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+      let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
         ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
           (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
         (unitZeroSec (I := I) (M := M) x)

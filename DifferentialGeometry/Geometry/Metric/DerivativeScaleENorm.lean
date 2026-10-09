@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
+import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison

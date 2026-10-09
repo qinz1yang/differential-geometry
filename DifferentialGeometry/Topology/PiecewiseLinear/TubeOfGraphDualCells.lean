@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.HandleDecompositionOfEdgeCollars
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Deletion
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBall
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SplittingDiskRim

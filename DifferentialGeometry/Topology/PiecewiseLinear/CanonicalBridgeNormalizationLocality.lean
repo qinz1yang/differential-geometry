@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeNormalization
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalNullSplitLocality
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSingleBridgeRows
@@ -41,13 +46,13 @@ theorem IsCanonicalBridgeNormalization.unchanged_of_endpoint_nullTraceCount_eq_z
 theorem IsCanonicalBridgeNormalization.exists_row_annulus
     (hn : IsCanonicalBridgeNormalization X Y (fun j => φ '' S j) S'' T'' I P' a b rows F)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (i : ℤ) (hi : i ∈ rows) :
+    (h314 : Moise314) (i : ℤ) (hi : i ∈ rows) :
     ∃ J₀ J₁ : Set E3, IsPLAnnulusWithEnds (Y i).space J₀ J₁ ∧ Disjoint J₀ J₁ ∧
       J₀ ∈ traceCircles (Y i).space (T'' (2 * i)) ∧
       J₁ ∈ traceCircles (Y i).space (T'' (2 * (i + 1))) ∧
       ¬ boundsDiskIn J₀ (T'' (2 * i)) ∧ ¬ boundsDiskIn J₁ (T'' (2 * (i + 1))) ∧
       (Y i).space ∩ T'' (2 * i) = J₀ ∧ (Y i).space ∩ T'' (2 * (i + 1)) = J₁ := by
   obtain ⟨U, V, Z, -, -, -, hbridge⟩ := hn.stages
-  exact hbridge.exists_row_annulus htw i hi
+  exact hbridge.exists_row_annulus htw h314 i hi
 
 end DifferentialGeometry.Topology.PiecewiseLinear

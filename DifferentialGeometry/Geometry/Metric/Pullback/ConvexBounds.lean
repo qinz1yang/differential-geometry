@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.CompactSourceEllipticity
+import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Geometry.Metric.Pullback.Coefficients
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 

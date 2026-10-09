@@ -1,7 +1,7 @@
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Geodesic.Minimizing.Line.Regularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Geometry.Metric.Distance.EndpointRate
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
 import Mathlib.Topology.Separation.Connected
 
 open Bundle Filter Manifold Set

@@ -1,10 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapSideExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSpatialCapMovingBarrier
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Terminal.CorePresentation.Uniform
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.Historical
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 import DifferentialGeometry.Geometry.Neck.SpatialFixedRecentering
 import DifferentialGeometry.Geometry.Neck.SpatialNormalization
-import DifferentialGeometry.Topology.Connected.RegularClosedInterior
+import DifferentialGeometry.Topology.Connected.InteriorCollar
 
 set_option autoImplicit false
 

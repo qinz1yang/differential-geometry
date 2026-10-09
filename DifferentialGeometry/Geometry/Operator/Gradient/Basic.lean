@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Metric.Duality
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Coordinates
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.CurveVariation.Length
+import DifferentialGeometry.Geometry.Metric.CurveVariation
 import DifferentialGeometry.Geometry.Metric.LoopDistance
-import DifferentialGeometry.Topology.Circle.Lipschitz
+import DifferentialGeometry.Topology.LoopSpace.Lipschitz
 
 
 

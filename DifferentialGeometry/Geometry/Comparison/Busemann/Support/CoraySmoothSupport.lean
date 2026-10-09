@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.CalibratedCoray
-import DifferentialGeometry.Geometry.Metric.Distance.SegmentSmoothness
+import DifferentialGeometry.Geometry.Comparison.Distance.SegmentSmoothness
 
 set_option autoImplicit false
 

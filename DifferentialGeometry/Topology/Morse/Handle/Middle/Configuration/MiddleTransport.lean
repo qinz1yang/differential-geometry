@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.Handle.Middle.Configuration.MiddleSard
 
 set_option autoImplicit false
+set_option linter.unusedSectionVars false
 
 open Set Filter
 open DifferentialGeometry.Topology.Morse.CellAttachment (morseNorm morseNormalForm negPart posPart
@@ -20,7 +21,6 @@ namespace GradientLikeStrip
 variable {I : ModelWithCorners ℝ (Fin n → ℝ) H} [IsManifold I ∞ M] [T2Space M] [I.Boundaryless]
   {a b : ℝ} {crit : Finset M}
 
-omit [I.Boundaryless] in
 theorem exists_addLevelField {f : M → ℝ} (D : GradientLikeStrip I f a b crit)
     (Z : (x : M) → TangentSpace I x)
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, Fin n → ℝ)) ∞ (fun x => (⟨x, Z x⟩ : TangentBundle I M)))
@@ -538,7 +538,6 @@ theorem sardAgree_of_flow_agree {f : M → ℝ} (D D' : GradientLikeStrip I f a 
     (fun w hw _ => Filter.mem_of_superset (hU.mem_nhds hw)
       (fun v hv => ⟨(hdom v).1.1 hv, (hdom v).2 hv⟩))
 
-omit [I.Boundaryless] in
 theorem exists_shrink_field {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (D : GradientLikeStrip I f a b crit) {ε₁ ρ : ℝ} (hε₁ : 0 < ε₁) (hρ0 : 0 < ρ)
     (hρ : 8 * ε₁ < ρ ^ 2) (hrm : ∀ x hx, 8 * ε₁ < D.rm x hx ^ 2) :

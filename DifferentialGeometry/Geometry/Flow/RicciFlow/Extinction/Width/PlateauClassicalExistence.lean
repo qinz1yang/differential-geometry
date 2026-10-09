@@ -180,7 +180,7 @@ section FiniteDimensional
 variable [FiniteDimensional ℝ E]
 
 structure PlateauInteriorMinimizer (g : SmoothRiemannianMetric I Q)
-    (γ : DifferentialGeometry.Topology.freeLoop Q) where
+    (γ : Surgery.Topology.ContinuousFreeLoop Q) where
   disk : InteriorSmoothDisk (I := I) (Q := Q)
   trace : ∀ theta : Surgery.Topology.Circle, disk.map (diskBoundary theta) = γ theta
   conformal : disk.IsConformal g
@@ -191,7 +191,7 @@ structure PlateauInteriorMinimizer (g : SmoothRiemannianMetric I Q)
       diskArea g disk.map ≤ diskArea g w.map
 
 theorem isSignedWeaklyMonotoneTrace_of_diskTrace_eq {u : Disk → Q}
-    {γ : DifferentialGeometry.Topology.freeLoop Q}
+    {γ : Surgery.Topology.ContinuousFreeLoop Q}
     (h : ∀ theta : Surgery.Topology.Circle, u (diskBoundary theta) = γ theta) :
     IsSignedWeaklyMonotoneTrace u γ :=
   ⟨id, continuous_id, Or.inl ⟨monotone_id, fun _ => rfl⟩,

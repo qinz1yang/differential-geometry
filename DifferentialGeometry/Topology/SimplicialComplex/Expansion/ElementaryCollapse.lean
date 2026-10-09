@@ -122,12 +122,8 @@ noncomputable def split : SimplexSplit V where
     exact ⟨⟨i, h.subset hi⟩, by simpa using hi⟩
 
 omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
-@[simp] theorem mem_split_left (i : V) : i ∈ h.split.left ↔ i.val ∉ B := by
-  simp [split]
-
-omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] in
-theorem mem_split_right (i : V) : i ∈ h.split.right ↔ i.val ∈ B := by
-  simp only [SimplexSplit.right, Finset.mem_compl, mem_split_left, not_not]
+@[simp] theorem mem_split_right (i : V) : i ∈ h.split.right ↔ i.val ∈ B := by
+  simp [split, SimplexSplit.right]
 
 theorem simplexFacet_subtype (i : V) :
     simplexFacet ((↑) : V → E) i = convexHull ℝ ((V.erase i.val : Finset E) : Set E) := by

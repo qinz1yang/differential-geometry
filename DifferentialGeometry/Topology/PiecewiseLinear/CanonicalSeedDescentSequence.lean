@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalCompletionRows
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeSequenceStability
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalStableEvenAnnuli
@@ -21,6 +26,7 @@ theorem IsCanonicalSurface.exists_annular_chain_sequence [DecidableEq E3]
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     {Y : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hY : IsCanonicalSurface Y (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -35,14 +41,14 @@ theorem IsCanonicalSurface.exists_annular_chain_sequence [DecidableEq E3]
       ∀ x ∈ interior (h '' C u ∪ h '' C v), x ≠ P' →
         ∃ U ∈ 𝓝 x, ∃ N : ℕ, ∀ n ≥ N, M n ∩ U = annularChain H B P' ∩ U := by
   obtain ⟨X, hzero, hstep⟩ := hY.exists_bridge_normalization_sequence ht hu hv huv he htw
-    havoid hmodel hwitness (fun n => {-(n : ℤ), (n : ℤ)})
+    havoid h303 h286 h314 hmodel hwitness (fun n => {-(n : ℤ), (n : ℤ)})
   let B : ℤ → Set E3 := fun i => (X (i.natAbs + 1) i).space
   have hX (n : ℕ) := (hstep n).source
   have hstable (i : ℤ) (n : ℕ) (hn : i.natAbs + 1 ≤ n) : (X n i).space = B i :=
     congrArg Geometry.SimplicialComplex.space (htw.row_eq_of_bridge_normalizations hstep i hn)
   have hevent (i : ℤ) : ∃ N, ∀ n, N ≤ n → (X n i).space = B i :=
     ⟨i.natAbs + 1, hstable i⟩
-  obtain ⟨Jlo, Jhi, hrow⟩ := htw.exists_marked_annuli_of_bridge_normalizations hstep
+  obtain ⟨Jlo, Jhi, hrow⟩ := htw.exists_marked_annuli_of_bridge_normalizations h314 hstep
   have hB (i : ℤ) : IsPLAnnulusWithEnds (B i) (Jlo i) (Jhi i) := (hrow i).1
   have hlo (i : ℤ) : B i ∩ T'' (2 * i) = Jlo i := (hrow i).2.1
   have hhi (i : ℤ) : B i ∩ T'' (2 * (i + 1)) = Jhi i := (hrow i).2.2.1

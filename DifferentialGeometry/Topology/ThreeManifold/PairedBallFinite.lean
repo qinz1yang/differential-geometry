@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallLoop
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Merge
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Empty
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
+import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteCongruence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedCongruence
 import Mathlib.SetTheory.Cardinal.Finite
@@ -120,10 +120,10 @@ private theorem nonempty_orientedDiffeomorph_connectedSum_append_replicate_succ
       (connectedSum X Z).toClosedOrientedManifold
       (finiteConnectedSum (L.map original ++ List.replicate (b + 1)
           Z)).toClosedOrientedManifold) := by
-  obtain ⟨eX⟩ := hX
-  obtain ⟨F⟩ := nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph eX
-    (ClosedOrientedManifold.OrientedDiffeomorph.refl Z.toClosedOrientedManifold)
-  obtain ⟨G⟩ := finiteConnectedSum_append
+  obtain ⟨F⟩ := connectedSumOrientedTransport_holds X
+    (finiteConnectedSum (L.map original ++ List.replicate b Z)) Z Z hX
+    ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩
+  obtain ⟨G⟩ := finiteConnectedSum_append_orientedDiffeomorph
     (L.map original ++ List.replicate b Z) [Z]
   refine ⟨F.trans ?_⟩
   simpa only [finiteConnectedSum_singleton, List.replicate_succ', List.append_assoc]
@@ -145,10 +145,10 @@ private theorem nonempty_orientedDiffeomorph_smoothConnectedSum_append_replicate
           Z)).toClosedOrientedManifold) := by
   obtain ⟨F₀⟩ := nonempty_orientedDiffeomorph_smoothConnectedSum_of_charts
     p (orientedBallChart X) q (orientedBallChart Y) boundaryAttachment
-  obtain ⟨eX⟩ := hX
-  obtain ⟨eY⟩ := hY
-  obtain ⟨F₁⟩ := nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph eX eY
-  obtain ⟨F₂⟩ := finiteConnectedSum_append
+  obtain ⟨F₁⟩ := connectedSumOrientedTransport_holds X
+    (finiteConnectedSum (L.map original ++ List.replicate b Z)) Y
+    (finiteConnectedSum (K.map original ++ List.replicate c Z)) hX hY
+  obtain ⟨F₂⟩ := finiteConnectedSum_append_orientedDiffeomorph
     (L.map original ++ List.replicate b Z) (K.map original ++ List.replicate c Z)
   have hperm : List.Perm
       ((L.map original ++ List.replicate b Z) ++ (K.map original ++ List.replicate c Z))
@@ -156,7 +156,7 @@ private theorem nonempty_orientedDiffeomorph_smoothConnectedSum_append_replicate
     rw [List.map_append, List.replicate_add, List.append_assoc, List.append_assoc]
     exact List.Perm.append_left (L.map original)
       (List.perm_append_comm_assoc (List.replicate b Z) (K.map original) (List.replicate c Z))
-  obtain ⟨F₃⟩ := finiteConnectedSum_perm hperm
+  obtain ⟨F₃⟩ := finiteConnectedSum_perm_orientedDiffeomorph hperm
   exact ⟨((F₀.trans F₁).trans F₂.symm).trans F₃⟩
 
 

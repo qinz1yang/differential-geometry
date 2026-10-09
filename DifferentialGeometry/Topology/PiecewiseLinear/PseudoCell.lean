@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalConfiguration
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyPolyhedral
@@ -341,6 +346,93 @@ theorem IsTube.spaceEq (ht : IsTube K N C D Dbd h N')
 
 end Tubes
 
+section Statements
+
+open Classical in
+def Moise321 : Prop :=
+  ∀ (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
+    (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (N' : Set (EuclideanSpace ℝ (Fin 3))),
+    IsTube K N C D Dbd h N' →
+    ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset _) ∈ K.faces →
+    ∀ W : Set (EuclideanSpace ℝ (Fin 3)), IsClosed W →
+      h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset _).centroid ℝ id)} ⊆ interior W →
+      W ⊆ h '' C u ∪ h '' C v →
+      W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v} →
+      W ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} →
+      ∃ Ec Eint Ebd : Set (EuclideanSpace ℝ (Fin 3)),
+        IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset _).centroid ℝ id)) ∧
+        Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
+        DifferentialGeometry.Topology.Separates
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' Eint)
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h u})
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h v}) ∧
+        Ec ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)}
+
+open Classical in
+def Moise322 : Prop :=
+  ∀ (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
+    (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (N' : Set (EuclideanSpace ℝ (Fin 3))),
+    IsTube K N C D Dbd h N' →
+    ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v → ({u, v} : Finset _) ∈ K.faces →
+    ∀ W : Set (EuclideanSpace ℝ (Fin 3)), IsClosed W →
+      h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset _).centroid ℝ id)} ⊆ interior W →
+      W ⊆ h '' C u ∪ h '' C v →
+      W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v} →
+      W ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} →
+      ∃ (Ec Eint Ebd U₁ U₂ : Set (EuclideanSpace ℝ (Fin 3))),
+        IsPseudoCell Ec Eint Ebd (h (({u, v} : Finset _).centroid ℝ id)) ∧
+        Ebd = h '' Dbd {u, v} ∧ Ec ⊆ W ∧
+        DifferentialGeometry.Topology.Separates
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' Eint)
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h u})
+          (((↑) : interior (h '' C u ∪ h '' C v) → EuclideanSpace ℝ (Fin 3)) ⁻¹' {h v}) ∧
+        Ec ∩ h '' K.space = {h (({u, v} : Finset _).centroid ℝ id)} ∧
+        h u ∈ U₁ ∧ h v ∈ U₂ ∧
+        IsConnected U₁ ∧ IsConnected U₂ ∧ Disjoint U₁ U₂ ∧
+        U₁ ∪ U₂ = (h '' C u ∪ h '' C v) \ Ec ∧
+        (∀ V : Set (EuclideanSpace ℝ (Fin 3)), IsPreconnected V →
+          V ⊆ (h '' C u ∪ h '' C v) \ Ec → V ⊆ U₁ ∨ V ⊆ U₂) ∧
+        Ec ⊆ frontier U₁ ∧ Ec ⊆ frontier U₂ ∧
+        h '' (frontier (C u) ∩ frontier N) ⊆ frontier U₁ ∧
+        h '' (frontier (C v) ∩ frontier N) ⊆ frontier U₂
+
+def Moise323 : Prop :=
+  ∀ (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    (N : Set (EuclideanSpace ℝ (Fin 3)))
+    (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
+    (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (N' : Set (EuclideanSpace ℝ (Fin 3))),
+    IsTube K N C D Dbd h N' →
+    ∀ V : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)),
+      (∀ v ∈ K.vertices, V v ∈ nhdsSet (h '' C v)) →
+      ∃ (Ec Eint Ebd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
+        (Cpp : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3))),
+        IsHandleDecompositionOfTube K N C D Dbd h N' Ec Eint Ebd Cpp ∧
+        ∀ v ∈ K.vertices, Cpp v ⊆ V v
+
+def Moise324 : Prop :=
+  ∀ (Ec Eint Ebd : Set (EuclideanSpace ℝ (Fin 3))) (P : EuclideanSpace ℝ (Fin 3)),
+    IsPseudoCell Ec Eint Ebd P →
+    ∀ δ : ℝ, 0 < δ →
+      ∃ (Δ Δbd : Set (EuclideanSpace ℝ (Fin 3)))
+        (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
+        Δbd = r '' stdSimplexBoundary 2 ∧
+        Δ ⊆ Metric.ball P δ ∧
+        Δbd = Δ ∩ Ec ∧
+        ∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
+          IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec ∧ DJ \ DJint = Δbd ∧ P ∈ DJint
+
+end Statements
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
@@ -463,5 +555,21 @@ theorem IsTube.mem_interior_dualCell (ht : IsTube K N C D Dbd h N') (hv : v ∈ 
   · exact absurd (mem_iUnion₂.mpr ⟨w, ⟨hw, fun hw' => hwv (mem_singleton_iff.mp hw')⟩, hxw⟩) hxU
 
 end TubeFacts
+
+open Classical in
+theorem Moise322.exists_splitsDualCellsAlong (h322 : Moise322)
+    {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
+    {D Dbd : Finset E3 → Set E3} {h : E3 → E3} {u v : E3} {W : Set E3}
+    (ht : IsTube K N C D Dbd h N') (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces) (hW : IsClosed W)
+    (hWint : h '' (D {u, v} \ Dbd {u, v}) \ {h (({u, v} : Finset E3).centroid ℝ id)} ⊆
+      interior W)
+    (hWsub : W ⊆ h '' C u ∪ h '' C v)
+    (hWfr : W ∩ frontier (h '' C u ∪ h '' C v) = h '' Dbd {u, v})
+    (hWK : W ∩ h '' K.space = {h (({u, v} : Finset E3).centroid ℝ id)}) :
+    ∃ Ec Eint Ebd : Set E3, SplitsDualCellsAlong K N C Dbd h W Ec Eint Ebd u v := by
+  obtain ⟨Ec, Eint, Ebd, U₁, U₂, hpc, hbd, hsub, hsep, hK, hU⟩ :=
+    h322 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
+  exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK, U₁, U₂, hU⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

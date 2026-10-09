@@ -12,12 +12,9 @@ universe u
 
 namespace OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_relative_quad_bound (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.exists_compact_relative_quad_bound (L : G.TerminalLimitMetric)
     {K : Set G.terminalRegularOpen} (hK : IsCompact K) {ε : ℝ} (hε : 0 < ε) :
     ∃ d ∈ Ico a s, ∀ t ∈ Ioo d s, ∀ x ∈ K, ∀ v : TangentSpace ThreeModel x,
       |((G.flow.base.metric t).restrictOpen G.terminalRegularOpen).inner x v v -
@@ -50,7 +47,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     nlinarith
   exact hnorm
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_compact_quad_bound (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.exists_compact_quad_bound (L : G.TerminalLimitMetric)
     {K : Set G.terminalRegularOpen} (hK : IsCompact K) {ε : ℝ} (hε : 0 < ε) :
     ∃ d ∈ Ico a s, ∀ t ∈ Ioo d s, ∀ x ∈ K, ∀ v : TangentSpace ThreeModel x,
       L.metric.inner x v v ≤ (1 + ε) *

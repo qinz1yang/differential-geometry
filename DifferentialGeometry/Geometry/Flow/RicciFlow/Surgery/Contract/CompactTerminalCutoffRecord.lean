@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.CompactTerminalExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.CompactTerminalHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
 
 noncomputable section

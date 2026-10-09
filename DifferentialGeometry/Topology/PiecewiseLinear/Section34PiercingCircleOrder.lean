@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.IndexedEssentialCircleOrder
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.EssentialEquivalence
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingEssentialEquivalence
 
 open Set
 
@@ -42,7 +42,7 @@ theorem exists_section34_piercing_first_circle_order
   have hann := (section34_piercing_annuli hprep hpack e).1
   have hfirst (i : Fin (cnt e)) : ¬ ∃ D : Set M₂,
       IsPLCellOn 2 D (Pg e i.val) ∧ D ⊆ G (ends e).1 '' Aa e :=
-    (piercing_generators_of_essential_second hprep hpack e i.isLt
+    (section34_piercing_generators_of_essential_second hprep hpack e i.isLt
       (hess i.val i.isLt)).2.2
   obtain ⟨-, -, -, -, hCp, -, -, -, -, -, -, -, -, -, hAa, -⟩ := hprep
   obtain ⟨-, -, -, -, -, -, -, -, -, -, hGcp, -, -, -, -, -, -, hPg, hdisj, -⟩ := hpack

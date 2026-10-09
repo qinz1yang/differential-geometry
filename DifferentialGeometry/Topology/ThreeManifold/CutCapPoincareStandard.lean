@@ -12,31 +12,30 @@ namespace DifferentialGeometry.Topology.SphericalCutCapTransition
 universe u
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem componentwise_isStandardConnectedSum_of_poincareControlled
+theorem componentwise_isPoincareStandard_of_poincareControlled
     (hctrl : E.poincareControlled)
-    (hnext : ∀ C : ConnectedComponents Q.Carrier, isStandardConnectedSum (Q.component C).Carrier) :
-    ∀ C : ConnectedComponents M.Carrier, isStandardConnectedSum (M.component C).Carrier := by
+    (hnext : ∀ C : ConnectedComponents Q.Carrier, isPoincareStandard (Q.component C).Carrier) :
+    ∀ C : ConnectedComponents M.Carrier, isPoincareStandard (M.component C).Carrier := by
   classical
   obtain ⟨W,hW,assign,L,k,hm,hn,hne,⟨D⟩⟩ := E.exists_diffeomorph_finiteConnectedSum_capComponents
   let := hW
   let := Fintype.ofFinite W
   let N := fun w => (finiteConnectedSum ((L w).map E.capped.component ++
     List.replicate (k w) (sphereTwoTimesCircleLift.ulift.{0, u}))).toClosedOrientedManifold
-  have hN (w : W) : isOrientedStandardConnectedSum (N w) :=
-    E.isOrientedStandardConnectedSum_capComponent_finiteConnectedSum
-      (fun K => isOrientedStandardConnectedSum_of_isStandardConnectedSum (Q.component K) (hnext K))
-      (fun K => isOrientedStandardConnectedSum_of_isStandardConnectedSum
-        (E.discarded.component K) (hctrl K))
+  have hN (w : W) : isOrientedPoincareStandard (N w) :=
+    E.isOrientedPoincareStandard_capComponent_finiteConnectedSum
+      (fun K => poincareStandardOrientationRefinement_holds (Q.component K) (hnext K))
+      (fun K => poincareStandardOrientationRefinement_holds (E.discarded.component K) (hctrl K))
       (L w) (k w)
   have hcomponents : ∀ C : ConnectedComponents (closedOrientedUnion N).Carrier,
-      isStandardConnectedSum ((closedOrientedUnion N).component C).Carrier := by
+      isPoincareStandard ((closedOrientedUnion N).component C).Carrier := by
     intro C
-    apply isStandardConnectedSum_of_isOrientedStandardConnectedSum
-    apply componentwise_isOrientedStandardConnectedSum_closedOrientedUnion N _ C
+    apply isPoincareStandard_of_isOrientedPoincareStandard
+    apply componentwise_isOrientedPoincareStandard_closedOrientedUnion N _ C
     intro w K
-    exact isOrientedStandardConnectedSum_of_orientedDiffeomorph
+    exact isOrientedPoincareStandard_of_orientedDiffeomorph
       ((N w).componentOrientedDiffeomorph K) (hN w)
-  exact (ClosedOrientedManifold.componentwise_isStandardConnectedSum_iff_of_diffeomorph
+  exact (ClosedOrientedManifold.componentwise_isPoincareStandard_iff_of_diffeomorph
     (M := M) (N := closedOrientedUnion N) D).mpr hcomponents
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
@@ -45,30 +44,30 @@ namespace DifferentialGeometry.Topology.FiniteCutCapTrace
 
 universe u
 
-theorem componentwise_isStandardConnectedSum_of_poincareControlled_extinct
+theorem componentwise_isPoincareStandard_of_poincareControlled_extinct
     (T : FiniteCutCapTrace.{u}) (hctrl : T.poincareControlled) (hext : T.extinct) :
     ∀ i : Fin (T.eventCount + 1), ∀ C : ConnectedComponents (T.stage i).Carrier,
-      isStandardConnectedSum ((T.stage i).component C).Carrier := by
+      isPoincareStandard ((T.stage i).component C).Carrier := by
   have hbase : ∀ C : ConnectedComponents (T.stage (Fin.last T.eventCount)).Carrier,
-      isStandardConnectedSum ((T.stage (Fin.last T.eventCount)).component C).Carrier := by
+      isPoincareStandard ((T.stage (Fin.last T.eventCount)).component C).Carrier := by
     have hEmpty : IsEmpty (ConnectedComponents (T.stage (Fin.last T.eventCount)).Carrier) :=
       ConnectedComponents.isEmpty_iff_isEmpty.mpr hext
     intro C
     exact hEmpty.elim C
   refine Fin.reverseInduction (motive := fun j => ∀ C : ConnectedComponents (T.stage j).Carrier,
-    isStandardConnectedSum ((T.stage j).component C).Carrier) hbase ?_
+    isPoincareStandard ((T.stage j).component C).Carrier) hbase ?_
   intro j ih
-  exact (T.transition j).componentwise_isStandardConnectedSum_of_poincareControlled (hctrl j) ih
+  exact (T.transition j).componentwise_isPoincareStandard_of_poincareControlled (hctrl j) ih
 
-theorem isStandardConnectedSum_of_initialIdentification_of_poincareControlled_extinct
+theorem isPoincareStandard_of_initialIdentification_of_poincareControlled_extinct
     (T : FiniteCutCapTrace.{u}) (hctrl : T.poincareControlled) (hext : T.extinct)
     (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier]
-    (Φ : T.InitialIdentification M) : isStandardConnectedSum M.Carrier := by
-  have hcomp := T.componentwise_isStandardConnectedSum_of_poincareControlled_extinct hctrl hext 0
+    (Φ : T.InitialIdentification M) : isPoincareStandard M.Carrier := by
+  have hcomp := T.componentwise_isPoincareStandard_of_poincareControlled_extinct hctrl hext 0
   have : ConnectedSpace (T.stage 0).Carrier :=
     Φ.val.toHomeomorph.connectedSpace_iff.mp inferInstance
   let C := ConnectedComponents.mk (Φ.val (Classical.choice (inferInstance : Nonempty M.Carrier)))
-  exact isStandardConnectedSum_of_diffeomorph Φ.val
-    ((T.stage 0).isStandardConnectedSum_of_component C (hcomp C))
+  exact isPoincareStandard_of_diffeomorph Φ.val
+    ((T.stage 0).isPoincareStandard_of_component C (hcomp C))
 
 end DifferentialGeometry.Topology.FiniteCutCapTrace

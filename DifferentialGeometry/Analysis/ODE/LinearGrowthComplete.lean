@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import DifferentialGeometry.Analysis.ODE.Gronwall.Integral
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 set_option autoImplicit false

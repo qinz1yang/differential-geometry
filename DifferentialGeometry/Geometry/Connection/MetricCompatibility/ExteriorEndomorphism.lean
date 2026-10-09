@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.VectorBundle.ExteriorPower.Endomorphism
+import DifferentialGeometry.Geometry.Metric.ExteriorEndomorphismBundle
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ExteriorPower
 import DifferentialGeometry.Geometry.Connection.NormalSection
 
@@ -29,7 +29,7 @@ theorem IsMetricCompatible.multilinear_endomorphismTensor
     letI := Bundle.ExteriorPower.vector_bundle F V k
     letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
     let c := cov.exteriorPower k
-    let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+    let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
       (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
     ∀ (R : ∀ x, (⋀[ℝ]^k (V x)) →L[ℝ] ⋀[ℝ]^k (V x)),
     ContMDiff I (I.prod 𝓘(ℝ, (⋀[ℝ]^k F) →L[ℝ] ⋀[ℝ]^k F)) 1
@@ -45,7 +45,7 @@ theorem IsMetricCompatible.multilinear_endomorphismTensor
   let := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F V k
   let := Bundle.ExteriorPower.isContMDiffRiemannianBundle (IB := I) (n := 1) F V k
   let c := cov.exteriorPower k
-  let D := _root_.CovariantDerivative.hom I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
+  let D := homBundleCovariantDerivativeGen I M (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
     (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c
   intro R hR x X
   have hT := Bundle.ExteriorPower.contMDiff_endomorphismTensor (IB := I) (n := 1) F V k R hR
@@ -67,7 +67,7 @@ theorem IsMetricCompatible.multilinear_endomorphismTensor
   have hDN : c N x X = 0 := by
     rw [exteriorPower_ιMulti cov k _ (fun i => (W (Fin.natAdd k i)).mdifferentiableAt)]
     simp only [hDW, zero_apply, AlternatingMap.map_update_zero, Finset.sum_const_zero]
-  have hD := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M
+  have hD := homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt I M
     (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x))
     (⋀[ℝ]^k F) (fun x => ⋀[ℝ]^k (V x)) c c R
     ((hR x).mdifferentiableAt one_ne_zero) Z.mdifferentiableAt hL

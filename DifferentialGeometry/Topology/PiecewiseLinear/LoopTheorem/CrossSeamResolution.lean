@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderSplice
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Carrier
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Complexity
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 
 open Set

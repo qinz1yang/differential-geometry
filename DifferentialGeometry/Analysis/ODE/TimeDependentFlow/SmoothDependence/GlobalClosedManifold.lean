@@ -57,7 +57,7 @@ theorem autonomizedFieldJointC1_of_contMDiff
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (hX : ContMDiff (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))) :
-    autonomizedFieldJointC1 (I := I) X := by
+    AutonomizedFieldJointC1 (I := I) X := by
   intro p
   have h1le : (1 : WithTop ℕ∞) ≤ ∞ := by exact_mod_cast le_top
   exact ((autonomizedFlowVF_section_contMDiff X hX).of_le h1le).contMDiffAt
@@ -76,7 +76,7 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ p t)))) := by
   classical
-  have hX_auto : autonomizedFieldJointC1 (I := I) X :=
+  have hX_auto : AutonomizedFieldJointC1 (I := I) X :=
     autonomizedFieldJointC1_of_contMDiff X hX
   have hlocal : ∀ p₀ : M, ∃ (U : Set M) (_ : IsOpen U) (_ : p₀ ∈ U) (T : ℝ) (_ : 0 < T)
       (Φ : M → ℝ → M),

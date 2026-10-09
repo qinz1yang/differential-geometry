@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Interpolation.T
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.CrossScaleParabolicTraceContinuity
 import DifferentialGeometry.Analysis.ODE.LinearIntegralEquation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
-import DifferentialGeometry.Analysis.Sobolev.Time.Bochner.SmallTime
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.SmallTime
 
 noncomputable section
 
@@ -288,7 +288,7 @@ private theorem homogeneous_zero (hT : 0 ≤ T)
     rw [maximalRegularityHomogeneousDerivField_eq_scaleLaplacian hT hc,
       homogeneous_solutionField_zero hT hc, map_zero]
 
-theorem maximalRegularitySolutionField_toTimeL2 (hT : 0 < T)
+private theorem solutionField_toTimeL2 (hT : 0 < T)
     (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
     (F : timeL2 (TensorHs g r s a) T) :
     timeL2Inclusion (g := g) (r := r) (s := s) (show a ≤ a + 2 by linarith)
@@ -311,7 +311,7 @@ theorem heatDuhamelEvolutionField_toTimeL2 (hT : 0 < T)
       (heatDuhamelEvolutionField a hT u₀ F) =
       timeH1.toTimeL2 _ T (heatDuhamelEvolution a hT u₀ F) := by
   rw [heatDuhamelEvolutionField, heatDuhamelEvolution, map_add, map_add,
-    heatEvolutionField_toTimeL2 hT.le hc, maximalRegularitySolutionField_toTimeL2 hT hc]
+    heatEvolutionField_toTimeL2 hT.le hc, solutionField_toTimeL2 hT hc]
 
 end DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 end

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Sphere.RetainedChart
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Orientation
-import DifferentialGeometry.Topology.Manifold.OrientedBallChart.OpenImage
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartOpenImage
 
 set_option autoImplicit false
 noncomputable section

@@ -45,7 +45,7 @@ theorem exists_disk_of_acyclic_filling (hn : 6 ≤ n) {G : M → ℝ}
   obtain ⟨Φ, hΦB, hΦV⟩ := hcobordism_strip (morseModelI n) hn F hF'
     (by norm_num : (-5/8 : ℝ) < 0) hFc (by
       intro x hx
-      rw [isCriticalPointAt_morseModelI_iff (f := F)]
+      rw [isCriticalPointAt_morseModelI_iff hF]
       exact hFreg x hx) hW hS hV' hH
   refine ⟨Φ ∘ e, Φ.toHomeomorph.isClosedEmbedding.comp he.isClosedEmbedding, ?_, ?_⟩
   · rw [range_comp, ← hle, hΦB, hle0]

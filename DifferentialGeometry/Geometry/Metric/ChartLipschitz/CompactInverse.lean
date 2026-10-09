@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import Mathlib.Topology.Separation.Regular
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
 import Mathlib.Analysis.Normed.Module.FiniteDimension

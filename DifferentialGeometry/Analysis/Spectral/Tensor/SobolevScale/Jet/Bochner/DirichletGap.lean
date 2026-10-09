@@ -488,13 +488,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 private lemma contract_eq_covGradBundleEquiv_symm_local
     (s : ℕ) (x : M) (v : TangentSpace I x) (A : TensorRSSpace 0 (s + 1) I x) :
     Tensor0SBundle.contractCovariant 0 s x v A =
-      (Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm A v := by
+      (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x).symm A v := by
   apply tensorRSSpace_ext 0 s x
   intro D
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   change Tensor0SSpace.eval _ m = Tensor0SSpace.eval _ m
-  rw [Tensor0SBundle.covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x A v D m]
+  rw [Tensor0SBundle.covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x A v D m]
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -509,10 +509,10 @@ private lemma riemannianFiberNormSq_eq_sum_contract_orthoFrame_local
         (Tensor0SBundle.contractCovariant 0 s x (e a) A) := by
   classical
   set Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x :=
-    (Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm A with hΦ_def
-  have hAeq : A = Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ := by
+    (Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x).symm A with hΦ_def
+  have hAeq : A = Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x Φ := by
     rw [hΦ_def]
-    exact ((Tensor0SBundle.covariantSlotBundleEquiv (I := I) (M := M) 0 s x).apply_symm_apply A).symm
+    exact ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) 0 s x).apply_symm_apply A).symm
   rw [hAeq]
   rw [riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs (I := I) (M := M) g₀ 0 s x
     Φ e hn horth]

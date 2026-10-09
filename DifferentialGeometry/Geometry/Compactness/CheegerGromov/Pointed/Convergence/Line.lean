@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.InverseDistance
-import DifferentialGeometry.Topology.MetricSpace.GeodesicLine.Approximation
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistance
+import DifferentialGeometry.Geometry.Comparison.Splitting.MetricApproximateLineLimit
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Ordered
 
 set_option autoImplicit false

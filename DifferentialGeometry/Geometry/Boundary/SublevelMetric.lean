@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Morse.SublevelBoundaryDiffeomorph
 import DifferentialGeometry.Topology.Morse.LevelSetInclusion
 import DifferentialGeometry.Geometry.Metric.Pullback.Immersion
 import DifferentialGeometry.Geometry.Boundary.Metric.Induced
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Topology.Morse.CriticalPoints
 
 namespace DifferentialGeometry.Topology.Morse

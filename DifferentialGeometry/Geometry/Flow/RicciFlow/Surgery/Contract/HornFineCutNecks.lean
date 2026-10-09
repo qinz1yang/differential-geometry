@@ -2,10 +2,10 @@ import Batteries.Tactic.OpenPrivate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
 
 open private normalized_neck_scalar_bounds_of_small reparametrized_prefix_scalar_le from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
 
 open private scalar_le_on_retainedCore_of_truncated_bound from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Selection.FirstScalarLevel
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFirstScalarLevel
 
 open private exists_common_deep_coordinates_after_rescaling
   scalar_le_on_rescaled_reparametrized_truncatedRegion exists_oriented_horn_neck_data_of_matching

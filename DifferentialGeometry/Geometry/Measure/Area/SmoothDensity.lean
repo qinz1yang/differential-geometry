@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.Area.Convergence
 import DifferentialGeometry.Analysis.Calculus.DiskTraceApproximation
 import DifferentialGeometry.Topology.Manifold.Embedding.CompactRetraction
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Smooth
+import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
 import DifferentialGeometry.Geometry.Measure.Area.SpanningCompetitors
 

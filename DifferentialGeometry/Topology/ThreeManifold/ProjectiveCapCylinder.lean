@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardCylinderCover
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SphereChartReparametrization
-import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Orientation
+import DifferentialGeometry.Topology.Manifold.BallChartOrientation
 import DifferentialGeometry.Topology.ThreeManifold.AntipodalPresentation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
 import Mathlib.Analysis.Normed.Module.Ball.Pointwise
@@ -110,8 +110,8 @@ private theorem standard_of_marked_ball_complements
       (F₀ '' (b₀ '' Metric.ball 0 1)ᶜ ∪ F₁ '' (b₁ '' Metric.ball 0 1)ᶜ) = univ)
     (hzero : ∀ z : S2, F₀ (b₀ z) = T (z, 0))
     (hone : ∀ z : S2, F₁ (b₁ (boundaryAttachment.val z)) = T (z, 1))
-    (hM : isStandardConnectedSum M.Carrier) (hN : isStandardConnectedSum N.Carrier) :
-    isStandardConnectedSum P := by
+    (hM : isPoincareStandard M.Carrier) (hN : isPoincareStandard N.Carrier) :
+    isPoincareStandard P := by
   have hcmem (x : outerPunctured c) : x.val.val ∈ (b₀ '' Metric.ball 0 1)ᶜ :=
     (mem_outerPunctured_iff_of_scaled c b₀ hc x.val).mp x.property
   have hdmem (x : outerPunctured d) : x.val.val ∈ (b₁ '' Metric.ball 0 1)ᶜ :=
@@ -122,7 +122,7 @@ private theorem standard_of_marked_ball_complements
   have ho (z : S2) : T (z, 1) = F₁ (outerRightBoundary d boundaryAttachment z).val.val := by
     rw [outerRightBoundary_val_of_scaled d b₁ hd]
     exact (hone z).symm
-  apply isStandardConnectedSum_of_outer_caps_cylinder_cover c d F₀ F₁ T
+  apply isPoincareStandard_of_outer_caps_cylinder_cover c d F₀ F₁ T
     (fun x => hF₀ (hcmem x)) (fun x => hF₁ (hdmem x)) hTs
     ?_ ?_ ?_ ?_ hz ho hM hN
   · simpa only [range_outerPunctured_map_of_scaled c b₀ hc,
@@ -153,7 +153,7 @@ private theorem sphere_image_subset_ball_complement
   rintro x ⟨q, hq, rfl⟩
   exact (b.boundaryMap ⟨q, hq⟩).property
 
-theorem isStandardConnectedSum_of_projective_ball_complements_cylinder_cover
+theorem isPoincareStandard_of_projective_ball_complements_cylinder_cover
     {Z₀ Z₁ P : Type u}
     [TopologicalSpace Z₀] [ChartedSpace E3 Z₀] [IsManifold (𝓡 3) ∞ Z₀]
     [TopologicalSpace Z₁] [ChartedSpace E3 Z₁] [IsManifold (𝓡 3) ∞ Z₁]
@@ -186,7 +186,7 @@ theorem isStandardConnectedSum_of_projective_ball_complements_cylinder_cover
       range (fun q : S2 => T (q, 0)))
     (hboundary₁ : F₁ '' (b₁ '' Metric.sphere (0 : E3) 1) =
       range (fun q : S2 => T (q, 1))) :
-    isStandardConnectedSum P := by
+    isPoincareStandard P := by
   obtain ⟨o₀, e₀, _, _, _⟩ :=
     SphericalSpaceFormGroup.exists_oriented_antipodal_diffeomorph_of_presentation
       p₀ hp₀ hsurj₀ hfibers₀
@@ -215,10 +215,10 @@ theorem isStandardConnectedSum_of_projective_ball_complements_cylinder_cover
       (fun q => hTs ⟨mem_univ q, by norm_num⟩) hboundary₁
   let B₀' : BallChart 3 (𝓡 3) M.Carrier := ⟨b₀', hsource₀ 2 hb₀⟩
   let B₁' : BallChart 3 (𝓡 3) N.Carrier := ⟨b₁', hsource₁ 2 hb₁⟩
-  have hM : isStandardConnectedSum Z₀ :=
-    isStandardConnectedSum_of_antipodal_presentation p₀ hp₀ hsurj₀ hfibers₀
-  have hN : isStandardConnectedSum Z₁ :=
-    isStandardConnectedSum_of_antipodal_presentation p₁ hp₁ hsurj₁ hfibers₁
+  have hM : isPoincareStandard Z₀ :=
+    isPoincareStandard_of_antipodal_presentation p₀ hp₀ hsurj₀ hfibers₀
+  have hN : isPoincareStandard Z₁ :=
+    isPoincareStandard_of_antipodal_presentation p₁ hp₁ hsurj₁ hfibers₁
   have hF₀' : (b₀' '' Metric.ball 0 1)ᶜ ⊆ F₀.source := by
     rwa [himage₀]
   have hF₁' : (b₁' '' Metric.ball 0 1)ᶜ ⊆ F₁.source := by
@@ -501,7 +501,7 @@ private theorem frontier_ball_complement_image
     (compact_ball_complement b hb) hF
 
 
-theorem isStandardConnectedSum_of_projective_ball_complement_cover
+theorem isPoincareStandard_of_projective_ball_complement_cover
     {Z₀ Z₁ P : Type u}
     [TopologicalSpace Z₀] [ChartedSpace E3 Z₀] [IsManifold (𝓡 3) ∞ Z₀]
     [TopologicalSpace Z₁] [ChartedSpace E3 Z₁] [IsManifold (𝓡 3) ∞ Z₁]
@@ -526,7 +526,7 @@ theorem isStandardConnectedSum_of_projective_ball_complement_cover
       frontier (F₀ '' (b₀ '' Metric.ball 0 1)ᶜ))
     (hcover : (F₀ '' (b₀ '' Metric.ball 0 1)ᶜ) ∪
       (F₁ '' (b₁ '' Metric.ball 0 1)ᶜ) = univ) :
-    isStandardConnectedSum P := by
+    isPoincareStandard P := by
   obtain ⟨e₀, _, _⟩ := SphericalSpaceFormGroup.exists_antipodal_diffeomorph_of_presentation
     p₀ hp₀ hsurj₀ hfibers₀
   obtain ⟨e₁, _, _⟩ := SphericalSpaceFormGroup.exists_antipodal_diffeomorph_of_presentation
@@ -618,7 +618,7 @@ theorem isStandardConnectedSum_of_projective_ball_complement_cover
     · rintro ⟨z,rfl⟩
       exact ⟨b₀ z,⟨z,z.property,rfl⟩,
         (Manifold.ballComplementRadialCollar_apply_one b₀ F₀ v z R hR.ne').symm⟩
-  exact isStandardConnectedSum_of_projective_ball_complements_cylinder_cover
+  exact isPoincareStandard_of_projective_ball_complements_cylinder_cover
     p₀ p₁ hp₀ hp₁ hsurj₀ hsurj₁ hfibers₀ hfibers₁ bR b₁ hbR hb₁ F₀ F₁ T
     hFR hF₁ hTs hdis hc₀ hc₁ hcov hbd₀ hbd₁
 

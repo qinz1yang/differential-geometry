@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderPinchingLimit
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.TerminalCylinder
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ShrinkingCylinderIsometries
 
 set_option autoImplicit false

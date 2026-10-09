@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalBridgeWitnesses
 
 open Set Topology
@@ -50,6 +55,7 @@ theorem IsCanonicalSurface.exists_window_bridge_normalization [DecidableEq E3]
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ i : ℤ, Disjoint (φ '' S i) ({h u, h v} : Set E3))
+    (h303 : Moise303) (h286 : Moise286) (h314 : Moise314)
     {X : ℤ → Geometry.SimplicialComplex ℝ E3}
     (hX : IsCanonicalSurface X (fun i => φ '' S i) T''
       (interior (h '' C u ∪ h '' C v)) P' (h u) (h v))
@@ -60,23 +66,22 @@ theorem IsCanonicalSurface.exists_window_bridge_normalization [DecidableEq E3]
     ∃ Y : ℤ → Geometry.SimplicialComplex ℝ E3,
       IsCanonicalBridgeNormalization X Y (fun i => φ '' S i) S'' T''
         (interior (h '' C u ∪ h '' C v)) P' (h u) (h v) rows F := by
-  obtain ⟨U, hclass⟩ := hX.exists_window_component_classification
-    (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-    htw havoid hmodel rows hFO
+  obtain ⟨U, hclass⟩ := hX.exists_window_component_classification ht hu hv huv he htw
+    havoid h303 h286 h314 hmodel rows hFO
   have hUF := hclass.disjoint_row_interiors hFO hF
-  have hUw := hwitness.of_null_splits htw (towerWindowSeams rows) hclass.splits
+  have hUw := hwitness.of_null_splits htw h314 (towerWindowSeams rows) hclass.splits
   obtain ⟨V, hclosed, hV⟩ := hclass.exists_annular_window ht hu hv huv he htw havoid hUF
   have hVw := hUw.of_closed_reduction hclosed
   have hVF (i : ℤ) (hi : i ∈ rows) :=
     hclass.target.disjoint_row_interior_of_space_subset hclosed.target i
       (hclosed.pieceSubset i) (hUF i hi)
-  obtain ⟨Z, hreturn⟩ := hV.exists_window_returning_reduction htw isOpen_interior
+  obtain ⟨Z, hreturn⟩ := hV.exists_window_returning_reduction htw h314 isOpen_interior
     havoid hVF
   have hZw := hVw.of_returning_reduction htw hreturn
   have hZF (i : ℤ) (hi : i ∈ rows) :=
     hV.surface.disjoint_row_interior_of_space_subset hreturn.target.surface i
       (hreturn.pieceSubset i) (hVF i hi)
-  obtain ⟨Y, hbridge⟩ := hreturn.target.exists_window_bridge_reduction htw isOpen_interior
+  obtain ⟨Y, hbridge⟩ := hreturn.target.exists_window_bridge_reduction htw h314 isOpen_interior
     havoid hreturn.bridge_components (fun i _ => hZw.nonempty_components i) hZF
   refine ⟨Y,
     { source := hX

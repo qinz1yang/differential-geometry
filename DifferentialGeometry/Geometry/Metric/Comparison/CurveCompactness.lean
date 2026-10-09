@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 
 noncomputable section

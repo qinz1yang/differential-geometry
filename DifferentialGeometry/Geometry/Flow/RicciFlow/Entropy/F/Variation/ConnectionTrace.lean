@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Variation.ChartTrace
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor

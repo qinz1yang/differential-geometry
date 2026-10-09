@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Manifold.AffineBallIsotopy
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssemblyReduction
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallMarkingSupport
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChartTransport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.SumLaws
 
 set_option autoImplicit false
 noncomputable section

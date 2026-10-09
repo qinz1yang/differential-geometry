@@ -325,10 +325,10 @@ structure ChildCarrierCoreCapCover (c : ConnectedComponents Q.Carrier) : Type u 
 
 theorem childCarrierOpenCover_of_childCarrierCoreCapCover
     (hd : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         E.ChildCarrierCoreCapCover c)
     (hcore : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         SimplyConnectedSpace (E.ChildCore c)) :
     E.childCarrierOpenCover := by
   intro c hpar
@@ -342,14 +342,14 @@ theorem childCarrierOpenCover_of_childCarrierCoreCapCover
 
 theorem child_simplyConnected_of_childCarrierCoreCapCover
     (hd : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         E.ChildCarrierCoreCapCover c)
     (hpc : ∀ c : ConnectedComponents Q.Carrier,
       SimplyConnectedSpace
         ↥(E.trace.tubes.puncturedCoreComponent (E.childCoreComponent c)))
     (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.child_simplyConnected_of_childCarrierOpenCover
     (E.childCarrierOpenCover_of_childCarrierCoreCapCover hd
       fun c _ => E.simplyConnectedSpace_childCore_of_puncturedCoreComponent c (hpc c)) c

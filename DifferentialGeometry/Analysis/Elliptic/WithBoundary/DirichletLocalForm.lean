@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Lp.BilinearForm
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletLocalSobolev
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.Smoothness
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientRegularity
 import DifferentialGeometry.Analysis.Integration.Lp.ContinuousOn
 
 noncomputable section

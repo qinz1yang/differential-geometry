@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.InteriorCompactSupport
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.ChartDecomposition
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.Stokes
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Family
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
@@ -134,7 +134,7 @@ theorem stokes_compact_family
         chartWeightedDivergenceIntegral (I := I) (g_fam t) α X
           ((chartAtlasPOU I M) α) := by
   rw [riemannianMeasureFamily_def]
-  exact integral_divergence_eq_sum_chartWeightedDivergenceIntegral (I := I) (g_fam t) X
+  exact stokes_compact (I := I) (g_fam t) X
 
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

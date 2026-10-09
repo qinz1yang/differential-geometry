@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.LocalJacobi
-import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexChart
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalConjugateRadius
+import DifferentialGeometry.Geometry.Metric.ConvexChartDistance
 
 section
 

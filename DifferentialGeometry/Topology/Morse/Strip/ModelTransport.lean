@@ -19,12 +19,12 @@ instance morseModelI_boundaryless (n : ℕ) : (morseModelI n).Boundaryless := by
 
 variable {n : ℕ} {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M]
 
-theorem contMDiff_morseModelI_iff {f : M → ℝ} :
+theorem contMDiff_morseModelI_iff [IsManifold (𝓡 n) ∞ M] {f : M → ℝ} :
     ContMDiff (morseModelI n) 𝓘(ℝ, ℝ) ∞ f ↔ ContMDiff (𝓡 n) 𝓘(ℝ, ℝ) ∞ f :=
   ContinuousLinearEquiv.contMDiff_transContinuousLinearEquiv_left _
 
-theorem isCriticalPointAt_morseModelI_iff {f : M → ℝ}
-    {x : M} :
+theorem isCriticalPointAt_morseModelI_iff [IsManifold (𝓡 n) ∞ M] {f : M → ℝ}
+    (_hf : ContMDiff (𝓡 n) 𝓘(ℝ, ℝ) ∞ f) {x : M} :
     Morse.IsCriticalPointAt (morseModelI n) f x ↔ Morse.IsCriticalPointAt (𝓡 n) f x :=
   Morse.isCriticalPointAt_transContinuousLinearEquiv_iff
     (𝓡 n) (EuclideanSpace.equiv (Fin n) ℝ) f x

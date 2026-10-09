@@ -13,13 +13,10 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.curvatureOperatorLowerBoundAt_of_phiAlmostNonnegative
+theorem TerminalLimitMetric.curvatureOperatorLowerBoundAt_of_phiAlmostNonnegative
     (L : G.TerminalLimitMetric) {Phi : ℝ → ℝ} (hPhi : Continuous Phi)
     (hpinch : Perelman.PhiAlmostNonnegative G.flow (Ico a s) Phi)
     (x : G.terminalRegularOpen) :
@@ -45,7 +42,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       Phi (metricScalarAt (G.flow.base.metric t) x.val)
   linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_curvatureOperatorLowerBoundAt_of_phiAlmostNonnegative
+theorem TerminalLimitMetric.extendedMetric_curvatureOperatorLowerBoundAt_of_phiAlmostNonnegative
     (L : G.TerminalLimitMetric) {Phi : ℝ → ℝ} (hPhi : Continuous Phi)
     (hpinch : Perelman.PhiAlmostNonnegative G.flow (Ico a s) Phi)
     {t : ℝ} (ht : t ∈ Icc a s) (x : G.terminalRegularOpen) :

@@ -16,14 +16,11 @@ open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.derivWithin_Ici_eq_fderivWithin {F : ℝ × ThreeSpace → ℝ} {T : Set ℝ}
+private theorem derivWithin_Ici_eq_fderivWithin {F : ℝ × ThreeSpace → ℝ} {T : Set ℝ}
     {W : Set ThreeSpace} (hF : ContDiffOn ℝ ∞ F (T ×ˢ W)) {t : ℝ} {e : ThreeSpace}
     (ht : t ∈ T) (he : e ∈ W) (hT : T ∈ 𝓝[≥] t) :
     derivWithin (fun v => F (v, e)) (Ici t) t = fderivWithin ℝ F (T ×ˢ W) (t, e) (1, 0) := by
@@ -35,11 +32,11 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     (show MapsTo (fun v : ℝ => (v, e)) T (T ×ˢ W) from fun v hv => ⟨hv, he⟩)
   exact (hcomp.mono_of_mem_nhdsWithin hT).derivWithin (uniqueDiffWithinAt_Ici t)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.chartGramFamilySmoothWithinOn_Ico (p : P.Carrier) :
+theorem chartGramFamilySmoothWithinOn_Ico (p : P.Carrier) :
     chartGramFamilySmoothWithinOn (I := ThreeModel) G.flow.base.metric p (Ico a s) :=
   G.flow.chartGramFamilySmoothWithinOn_of_jointContMDiffOn G.smoothUpTo.jointContMDiffOn p
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousWithinAt_derivWithin_Ici_scalar_at_start (y : P.Carrier) :
+theorem continuousWithinAt_derivWithin_Ici_scalar_at_start (y : P.Carrier) :
     ContinuousWithinAt (fun z : ℝ × P.Carrier =>
       derivWithin (fun v => G.flow.scalar v z.2) (Ici z.1) z.1) (Ici a ×ˢ univ) (a, y) := by
   set φ := extChartAt ThreeModel y with hφ
@@ -84,7 +81,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact heq z hz
   · exact heq (a, y) ⟨⟨le_rfl, G.lt⟩, mem_extChartAt_source y⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.curvDerivNormSq_continuousOn (k : ℕ) :
+theorem curvDerivNormSq_continuousOn (k : ℕ) :
     ContinuousOn (fun z : ℝ × P.Carrier => curvDerivNormSq k (G.flow.base.metric z.1) z.2)
       (Ico a s ×ˢ univ) := by
   have hgram := chartGramMatrix_joint_contMDiffOn G.flow.base.metric (Ico a s)
@@ -97,7 +94,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact curvNormSq_eq (solutionOfMetric (D := RealTimeInterval.univ 0) G.flow.base.metric) k
     z.1 z.2
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.tendsto_nhdsGT_of_continuousWithinAt_start {f : ℝ × P.Carrier → ℝ}
+private theorem tendsto_nhdsGT_of_continuousWithinAt_start {f : ℝ × P.Carrier → ℝ}
     {T : Set ℝ} (hT : T ∈ 𝓝[>] a) (y : P.Carrier)
     (hf : ContinuousWithinAt f (T ×ˢ univ) (a, y)) :
     Tendsto (fun t => f (t, y)) (𝓝[>] a) (𝓝 (f (a, y))) := by
@@ -106,7 +103,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   exact (ContinuousWithinAt.comp (f := fun t : ℝ => (t, y)) hf hpath
     fun t ht => ⟨ht, mem_univ y⟩).mono_of_mem_nhdsWithin hT
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_derivWithin_Ici_scalar_le_curvature_jets_at_start (y : P.Carrier) :
+theorem abs_derivWithin_Ici_scalar_le_curvature_jets_at_start (y : P.Carrier) :
     |derivWithin (fun v => G.flow.scalar v y) (Ici a) a| ≤
       (Module.finrank ℝ ThreeSpace : ℝ) ^ 6 *
           Real.sqrt (curvDerivNormSq 2 (G.flow.base.metric a) y) +
@@ -131,7 +128,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact abs_deriv_scalar_le_of_curvature_jets G.flow G.equation
     (show t ∈ (RealTimeInterval.closedOpen a s G.lt).regular from ht) y le_rfl le_rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_derivWithin_Ici_scalar_le_at_start_of_curvature_jets {K : ℝ} (hK : 0 ≤ K)
+theorem abs_derivWithin_Ici_scalar_le_at_start_of_curvature_jets {K : ℝ} (hK : 0 ≤ K)
     {y : P.Carrier}
     (h0 : curvDerivNormSq 0 (G.flow.base.metric a) y ≤ K * G.flow.scalar a y ^ 2)
     (h2 : curvDerivNormSq 2 (G.flow.base.metric a) y ≤ K * G.flow.scalar a y ^ 4) :
@@ -150,7 +147,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (0 : ℝ) ≤ 2 * (Module.finrank ℝ ThreeSpace : ℝ) ^ 4)
   nlinarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.abs_scalarDifferential_le_at_start_of_curvature_jet {K : ℝ} (hK : 0 ≤ K)
+theorem abs_scalarDifferential_le_at_start_of_curvature_jet {K : ℝ} (hK : 0 ≤ K)
     {y : P.Carrier} (hR : 0 ≤ G.flow.scalar a y)
     (h1 : curvDerivNormSq 1 (G.flow.base.metric a) y ≤ K * G.flow.scalar a y ^ 3)
     (v : TangentSpace ThreeModel y) :
@@ -166,7 +163,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   calc _ ≤ _ := h
     _ = _ := by ring
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.continuousWithinAt_gradient_normSq_at_start (y : P.Carrier) :
+theorem continuousWithinAt_gradient_normSq_at_start (y : P.Carrier) :
     ContinuousWithinAt (fun z : ℝ × P.Carrier => (G.flow.base.metric z.1).inner z.2
       (gradientFun (G.flow.base.metric z.1) (G.flow.scalar z.1) z.2)
       (gradientFun (G.flow.base.metric z.1) (G.flow.scalar z.1) z.2)) (Ici a ×ˢ univ) (a, y) := by
@@ -240,7 +237,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact heq z hz
   · exact heq (a, y) ⟨⟨le_rfl, G.lt⟩, hyU⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_slice_bounds_at_slab_start (K : ℝ) (hK : 0 ≤ K) :
+theorem exists_slice_bounds_at_slab_start (K : ℝ) (hK : 0 ≤ K) :
     ∃ C : ℝ≥0, 0 < C ∧ ∀ {P : OrientedThreeStage.{u}} {a s q : ℝ} (G : P.IncomingSlab a s),
       0 ≤ q → (∀ y : P.Carrier, q < G.flow.scalar a y → ∀ k ≤ 2,
         curvDerivNormSq k (G.flow.base.metric a) y ≤ K * G.flow.scalar a y ^ (k + 2)) →
@@ -288,7 +285,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
           mul_le_mul_of_nonneg_right (by linarith) hm
       _ = _ := by ring
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_derivativeBoundBefore_extend_at_start (K : ℝ) (hK : 0 ≤ K) :
+theorem exists_derivativeBoundBefore_extend_at_start (K : ℝ) (hK : 0 ≤ K) :
     ∃ C : ℝ≥0, 0 < C ∧ ∀ {P : OrientedThreeStage.{u}} {a s q : ℝ} (G : P.IncomingSlab a s),
       0 < q → (∀ y : P.Carrier, q < G.flow.scalar a y → ∀ k ≤ 2,
         curvDerivNormSq k (G.flow.base.metric a) y ≤ K * G.flow.scalar a y ^ (k + 2)) →

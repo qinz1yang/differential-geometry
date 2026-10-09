@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FiniteGluing.Existence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.UniformFiniteGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricConclusions
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.OrientedFiniteCutCapGeometry
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.LocalPullback
-import DifferentialGeometry.Geometry.Metric.Covering.Orientation
+import DifferentialGeometry.Geometry.Metric.OrientationCover
 
 
 

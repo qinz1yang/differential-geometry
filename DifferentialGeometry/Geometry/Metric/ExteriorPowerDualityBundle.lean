@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.InnerProductSpace.ExteriorPower.Duality
+import DifferentialGeometry.Geometry.Metric.ExteriorPowerDuality
 
 noncomputable section
 

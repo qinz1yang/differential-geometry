@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Groupoid
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricLink
 import DifferentialGeometry.Topology.Simplex.Coordinates
@@ -88,5 +93,12 @@ structure PLTriangulation (n : ℕ) (X : Type u) [TopologicalSpace X]
     IsPiecewiseAffineOn (e ∘ map) (complex.space ∩ map ⁻¹' e.source)
   isPiecewiseAffineOn_chart_symm : ∀ e ∈ atlas (EuclideanSpace ℝ (Fin n)) X,
     IsPiecewiseAffineOn (Function.invFunOn map complex.space ∘ e.symm) e.target
+
+def PLManifoldTriangulation (n : ℕ) : Prop :=
+  ∀ {X : Type u} [TopologicalSpace X] [T2Space X] [SecondCountableTopology X] [CompactSpace X]
+    [Nonempty X] (C : ChartedSpace (EuclideanSpace ℝ (Fin n)) X),
+    (letI := C; HasGroupoid X (plGroupoid n)) →
+    letI := C
+    ∃ T : PLTriangulation n X, IsCombinatorialManifold n T.complex
 
 end DifferentialGeometry.Topology.PiecewiseLinear

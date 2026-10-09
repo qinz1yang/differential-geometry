@@ -46,6 +46,9 @@ theorem hcobordism_strip (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundar
   obtain ⟨g₄, hg₄, hM₄, -, hidx₄⟩ :=
     exists_index_in_middle I (le_trans (by norm_num) h6) hM₃ hsi₃ hidx₃ hW₃ hV₀₃ hV₁₃
   have hf₄ : ModifiedWithin f a b g₄ := hf₃.trans hg₄
+  have hW₄ : SimplyConnectedSpace (g₄ ⁻¹' Icc a b) := by
+    rw [hf₄.preimage_Icc]
+    exact hW
   have hV₀₄ : SimplyConnectedSpace (g₄ ⁻¹' {a}) := by
     rw [hf₄.preimage_singleton_left]
     exact hV₀
@@ -56,7 +59,7 @@ theorem hcobordism_strip (I : ModelWithCorners ℝ (Fin n → ℝ) H) [I.Boundar
     rw [hf₄.preimage_singleton_left, hf₄.preimage_Icc]
     exact hH
   obtain ⟨Φ, hΦ₁, hΦ₂⟩ :=
-    product_of_middle_indices I h6 hM₄ hidx₄ hV₀₄ hV₁₄ hH₄
+    product_of_middle_indices I h6 hM₄ hidx₄ hW₄ hV₀₄ hV₁₄ hH₄
   refine ⟨Φ, ?_, ?_⟩
   · rwa [hf₄.preimage_Iic_left, hf₄.preimage_Iic_right] at hΦ₁
   · rwa [hf₄.preimage_singleton_left, hf₄.preimage_singleton_right] at hΦ₂

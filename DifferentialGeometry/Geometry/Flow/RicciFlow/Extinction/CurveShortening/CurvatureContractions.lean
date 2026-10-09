@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.CurveShortening.Evolution.HigherDerivatives
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.HigherDerivativeEvolution
 
 noncomputable section
 open Bundle Manifold Set

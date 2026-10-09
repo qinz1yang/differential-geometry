@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckSideDistance
-import DifferentialGeometry.Topology.MetricSpace.Busemann.Ray
+import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.BusemannBasic
 import Mathlib.Topology.MetricSpace.Bounded
 
 set_option autoImplicit false

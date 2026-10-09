@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Coordinates
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Analysis.Calculus.ContDiff.Support

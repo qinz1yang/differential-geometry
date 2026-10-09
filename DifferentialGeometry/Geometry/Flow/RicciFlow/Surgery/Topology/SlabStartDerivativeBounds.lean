@@ -22,7 +22,7 @@ theorem exists_scalar_lt_at_initial_slab_start (P₀ : OrientedThreeStage.{u}) (
       G.flow.base.metric (H.time 0) = H.initialMetric 0 →
       ∀ y : (H.stage 0).Carrier, G.flow.scalar (H.time 0) y < Q₀ := by
   obtain ⟨τ, Qb, hτ, hQb, hbound⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.exists_uniform_initial_scalar_bound_of_isometry.{u, u} P₀ g₀
+    OrientedThreeStage.exists_uniform_initial_scalar_bound_of_isometry.{u, u} P₀ g₀
   refine ⟨Qb, hQb, fun H A s G hG y => ?_⟩
   have key : ∀ {a : ℝ}, a = 0 → ∀ F : (H.stage 0).IncomingSlab a s,
       F.flow.base.metric a = H.initialMetric 0 → F.flow.scalar a y < Qb := by

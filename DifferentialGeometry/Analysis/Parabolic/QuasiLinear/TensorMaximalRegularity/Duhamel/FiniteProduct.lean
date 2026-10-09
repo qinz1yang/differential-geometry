@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.LinearResponse
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.SubcriticalSmallTime
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.StrongBackwardIdentification
-import DifferentialGeometry.Analysis.FunctionalAnalysis.ContinuousLinearMap.PiLp
+import DifferentialGeometry.Analysis.FunctionalAnalysis.PiLpMap
 import DifferentialGeometry.Analysis.Integration.Lp.PiLp
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.FiniteProduct
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.FiniteProduct
 
 section
 

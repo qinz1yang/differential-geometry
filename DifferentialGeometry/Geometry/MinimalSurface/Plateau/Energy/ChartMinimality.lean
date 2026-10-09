@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Locality
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.ZeroTraceRange
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.ChartLocalization
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Affine
-import DifferentialGeometry.Geometry.Metric.Distance.ConnectedComponent
+import DifferentialGeometry.Geometry.Metric.ConnectedComponentDistance
 import DifferentialGeometry.Topology.Connected.FiniteEDistance
 
 section

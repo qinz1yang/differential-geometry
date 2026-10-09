@@ -4064,7 +4064,7 @@ private lemma timeDerivField_jointSmooth
       have hder : ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
           (fun q : ℝ × M => deriv (fun t : ℝ =>
             iteratedDeriv r (fun s : ℝ => (F s).toFun q.2) t) q.1) p :=
-        contMDiffAt_partial_deriv_fst (F := fun q : ℝ × M =>
+        timeDeriv_smoothAt (F := fun q : ℝ × M =>
           iteratedDeriv r (fun s : ℝ => (F s).toFun q.2) q.1) (p0 := p) hAt
           (by simp : (∞ : WithTop ℕ∞) + 1 ≤ (∞ : WithTop ℕ∞))
       have hcongr : (fun q : ℝ × M => deriv (fun t : ℝ =>

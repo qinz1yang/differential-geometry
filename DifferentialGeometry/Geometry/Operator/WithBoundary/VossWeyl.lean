@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Coordinates
+import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
 
 noncomputable section
 

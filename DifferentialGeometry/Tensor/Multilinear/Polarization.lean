@@ -1,9 +1,4 @@
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Positivity
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.GCongr
-import Mathlib.Analysis.Normed.Module.Multilinear.Basic
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import DifferentialGeometry.Tensor.Multilinear.Norm.HilbertSchmidt
 import Mathlib.Combinatorics.Enumerative.IncidenceAlgebra
 import Mathlib.Data.Finset.Interval
 import Mathlib.Data.Fintype.Perm

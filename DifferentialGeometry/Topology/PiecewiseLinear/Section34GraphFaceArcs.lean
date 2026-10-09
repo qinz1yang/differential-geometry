@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphMarkedPoints
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleClosedCover
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldRelativeTopology
@@ -261,7 +266,7 @@ theorem exists_isPLCellOn_section34GraphVertexCell_inter_residualTriangle
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s : Section34SimplexIndex 𝒦 3) (w : Section34VertexIndex 𝒦 𝒦')
     (hws : Section34Incident w.1 s.1) :
-    ∃ B, IsPLCellOn 1 (graphVertexCell 𝒦 𝒦' w ∩
+    ∃ B, IsPLCellOn 1 (section34GraphVertexCell 𝒦 𝒦' w ∩
       section34GraphResidualCell 𝒦 𝒦' s.1) B := by
   classical
   let S₀ := simplexComplex s.1 (𝒦.complex.indep s.2.1)
@@ -303,9 +308,9 @@ theorem exists_isPLCellOn_section34GraphVertexCell_inter_residualTriangle
         (restrict_faces_subset _ _) (restrict_faces_subset _ _)).trans hcore)
   let v := w.1.centroid ℝ id
   have hvS : {v} ∈ S.faces := by
-    rw [show ({v} : Finset Ea) = w.1 from (subdivisionGraphVertex_eq_singleton_centroid w).symm]
+    rw [show ({v} : Finset Ea) = w.1 from (section34VertexIndex_eq_singleton_centroid w).symm]
     exact ⟨w.2.1, convexHull_min hws (convex_convexHull ℝ (s.1 : Set Ea))⟩
-  have hvL : {v} ∈ L.faces := singleton_centroid_mem_restrict_graphSkeletonSpace w
+  have hvL : {v} ∈ L.faces := singleton_centroid_mem_section34GraphCore w
   have hvB : {v} ∈ (boundaryComplex 2 S).faces := by
     rw [← hLS]
     exact ⟨hvL, hSspace.symm ▸ hvS.2⟩

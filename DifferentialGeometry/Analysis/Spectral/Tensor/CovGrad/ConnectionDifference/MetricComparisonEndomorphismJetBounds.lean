@@ -395,16 +395,16 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_comp_eq (s : ℕ) (x : M)
     (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
-    ContinuousLinearMap.comp (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x A)
-        (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x B) =
-      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (ContinuousLinearMap.comp B A) := by
+    ContinuousLinearMap.comp (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x A)
+        (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x B) =
+      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (ContinuousLinearMap.comp B A) := by
   exact slotInsertFib_comp (I := I) (M := M) s x A B
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_id_eq' (s : ℕ) (x : M) :
-    slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
+    slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) =
       ContinuousLinearMap.id ℝ (Tensor0SSpace (s + 1) I x) := by
   exact slotInsertFib_id (I := I) (M := M) s x
@@ -470,11 +470,11 @@ private lemma covGrad_slotInsert_self_eq_zero (g₀ : SmoothRiemannianMetric I M
     rw [← hY]
     exact endoCovariantDerivative_fullRaised_self_eq_zero (I := I) (M := M) g₀ Y x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (0 + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (0 + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
         (0 : ℝ) • (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from (zero_smul ℝ _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -576,7 +576,7 @@ private lemma slotInsertEndoCc_add_local (g₀ : SmoothRiemannianMetric I M) (s 
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [SigmaCompactSpace M] in
@@ -694,12 +694,12 @@ private lemma cotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :
     cotangentToDual (I := I)
-        (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om) w =
+        (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om) w =
       cotangentToDual (I := I) om (Λ w) := by
   rw [cotangentToDual_apply, cotangentToDual_apply]
-  change Tensor0SSpace.eval (slotInsertEndomorphism (I := I) (M := M) 1 0 x Λ om)
+  change Tensor0SSpace.eval (slotInsertEndoFib (I := I) (M := M) 1 0 x Λ om)
       (fun _ : Fin 1 => w) = Tensor0SSpace.eval om (fun _ : Fin 1 => Λ w)
-  rw [slotInsertEndomorphism_apply_natural]
+  rw [slotInsertEndoFib_apply_natural]
   congr 1
   funext k
   fin_cases k
@@ -996,13 +996,13 @@ private lemma fiberNormSqComponent_slotInsertFULL
         ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) n e K J =
       Tensor0SSpace.toModel
-        ((slotInsertEndomorphism (I := I) (M := M) 1 0 x (metricComparisonEndomorphism (I := I) g₀ g₁ x))
+        ((slotInsertEndoFib (I := I) (M := M) 1 0 x (metricComparisonEndomorphism (I := I) g₀ g₁ x))
           (coframeS (I := I) (M := M) g₀ x 1 e K))
         (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k))) := by
     unfold fiberNormSqComponent coframeS
     rfl
   rw [hcomp]
-  rw [Tensor0SSpace.toModel_apply_tangent, slotInsertEndomorphism_apply_natural]
+  rw [Tensor0SSpace.toModel_apply_tangent, slotInsertEndoFib_apply_natural]
   rw [Tensor0SSpace.eval_eq, coframeS_apply, Fin.prod_univ_one, Function.update_self]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
@@ -1094,13 +1094,13 @@ private lemma fiberNormSqComponent_slotInsertE
         ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)).toSection x) n e K J =
       Tensor0SSpace.toModel
-        ((slotInsertEndomorphism (I := I) (M := M) 1 0 x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x))
+        ((slotInsertEndoFib (I := I) (M := M) 1 0 x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x))
           (coframeS (I := I) (M := M) g₀ x 1 e K))
         (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k))) := by
     unfold fiberNormSqComponent coframeS
     rfl
   rw [hcomp]
-  rw [Tensor0SSpace.toModel_apply_tangent, slotInsertEndomorphism_apply_natural]
+  rw [Tensor0SSpace.toModel_apply_tangent, slotInsertEndoFib_apply_natural]
   rw [Tensor0SSpace.eval_eq, coframeS_apply, Fin.prod_univ_one, Function.update_self]
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup

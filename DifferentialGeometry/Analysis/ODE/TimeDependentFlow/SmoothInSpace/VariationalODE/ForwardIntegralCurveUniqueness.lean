@@ -239,7 +239,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [FiniteDimensional ℝ E] in
 theorem forward_integral_curves_eqOn_of_jointC1
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hX : autonomizedFieldJointC1 (I := I) X)
+    (hX : AutonomizedFieldJointC1 (I := I) X)
     (Φ Φ' : ℝ → M → M) (x x' : M) {a b : ℝ}
     (hflow : ∀ t ∈ Icc a b,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => Φ u x) (Icc a b) t

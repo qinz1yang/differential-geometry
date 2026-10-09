@@ -73,7 +73,7 @@ private def pureRFrozenDirLMSummand
     (i : Fin (Module.finrank ℝ E)) :
     TangentSpace I x →ₗ[ℝ] TensorRSSpace 0 m I x where
   toFun v := riemannOp (tensorCov (I := I) g 0 m) x (B i x) v
-    ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm (W x) (B i x))
+    ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W x) (B i x))
   map_add' v v' := by
     rw [map_add (riemannOp (tensorCov (I := I) g 0 m) x (B i x)) v v']
     rfl
@@ -108,7 +108,7 @@ lemma pureRFrozenDirCLM_apply
     pureRFrozenDirCLM (I := I) (M := M) g m B W x v =
       ∑ i : Fin (Module.finrank ℝ E),
         riemannOp (tensorCov (I := I) g 0 m) x (B i x) v
-          ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm (W x) (B i x)) := by
+          ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W x) (B i x)) := by
   classical
   rw [pureRFrozenDirCLM, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -120,7 +120,7 @@ noncomputable def pureRFrozenEndoFib
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (W : SmoothCcTensor g 0 (m + 1)) (x : M) :
     TensorRSSpace 0 (m + 1) I x :=
-  covariantSlotBundleEquiv (I := I) (M := M) 0 m x
+  covGradBundleEquiv (I := I) (M := M) 0 m x
     (pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -133,19 +133,19 @@ private theorem pureRFrozenSlot0Sec_contMDiff
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 m ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (TensorRSModel 0 m ℝ E)
         (E := fun z : M => TensorRSSpace 0 m I z) x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x) (B i x))) := by
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x) (B i x))) := by
   classical
   have hHom : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] TensorRSModel 0 m ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel 0 m ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace 0 m I z) x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x))) := by
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x))) := by
     have hWtot : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (m + 1) ℝ E)) ∞
         (fun x : M => TotalSpace.mk' (TensorRSModel 0 (m + 1) ℝ E)
           (E := fun z : M => TensorRSSpace 0 (m + 1) I z) x (W.toSection x)) :=
       W.toSection.contMDiff_toFun
-    exact (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) 0 m).comp hWtot
+    exact (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) 0 m).comp hWtot
   exact ContMDiff.clm_bundle_apply (b := fun x : M => x)
-    (ϕ := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x))
+    (ϕ := fun x => (covGradBundleEquiv (I := I) (M := M) 0 m x).symm (W.toSection x))
     (v := fun x => B i x) hHom (hB i)
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -170,7 +170,7 @@ private theorem pureRFrozenDirCLM_homSection_contMDiff
         (E := fun z : M => TensorRSSpace 0 m I z) x
         (∑ i : Fin (Module.finrank ℝ E),
           riemannSec (tensorCov (I := I) g 0 m) (B i) (fun b : M => Y b)
-            (fun y : M => (covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y))
+            (fun y : M => (covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y))
             x)) := by
     refine ContMDiff.sum_section (s := Finset.univ) (fun i _ => ?_)
     exact riemannSec_contMDiff (cov := tensorCov (I := I) g 0 m) (hB i) hY
@@ -182,7 +182,7 @@ private theorem pureRFrozenDirCLM_homSection_contMDiff
   rw [pureRFrozenDirCLM_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   exact (riemannOp_apply_smooth (cov := tensorCov (I := I) g 0 m) (X := B i) (Y := fun b : M => Y b)
-    (Z := fun y : M => (covariantSlotBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y))
+    (Z := fun y : M => (covGradBundleEquiv (I := I) (M := M) 0 m y).symm (W.toSection y) (B i y))
     (x := x) (hB i) hY (pureRFrozenSlot0Sec_contMDiff (I := I) (M := M) g m hB W i)).symm ▸ rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -200,16 +200,16 @@ theorem pureRFrozenEndoFib_contMDiff
   classical
   have hcomp :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (m + 1) ℝ E)) ∞
-        ((covariantSlotBundleSmoothEquiv (I := I) (M := M) 0 m).toDiffeomorph ∘
+        ((covGradBundleSmoothEquiv (I := I) (M := M) 0 m).toDiffeomorph ∘
           (fun x : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel 0 m ℝ E)
             (E := fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace 0 m I y) x
             (pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x))) :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) 0 m).toDiffeomorph.contMDiff.comp
+    (covGradBundleSmoothEquiv (I := I) (M := M) 0 m).toDiffeomorph.contMDiff.comp
       (pureRFrozenDirCLM_homSection_contMDiff (I := I) (M := M) g m hB W)
   refine hcomp.congr ?_
   intro x
   rw [Function.comp_apply]
-  exact covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) 0 m x
+  exact covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) 0 m x
     (pureRFrozenDirCLM (I := I) (M := M) g m B (fun y : M => W.toSection y) x)
 
 private noncomputable def pureRFrozenEndoSucc
@@ -489,11 +489,11 @@ private lemma covGradBundleEquiv_symm_reading_riemannianFiberNormSq_le
           fiberNormSqSummand (I := I) (M := M) g x 0 (m + 1) S n e K J)
     (a : Fin n) :
     riemannianFiberNormSq (I := I) (M := M) g 0 m x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm T (e a)) ≤
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm T (e a)) ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x T := by
   classical
   have heq : riemannianFiberNormSq (I := I) (M := M) g 0 m x
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x).symm T (e a)) =
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm T (e a)) =
       riemannianFiberNormSq (I := I) (M := M) g 0 m x
         (slot0Curry (I := I) (M := M) g x m e K₀ T a) := by
     rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x m e hreprS _ K₀,
@@ -521,7 +521,7 @@ private lemma covGradBundleEquiv_symm_reading_riemannianFiberNormSq_le
           ContinuousMultilinearMap.mkPiAlgebra_apply]
         simp
       rw [hcoframe, hscalar, one_smul]
-    rw [covariantSlotBundleEquiv_symm_apply_eval
+    rw [covGradBundleEquiv_symm_apply_eval
       (I := I) (M := M) 0 m x T (e a) ωK (fun k => e (J k))]
     rw [hslot]
     rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -541,7 +541,7 @@ private lemma covGradBundleEquiv_symm_reading_riemannianFiberNormSq_le_centreFra
       g.inner x₀ (B i x₀) (B j x₀) = if i = j then (1 : ℝ) else 0)
     (i : Fin (Module.finrank ℝ E)) :
     riemannianFiberNormSq (I := I) (M := M) g 0 m x₀
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x₀).symm T (B i x₀)) ≤
+        ((covGradBundleEquiv (I := I) (M := M) 0 m x₀).symm T (B i x₀)) ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x₀ T := by
   classical
   set eC : Fin (Module.finrank ℝ E) → TangentSpace I x₀ := fun j => B j x₀ with heC_def
@@ -646,7 +646,7 @@ theorem exists_proportional_pureRFrozenFrameDiffOp_orderZero
         have hsummand : ∀ i : Fin (Module.finrank ℝ E),
             riemannianFiberNormSq (I := I) (M := M) g 0 m x₀
                 (riemannOp (tensorCov (I := I) g 0 m) x₀ (B i x₀) (e a)
-                  ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x₀).symm (W.toSection x₀) (B i x₀))) ≤
+                  ((covGradBundleEquiv (I := I) (M := M) 0 m x₀).symm (W.toSection x₀) (B i x₀))) ≤
               Csm * riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x₀ (W.toSection x₀) := by
           intro i
           have hgB : g.inner x₀ (B i x₀) (B i x₀) = 1 := by
@@ -654,7 +654,7 @@ theorem exists_proportional_pureRFrozenFrameDiffOp_orderZero
           have hge : g.inner x₀ (e a) (e a) = 1 := by
             have := horth a a; rwa [ite_eq_left rfl] at this
           have hbound := hCsup m x₀ (B i x₀) (e a)
-            ((covariantSlotBundleEquiv (I := I) (M := M) 0 m x₀).symm (W.toSection x₀) (B i x₀))
+            ((covGradBundleEquiv (I := I) (M := M) 0 m x₀).symm (W.toSection x₀) (B i x₀))
           rw [hgB, hge, mul_one, mul_one, ← hCsm_def] at hbound
           refine le_trans hbound ?_
           refine mul_le_mul_of_nonneg_left ?_ (by rw [hCsm_def]; exact hCsup_nonneg m)

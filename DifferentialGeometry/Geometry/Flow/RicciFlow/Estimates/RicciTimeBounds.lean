@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureContinuity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import Mathlib.Analysis.Calculus.MeanValue
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Expressions.NormBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ExpressionBounds
 
 set_option autoImplicit false
 noncomputable section

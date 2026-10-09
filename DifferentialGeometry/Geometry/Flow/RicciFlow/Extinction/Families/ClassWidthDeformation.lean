@@ -66,8 +66,8 @@ abbrev RampFamilyDeformation (a b : ℝ) (hab : a < b)
           (∀ t : Icc a b, ∀ p z,
             ((deformed t) p).1 z = (solutions p).projection z t) ∧
           (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-              DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
           (∀ p, |regularLeastArea (G.metric a) ((deformed ⟨a, le_rfl, hab.le⟩) p) -
             regularLeastArea (G.metric a) (Γ p)| < epsilon) ∧
           ∀ p,

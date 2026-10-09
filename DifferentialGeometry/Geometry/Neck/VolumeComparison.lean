@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Neck.InsertionChart
 import DifferentialGeometry.Geometry.Measure.MetricComparison
 import DifferentialGeometry.Geometry.Measure.LocalIsometry
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Scaling
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 noncomputable section
 

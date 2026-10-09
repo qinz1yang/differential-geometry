@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Reparametrization.In
 import DifferentialGeometry.Analysis.Complex.RiemannMapping.InverseBoundary
 import DifferentialGeometry.Topology.LoopSpace.DiskBoundaryHomeomorphism
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.Locality
-import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone.Homeomorphism
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.WeakJordanHomeomorphism
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.RadialStationarity
 
 section

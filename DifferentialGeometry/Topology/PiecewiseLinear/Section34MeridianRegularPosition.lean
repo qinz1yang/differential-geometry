@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.CylindricalCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34RegularCylindricalCrossings
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurveHeightSides
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalFrontier
 

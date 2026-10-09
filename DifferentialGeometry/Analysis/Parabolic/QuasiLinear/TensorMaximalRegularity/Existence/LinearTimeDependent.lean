@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.HeatEvolutionFinite
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Inclusion
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.L2
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.L2
 
 noncomputable section
 open MeasureTheory Filter

@@ -1,4 +1,9 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.ResidualCells.Boundary
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphTetrahedronBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphEdgeArcs
 
 open Set Topology
@@ -147,8 +152,8 @@ theorem section34GraphSplitCell_inter_residual_eq_boundary_inter_simplexBody
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK' : IsCombinatorialManifold 3 𝒦'.complex) (e : Section34EdgeIndex 𝒦 𝒦')
     {t : Finset Ea} (ht : t ∈ 𝒦.complex.faces) :
-    graphSplittingDisk 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' t =
-      graphSplittingCircle 𝒦 𝒦' e ∩ simplexBody 𝒦 t := by
+    section34GraphSplitCell 𝒦 𝒦' e ∩ section34GraphResidualCell 𝒦 𝒦' t =
+      section34GraphSplitBoundary 𝒦 𝒦' e ∩ simplexBody 𝒦 t := by
   classical
   let S := restrict 𝒦'.complex (convexHull ℝ (t : Set Ea))
   let L := restrict 𝒦'.complex (𝒦'.map ⁻¹' graphSkeletonSpace 𝒦)
@@ -188,12 +193,12 @@ theorem section34GraphSplitBoundary_eq_iUnion_edgeArcs
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifoldWithBoundary 3 𝒦.complex)
     (hK' : IsCombinatorialManifold 3 𝒦'.complex) (e : Section34EdgeIndex 𝒦 𝒦') :
-    graphSplittingCircle 𝒦 𝒦' e =
+    section34GraphSplitBoundary 𝒦 𝒦' e =
       ⋃ t : Section34SimplexIndex 𝒦 4, ⋃ (_ : Section34Incident e.1 t.1),
-        section34GraphResidualCell 𝒦 𝒦' t.1 ∩ graphSplittingDisk 𝒦 𝒦' e := by
+        section34GraphResidualCell 𝒦 𝒦' t.1 ∩ section34GraphSplitCell 𝒦 𝒦' e := by
   apply Subset.antisymm
   · intro x hx
-    have hxE := (isPLCellOn_graphSplittingDisk hK' e).boundary_subset hx
+    have hxE := (isPLCellOn_section34GraphSplitCell hK' e).boundary_subset hx
     obtain ⟨z, hz, hzx⟩ := hxE
     have hzK := hsub.space_eq ▸ splittingDisk_space_subset 𝒦'.complex e.2.1 hz
     obtain ⟨s, hs, hzs⟩ := 𝒦.complex.mem_space_iff.mp hzK
@@ -201,8 +206,8 @@ theorem section34GraphSplitBoundary_eq_iUnion_edgeArcs
     let ti : Section34SimplexIndex 𝒦 4 := ⟨t, ht, hcard⟩
     have hxt : x ∈ simplexBody 𝒦 t :=
       ⟨z, convexHull_mono (Finset.coe_subset.mpr hst) hzs, hmap ▸ hzx⟩
-    have hxE' : x ∈ graphSplittingDisk 𝒦 𝒦' e := ⟨z, hz, hzx⟩
-    have het := (graphSplittingDisk_inter_simplexBody_nonempty_iff
+    have hxE' : x ∈ section34GraphSplitCell 𝒦 𝒦' e := ⟨z, hz, hzx⟩
+    have het := (section34GraphSplitCell_inter_simplexBody_nonempty_iff
       hsub hmap e ht).mp ⟨x, hxE', hxt⟩
     have hxR := ((section34GraphSplitCell_inter_residual_eq_boundary_inter_simplexBody
       hsub hmap hK' e ht).symm.subset ⟨hx, hxt⟩).2
@@ -216,11 +221,11 @@ theorem section34GraphSplitBoundary_eq_iUnion_proper_faces
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifoldWithBoundary 3 𝒦.complex)
     (hK' : IsCombinatorialManifold 3 𝒦'.complex) (e : Section34EdgeIndex 𝒦 𝒦') :
-    graphSplittingCircle 𝒦 𝒦' e =
-      ⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.splitDisk e) \ {.splitDisk e},
-        graphCutCell 𝒦 𝒦' m := by
+    section34GraphSplitBoundary 𝒦 𝒦' e =
+      ⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.splitDisk e) \ {.splitDisk e},
+        section34GraphCutFamily 𝒦 𝒦' m := by
   classical
-  have hE := isPLCellOn_graphSplittingDisk hK' e
+  have hE := isPLCellOn_section34GraphSplitCell hK' e
   apply Subset.antisymm
   · intro x hx
     rw [section34GraphSplitBoundary_eq_iUnion_edgeArcs hsub hmap hK hK'] at hx
@@ -228,15 +233,15 @@ theorem section34GraphSplitBoundary_eq_iUnion_proper_faces
     let i : Section34EdgeArcIndex 𝒦 𝒦' := ⟨(t, e), het⟩
     exact mem_iUnion₂.mpr ⟨.edgeArc i, ⟨inter_subset_right, by simp⟩, hxt⟩
   · refine iUnion₂_subset fun l hl => ?_
-    have hsubE : graphCutCell 𝒦 𝒦' l ⊆ graphSplittingDisk 𝒦 𝒦' e := hl.1
+    have hsubE : section34GraphCutFamily 𝒦 𝒦' l ⊆ section34GraphSplitCell 𝒦 𝒦' e := hl.1
     have hR : ∀ t, t ∈ 𝒦.complex.faces → ∀ x,
-        x ∈ section34GraphResidualCell 𝒦 𝒦' t → x ∈ graphSplittingDisk 𝒦 𝒦' e →
-        x ∈ graphSplittingCircle 𝒦 𝒦' e := fun t ht x hxR hxE =>
+        x ∈ section34GraphResidualCell 𝒦 𝒦' t → x ∈ section34GraphSplitCell 𝒦 𝒦' e →
+        x ∈ section34GraphSplitBoundary 𝒦 𝒦' e := fun t ht x hxR hxE =>
       ((section34GraphSplitCell_inter_residual_eq_boundary_inter_simplexBody
         hsub hmap hK' e ht).subset ⟨hxE, hxR⟩).1
     cases l with
     | vertexBall w =>
-        exact ((isPLCellOn_graphVertexCell hsub hmap
+        exact ((isPLCellOn_section34GraphVertexCell hsub hmap
           hK'.isCombinatorialManifoldWithBoundary w).not_subset_of_lower_dimension
             hE (by omega) hsubE).elim
     | tetraBall t =>
@@ -255,10 +260,10 @@ theorem isPLCellOn_section34GraphSplitCell_proper_faces
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (hK : IsCombinatorialManifoldWithBoundary 3 𝒦.complex)
     (hK' : IsCombinatorialManifold 3 𝒦'.complex) (e : Section34EdgeIndex 𝒦 𝒦') :
-    IsPLCellOn 2 (graphSplittingDisk 𝒦 𝒦' e)
-      (⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.splitDisk e) \ {.splitDisk e},
-        graphCutCell 𝒦 𝒦' m) := by
+    IsPLCellOn 2 (section34GraphSplitCell 𝒦 𝒦' e)
+      (⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.splitDisk e) \ {.splitDisk e},
+        section34GraphCutFamily 𝒦 𝒦' m) := by
   rw [← section34GraphSplitBoundary_eq_iUnion_proper_faces hsub hmap hK hK']
-  exact isPLCellOn_graphSplittingDisk hK' e
+  exact isPLCellOn_section34GraphSplitCell hK' e
 
 end DifferentialGeometry.Topology.PiecewiseLinear

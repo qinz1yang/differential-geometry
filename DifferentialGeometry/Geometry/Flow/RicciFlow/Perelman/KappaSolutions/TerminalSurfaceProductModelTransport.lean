@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.MFDeriv.ModelTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
-import DifferentialGeometry.Geometry.Metric.ModelChange.Basic
+import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Topology.Morse.EuclideanModel
 
 set_option autoImplicit false

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusPatchDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalComponentSeamDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalSurfaceClosedTraces
@@ -18,6 +23,7 @@ variable [DecidableEq E3] {X : ℤ → Geometry.SimplicialComplex ℝ E3}
 theorem IsCanonicalSurface.exists_annulus_pair_of_returning_component
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
+    (h314 : Moise314)
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
     (hdis : Disjoint J₀ J₁) (k : ℤ) (hk : k = i ∨ k = i + 1)
@@ -43,9 +49,9 @@ theorem IsCanonicalSurface.exists_annulus_pair_of_returning_component
     intro hd
     rcases hk with hk | hk
     · subst k
-      exact hGe ((hX.lower_component_boundsDiskIn_iff htw i c hG).mp hd)
+      exact hGe ((hX.lower_component_boundsDiskIn_iff htw h314 i c hG).mp hd)
     · subst k
-      exact hGe ((hX.upper_component_boundsDiskIn_iff htw i c hG).mp hd)
+      exact hGe ((hX.upper_component_boundsDiskIn_iff htw h314 i c hG).mp hd)
   have hsolid : IsCombinatorialSolidTorus (S'' (2 * k)) := by
     simpa using (htw.config (2 * k)).isPolyhedralSolidTorus 0
   have h₀S : J₀ ⊆ frontier (S'' (2 * k)) :=
@@ -71,7 +77,7 @@ theorem IsCanonicalSurface.exists_annulus_pair_of_returning_component
 theorem IsCanonicalSurface.isSeparatorIn_after_delete_returning_component
     (hX : IsCanonicalSurface X (fun j => φ '' S j) T'' I P' a b)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P')
-    (hI : IsOpen I)
+    (h314 : Moise314) (hI : IsOpen I)
     (havoid : ∀ j : ℤ, Disjoint (φ '' S j) ({a, b} : Set E3))
     (i : ℤ) (c : ConnectedComponents (X i).space) {J₀ J₁ : Set E3}
     (hC : IsPLAnnulusWithEnds (connectedComponentComplex (X i) c).space J₀ J₁)
@@ -91,7 +97,7 @@ theorem IsCanonicalSurface.isSeparatorIn_after_delete_returning_component
     (subset_iUnion (fun d => (connectedComponentComplex (X i) d).space) c).trans
       (iUnion_connectedComponentComplex_space (X i)).subset
   obtain ⟨B, B', hB, -, hBB', hmeet, hCT⟩ :=
-    hX.exists_annulus_pair_of_returning_component htw i c hC hdis k hk h₀ h₁
+    hX.exists_annulus_pair_of_returning_component htw h314 i c hC hdis k hk h₀ h₁
       hess₀ hess₁
   have hBT : B ⊆ T'' (2 * k) := subset_union_left.trans hBB'.symm.subset
   have hCB : L.space ∩ B = J₀ ∪ J₁ := by

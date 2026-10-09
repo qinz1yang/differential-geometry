@@ -67,10 +67,10 @@ private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z Yv Yu
   have hA :=
-    (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r (t + 1)).comp Z.contMDiff
+    (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r (t + 1)).comp Z.contMDiff
   have h1 := ContMDiff.clm_bundle_apply (b := id) hA Yu.contMDiff
   have h2 :=
-    (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r t).comp h1
+    (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) r t).comp h1
   have h3 := ContMDiff.clm_bundle_apply (b := id) h2 Yv.contMDiff
   refine h3.congr ?_
   intro x
@@ -177,16 +177,16 @@ private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
   let := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
   have hcomp : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (t + 1) ℝ E)) ∞
-      ((covariantSlotBundleSmoothEquiv (I := I) (M := M) r t).toDiffeomorph ∘
+      ((covGradBundleSmoothEquiv (I := I) (M := M) r t).toDiffeomorph ∘
         (fun x : M => (⟨x, tangentBilinFlip (I := I) (M := M)
           (curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x)) (Yv x)⟩ :
           TotalSpace (E →L[ℝ] TensorRSModel r t ℝ E)
             fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r t I y))) :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) r t).toDiffeomorph.contMDiff.comp hflip
+    (covGradBundleSmoothEquiv (I := I) (M := M) r t).toDiffeomorph.contMDiff.comp hflip
   refine hcomp.congr ?_
   intro x
   rw [Function.comp_apply,
-    covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r t x
+    covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r t x
       (tangentBilinFlip (I := I) (M := M)
           (curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x)) (Yv x)),
     swapTwoCurryFib_apply (I := I) (M := M) r t x (Z x) (Yv x)]
@@ -242,7 +242,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 omit [T2Space M] in
 private lemma swapTwoFib_fromCurry (r t : ℕ) (x : M)
     (T : TensorRSSpace r (t + 2) I x) :
-    covariantSlotBundleEquiv (I := I) (M := M) r (t + 1) x
+    covGradBundleEquiv (I := I) (M := M) r (t + 1) x
         (swapTwoCurryFib (I := I) (M := M) r t x T) =
       swapTwoFib (I := I) (M := M) r t x T :=
   (swapTwoFib_apply (I := I) (M := M) r t x T).symm
@@ -290,16 +290,16 @@ private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
   let := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
   have hcomp : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (t + 2) ℝ E)) ∞
-      ((covariantSlotBundleSmoothEquiv (I := I) (M := M) r (t + 1)).toDiffeomorph ∘
+      ((covGradBundleSmoothEquiv (I := I) (M := M) r (t + 1)).toDiffeomorph ∘
         (fun x : M => (⟨x,
           swapTwoCurryFib (I := I) (M := M) r t x (Z x)⟩ :
           TotalSpace (E →L[ℝ] TensorRSModel r (t + 1) ℝ E)
             fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r (t + 1) I y))) :=
-    (covariantSlotBundleSmoothEquiv (I := I) (M := M) r (t + 1)).toDiffeomorph.contMDiff.comp hΨ
+    (covGradBundleSmoothEquiv (I := I) (M := M) r (t + 1)).toDiffeomorph.contMDiff.comp hΨ
   refine hcomp.congr ?_
   intro x
   rw [Function.comp_apply,
-    covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r (t + 1) x _]
+    covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r (t + 1) x _]
   exact congrArg (TotalSpace.mk' (TensorRSModel r (t + 2) ℝ E) x)
     (swapTwoFib_fromCurry (I := I) (M := M) r t x (Z x))
 

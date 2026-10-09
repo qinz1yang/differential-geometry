@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MinimalDiskAreaDensi
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskAreaDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothExtension
-import DifferentialGeometry.Geometry.MinimalSurface.Plateau.AreaApproximation.Sequential
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SpanningDiskAreaDensity
 
 noncomputable section
 

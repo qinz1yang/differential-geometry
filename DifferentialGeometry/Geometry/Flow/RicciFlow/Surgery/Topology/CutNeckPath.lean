@@ -138,7 +138,7 @@ theorem exists_cut_neck_standard_or_stopped_tolerance :
         (∀ i (q : TubeDomain), T.tube i q = (neck i).map (q.1,q.2.val)) →
         ∀ b : T.Boundary,
           let W := ⋃ i, T.tube i '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}
-          (∀ q : Sphere 2, isStandardConnectedSum
+          (∀ q : Sphere 2, isPoincareStandard
             (N.component (ConnectedComponents.mk (C.coreInclusion (T.coreBoundarySphere b q)))).Carrier) ∨
           (∃ (R : PartialDiffeomorph IC I3 Cylinder M.Carrier ∞) (p : M.Carrier)
             (nk : SpatialNeck g eps p) (a : ℝ) (κ : Sphere 2 ≃ₘ⟮I2,I2⟯ Sphere 2),
@@ -174,7 +174,7 @@ theorem exists_cut_neck_standard_or_stopped_tolerance :
         rw [hR1,ρ.apply_symm_apply]
         rfl
     intro q
-    apply C.isStandardConnectedSum_component_of_returned_cylinder R hR b c hlo hhi hRW
+    apply C.isPoincareStandard_component_of_returned_cylinder R hR b c hlo hhi hRW
       (fun z hz => hfront ▸ hz) (T.coreBoundarySphere b q)
     exact ⟨(q,0),⟨mem_univ _,by norm_num⟩,hR0 q⟩
 

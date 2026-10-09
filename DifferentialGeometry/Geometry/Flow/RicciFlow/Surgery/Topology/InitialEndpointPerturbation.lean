@@ -34,7 +34,7 @@ theorem exists_uniform_stage_zero_curvature_bound (P : OrientedThreeStage.{u}) (
   have hinit : F.flow.base.metric 0 = g := by
     apply SmoothRiemannianMetric.ext_inner
     intro y v w
-    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullback_metric, Diffeomorph.pullbackMetricCross_inner, hG]
+    rw [OrientedThreeStage.IncomingSlab.pullback_metric, Diffeomorph.pullbackMetricCross_inner, hG]
     exact A.metric_eq y v w
   obtain ⟨y, rfl⟩ := A.map.surjective x
   have hbound := (hK e F hinit τ hτ0 hτe hτη y).2
@@ -42,7 +42,7 @@ theorem exists_uniform_stage_zero_curvature_bound (P : OrientedThreeStage.{u}) (
       localPullMetric (G.flow.base.metric τ) A.map A.map.isLocalDiffeomorph := by
     apply SmoothRiemannianMetric.ext_inner
     intro z v w
-    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pullback_metric, Diffeomorph.pullbackMetricCross_inner,
+    rw [OrientedThreeStage.IncomingSlab.pullback_metric, Diffeomorph.pullbackMetricCross_inner,
       localPullMetric_inner]
   have hnat := normSq0S_metricRm04At_localPullMetric (G.flow.base.metric τ) A.map
     A.map.isLocalDiffeomorph y
@@ -249,7 +249,7 @@ section StageZero
 
 variable {P : OrientedThreeStage.{u}} {e : ℝ} (G : P.IncomingSlab 0 e)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_inner_le_exp_of_curvature_bound {K θ : ℝ}
+theorem OrientedThreeStage.IncomingSlab.metric_inner_le_exp_of_curvature_bound {K θ : ℝ}
     (hK : 0 ≤ K) (hθ : 0 < θ) (hθe : θ < e)
     (hRm : ∀ τ ∈ Icc 0 θ, ∀ x : P.Carrier,
       normSq0S (G.flow.base.metric τ) x 4 (G.flow.base.rm04 τ x) ≤ K ^ 2)
@@ -277,7 +277,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     apply mul_le_mul_of_nonneg_right _ hnn
     exact Real.exp_le_exp.mpr hexp
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_le_of_curvature_bound {K τ : ℝ} (hK : 0 ≤ K)
+theorem OrientedThreeStage.IncomingSlab.scalar_le_of_curvature_bound {K τ : ℝ} (hK : 0 ≤ K)
     (x : P.Carrier)
     (hRm : normSq0S (G.flow.base.metric τ) x 4 (G.flow.base.rm04 τ x) ≤ K ^ 2) :
     G.flow.scalar τ x ≤ 9 * K := by
@@ -292,7 +292,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   rw [hdim'] at hh
   nlinarith [le_abs_self (metricScalarAt (G.flow.base.metric τ) x)]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.intervalIntegrable_lRegularizedLagrangian_of_contMDiff
+theorem OrientedThreeStage.IncomingSlab.intervalIntegrable_lRegularizedLagrangian_of_contMDiff
     (T c b : ℝ) (hcb : c ≤ b) (γ : ℝ → P.Carrier) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ)
     (hclock : ∀ s ∈ Icc c b, T - s ^ 2 ∈ Ico 0 e) :
     IntervalIntegrable (Perelman.lRegularizedLagrangian G.flow T γ) volume c b := by

@@ -81,8 +81,8 @@ theorem lieCorrectionZeroNEndo_homSection_contMDiff
 noncomputable def lieCorrectionZeroInsertionFib
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndomorphism (I := I) (M := M) 2 0 x (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x) +
-    slotInsertEndomorphism (I := I) (M := M) 2 1 x (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x) +
+    slotInsertEndoFib (I := I) (M := M) 2 1 x (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -98,7 +98,7 @@ theorem lieCorrectionZeroInsertionFib_toModel
           (Function.update v 1
             (tangentLinearMapToModel (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x) (v 1))) := by
   rw [lieCorrectionZeroInsertionFib, add_apply, Tensor0SSpace.toModel_add,
-    add_apply, slotInsertEndomorphism_apply_eval, slotInsertEndomorphism_apply_eval]
+    add_apply, slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -118,10 +118,10 @@ theorem lieCorrectionZeroInsertionFib_contMDiff
     (lieCorrectionZeroNEndo_homSection_contMDiff (I := I) g₀ g₁ g_bg)
   have hadd := ContMDiff.add_section
     (s := fun x => (show TensorRSSpace 2 2 I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x
         (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x))))
     (t := fun x => (show TensorRSSpace 2 2 I x from
-      TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 1 x
+      TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 1 x
         (lieCorrectionZeroNEndo (I := I) g₀ g₁ g_bg x))))
     h0 h1
   refine hadd.congr ?_

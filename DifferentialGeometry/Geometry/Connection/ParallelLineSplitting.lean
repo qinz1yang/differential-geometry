@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Flow
-import DifferentialGeometry.Geometry.Metric.Product.Local
+import DifferentialGeometry.Geometry.Metric.LocalProduct
 
 set_option autoImplicit false
 

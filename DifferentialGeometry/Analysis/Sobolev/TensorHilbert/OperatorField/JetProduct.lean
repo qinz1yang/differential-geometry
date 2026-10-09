@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.CompositionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
@@ -24,24 +23,6 @@ variable
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [BoundarylessManifold I M] in
-theorem exists_covariantJetNormSq_operatorFieldComposition_le
-    (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
-    ∃ C : ℕ → ℝ, (∀ n, 0 ≤ C n) ∧
-      ∀ (n : ℕ), Module.finrank ℝ E / 2 + 1 ≤ n →
-        ∀ (Φ : SmoothCcTensor g r c) (W : SmoothCcTensor g p r),
-          covariantJetNormSq (I := I) (M := M) g n
-              (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
-            C n * covariantJetNormSq (I := I) (M := M) g n Φ *
-              covariantJetNormSq (I := I) (M := M) g n W := by
-  obtain ⟨C, hC, h⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.operatorFieldComposition_jet_mul
-      (I := I) (M := M) g p r c
-  refine ⟨C, hC, ?_⟩
-  intro n hn Φ W
-  simpa only [covariantJetNormSq] using h n hn Φ W
-
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_covariantJetNormSq_two_operatorFieldComposition_le
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -51,13 +32,45 @@ theorem exists_covariantJetNormSq_two_operatorFieldComposition_le
             (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
           C * covariantJetNormSq (I := I) (M := M) g 2 Φ *
             covariantJetNormSq (I := I) (M := M) g 2 W := by
-  let : NeZero (Module.finrank ℝ E) := ⟨by rw [hDim]; decide⟩
-  obtain ⟨C, hC, h⟩ :=
-    exists_covariantJetNormSq_operatorFieldComposition_le (I := I) (M := M) g p r c
-  refine ⟨C 2, hC 2, ?_⟩
+  obtain ⟨C₀, hC₀, happ⟩ :=
+    operator_field_composition_h2_h2_to_h2_bound (I := I) (M := M) hDim g p r c
+  refine ⟨C₀ ^ 2, sq_nonneg _, ?_⟩
   intro Φ W
-  have hgate : Module.finrank ℝ E / 2 + 1 ≤ 2 := by rw [hDim]
-  exact h 2 hgate Φ W
+  have hΦ0 : 0 ≤ covariantJetNormSq (I := I) (M := M) g 2 Φ :=
+    covariantJetNormSq_nonneg (I := I) (M := M) g Φ
+  have hW0 : 0 ≤ covariantJetNormSq (I := I) (M := M) g 2 W :=
+    covariantJetNormSq_nonneg (I := I) (M := M) g W
+  have hsΦ :
+      Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 Φ) ^ 2 =
+        covariantJetNormSq (I := I) (M := M) g 2 Φ :=
+    Real.sq_sqrt hΦ0
+  have hsW :
+      Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 W) ^ 2 =
+        covariantJetNormSq (I := I) (M := M) g 2 W :=
+    Real.sq_sqrt hW0
+  have h := happ Φ W
+    (Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 Φ))
+    (Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 W))
+    (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    (by
+      unfold covariantJetNormSq
+      exact le_of_eq hsΦ.symm)
+    (by
+      unfold covariantJetNormSq
+      exact le_of_eq hsW.symm)
+  calc
+    covariantJetNormSq (I := I) (M := M) g 2
+        (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W) ≤
+      (C₀ *
+        Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 Φ) *
+        Real.sqrt (covariantJetNormSq (I := I) (M := M) g 2 W)) ^ 2 := by
+      change (∑ j ∈ Finset.range 3,
+        ‖iteratedCovGrad (I := I) g p c j
+          (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2) ≤ _
+      exact h
+    _ = C₀ ^ 2 * covariantJetNormSq (I := I) (M := M) g 2 Φ *
+        covariantJetNormSq (I := I) (M := M) g 2 W := by
+      rw [mul_pow, mul_pow, hsΦ, hsW]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -78,36 +91,20 @@ private theorem iteratedCovGrad_covGrad_norm_sq
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem covariantJetNormSq_covGrad_le
-    (g : SmoothRiemannianMetric I M) {r s : ℕ} (m : ℕ)
-    (S : SmoothCcTensor g r s) :
-    covariantJetNormSq (I := I) (M := M) g m
-        (covGrad (I := I) (M := M) g r s S) ≤
-      covariantJetNormSq (I := I) (M := M) g (m + 1) S := by
-  unfold covariantJetNormSq
-  calc
-    ∑ i ∈ Finset.range (m + 1),
-        ‖iteratedCovGrad (I := I) g r (s + 1) i
-          (covGrad (I := I) (M := M) g r s S)‖ ^ 2 =
-      ∑ i ∈ Finset.range (m + 1),
-        ‖iteratedCovGrad (I := I) g r s (i + 1) S‖ ^ 2 := by
-      refine Finset.sum_congr rfl fun i _ => ?_
-      exact iteratedCovGrad_covGrad_norm_sq (I := I) (M := M) g r s i S
-    _ ≤ ∑ i ∈ Finset.range (m + 1 + 1),
-        ‖iteratedCovGrad (I := I) g r s i S‖ ^ 2 := by
-      rw [Finset.sum_range_succ'
-        (fun i => ‖iteratedCovGrad (I := I) g r s i S‖ ^ 2) (m + 1)]
-      exact le_add_of_nonneg_right (sq_nonneg _)
-
-omit [CompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_two_covGrad_le_three
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (S : SmoothCcTensor g r s) :
     covariantJetNormSq (I := I) (M := M) g 2
         (covGrad (I := I) (M := M) g r s S) ≤
       covariantJetNormSq (I := I) (M := M) g 3 S := by
-  exact covariantJetNormSq_covGrad_le (I := I) (M := M) g 2 S
+  have h0 := iteratedCovGrad_covGrad_norm_sq (I := I) (M := M) g r s 0 S
+  have h1 := iteratedCovGrad_covGrad_norm_sq (I := I) (M := M) g r s 1 S
+  have h2 := iteratedCovGrad_covGrad_norm_sq (I := I) (M := M) g r s 2 S
+  unfold covariantJetNormSq
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
+    Nat.reduceAdd] at h0 h1 h2 ⊢
+  rw [h0, h1, h2]
+  nlinarith only [sq_nonneg ‖S‖]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -143,7 +140,6 @@ private theorem operatorFieldComposition_tame_coefficient_bound
     mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hc2) hfr) hX
   nlinarith only [h0Y, h1Y, h2X]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem exists_covariantJetNormSq_three_operatorFieldComposition_tame_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (p r c : ℕ) :
@@ -155,7 +151,6 @@ theorem exists_covariantJetNormSq_three_operatorFieldComposition_tame_bound
               covariantJetNormSq (I := I) (M := M) g 2 W +
             covariantJetNormSq (I := I) (M := M) g 2 Φ *
               covariantJetNormSq (I := I) (M := M) g 3 W) := by
-  let : NeZero (Module.finrank ℝ E) := ⟨by rw [hDim]; decide⟩
   obtain ⟨C0, hC0, h0⟩ :=
     exists_covariantJetNormSq_two_operatorFieldComposition_le (I := I) (M := M) hDim g p r c
   obtain ⟨C1, hC1, h1⟩ :=

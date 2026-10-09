@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.CellChain
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCellChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34MarkedCellPageAlignment
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PageCellGluing
 
@@ -12,11 +12,11 @@ private theorem inter_eq_of_subset_of_inter_eq {E : Type*} {C N A B : Set E}
   rwa [← inter_assoc, inter_eq_left.mpr hCN, ← inter_assoc, inter_eq_left.mpr hCN] at h
 
 open Classical in
-theorem CrossingCellChain.exists_untwisted_page_diagram
+theorem Section34CrossingCellChain.exists_untwisted_page_diagram
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {R Γ : Geometry.SimplicialComplex ℝ E} [Finite R.faces]
     {S₀ S₁ N X Y W₀ W₁ : Set E} {P : Fin 4 → Set E}
-    (chain : CrossingCellChain R Γ S₀ S₁ N)
+    (chain : Section34CrossingCellChain R Γ S₀ S₁ N)
     (hΓR : Γ.faces ⊆ R.faces) (hΓint : Γ.space ⊆ interior R.space)
     (hNX : N ∩ S₀ = N ∩ frontier X) (hNY : N ∩ S₁ = N ∩ frontier Y)
     (hNW₀ : N ∩ S₀ = N ∩ W₀) (hNW₁ : N ∩ S₁ = N ∩ W₁)

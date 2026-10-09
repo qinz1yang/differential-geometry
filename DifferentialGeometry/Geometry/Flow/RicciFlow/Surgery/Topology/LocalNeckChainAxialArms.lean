@@ -129,21 +129,18 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.pi_div_two_le_arccos_of_nonpos {z : ℝ} (hz : z ≤ 0) :
+private theorem pi_div_two_le_arccos_of_nonpos {z : ℝ} (hz : z ≤ 0) :
     Real.pi / 2 ≤ Real.arccos z := by
   refine le_of_not_gt fun hlt => ?_
   have hpos := Real.arccos_lt_pi_div_two.mp hlt
   linarith
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_strongNeck_threshold_of_localNeckChain
+theorem exists_strongNeck_threshold_of_localNeckChain
     {delta : ℝ} (hdelta : 0 < delta) (hdelta1 : delta < 1 / 11)
     {kappa : ℝ} (hkappa : 0 < kappa) {rho : ℝ} (hrho : 0 < rho) {Phi : ℝ → ℝ}
     (hPhi : Perelman.AdmissiblePinchingFunction Phi) :

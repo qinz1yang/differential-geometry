@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.Distance
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenEmbedding
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
+import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
+import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 
 set_option autoImplicit false
 noncomputable section

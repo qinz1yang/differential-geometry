@@ -33,7 +33,7 @@ def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor 
   toSection :=
     { toFun := fun x : M =>
         TensorRSSpace.ofCLM
-          (slotInsertEndomorphism (I := I) (M := M) 2 0 x (ricEndoRaisedFib (I := I) g₀ x))
+          (slotInsertEndoFib (I := I) (M := M) 2 0 x (ricEndoRaisedFib (I := I) g₀ x))
       contMDiff_toFun :=
         slotInsertEndoFib_contMDiff (I := I) (M := M) g₀ 2 0
           (fun x : M => ricEndoRaisedFib (I := I) g₀ x)

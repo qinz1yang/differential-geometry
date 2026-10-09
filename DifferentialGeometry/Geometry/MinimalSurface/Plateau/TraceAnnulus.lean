@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TracePhaseAnnulus
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ConformalDisk
 import DifferentialGeometry.Geometry.Measure.Area.LeastArea
-import DifferentialGeometry.Geometry.Metric.LoopSpace.C1DerivativeBounds
+import DifferentialGeometry.Topology.LoopSpace.RegularDerivativeBounds
 
 noncomputable section
 

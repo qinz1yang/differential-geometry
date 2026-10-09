@@ -64,7 +64,7 @@ theorem scalar_joint
         (fun q : Real × M =>
           deriv (fun s : Real =>
             metricCompInFrame (I := I) S frame s q.2 i j) q.1) p := by
-    exact contMDiffAt_partial_deriv_fst (hmetric i j) (by simp)
+    exact timeDeriv_smoothAt (hmetric i j) (by simp)
   have hricci (i j : CoordinateIdx (𝕜 := Real) E) :
       ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
         (modelWithCornersSelf Real Real) ∞

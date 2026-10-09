@@ -345,9 +345,9 @@ lemma sharpFlatEndoCc_eq_slotInsert_fullRaised (g₀ g₁ : SmoothRiemannianMetr
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om) =
-      slotInsertEndomorphism (I := I) (M := M) 1 0 x
+      slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) om from rfl]
-  rw [slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoFib_apply_eval]
   rw [toModel_om_single_eq_cotangentToDual (I := I) (M := M) x om
     (Function.update m 0 (tangentLinearMapToModel
       (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) (m 0)))]
@@ -404,7 +404,7 @@ lemma slotInsertEndoCc_add_endo (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndomorphism_add_left, add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 omit [I.Boundaryless] in
 set_option backward.isDefEq.respectTransparency false in
@@ -463,11 +463,11 @@ lemma covGrad_slotInsert_fullRaised_id_eq_zero (g₀ : SmoothRiemannianMetric I 
     rw [← hY]
     exact endoCovariantDerivative_fullRaised_id_eq_zero (I := I) (M := M) g₀ Y x
       (m 0)]
-  rw [show slotInsertEndomorphism (I := I) (M := M) (0 + 1) 0 x
+  rw [show slotInsertEndoFib (I := I) (M := M) (0 + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
     rw [show (0 : TangentSpace I x →L[ℝ] TangentSpace I x) =
         (0 : ℝ) • (0 : TangentSpace I x →L[ℝ] TangentSpace I x) from (zero_smul ℝ _).symm,
-      slotInsertEndomorphism_smul_left, zero_smul]]
+      slotInsertEndoFib_smul_left, zero_smul]]
   simp [SmoothCcTensor.toSection_zero]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -1004,7 +1004,7 @@ lemma connectionDifferenceSection_eq_termSlotEndoCc_zero (g₀ g₁ : SmoothRiem
       from rfl]
   rw [termSlotFib_apply_eval (I := I) (M := M) 0 x
     (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁ x) om v]
-  rw [slotInsertEndomorphism_apply_natural]
+  rw [slotInsertEndoFib_apply_natural]
   rw [show (Function.update (Matrix.vecTail v) 0
         (connectionDifferenceTermFieldPt (I := I) (M := M) g₀ g₁ x (v 0)
           (Matrix.vecTail v 0))) =
@@ -1054,7 +1054,7 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term).toSection x) D) =
         termSlotFib (I := I) (M := M) 1 x (Term x) D from rfl]
     rw [termSlotFib_apply_eval (I := I) (M := M) 1 x (Term x) D w]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
   have e1 : Tensor0SSpace.eval
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 3
@@ -1139,7 +1139,7 @@ lemma termSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I 
     rw [termSlotFib_apply_eval (I := I) (M := M) 0 x (Term x)
       (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
       (Matrix.vecTail (fun i => w ((finRotate 3).symm i)))]
-    rw [slotInsertEndomorphism_apply_natural]
+    rw [slotInsertEndoFib_apply_natural]
     congr 1
     funext k
     refine Fin.cases ?_ (fun j => j.elim0) k

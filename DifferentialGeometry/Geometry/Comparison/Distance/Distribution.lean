@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.WeakLaplacian
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz.Basic
 import DifferentialGeometry.Geometry.Comparison.Distance.RadialPairing
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 
 set_option autoImplicit false

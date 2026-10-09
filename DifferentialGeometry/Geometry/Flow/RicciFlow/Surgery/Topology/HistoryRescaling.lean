@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.Rescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryExtension
 
 noncomputable section
@@ -33,7 +33,7 @@ def rescale (H : ObservedHistory.{u}) (r : ℝ) (hr : 0 < r) : ObservedHistory.{
     (H.finalSlab ((div_lt_div_iff_of_pos_right hr).mp h)).rescale r hr
   final_initial := by
     intro h
-    rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.rescale_metric, mul_div_cancel₀ _ hr.ne', H.final_initial]
+    rw [OrientedThreeStage.ClosedSlab.rescale_metric, mul_div_cancel₀ _ hr.ne', H.final_initial]
 
 @[simp] theorem rescale_horizon (H : ObservedHistory.{u}) (r : ℝ) (hr : 0 < r) :
     (H.rescale r hr).horizon = H.horizon / r := rfl

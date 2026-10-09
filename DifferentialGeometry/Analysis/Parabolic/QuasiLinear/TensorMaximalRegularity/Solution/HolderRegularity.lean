@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.Interpolation
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.ContinuousRepresentative
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Compactness.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Basic
 import Mathlib.Topology.MetricSpace.Holder
 
 noncomputable section

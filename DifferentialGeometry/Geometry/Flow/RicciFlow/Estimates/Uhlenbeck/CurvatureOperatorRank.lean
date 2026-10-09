@@ -560,7 +560,7 @@ private theorem curvature_pullback_rank_and_kernel
       (n := ∞)).continuous.comp continuous_snd).continuousOn
   have hevol : ∀ q ∈ Ioc 0 T, ∀ z, HasDerivAt (fun s => A s z)
       (rawBundleEndomorphismConnLap (G.metric q) (cov q) (fun y => A q y) z +
-        _root_.CovariantDerivative.hom I M
+        HomConnectionGen.homBundleCovariantDerivativeGen I M
           (⋀[ℝ]^2 F) (fun y => ⋀[ℝ]^2 (V y)) (⋀[ℝ]^2 F) (fun y => ⋀[ℝ]^2 (V y))
           (cov q) (cov q) (fun y => A q y) z 0 +
         (curvatureOperatorReactionEndomorphism3 (A q z).toLinearMap).toContinuousLinearMap) q := by

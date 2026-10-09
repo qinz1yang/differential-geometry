@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.BallImage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSeamDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCapReplacement
 
@@ -7,10 +12,11 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem exists_polyhedral_disk_split_reducing_seams
+theorem exists_polyhedral_disk_split_reducing_seams (h303 : Moise303)
     (I H K R T L Δ D₁ D₂ Ω F : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
-    (hI : IsOpen I)
-    (hCI : (R ∪ (T ∪ L)) ⊆ I)
+    (hI : IsOpen I) (hIc : IsConnected I) (hHI : H ⊆ I) (hKI : K ⊆ I)
+    (hHK : Disjoint H K) (hH : IsClosed (((↑) : I → E3) ⁻¹' H))
+    (hK : IsClosed (((↑) : I → E3) ⁻¹' K)) (hCI : (R ∪ (T ∪ L)) ⊆ I)
     (hC : IsSeparatorIn I ((R ∪ (T ∪ L))) H K)
     (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔT : Δ ⊆ T)
     (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
@@ -31,8 +37,8 @@ theorem exists_polyhedral_disk_split_reducing_seams
       nullTraceCount L' T < nullTraceCount L T ∧ L' \ Ω = L \ Ω ∧ IsPolyhedron L' := by
   obtain ⟨C', L', hsep, hprot, heq, hT, hseams, hcount, hout,
       A, B, J, hAnn, hA, hAΔ, hB, hBΩ, hBC, hL'eq, htrace', -⟩ :=
-    exists_disk_split_reducing_seams_with_annulus I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
-      hI hCI hC hr hΔT hr₁ hr₂ hpair hD₁T hsub hnear hΔ₁ hΔ₂
+    exists_disk_split_reducing_seams_with_annulus h303 I H K R T L Δ D₁ D₂ Ω F r r₁ r₂
+      hI hIc hHI hKI hHK hH hK hCI hC hr hΔT hr₁ hr₂ hpair hD₁T hsub hnear hΔ₁ hΔ₂
       hΩ hΔΩ hΩI hΩHK hR hF hfin hcover hG
   have hL' := isPolyhedron_cap_replacement hL hB.isPolyhedron hr rfl hAnn hA hAΔ
     ⟨r₁, hr₁⟩ (hΔ₁.trans sdiff_subset) hΔT hD₂T hnear hΩ hΔΩ hΩI hR hCI

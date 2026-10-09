@@ -12,14 +12,11 @@ open scoped Topology Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_close_on_compact (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.eventually_scalar_close_on_compact (L : G.TerminalLimitMetric)
     {K : Set G.terminalRegularOpen} (hK : IsCompact K) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ t in 𝓝[<] s, ∀ x ∈ K,
       |metricScalarAt (G.flow.base.metric t) x.val - metricScalarAt L.metric x| < ε := by
@@ -86,7 +83,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   exact hbound'.trans_lt ((mul_le_mul_of_nonneg_left hsum hC.le).trans_lt hfinal)
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.tendsto_metricScalarAt (L : G.TerminalLimitMetric)
+theorem TerminalLimitMetric.tendsto_metricScalarAt (L : G.TerminalLimitMetric)
     (x : G.terminalRegularOpen) :
     Tendsto (fun t => metricScalarAt (G.flow.base.metric t) x.1)
       (𝓝[<] s) (𝓝 (metricScalarAt L.metric x)) := by
@@ -95,7 +92,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   filter_upwards [L.eventually_scalar_close_on_compact isCompact_singleton hε] with t ht
   simpa only [Real.dist_eq] using ht x (mem_singleton x)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.scalar_lower_bound_of_tendsto
+theorem TerminalLimitMetric.scalar_lower_bound_of_tendsto
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     {b : ℝ → ℝ} {B : ℝ} (hb : Tendsto b (𝓝[<] s) (𝓝 B))
     (hbound : ∀ᶠ t in 𝓝[<] s, b t ≤ metricScalarAt (G.flow.base.metric t) x.1) :

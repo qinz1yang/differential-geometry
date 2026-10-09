@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.TerminalBall
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Comparison.BallCapture
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import Mathlib.Topology.MetricSpace.Thickening
 

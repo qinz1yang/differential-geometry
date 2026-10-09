@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactVocabulary
-import DifferentialGeometry.Topology.PiecewiseLinear.PLCell.NestedShell
+import DifferentialGeometry.Topology.PiecewiseLinear.TopologicalCellNestedShell
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 
 open Set Topology Metric
@@ -179,7 +184,7 @@ theorem exists_pos_forall_not_isBounded_connectedComponentIn_of_finite {E : Type
   exact ⟨δ, hδ, fun Ob hOb y hyY =>
     hdOb ⟨y, hyY⟩ Ob (hOb.trans (cthickening_mono (hδle ⟨y, hyY⟩) Ob₀))⟩
 
-theorem PLBallApproximation.exists_isPLBall_image_of_isTopologicalCell
+theorem Moise305Tame.exists_isPLBall_image_of_isTopologicalCell
     {V : Set E3} {h : E3 → E3} (hcont : ContinuousOn h V) (hinj : InjOn h V) {Y K : Set E3}
     (hY : IsTopologicalCell 3 Y) (hYV : Y ⊆ V) (hK : IsCompact K) (hKY : K ⊆ interior Y) :
     ∃ A, IsPLBall 3 A ∧ h '' K ⊆ interior A ∧ A ⊆ interior (h '' Y) := by
@@ -190,7 +195,7 @@ theorem PLBallApproximation.exists_isPLBall_image_of_isTopologicalCell
       (hinj.mono (interior_subset.trans hYV))
   have hKc : IsCompact (h '' K) :=
     hK.image_of_continuousOn (hcont.mono (hKY.trans (interior_subset.trans hYV)))
-  exact IsTopologicalCell.exists_isPLBall_between hhY hKc
+  exact Moise305Tame.exists_isPLBall_of_isTopologicalCell hhY hKc
     ((image_mono hKY).trans (interior_maximal (image_mono interior_subset) hopen))
 
 theorem subset_interior_cthickening {α : Type*} [PseudoMetricSpace α] {r : ℝ} (hr : 0 < r)
@@ -203,21 +208,21 @@ theorem isTopologicalCell_cthickening {X : Set E3} (hX : Convex ℝ X) (hXc : Is
   isTopologicalCell_of_convex (hX.cthickening r) isClosed_cthickening
     hXc.isBounded.cthickening (hXne.mono (subset_interior_cthickening hr X))
 
-theorem PLBallApproximation.exists_isPLBall_image_of_convex {V O X : Set E3}
+theorem Moise305Tame.exists_isPLBall_image_of_convex {V O X : Set E3}
     (hV : IsOpen V) {h : E3 → E3} (hcont : ContinuousOn h V) (hinj : InjOn h V) (hO : IsOpen O)
     (hX : Convex ℝ X) (hXc : IsCompact X) (hXne : X.Nonempty) (hXV : X ⊆ V)
     (hXO : h '' X ⊆ O) : ∃ A, IsPLBall 3 A ∧ h '' X ⊆ interior A ∧ A ⊆ O := by
   have hW : IsOpen (V ∩ h ⁻¹' O) := hcont.isOpen_inter_preimage hV hO
   have hXW : X ⊆ V ∩ h ⁻¹' O := fun x hx => ⟨hXV hx, hXO (mem_image_of_mem h hx)⟩
   obtain ⟨r, hr, hrW⟩ := hXc.exists_cthickening_subset_open hW hXW
-  obtain ⟨A, hA, hXA, hAY⟩ := PLBallApproximation.exists_isPLBall_image_of_isTopologicalCell hcont hinj
+  obtain ⟨A, hA, hXA, hAY⟩ := Moise305Tame.exists_isPLBall_image_of_isTopologicalCell hcont hinj
     (isTopologicalCell_cthickening hX hXc hXne hr) (hrW.trans inter_subset_left) hXc
     (subset_interior_cthickening hr X)
   refine ⟨A, hA, hXA, hAY.trans (interior_subset.trans ?_)⟩
   rintro _ ⟨y, hy, rfl⟩
   exact (hrW hy).2
 
-theorem PLBallApproximation.exists_isPLBall_capping {V O X R : Set E3}
+theorem Moise305Tame.exists_isPLBall_capping {V O X R : Set E3}
     (hV : IsOpen V) {h : E3 → E3} (hcont : ContinuousOn h V) (hinj : InjOn h V) (hO : IsOpen O)
     (hX : Convex ℝ X) (hXc : IsCompact X) (hXV : X ⊆ V) (hRc : IsCompact R) (hRne : R.Nonempty)
     (hRX : R ⊆ X) {n g : E3} (hn : ‖n‖ = 1) (hXn : ∀ x ∈ X, inner ℝ n (x - g) = 0)
@@ -331,7 +336,7 @@ theorem PLBallApproximation.exists_isPLBall_capping {V O X R : Set E3}
     rw [hΦu]
     exact mem_cthickening_of_dist_le _ z μ R hz (hzd ▸ hid)
   obtain ⟨A, hA, hRA, hAB⟩ :=
-    PLBallApproximation.exists_isPLBall_image_of_isTopologicalCell hcont hinj hBcell hBV hRc hRint
+    Moise305Tame.exists_isPLBall_image_of_isTopologicalCell hcont hinj hBcell hBV hRc hRint
   refine ⟨A, hA, hRA, ?_⟩
   rintro _ ⟨hyA, x, hx, rfl⟩
   obtain ⟨b, hb, hbx⟩ := interior_subset (hAB hyA)
@@ -461,7 +466,7 @@ theorem exists_compactFaceEnvelopes (hV : IsOpen V) (hCV : C ⊆ V)
         interior (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s) := by
     intro s
     obtain ⟨n, g, hn, hng⟩ := exists_unit_normal_of_card_eq_three s.2.2
-    exact PLBallApproximation.exists_isPLBall_capping hV hcont hinj isOpen_interior (convex_convexHull ℝ _)
+    exact Moise305Tame.exists_isPLBall_capping hV hcont hinj isOpen_interior (convex_convexHull ℝ _)
       (s.1.finite_toSet.isCompact_convexHull ℝ) (hsV s) (isCompact_section34CompactSimplexRim s.1)
       (section34CompactSimplexRim_nonempty (by rw [s.2.2]; norm_num))
       (section34CompactSimplexRim_subset s.1) hn hng (hrimT s)
@@ -558,7 +563,7 @@ theorem exists_compactFaceShellBalls (hV : IsOpen V) (hCV : C ⊆ V)
   obtain ⟨henvo, henvX, -⟩ := henv
   have hball : ∀ s : Section34CompactSimplexIndex K 3, ∃ A, IsPLBall 3 A ∧
       h '' convexHull ℝ (s.1 : Set E3) ⊆ interior A ∧ A ⊆ env s := fun s =>
-    PLBallApproximation.exists_isPLBall_image_of_convex hV hcont hinj (henvo s) (convex_convexHull ℝ _)
+    Moise305Tame.exists_isPLBall_image_of_convex hV hcont hinj (henvo s) (convex_convexHull ℝ _)
       (s.1.finite_toSet.isCompact_convexHull ℝ)
       (convexHull_nonempty_iff.mpr (Finset.coe_nonempty.mpr (K.nonempty_of_mem_faces s.2.1)))
       ((K.convexHull_subset_space s.2.1).trans (hKC ▸ hCV)) (henvX s)

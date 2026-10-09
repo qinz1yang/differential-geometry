@@ -73,10 +73,10 @@ private theorem covGrad_unit_of_eventuallyEq
   intro slots
   rw [covGrad_toSection_apply]
   change Tensor0SSpace.eval
-    ((covariantSlotBundleEquiv (I := I) 0 s x
+    ((covGradBundleEquiv (I := I) 0 s x
       (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g) Tc.toSection x))
       (unitZeroSec (I := I) x)) slots = _
-  rw [covariantSlotBundleEquiv_apply_eval]
+  rw [covGradBundleEquiv_apply_eval]
   have hv := covariant_derivative_unit_of_eventuallyEq g T Tc.toSection h
     (slots 0) (Matrix.vecTail slots)
   change (((tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)
@@ -178,7 +178,7 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
     (χ : C^∞⟮I, M; ℝ⟯) (hχ : HasCompactSupport (χ : M → ℝ))
     (T : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) s)
     (V : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) (s + 1)) :
-    let dχT := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+    let dχT := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => T y) x)))
       (unitZeroSec (I := I) x)
@@ -234,7 +234,7 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
   have hcross : ∀ x, tensorInnerPointwise (I := I) g 0 (s + 1) x
       ((prependCovGradSlot (I := I) g 0 s χ T₀).toFun x) (V₀.toFun x) =
       inner0S (I := I) g x (s + 1)
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+        ((covGradBundleEquiv (I := I) (M := M) 0 s x
           ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
             (unitScalarRSLiftSection (I := I) (M := M) (fun y => T y) x)))
           (unitZeroSec (I := I) x)) (V x) := by
@@ -276,7 +276,7 @@ theorem integral_sq_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSup
     (χ : C^∞⟮I, M; ℝ⟯) (hχ : HasCompactSupport (χ : M → ℝ))
     (T : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) s)
     (V : Tensor0SField (𝕜 := ℝ) (I := I) (M := M) (n := ∞) (s + 1)) :
-    let dχT := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+    let dχT := fun x => (covGradBundleEquiv (I := I) (M := M) 0 s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => T y) x)))
       (unitZeroSec (I := I) x)
@@ -298,12 +298,12 @@ theorem integral_sq_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSup
     ring
   have hcross (x : M) :
       inner0S (I := I) g x (s + 1)
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+        ((covGradBundleEquiv (I := I) (M := M) 0 s x
           ((mvfderiv (I := I) ((χ * χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x).smulRight
             (unitScalarRSLiftSection (I := I) (M := M) (fun y => T y) x)))
           (unitZeroSec (I := I) x)) (V x) =
         2 * (χ x * inner0S (I := I) g x (s + 1)
-          ((covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          ((covGradBundleEquiv (I := I) (M := M) 0 s x
             ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
               (unitScalarRSLiftSection (I := I) (M := M) (fun y => T y) x)))
             (unitZeroSec (I := I) x)) (V x)) := by

@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Metric.Construction.OpenExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Locality
 import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingFromOpen
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Curvature.SectionalPerturbation
 import DifferentialGeometry.Topology.GraphBand
 import DifferentialGeometry.Geometry.Curvature.Product

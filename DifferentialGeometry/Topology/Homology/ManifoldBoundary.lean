@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.ClosedManifold
-import DifferentialGeometry.Topology.Manifold.Boundary.Basic
+import DifferentialGeometry.Geometry.Boundary.Manifold.Basic
 
 set_option autoImplicit false
 noncomputable section

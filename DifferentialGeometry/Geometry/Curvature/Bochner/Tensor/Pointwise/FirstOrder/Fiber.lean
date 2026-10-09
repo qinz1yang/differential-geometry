@@ -181,7 +181,7 @@ lemma slot0SliceFib_eq_covGradBundleEquiv_symm (x : M) (s : ℕ) (v : TangentSpa
     (T : TensorRSSpace 0 (s + 1) I x) :
     tensorSlotZeroEvalFib (I := I) (M := M) x s v T =
       (show TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x from
-        (covariantSlotBundleEquiv (I := I) (M := M) 0 s x).symm T) v := by
+        (covGradBundleEquiv (I := I) (M := M) 0 s x).symm T) v := by
   classical
   apply tensorRSSpace_ext (𝕜 := ℝ) 0 s x
   intro D
@@ -194,7 +194,7 @@ lemma slot0SliceFib_eq_covGradBundleEquiv_symm (x : M) (s : ℕ) (v : TangentSpa
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
       (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
         (unitZeroSec (I := I) (M := M) x)) (v0 := v) (vs := m)]
-  rw [covariantSlotBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x T v D m]
+  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x T v D m]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) D =
       tensor00Scalar (I := I) (M := M) x D •
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
@@ -350,7 +350,7 @@ noncomputable def curvatureGradContractionFib
     inferInstanceAs (T2Space (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
   LinearMap.toContinuousLinearMap
     { toFun := fun Wx =>
-        covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+        covGradBundleEquiv (I := I) (M := M) 0 s x
           (curvatureGradContractionDirCLM (I := I) (M := M) g s B x Wx)
       map_add' := fun W₁ W₂ => by
         rw [gradTermDirCLM_value_add (I := I) (M := M) g s B x W₁ W₂, map_add]
@@ -365,7 +365,7 @@ lemma gradTermFib_apply
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (x : M) (Wx : TensorRSSpace 0 (s + 1) I x) :
     curvatureGradContractionFib (I := I) (M := M) g s B x Wx =
-      covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+      covGradBundleEquiv (I := I) (M := M) 0 s x
         (curvatureGradContractionDirCLM (I := I) (M := M) g s B x Wx) := by
   have : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
     inferInstanceAs (FiniteDimensional ℝ (Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x))
@@ -438,17 +438,17 @@ lemma slot0SliceFib_section_contMDiff
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun z : M => TensorRSSpace 0 s I z) b
         ((show TangentSpace I b →L[ℝ] TensorRSSpace 0 s I b from
-          (covariantSlotBundleEquiv (I := I) (M := M) 0 s b).symm (Y b)) (V b))) := by
+          (covGradBundleEquiv (I := I) (M := M) 0 s b).symm (Y b)) (V b))) := by
     funext b
     rw [slot0SliceFib_eq_covGradBundleEquiv_symm (I := I) (M := M) b s (V b) (Y b)]
   rw [heq]
   have hHom : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] TensorRSModel 0 s ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel 0 s ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace 0 s I z) b
-        ((covariantSlotBundleEquiv (I := I) (M := M) 0 s b).symm (Y b))) :=
-    (covariantSlotBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) 0 s).comp hY
+        ((covGradBundleEquiv (I := I) (M := M) 0 s b).symm (Y b))) :=
+    (covGradBundleEquiv_symm_contMDiff_totalSpace (I := I) (M := M) 0 s).comp hY
   exact ContMDiff.clm_bundle_apply (b := fun b : M => b)
-    (ϕ := fun b => (covariantSlotBundleEquiv (I := I) (M := M) 0 s b).symm (Y b))
+    (ϕ := fun b => (covGradBundleEquiv (I := I) (M := M) 0 s b).symm (Y b))
     (v := fun b => V b) hHom hV
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -543,12 +543,12 @@ lemma gradTermFib_frozen_section_contMDiff
       (curvatureGradContractionFib (I := I) (M := M) g s B x (Y x))) =
       (fun x : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
         (E := fun z : M => TensorRSSpace 0 (s + 1) I z) x
-        (covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+        (covGradBundleEquiv (I := I) (M := M) 0 s x
           (curvatureGradContractionDirCLM (I := I) (M := M) g s B x (Y x)))) := by
     funext x
     rw [gradTermFib_apply (I := I) (M := M) g s B x (Y x)]
   rw [heq]
-  exact (covariantSlotBundleEquiv_contMDiff_totalSpace (I := I) (M := M) 0 s).comp
+  exact (covGradBundleEquiv_contMDiff_totalSpace (I := I) (M := M) 0 s).comp
     (gradTermDirCLM_homSection_contMDiff (I := I) (M := M) g s hB hY)
 
 omit [CompactSpace M] [I.Boundaryless] in

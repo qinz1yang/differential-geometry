@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitBoundedCurvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardExtension.ScalarExterior
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardScalarExterior
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.TerminalScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarMinimum
 

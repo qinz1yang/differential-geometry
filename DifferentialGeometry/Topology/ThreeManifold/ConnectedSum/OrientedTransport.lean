@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.TransportDiffeomorphism
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.UnitFillingSmooth
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedChartTransport
+import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.BallChartTransportConnected
 import DifferentialGeometry.Topology.Manifold.OrientationDiffeomorphTransport
 
@@ -140,5 +140,21 @@ theorem csTransport_diffeomorph_preservesOrientation
       (M.orientation.orientation (x : M.Carrier))) hlin).trans hDeq)
   let _ := (smoothConnectedSum M' N' c' d' a).connected
   exact ⟨F, Diffeomorph.preservesOrientation_of_eq_at F O O' (IL x) hpoint⟩
+
+theorem connectedSumOrientedChartTransport_holds :
+    connectedSumOrientedChartTransport.{u} :=
+  fun _ _ _ _ c c' d d' a Φ Ψ hΦo _ hΦ hΨ =>
+    csTransport_diffeomorph_preservesOrientation c c' d d' a Φ Ψ hΦ hΨ hΦo
+
+theorem connectedSumOrientedTransport_holds : connectedSumOrientedTransport.{u} :=
+  connectedSum_orientedTransport_of_selfTransport_and_orientedChartTransport
+    selfTransport_holds connectedSumOrientedChartTransport_holds
+
+theorem connectedSumLaws_of_unit_commutative_associative
+    (hunit : sphereUnitLaws.{u}) (hcomm : connectedSumCommutative.{u})
+    (hassoc : connectedSumAssociative.{u}) : connectedSumLaws.{u} :=
+  connectedSumLaws_of_binaryConnectedSumLaws
+    (binaryConnectedSumLaws_of_unit_assoc_comm_transport hunit hcomm hassoc
+      connectedSumOrientedTransport_holds)
 
 end DifferentialGeometry.Topology

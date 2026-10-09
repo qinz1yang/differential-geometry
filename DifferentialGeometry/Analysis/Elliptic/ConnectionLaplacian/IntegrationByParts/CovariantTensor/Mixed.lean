@@ -745,7 +745,7 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
     (T v : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯) :
     let cov := tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
-    let grad := fun S x => covariantSlotBundleEquiv (I := I) (M := M) r s x (cov S x)
+    let grad := fun S x => covGradBundleEquiv (I := I) (M := M) r s x (cov S x)
     (∫ x, ρ x * tensorInnerPointwise (I := I) g r s x
       (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
       (TensorRSSpace.toModel (v x))
@@ -755,7 +755,7 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
       ∫ x, tensorInnerPointwise (I := I) g r (s + 1) x
         (TensorRSSpace.toModel (grad T x))
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           ((mvfderiv (I := I) (ρ : M → ℝ) x).smulRight (v x))))
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
@@ -796,9 +796,9 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
     · simp [image_eq_zero_of_notMem_tsupport hx]
   have hgrad : ∀ x, ρ x * tensorCovDerivPointwiseInner (I := I) g r s T₀ v₀ x =
       ρ x * tensorInnerPointwise (I := I) g r (s + 1) x
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) v x))) := by
     intro x
     by_cases hx : x ∈ tsupport (ρ : M → ℝ)
@@ -809,9 +809,9 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
     · simp [image_eq_zero_of_notMem_tsupport hx]
   have hcross : ∀ x, tensorCovDerivCrossLeft (I := I) g r s ρ T₀ v₀ x =
       tensorInnerPointwise (I := I) g r (s + 1) x
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           ((mvfderiv (I := I) (ρ : M → ℝ) x).smulRight (v x)))) := by
     intro x
     rw [tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad,
@@ -914,8 +914,8 @@ theorem integral_sq_weighted_rawTensorConnLap_le_of_hasCompactSupport
       (fun x : M => TensorRSSpace r s I x)⟯)
     {ε : ℝ} (hε : 0 < ε) :
     let cov := tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
-    let grad := fun x => covariantSlotBundleEquiv (I := I) (M := M) r s x (cov T x)
-    let cutoffGrad := fun x => covariantSlotBundleEquiv (I := I) (M := M) r s x
+    let grad := fun x => covGradBundleEquiv (I := I) (M := M) r s x (cov T x)
+    let cutoffGrad := fun x => covGradBundleEquiv (I := I) (M := M) r s x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight (T x))
     (∫ x, χ x ^ 2 * tensorInnerPointwise (I := I) g r s x
       (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
@@ -958,9 +958,9 @@ theorem integral_sq_weighted_rawTensorConnLap_le_of_hasCompactSupport
   have hgrad (x : M) :
       χ x ^ 2 * tensorCovDerivPointwiseInner (I := I) g r s T₀ T₀ x =
       χ x ^ 2 * tensorInnerPointwise (I := I) g r (s + 1) x
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
-        (TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
           (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x))) := by
     by_cases hx : x ∈ tsupport (χ : M → ℝ)
     · rw [tensorCovDerivPointwiseInner_eq_tensorInnerPointwise_grad,
@@ -968,7 +968,7 @@ theorem integral_sq_weighted_rawTensorConnLap_le_of_hasCompactSupport
     · simp [image_eq_zero_of_notMem_tsupport hx]
   have hcutoff (x : M) :
       (prependCovGradSlot (I := I) g r s χ T₀).toFun x =
-      TensorRSSpace.toModel (covariantSlotBundleEquiv (I := I) (M := M) r s x
+      TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
         ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight (T x))) := by
     rw [SmoothCcTensor.toFun_apply, prependCovGradSlot_toSection_apply]
     by_cases hx : x ∈ tsupport (χ : M → ℝ)

@@ -8,12 +8,12 @@ open Set _root_.Geometry
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E F : Type*} [DecidableEq E] [DecidableEq F]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [NormedAddCommGroup F] [InnerProductSpace ℝ F]
 
-omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] in
 theorem finset_image_erase_of_injOn {V : Finset E} {f : E → F}
     (hf : InjOn f (V : Set E)) {i : E} (hi : i ∈ V) :
     (V.erase i).image f = (V.image f).erase (f i) := by
@@ -25,7 +25,6 @@ theorem finset_image_erase_of_injOn {V : Finset E} {f : E → F}
   · rintro ⟨hyi, x, hx, rfl⟩
     exact ⟨x, ⟨fun he => hyi (congrArg f he), hx⟩, rfl⟩
 
-omit [NormedAddCommGroup E] [InnerProductSpace ℝ E] [NormedAddCommGroup F] [InnerProductSpace ℝ F] in
 theorem ProperSimplexRoof.image {V B : Finset E} (h : ProperSimplexRoof V B)
     {f : E → F} (hf : InjOn f (V : Set E)) :
     ProperSimplexRoof (V.image f) (B.image f) := by

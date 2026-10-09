@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulConvexCore
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.Basic
-import DifferentialGeometry.Geometry.Curve.Length.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.ArcLength
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 
 set_option autoImplicit false

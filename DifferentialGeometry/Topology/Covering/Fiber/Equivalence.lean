@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Covering.UniversalCover.CoveringMap
+import DifferentialGeometry.Topology.Covering.CoveringMap
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Logic.Equiv.Basic

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.FinitePoleRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Rigidity.GaussianJacobian
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.ReducedMonotonicity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RedJacobian
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 
 

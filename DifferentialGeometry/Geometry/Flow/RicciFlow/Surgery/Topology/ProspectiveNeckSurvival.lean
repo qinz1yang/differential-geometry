@@ -6,11 +6,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBac
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CylinderReferenceCopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Topology.Manifold.ULift
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.CylinderBackwardConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ShrinkingCylinder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Defs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Backward
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceLocalChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CompactProductTraceSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CylindricalResetConvergence
@@ -21,7 +21,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Prospective
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Metric.PullbackCompleteness
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Neck.NormalizedFootprint
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding

@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Forcing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Projection.TimeL2EigenProjection
-import DifferentialGeometry.Analysis.FunctionalAnalysis.Contraction.Approximation
+import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
 import Mathlib.Analysis.ODE.Gronwall
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
 import Mathlib.Topology.Algebra.InfiniteSum.Real
@@ -35,7 +35,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.PointwiseDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Compactness.Modulus
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Modulus
 
 section
 open DifferentialGeometry.Analysis.Sobolev.CSupTensor

@@ -12,14 +12,11 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_scalar_bounds_on_canonical_domains
+theorem TerminalLimitMetric.eventually_scalar_bounds_on_canonical_domains
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Filter.Tendsto τ Filter.atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps C1 C2 : ℝ} (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n))
@@ -60,7 +57,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     nlinarith [hs.2, hyc.1, hx, hC2]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
+theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
     (L : G.TerminalLimitMetric) {eps t : ℝ} {x : G.terminalRegularOpen} {U : Set P.Carrier}
     (cap : LocalCap G.flow eps x.val t U) (hU : U ⊆ G.terminalRegularRegion)
     {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
@@ -170,7 +167,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     constructor <;> intro h <;> linarith
 
 set_option backward.isDefEq.respectTransparency false in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.eventually_cap_midpoint_region
+theorem TerminalLimitMetric.eventually_cap_midpoint_region
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Filter.Tendsto τ Filter.atTop (𝓝[<] s))
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {epsCanonical eps δ C1 C2 : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)

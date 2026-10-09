@@ -2341,7 +2341,7 @@ private theorem exists_survivor_neighborhood_of_regularCrossing
   have hterminal : S.base.metric (H.time i.succ) =
       (H.event i).terminal.metric.restrictOpen W := by
     rw [hleft _ le_rfl,
-      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+      OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
   have hpullNew (t : ℝ) : Splus.base.metric t = localPullMetric (H.stageMetric i.succ t) g hg := by
     apply SmoothRiemannianMetric.ext_inner
     intro z v₁ v₂
@@ -2356,7 +2356,7 @@ private theorem exists_survivor_neighborhood_of_regularCrossing
     hfi, hgi, hS, hcrossW, ⟨x₀, hxOld, hxNew⟩, ?_, ?_, hterminal, ?_⟩
   · intro t ht
     rw [hleft t ht.2.le,
-      DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_before _ ht.2]
+      OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_before _ ht.2]
     apply SmoothRiemannianMetric.ext_inner
     intro z v₁ v₂
     rw [localPullMetric_inner]

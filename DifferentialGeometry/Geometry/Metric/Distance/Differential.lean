@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Distance.EndpointRate
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
 import DifferentialGeometry.Topology.Manifold.CurveExtension
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 

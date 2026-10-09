@@ -130,7 +130,7 @@ theorem metricComparisonDifferenceEndomorphism_contMDiff (g₀ g₁ : SmoothRiem
 
 def metricComparisonDifferenceSlotEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndomorphism (I := I) (M := M) 2 0 x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -311,21 +311,21 @@ private lemma slotEndo_fiberComponent_endo_eq (g₀ : SmoothRiemannianMetric I M
     (K J : Fin 2 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
         (show TensorRSSpace 2 2 I x from
-          TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J =
+          TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J =
       g₀.inner x (Λ (e (J 0))) (e (K 0)) * (if K 1 = J 1 then (1 : ℝ) else 0) := by
   have hcomp : fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J =
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J =
       Tensor0SSpace.eval
-        ((slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
+        ((slotInsertEndoFib (I := I) (M := M) 2 0 x Λ) (coframeS (I := I) (M := M) g₀ x 2 e K))
         (fun k => e (J k)) := by
     unfold fiberNormSqComponent coframeS; rfl
   rw [hcomp]
   change Tensor0SSpace.eval
-      ((slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)
+      ((slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)
         (coframeS (I := I) (M := M) g₀ x 2 e K))
       (fun k => e (J k)) = _
-  have hslot := slotInsertEndomorphism_apply_natural (I := I) (M := M) 2 0 x Λ
+  have hslot := slotInsertEndoFib_apply_natural (I := I) (M := M) 2 0 x Λ
     (coframeS (I := I) (M := M) g₀ x 2 e K)
     (fun k => e (J k))
   rw [hslot]
@@ -348,7 +348,7 @@ private lemma riemannianFiberNormSq_slotInsert_eq_dim_mul (g₀ : SmoothRiemanni
         ∑ b : Fin n, (g₀.inner x u (e b)) ^ 2 = g₀.inner x u u) ∧
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           (show TensorRSSpace 2 2 I x from
-            TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ))
+            TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ))
         = (n : ℝ) * ∑ J : Fin 2 → Fin n, (g₀.inner x (Λ (e (J 0))) (e (J 1))) ^ 2 := by
   obtain ⟨n, e, hn, horth, hpar, hrepr22⟩ := exists_orthonormalFrame_fiberNormSq_rank22_repr
     (I := I) g₀ x
@@ -357,17 +357,17 @@ private lemma riemannianFiberNormSq_slotInsert_eq_dim_mul (g₀ : SmoothRiemanni
   refine ⟨n, e, hnE, horth, hpar, ?_⟩
   have h22 : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       (show TensorRSSpace 2 2 I x from
-        TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ))
+        TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ))
       = ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
           (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
             (show TensorRSSpace 2 2 I x from
-              TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2 :=
+              TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2 :=
     riemannianFiberNormSq_eq_sum_componentRS_sq (I := I) (M := M) g₀ x 2 2 e hrepr22 _
   rw [h22]
   have h22' : (∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
           (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
             (show TensorRSSpace 2 2 I x from
-              TensorRSSpace.ofCLM (slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2)
+              TensorRSSpace.ofCLM (slotInsertEndoFib (I := I) (M := M) 2 0 x Λ)) n e K J) ^ 2)
       = ∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
           (g₀.inner x (Λ (e (J 0))) (e (K 0)) *
             (if K 1 = J 1 then (1 : ℝ) else 0)) ^ 2 := by
@@ -395,7 +395,7 @@ theorem riemannianFiberNormSq_gInvDiffSlotEndo_le
   obtain ⟨n, e, hn, horth, hpar, heq⟩ :=
     riemannianFiberNormSq_slotInsert_eq_dim_mul (I := I) g₀ x Λ
   have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by rw [hn]
-  rw [show metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x = slotInsertEndomorphism (I := I) (M := M) 2 0 x
+  rw [show metricComparisonDifferenceSlotEndo (I := I) g₀ g₁ x = slotInsertEndoFib (I := I) (M := M) 2 0 x
     Λ from rfl, heq]
   set r : ℝ := δ / (1 - δ) with hr
   have hr_nn : 0 ≤ r := div_nonneg hδ_nn (by linarith)
@@ -578,7 +578,7 @@ theorem sqrt_inner_metricComparisonEndomorphism_le
 
 def gInvSlotEndo (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
-  slotInsertEndomorphism (I := I) (M := M) 2 0 x (metricComparisonEndomorphism (I := I) g₀ g₁ x)
+  slotInsertEndoFib (I := I) (M := M) 2 0 x (metricComparisonEndomorphism (I := I) g₀ g₁ x)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
@@ -623,7 +623,7 @@ theorem riemannianFiberNormSq_gInvSlotEndo_le
   obtain ⟨n, e, hn, horth, hpar, heq⟩ :=
     riemannianFiberNormSq_slotInsert_eq_dim_mul (I := I) g₀ x Λ
   have hnE : (n : ℝ) = (Module.finrank ℝ E : ℝ) := by rw [hn]
-  rw [show gInvSlotEndo (I := I) g₀ g₁ x = slotInsertEndomorphism (I := I) (M := M) 2 0 x Λ from rfl,
+  rw [show gInvSlotEndo (I := I) g₀ g₁ x = slotInsertEndoFib (I := I) (M := M) 2 0 x Λ from rfl,
     heq]
   set r : ℝ := 1 / (1 - δ) with hr
   have hcoeff : 0 < 1 - δ := by linarith

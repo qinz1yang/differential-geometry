@@ -154,7 +154,7 @@ private theorem hessian_symm_on (g : SmoothRiemannianMetric I M)
     (hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U) {x : M} (hx : x ∈ U)
     (v w : TangentSpace I x) :
     hessFun (I := I) g f x v w = hessFun (I := I) g f x w v := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU hx hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU hx hf
   rw [← hessFun_congr (I := I) g hFf]
   exact hessFun_symm_of_boundaryless (I := I) g hF x v w
 

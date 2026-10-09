@@ -79,7 +79,7 @@ theorem exists_terminal_scalar_escape_spatial_necks
       (scaleMetric (Q (f n)) (hQ (f n)) (L (f n)).metric)
       (x (f n)) (y (n + N)) (hfinite (n + N))
   obtain ⟨v, nk, _, hblow, hfinite', hdist'⟩ :=
-    DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_neck_centers_at_escape_radius
+    OrientedThreeStage.IncomingSlab.exists_spatial_neck_centers_at_escape_radius
       (fun n => P (f n)) (fun n => a (f n)) (fun n => s (f n))
       (fun n => G (f n)) (fun n => L (f n)) (fun n => y (n + N)) (fun n => x (f n))
       hδ hδsmall hepsδ hfit (fun n => q (f n)) (fun n => Q (f n))

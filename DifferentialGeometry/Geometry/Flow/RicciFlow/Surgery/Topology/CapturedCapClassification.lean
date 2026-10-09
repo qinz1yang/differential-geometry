@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Topological
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
@@ -66,15 +66,15 @@ universe u
 variable {M N : ClosedOrientedManifold.{u} 3} {T : SphericalTubeSystem M}
   (C : SphericalCapping M N T)
 
-theorem isStandardConnectedSum_component_of_capCore_frontier
+theorem isPoincareStandard_component_of_capCore_frontier
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ T.core)
     (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
     (x : T.core) (hx : x.val ∈ K) :
-    isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier :=
-  C.isStandardConnectedSum_component_of_capCore_and_cap_cover cap hK b _
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier :=
+  C.isPoincareStandard_component_of_capCore_and_cap_cover cap hK b _
     (C.image_capCore_union_cap_eq_componentSet cap hK b hfront x hx)
 
-theorem exists_isStandardConnectedSum_component_of_spatialNeck_center_close
+theorem exists_isPoincareStandard_component_of_spatialNeck_center_close
     {J : RealTimeInterval} {S : SolutionOn (I := I3) (M := M.Carrier) J}
     {eps epsc t : ℝ} {x p : M.Carrier} {U : Set M.Carrier} (cap : LocalCap S epsc x t U)
     (hdepth : ∀ y ∈ cap.tube,
@@ -89,12 +89,12 @@ theorem exists_isStandardConnectedSum_component_of_spatialNeck_center_close
     ∃ (side : Bool) (K : Set M.Carrier), Nonempty (CapCore K) ∧
       K ⊆ interior cap.core.carrier ∧ frontier K = range (T.boundarySphere (a, side)) ∧
       K ⊆ T.core ∧ ∀ z : T.core, z.val ∈ K →
-        isStandardConnectedSum (N.component (ConnectedComponents.mk (C.coreInclusion z))).Carrier := by
+        isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion z))).Carrier := by
   obtain ⟨side, K, hK, hKU, hfront, hcore⟩ :=
     T.toTopological.exists_capCore_in_cutCore_of_spatialNeck_center_close
       cap hdepth nk a hmap hclose hanchor
   exact ⟨side, K, hK, hKU, hfront, hcore, fun z hz =>
-    C.isStandardConnectedSum_component_of_capCore_frontier
+    C.isPoincareStandard_component_of_capCore_frontier
       hK.some hcore (a, side) hfront z hz⟩
 
 end DifferentialGeometry.Topology.SphericalCapping
@@ -105,16 +105,16 @@ universe u
 
 variable {M Q : ClosedOrientedManifold.{u} 3} (E : SphericalCutCapTransition M Q)
 
-theorem isStandardConnectedSum_discardedComponent_of_capCore_frontier
+theorem isPoincareStandard_discardedComponent_of_capCore_frontier
     {K : Set M.Carrier} (cap : CapCore K) (hK : K ⊆ E.tubes.core)
     (b : E.tubes.Boundary) (hfront : frontier K = range (E.tubes.boundarySphere b))
     (x : E.tubes.core) (hx : x.val ∈ K) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
-    isStandardConnectedSum (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
-  have hstd := E.capping.isStandardConnectedSum_component_of_capCore_frontier
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_capCore_frontier
     cap hK b hfront x hx
   obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization x d hd
-  exact isStandardConnectedSum_of_diffeomorph e.val.symm hstd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 
@@ -135,14 +135,14 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransi
 universe u
 variable {P Q D N : OrientedThreeStage.{u}} (E : SmoothCutCapTransition P Q D N)
 
-theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier
+theorem exists_isPoincareStandard_discardedComponent_of_capCore_frontier
     (hc : SmoothCutCapCompletion E)
     {K : Set P.Carrier} (cap : CapCore K) (hcore : K ⊆ E.trace.tubes.core)
     (b : E.trace.tubes.Boundary) (hfront : frontier K = range (E.trace.tubes.boundarySphere b))
     (z : E.trace.tubes.core) (hz : z.val ∈ K) (hn : z ∉ E.trace.retainedCore) :
     ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
-      DifferentialGeometry.Topology.isStandardConnectedSum
-        (D.component (ConnectedComponents.mk d)).Carrier := by
+      DifferentialGeometry.Topology.isPoincareStandard
+        (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨d, hd⟩ : ∃ d : D.Carrier,
       E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d := by
     cases hp : E.trace.presentation (E.trace.capping.coreInclusion z) with
@@ -154,10 +154,10 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier
     (congrArg E.presentation
       (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion E hc z)).trans
         ((congrFun E.presentation_eq _).trans hd)
-  exact X.isStandardConnectedSum_discardedComponent_of_capCore_frontier
+  exact X.isPoincareStandard_discardedComponent_of_capCore_frontier
     cap hcore b hfront z hz d hdx
 
-theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_scalar_gap
+theorem exists_isPoincareStandard_discardedComponent_of_capCore_frontier_of_scalar_gap
     (hc : SmoothCutCapCompletion E)
     {J : RealTimeInterval} {S : SolutionOn (I := I3) (M := P.Carrier) J}
     {eps C1 C2 t : ℝ} {x : P.Carrier}
@@ -170,8 +170,8 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_
       ∃ y : E.trace.tubes.core, ConnectedComponents.mk y = ConnectedComponents.mk z ∧
         C2 * S.scalar t y.val < S.scalar t x) :
     ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
-      DifferentialGeometry.Topology.isStandardConnectedSum
-        (D.component (ConnectedComponents.mk d)).Carrier := by
+      DifferentialGeometry.Topology.isPoincareStandard
+        (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
   have hcomponent : connectedComponent z = (Subtype.val ⁻¹' K : Set E.trace.tubes.core) :=
     E.trace.tubes.connectedComponent_eq_preimage_of_capCore_of_boundarySphere
       cap hcore b hfront (E.tube_smooth b.1) z hz
@@ -186,11 +186,11 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_
     have hbound := mul_le_mul_of_nonneg_left (W.scalar_bounds y.val (hKU hyK)).1 hC2.le
     rw [← mul_assoc, mul_inv_cancel₀ hC2.ne', one_mul] at hbound
     exact hscalar.not_ge hbound
-  exact E.exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier
+  exact E.exists_isPoincareStandard_discardedComponent_of_capCore_frontier
     hc cap hcore b hfront z hz hn
 
 
-theorem exists_isStandardConnectedSum_discardedComponent_of_spatialNeck_center_close
+theorem exists_isPoincareStandard_discardedComponent_of_spatialNeck_center_close
     (hc : SmoothCutCapCompletion E)
     {J : RealTimeInterval} {S : SolutionOn (I := I3) (M := P.Carrier) J}
     {eps epsc C1 C2 t : ℝ} {x p : P.Carrier}
@@ -213,14 +213,14 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_spatialNeck_center_c
       K ⊆ interior cap.core.carrier ∧ frontier K = range (E.trace.tubes.boundarySphere (a, side)) ∧
       K ⊆ E.trace.tubes.core ∧ ∀ z : E.trace.tubes.core, z.val ∈ K →
         ∃ d : D.Carrier, E.trace.presentation (E.trace.capping.coreInclusion z) = Sum.inr d ∧
-          DifferentialGeometry.Topology.isStandardConnectedSum
-            (D.component (ConnectedComponents.mk d)).Carrier := by
+          DifferentialGeometry.Topology.isPoincareStandard
+            (D.toClosedOrientedManifold.component (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨side, K, hK, hKU, hfront, hcore⟩ :=
     E.trace.tubes.exists_capCore_in_cutCore_of_spatialNeck_center_close
       cap hdepth nk a hmap hclose hanchor
   refine ⟨side, K, hK, hKU, hfront, hcore, ?_⟩
   intro z hz
-  exact E.exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_scalar_gap
+  exact E.exists_isPoincareStandard_discardedComponent_of_capCore_frontier_of_scalar_gap
     hc W hK.some (hKU.trans (interior_subset.trans (cap.core_inside.trans interior_subset)))
     hcore (a, side) hfront z hz (hlow z)
 
@@ -243,7 +243,7 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (G : GeometricCutoffRecord H i parameters)
 
 include G in
-theorem exists_isStandardConnectedSum_discardedComponent_of_terminal_cap_boundary_capture
+theorem exists_isPoincareStandard_discardedComponent_of_terminal_cap_boundary_capture
     (hc : SmoothCutCapCompletion (H.event i).transition)
     {U : Set (H.event i).incoming.terminalRegularOpen} (cap : CapCore U)
     (hscalar : ∀ y ∈ interior U,
@@ -262,14 +262,14 @@ theorem exists_isStandardConnectedSum_discardedComponent_of_terminal_cap_boundar
         ∃ d : (H.event i).discarded.Carrier,
           (H.event i).transition.trace.presentation
             ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d ∧
-          DifferentialGeometry.Topology.isStandardConnectedSum
-            ((H.event i).discarded.component
+          DifferentialGeometry.Topology.isPoincareStandard
+            ((H.event i).discarded.toClosedOrientedManifold.component
               (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨b, K, hK, hKU, hfront, hcore, _, hdiscard⟩ :=
     G.exists_discarded_capCore_component_of_terminal_cap_boundary_capture cap hscalar j hinside
   refine ⟨b, K, hK, hKU, hfront, hcore, ?_⟩
   intro z hz
-  exact (H.event i).transition.exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier
+  exact (H.event i).transition.exists_isPoincareStandard_discardedComponent_of_capCore_frontier
     hc hK.some hcore b hfront z hz (hdiscard z hz)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
@@ -290,7 +290,7 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (R : GeometricCutoffRecord H i parameters)
 
 include R in
-theorem exists_late_isStandardConnectedSum_discardedComponent_of_cap
+theorem exists_late_isPoincareStandard_discardedComponent_of_cap
     (hc : SmoothCutCapCompletion (H.event i).transition)
     {eps η : ℝ} (hsmall : eps < 1 / 11) (heps : ∀ j, R.delta j ≤ eps) (hη : 0 < η) :
     ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
@@ -315,8 +315,8 @@ theorem exists_late_isStandardConnectedSum_discardedComponent_of_cap
                 ∃ y : (H.event i).discarded.Carrier,
                   (H.event i).transition.trace.presentation
                     ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr y ∧
-                  DifferentialGeometry.Topology.isStandardConnectedSum
-                    ((H.event i).discarded.component
+                  DifferentialGeometry.Topology.isPoincareStandard
+                    ((H.event i).discarded.toClosedOrientedManifold.component
                       (ConnectedComponents.mk y)).Carrier := by
   obtain ⟨d₀, hd₀, hnecks⟩ := R.exists_late_spatialNecks hsmall heps
   obtain ⟨d₁, hd₁, hgap⟩ := R.exists_late_retained_component_scalar_gap hη
@@ -338,7 +338,7 @@ theorem exists_late_isStandardConnectedSum_discardedComponent_of_cap
         j hinside).2
   refine ⟨b, K, hK, hKU, hfront, hcore, ?_⟩
   intro z hz
-  exact (H.event i).transition.exists_isStandardConnectedSum_discardedComponent_of_capCore_frontier_of_scalar_gap
+  exact (H.event i).transition.exists_isPoincareStandard_discardedComponent_of_capCore_frontier_of_scalar_gap
     hc W hK.some (hKU.trans (interior_subset.trans (cap.core_inside.trans interior_subset)))
     hcore b hfront z hz (hgap t ht₁ C2 (zero_le_one.trans W.one_le_comparison_constant) x hhigh z)
 

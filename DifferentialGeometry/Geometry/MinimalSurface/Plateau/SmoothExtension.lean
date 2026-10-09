@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDiskTrace
-import DifferentialGeometry.Geometry.Metric.Lipschitz.ConvexSource
+import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Measure.Area.Reparametrization
 import DifferentialGeometry.Topology.Manifold.ClosedDiskExtension
 

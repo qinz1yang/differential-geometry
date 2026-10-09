@@ -1,0 +1,92 @@
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryRimActualRM1
+import DifferentialGeometry.Geometry.Collapse.LocalExport.BoundaryMemberLabelledCertificateZQ
+
+/-!
+# The labelled certificate from the member's chain alone, with NO non-register input (S-RIM81 G5)
+
+`member_separated_to_labelled_certificate_OBDg` (S-BD2f G12c) takes, besides the records and the
+register numerics, the input `hrim` (`hV ∧ hF ∧ hsat` over every v2b decomposition of `C`). Here
+`hrim` is produced by `rim3_actual_RM1` (review 81 B⁺: `hV`, `hF`, `hsat` are derived theorems), so
+the only inputs are the member records and the register-level numerics.
+-/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set Function Metric Bundle Manifold Filter
+open scoped ContDiff Manifold Topology ENNReal
+open DifferentialGeometry.Topology.Ehresmann DifferentialGeometry.Topology.Manifold
+open DifferentialGeometry.Geometry.Riemannian GC.MetricGeometry
+open DifferentialGeometry GC.Endpoint DifferentialGeometry.Geometry.Hyperbolic
+open DifferentialGeometry.Analysis DifferentialGeometry.Topology GC.GraphManifold
+  GC.GraphManifold.Assembly GC.GraphManifold.Assembly.FC39P0
+
+namespace DifferentialGeometry.Geometry.Collapse
+
+local notation "E3" => EuclideanSpace ℝ (Fin 3)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
+
+attribute [local instance] nezero_finrank_euclideanThree_LC87
+
+attribute [local instance] interiorCharted_BDRY1 interiorManifold_BDRY1
+  connectedSpace_interior_BDRY2
+
+attribute [local instance] BoundaryStandingSequence_BSTD1.conn
+
+/-- **The separated branch of the member output gives the labelled certificate, from the chain
+`C` alone and with `hrim` PRODUCED** (`member_separated_to_labelled_certificate_OBDg` with
+`hrim := rim3_actual_RM1`): the inputs are the member records and the register numerics. -/
+theorem member_separated_to_labelled_certificate_RM1 {K : ℕ} {hK : 10 ≤ K} {A : ℝ → ℝ}
+    {hA : ∀ w, 0 < w → w < euclideanThreeUnitBallVolume → 0 < A w} {Ch : Type}
+    {egOf : Ch → Fin 3 → ℝ} (EW : BoundaryEarlyWithChoice_BSTD2 K hK A hA egOf)
+    (Sq : BoundaryStandingSequence_BSTD1 K A
+      (bdryThresholdsBA_BSTD2 K hK A hA EW.θ EW.νBA).δStar)
+    {V : ℝ} (R : BoundaryRegisterOverXBA_BSTD2 EW.early V) {m : ℕ}
+    (hm : BoundaryMemberOutputXBA_BSTD2 Sq m R)
+    {oM : ManifoldOrientation 𝓘(ℝ, E3) ((Sq.W m).pieceInterior ⊤) 3}
+    (Sup : BoundarySupply K A EW.early.β R.βd R.εN EW.early.Λ EW.early.w EW.early.Δ EW.early.σs
+      EW.early.σc EW.early.μ EW.early.b EW.early.s EW.early.b' EW.early.s' EW.early.ε
+      EW.early.γc EW.early.βc R.Lmax EW.early.τ EW.early.γ R.δlocal EW.early.εr EW.early.e
+      EW.early.T V EW.early.vs EW.early.ζ EW.early.Λz EW.θ (Sq.W m) (Sq.g m)
+      (boundaryCounterexampleRatio Sq.δ₀ (m + 1)) (m + 1) (Sq.B m) oM)
+    {Γ Sg eg Ξ c cw : Fin 3 → ℝ} {Kj : ℕ} {bcut bder κ cadj : ℝ}
+    (ea : EarlyRowReady_RNUM EW.early.toBoundaryEarlyOverX_BSTD2
+      (100 * (bder + 1) * (1 + bcut + cw 0 / Sg 0)))
+    (mr : MemberRowReady_RNUM EW.early.toBoundaryEarlyOver_BSTD1 m)
+    (rr : RegisterRowReady_RNUM R.toBoundaryRegisterOver_BSTD1 (c 2))
+    (hT : 1000 * EW.early.Δ ≤ EW.early.T)
+    (hσL : (bcf02Sigma_BCF2K EW.early.Δ)⁻¹ ≤ R.Lmax)
+    (hbη : EW.early.b ≤ bcf02Eta_BCF2K EW.early.Δ)
+    (h3b : 3 * EW.early.b ≤ bcf02Sigma_BCF2K EW.early.Δ)
+    (hbH : EW.early.b * (2 * (20 * EW.early.Δ + 1)) ≤ 1)
+    (hLΛ : 1000000 * EW.early.Δ * EW.early.Λ < 1 / 100000)
+    (hμΔ : EW.early.μ * EW.early.Δ < 1 / 10000)
+    {DP : BoundaryAugmentedDataPV3 Sup (actualSlotsV2_BAUGD Sup) Γ Sg eg}
+    (C : BoundaryGaf02ChainE DP Kj Ξ c cw bcut bder κ cadj) :
+    letI := Sq.conn m
+    ∃ Et : BoundaryTori (Sq.W m) (Sq.B m).count,
+      Nonempty {D : DecompositionCertificate (Sq.W m) Et // D.RimProduct} ∧
+        ∀ i, range (Et.torusMap i) = (Sq.B m).component i := by
+  obtain ⟨hβ2, hγ, hd, hμ, hτ, hσc, hbA, hε0, hε, hγc, hγc1, hβc1⟩ := ea.a4_premises_RNUM
+  obtain ⟨h3βc, -, hγ0, -, hC⟩ := ea.f1_premises_RNUM
+  obtain ⟨hεr, he⟩ := ea.f3_premises_RNUM
+  have hΔ : 2 ≤ EW.early.Δ := by
+    have h1 : (100 : ℝ) / (1 / 100) < 100 / EW.early.β₂ :=
+      div_lt_div_of_pos_left (by norm_num) EW.early.β₂_pos EW.early.β₂_lt
+    have h2 := EW.early.Δ_gt
+    norm_num at h1
+    linarith
+  have hb' : EW.early.b' < 1 / 1000000 := by
+    refine lt_of_lt_of_le EW.early.b'_lt ?_
+    exact one_div_le_one_div_of_le (by norm_num) (by nlinarith)
+  exact labelledCertificate_of_packetLabels_HB Sup
+    (C.boundary_graphPresentation_V32_A4_RM1 hβ2 hγ hd (by omega) mr.index hμ hτ hσc hbA hC hε0 hε
+      hγc hγc1 hβc1 hεr he R.rd_pos R.toBoundaryRegisterOver_BSTD1.rd_lt_ten_thousandth_RNUM
+      rr.rd_mul (memberPremise_RNUM hm) EW.θ_lt hΔ EW.early.Λ_pos.le hT EW.early.σs_pos.le
+      EW.early.σs_le (by linarith [EW.early.b_lt_s, EW.early.s_lt])
+      (by linarith [EW.early.s_lt_b']) hσL hbη h3b hbH hLΛ hμΔ h3βc hγ0)
+
+end DifferentialGeometry.Geometry.Collapse

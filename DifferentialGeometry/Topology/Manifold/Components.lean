@@ -69,14 +69,6 @@ def componentOpen (C : ConnectedComponents M.Carrier) : Opens M.Carrier :=
 theorem componentOpen_coe (C : ConnectedComponents M.Carrier) :
     (componentOpen M C : Set M.Carrier) = componentSet M C := rfl
 
-theorem component_compact (C : ConnectedComponents M.Carrier) :
-    CompactSpace (M.componentOpen C) :=
-  isCompact_iff_compactSpace.mp (M.isCompact_componentSet C)
-
-theorem component_connected (C : ConnectedComponents M.Carrier) :
-    ConnectedSpace (M.componentOpen C) :=
-  isConnected_iff_connectedSpace.mp (M.isConnected_componentSet C)
-
 def componentInclusion (C : ConnectedComponents M.Carrier) : componentOpen M C → M.Carrier :=
   Subtype.val
 

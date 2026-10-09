@@ -2,7 +2,7 @@ import Mathlib.Analysis.Analytic.IsolatedZeros
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
 import Mathlib.Analysis.Convex.Topology
-import DifferentialGeometry.Topology.Homeomorph.Radial.AngularCompression
+import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism.AngularCompression
 import DifferentialGeometry.Analysis.Complex.LocalPower
 import Mathlib.Analysis.Complex.Conformal
 

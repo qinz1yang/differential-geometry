@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CurvatureMonomialJetBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
@@ -143,7 +142,7 @@ private theorem insertSucc_eq_c2
             (slotExtend (I := I) (M := M) g (s + 1) (s + 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g s Λ)))
           (Equiv.swap (0 : Fin (s + 2)) 1)).toSection x) D) m
-  rw [slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
+  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
   rw [reindexCoefficientInputSlots_toSection, reindexCoefficientInputSlotsFiber_apply,
     rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply, slotExtend_toSection]
@@ -156,7 +155,7 @@ private theorem insertSucc_eq_c2
         · simp only [Fin.cons_zero, Equiv.swap_apply_left]
         · simp only [Fin.cons_succ]]
   rw [DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply_eval]
-  rw [slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval,
+  rw [slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval,
     TensorMultilinear.tensor0S_curry_toModel_apply,
     Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -583,7 +582,7 @@ private noncomputable def monoExtC2
     (g : SmoothRiemannianMetric I M) (σ : Equiv.Perm (Fin 4))
     (S : SmoothCcTensor g 0 2) : SmoothCcTensor g 4 6 :=
   rsDomDomCongrSection (I := I) (M := M) g 4 6
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialPairTracePermutation σ)
+    (RicciDeTurckLowOrder.monoPerm σ)
     (slotExtendIter (I := I) (M := M) g 0 2 4 S)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -804,7 +803,7 @@ private theorem invSlot_factor
       (-1 : ℝ) • ((metricComparisonEndomorphism (I := I) g gT x).comp
         ((symmRaiseEndo (I := I) (M := M) g (T - U) x).comp
           (metricComparisonEndomorphism (I := I) g gU x))) by rw [neg_one_smul],
-    slotInsertEndomorphism_smul_left, neg_one_smul]
+    slotInsertEndoFib_smul_left, neg_one_smul]
   rw [ContinuousLinearMap.comp_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
@@ -2089,9 +2088,8 @@ private theorem curvMono_h2_lip
           (ccTensorUnitValueSection (I := I) (M := M) g R)
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g R) σ =
         Q₁ + Q₂ := by
-    dsimp only [curvatureDecompositionMonomialCoeffField]
-    rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gT S σ,
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.curvatureActionMonomialCoeffField_eq_pairTrace (I := I) (M := M) g gU R σ]
+    rw [RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gT S σ,
+      RicciDeTurckLowOrder.curvMono_eq (I := I) (M := M) g gU R σ]
     change
       ccOperatorFieldComp (I := I) (M := M) g 4 6 2 (P gT) (X S) -
           ccOperatorFieldComp (I := I) (M := M) g 4 6 2 (P gU) (X R) =

@@ -15,11 +15,9 @@ universe u
 
 namespace OrientedThreeStage
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-
 variable {P : OrientedThreeStage.{u}} {g : P.Metric} {T : ℝ}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.smoothUpTo_flowTo (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
+private theorem smoothUpTo_flowTo (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
     P.MetricSmoothUpTo F.S.family.metric (Ico 0 T) := by
   have hj := metricCLMSection_jointContMDiffOn_of_chartGram_on
     F.S.family.metric (Ico 0 T) F.joint
@@ -35,20 +33,20 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.smoo
   · intro s hs x hx i j
     exact hEq s ⟨hs.1.1, hs.2.1, hs.1.2.le⟩ x hx i j
 
-def _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.incomingSlabOfFlowTo (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
+def incomingSlabOfFlowTo (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
     P.IncomingSlab 0 T where
   lt := F.time_pos
   flow := F.S
   equation := F.isSolution
   smoothUpTo := smoothUpTo_flowTo F
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.incomingSlabOfFlowTo_metric (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T)
+theorem incomingSlabOfFlowTo_metric (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T)
     (t : ℝ) : (incomingSlabOfFlowTo F).flow.base.metric t = F.S.base.metric t := rfl
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.incomingSlabOfFlowTo_initial (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
+theorem incomingSlabOfFlowTo_initial (F : FlowTo (I := ThreeModel) (M := P.Carrier) g T) :
     (incomingSlabOfFlowTo F).flow.base.metric 0 = g := F.start
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.singularEndpoint_of_maximal {a s : ℝ}
+theorem IncomingSlab.singularEndpoint_of_maximal {a s : ℝ}
     (G : P.IncomingSlab a s) (hmax : IsMaximalAtEndpoint G.lt G.flow) :
     G.SingularEndpoint := by
   intro L hL d hd
@@ -73,7 +71,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
   have hNL := (le_max_left (L ^ 2) (K ^ 2)).trans_lt hN
   nlinarith [Real.sqrt_nonneg (curvatureNormSq G.flow G.flow.base.rm04 t x)]
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_closedSlab_or_maximal_incomingSlab
+theorem exists_closedSlab_or_maximal_incomingSlab
     (P : OrientedThreeStage.{u}) (g : P.Metric) {B : ℝ} (hB : 0 < B) :
     (∃ G : P.ClosedSlab 0 B, G.flow.base.metric 0 = g) ∨
       ∃ (s : ℝ) (G : P.IncomingSlab 0 s), s ≤ B ∧
@@ -85,7 +83,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_close
     exact Or.inl ⟨ClosedSlab.ofClosedOpen P Q.time_pos Q.S Q.isSolution hj hB hBT, Q.start⟩
   · exact Or.inr ⟨s, incomingSlabOfFlowTo F, hsB, F.start, hmax⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_closedSlab_or_singular_incomingSlab
+theorem exists_closedSlab_or_singular_incomingSlab
     (P : OrientedThreeStage.{u}) (g : P.Metric) {B : ℝ} (hB : 0 < B) :
     (∃ G : P.ClosedSlab 0 B, G.flow.base.metric 0 = g) ∨
       ∃ (s : ℝ) (G : P.IncomingSlab 0 s), s ≤ B ∧
@@ -96,7 +94,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_close
 
 end OrientedThreeStage
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_closedSlab_or_singular_incomingSlab_from_time
+theorem OrientedThreeStage.exists_closedSlab_or_singular_incomingSlab_from_time
     (P : OrientedThreeStage.{u}) (g : P.Metric) {a B : ℝ} (haB : a < B) :
     (∃ G : P.ClosedSlab a B, G.flow.base.metric a = g) ∨
       ∃ (s : ℝ) (G : P.IncomingSlab a s), s ≤ B ∧
@@ -107,14 +105,14 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.exists_close
     have hout : ∃ H : P.ClosedSlab (0 + a) ((B - a) + a),
         H.flow.base.metric a = g := by
       refine ⟨G.timeTranslate a, ?_⟩
-      rw [DifferentialGeometry.Topology.ClosedOrientedManifold.ClosedSlab.timeTranslate_metric, sub_self]
+      rw [OrientedThreeStage.ClosedSlab.timeTranslate_metric, sub_self]
       exact hinit
     rw [zero_add, sub_add_cancel] at hout
     exact Or.inl hout
   · have hout : ∃ H : P.IncomingSlab (0 + a) (s + a),
         H.flow.base.metric a = g ∧ H.SingularEndpoint := by
       refine ⟨G.timeTranslate a, ?_, (G.timeTranslate_singularEndpoint_iff a).mpr hsing⟩
-      rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.timeTranslate_metric, sub_self]
+      rw [OrientedThreeStage.IncomingSlab.timeTranslate_metric, sub_self]
       exact hinit
     rw [zero_add] at hout
     obtain ⟨H, hinit', hsing'⟩ := hout

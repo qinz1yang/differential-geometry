@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Topology.ThreeManifold.TwoBallCover
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph
@@ -6,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCa
 import Mathlib.Analysis.Normed.Module.Connected
 import DifferentialGeometry.Topology.ThreeManifold.TwoBallCharts
 import DifferentialGeometry.Topology.Manifold.Components
-import DifferentialGeometry.Topology.ThreeManifold.OrientedStage
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapMaps
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OppositeInvarianceObstruction
 
@@ -29,13 +28,13 @@ theorem exists_sphere_diffeomorph_of_discarded_cap_and_complementary_ball
     (c : ConnectedComponents D.Carrier)
     (boundary : E.trace.tubes.Boundary) (hdiscarded : E.trace.capDiscarded boundary)
     (A B : PartialDiffeomorph (𝓡 3) (𝓡 3) E3
-      (D.component c).Carrier ∞)
+      (D.toClosedOrientedManifold.component c).Carrier ∞)
     (hA : closedBall (0 : E3) 1 ⊆ A.source)
     (hB : closedBall (0 : E3) 1 ⊆ B.source)
     (hcap : ∀ (z : E3) (hz : z ∈ closedBall (0 : E3) 1),
       (A z).val = E.trace.discardedCap boundary hdiscarded ⟨z, hz⟩)
     (hcover : B '' ball (0 : E3) 1 = (A '' closedBall (0 : E3) 1)ᶜ) :
-    ∃ e : S3 ≃ₘ⟮𝓡 3, 𝓡 3⟯ (D.component c).Carrier,
+    ∃ e : S3 ≃ₘ⟮𝓡 3, 𝓡 3⟯ (D.toClosedOrientedManifold.component c).Carrier,
       (∃ a b : PartialDiffeomorph (𝓡 3) (𝓡 3) E3 S3 ∞,
         a.source = univ ∧ b.source = univ ∧
         a '' closedBall (0 : E3) 1 = (b '' ball (0 : E3) 1)ᶜ ∧
@@ -45,7 +44,7 @@ theorem exists_sphere_diffeomorph_of_discarded_cap_and_complementary_ball
           F '' closedBall (0 : E3) 1 = closedBall (0 : E3) 1 ∧
           ∀ z ∈ closedBall (0 : E3) 1, e (b z) = B (F z)) ∧
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        (D.component c).toClosedOrientedManifold
+        (D.toClosedOrientedManifold.component c).toClosedOrientedManifold
         standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
   obtain ⟨e, a, b, ha, hb, hab, heA, F, hF, heB⟩ :=
     DifferentialGeometry.Topology.Manifold.exists_sphere_diffeomorph_of_complementary_ball_charts
@@ -55,7 +54,7 @@ theorem exists_sphere_diffeomorph_of_discarded_cap_and_complementary_ball
     rw [heA z hz]
     exact hcap z hz
   · exact nonempty_orientedDiffeomorph_standardThreeSphere_of_diffeomorph
-      (D.component c)
+      (D.toClosedOrientedManifold.component c)
       ⟨e.symm.trans standardThreeSphereLiftDiffeomorph⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition
@@ -72,15 +71,15 @@ theorem exists_discardedCap_sphere_model_of_component_ball_cover
     (c : ConnectedComponents D.Carrier)
     (boundary : E.trace.tubes.Boundary) (hdiscarded : E.trace.capDiscarded boundary)
     (A B : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace
-      (D.component c).Carrier ∞)
+      (D.toClosedOrientedManifold.component c).Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (hB : closedBall (0 : ThreeSpace) 1 ⊆ B.source)
     (hcover : B '' closedBall (0 : ThreeSpace) 1 ∪ A '' closedBall (0 : ThreeSpace) 1 = univ)
     (hcap : range (E.trace.discardedCap boundary hdiscarded) ⊆
-      (Subtype.val : (D.component c).Carrier → D.Carrier) ''
+      (Subtype.val : (D.toClosedOrientedManifold.component c).Carrier → D.Carrier) ''
         (B '' closedBall (0 : ThreeSpace) 1)) :
     let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
-    ∃ (e : (D.component c).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
+    ∃ (e : (D.toClosedOrientedManifold.component c).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
       (a : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace S3 ∞)
       (fCap : C(ThreeBall,S3)),
       a.source = univ ∧
@@ -91,15 +90,15 @@ theorem exists_discardedCap_sphere_model_of_component_ball_cover
         E.trace.discardedCoreInclusion
           ⟨E.trace.tubes.coreBoundarySphere boundary (E.trace.capping.attaching boundary s),
             E.trace.capDiscarded_coreBoundarySphere_not_mem_retainedCore boundary hdiscarded _⟩) ∧
-      (∃ U : Set (D.component c).Carrier,
+      (∃ U : Set (D.toClosedOrientedManifold.component c).Carrier,
         IsOpen U ∧ B '' closedBall (0 : ThreeSpace) 1 ⊆ U ∧
           U ⊆ (B.symm.trans a).source ∧ EqOn e (B.symm.trans a) U) ∧
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        (D.component c).toClosedOrientedManifold
+        (D.toClosedOrientedManifold.component c).toClosedOrientedManifold
         standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
   let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
-  let U₀ := D.componentOpen c
-  let : IsManifold ThreeModel ∞ U₀ := (D.component c).smooth
+  let U₀ := D.toClosedOrientedManifold.componentOpen c
+  let : IsManifold ThreeModel ∞ U₀ := (D.toClosedOrientedManifold.component c).smooth
   have hmem (x : ThreeBall) : E.trace.discardedCap boundary hdiscarded x ∈ U₀ := by
     obtain ⟨y,hy,he⟩ := hcap (mem_range_self x)
     exact he ▸ y.property
@@ -133,7 +132,7 @@ theorem exists_discardedCap_sphere_model_of_component_ball_cover
     exact (congrArg Subtype.val (hfj (sphereToThreeBall s))).trans
       (E.trace.discardedCap_boundary boundary hdiscarded s)
   · exact nonempty_orientedDiffeomorph_standardThreeSphere_of_diffeomorph
-      (D.component c)
+      (D.toClosedOrientedManifold.component c)
       ⟨e.trans standardThreeSphereLiftDiffeomorph⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition
@@ -150,19 +149,19 @@ theorem exists_discardedCap_sphere_collar_of_component_ball_cover
     (component : ConnectedComponents D.Carrier)
     (boundary : E.trace.tubes.Boundary) (hdiscarded : E.trace.capDiscarded boundary)
     (A B : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace
-      (D.component component).Carrier ∞)
+      (D.toClosedOrientedManifold.component component).Carrier ∞)
     (hA : closedBall (0 : ThreeSpace) 1 ⊆ A.source)
     (hB : closedBall (0 : ThreeSpace) 1 ⊆ B.source)
     (hcover : B '' closedBall (0 : ThreeSpace) 1 ∪ A '' closedBall (0 : ThreeSpace) 1 = univ)
     (hcapB : range (E.trace.discardedCap boundary hdiscarded) ⊆
-      (Subtype.val : (D.component component).Carrier → D.Carrier) ''
+      (Subtype.val : (D.toClosedOrientedManifold.component component).Carrier → D.Carrier) ''
         (B '' closedBall (0 : ThreeSpace) 1))
     (c : SmoothTwoSidedCollar (𝓡 2) ThreeModel
       (fun z : Sphere 2 => E.trace.discardedCap boundary hdiscarded (sphereToThreeBall z)))
     (capSide : {q : Sphere 2 × symmetricOpenInterval c.radius // q.2.val ≤ 0} → ThreeBall)
     (hcap : ∀ q (hq : q.2.val ≤ 0), c.toFun q = E.trace.discardedCap boundary hdiscarded (capSide ⟨q,hq⟩)) :
     let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
-    ∃ (e : (D.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
+    ∃ (e : (D.toClosedOrientedManifold.component component).Carrier ≃ₘ⟮ThreeModel,ThreeModel⟯ S3)
       (a : PartialDiffeomorph ThreeModel ThreeModel ThreeSpace S3 ∞)
       (fCap : C(ThreeBall,S3)) (profile : C(Sphere 2 × symmetricOpenInterval c.radius,S3)),
       a.source = univ ∧ IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞ fCap ∧
@@ -170,17 +169,17 @@ theorem exists_discardedCap_sphere_collar_of_component_ball_cover
       ContMDiff ((𝓡 2).prod 𝓘(ℝ)) ThreeModel ∞ profile ∧
       (∀ q, (e.symm (profile q)).val = c.toFun q) ∧
       (∀ q (hq : q.2.val ≤ 0), profile q = fCap (capSide ⟨q,hq⟩)) ∧
-      (∃ U : Set (D.component component).Carrier,
+      (∃ U : Set (D.toClosedOrientedManifold.component component).Carrier,
         IsOpen U ∧ B '' closedBall (0 : ThreeSpace) 1 ⊆ U ∧
           U ⊆ (B.symm.trans a).source ∧ EqOn e (B.symm.trans a) U) ∧
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
-        (D.component component).toClosedOrientedManifold
+        (D.toClosedOrientedManifold.component component).toClosedOrientedManifold
         standardThreeSphereLift.{u}.toClosedOrientedManifold) := by
   let : ChartedSpace (EuclideanHalfSpace 3) ThreeBall := E.ballCharts
   obtain ⟨e,a,fCap,ha,hf,hfe,hfa,hfb,⟨U,hU,hBU,hUs,hEq⟩,horiented⟩ :=
     E.exists_discardedCap_sphere_model_of_component_ball_cover component boundary hdiscarded A B hA hB hcover hcapB
-  let U₀ := D.componentOpen component
-  let : IsManifold ThreeModel ∞ U₀ := (D.component component).smooth
+  let U₀ := D.toClosedOrientedManifold.componentOpen component
+  let : IsManifold ThreeModel ∞ U₀ := (D.toClosedOrientedManifold.component component).smooth
   let : PreconnectedSpace (Sphere 2) := isPreconnected_iff_preconnectedSpace.mp
     (isPreconnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
       (0 : ThreeSpace) 1)

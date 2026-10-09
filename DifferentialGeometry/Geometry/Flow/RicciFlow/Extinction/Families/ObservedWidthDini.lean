@@ -22,7 +22,7 @@ theorem historyStageAt_eq_last (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.ho
 
 theorem historyWidth_final (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     (hfin : H.time (Fin.last H.eventCount) < H.horizon)
     (t : Icc (0 : ℝ) H.horizon) (ht : H.time (Fin.last H.eventCount) ≤ t.1) :
@@ -49,12 +49,12 @@ universe u
 theorem two_mul_le_componentHalfScalar (P : OrientedThreeStage.{u})
     (F : SolutionFamily (I := ThreeModel) (M := P.Carrier))
     (p : ConnectedComponents P.Carrier) (t a : ℝ)
-    (h : ∀ x : (P.component p).toClosedOrientedManifold.Carrier, 2 * a ≤ F.scalar t x.1) :
+    (h : ∀ x : (P.component p).Carrier, 2 * a ≤ F.scalar t x.1) :
     a ≤ componentHalfScalar P F p t := by
-  let : ConnectedSpace (P.component p).toClosedOrientedManifold.Carrier := P.component_connected p
-  have hle : 2 * a ≤ sInf (Set.range (fun x : (P.component p).toClosedOrientedManifold.Carrier => F.scalar t x.1)) :=
+  let : ConnectedSpace (P.component p).Carrier := P.component_connected p
+  have hle : 2 * a ≤ sInf (Set.range (fun x : (P.component p).Carrier => F.scalar t x.1)) :=
     le_csInf (Set.range_nonempty _) (by rintro _ ⟨x, rfl⟩; exact h x)
-  have h2 : a ≤ sInf (Set.range (fun x : (P.component p).toClosedOrientedManifold.Carrier => F.scalar t x.1)) / 2 := by
+  have h2 : a ≤ sInf (Set.range (fun x : (P.component p).Carrier => F.scalar t x.1)) / 2 := by
     linarith
   simpa only [componentHalfScalar] using h2
 
@@ -158,13 +158,13 @@ theorem slopeBound_of_halfScalarBound {W : ℝ → ℝ} {t c ρ : ℝ} (hWt : 0 
 theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
     (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c)
     (hscalar : HistoryScalarLowerBound H c)
     (hinc : ∀ (i : Fin H.eventCount)
         (p : ConnectedComponents (H.stage i.castSucc).Carrier)
-        (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).toClosedOrientedManifold.Carrier),
+        (hSC : SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier),
         ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), ∀ ε > 0, ∃ δ > 0,
           ∀ h ∈ Ioo (0 : ℝ) δ, t + h < H.time i.succ →
             (componentWidth (H.stage i.castSucc)
@@ -178,7 +178,7 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
     (hclosed : ∀ (hfin : H.time (Fin.last H.eventCount) < H.horizon)
         (p : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
         (hSC : SimplyConnectedSpace
-          ((H.stage (Fin.last H.eventCount)).component p).toClosedOrientedManifold.Carrier),
+          ((H.stage (Fin.last H.eventCount)).component p).Carrier),
         ∀ t ∈ Ico (H.time (Fin.last H.eventCount)) H.horizon, ∀ ε > 0, ∃ δ > 0,
           ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ H.horizon →
             (componentWidth (H.stage (Fin.last H.eventCount))
@@ -361,7 +361,7 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_slabIncrementBounds
 theorem observedHistoryWidthValue_upperRightDiniLE_of_historyIncoming
     (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c : ℝ} (hc : 0 < c)
     (hscalar : HistoryScalarLowerBound H c) :
@@ -375,7 +375,7 @@ theorem observedHistoryWidthValue_upperRightDiniLE_of_historyIncoming
 theorem observedComparisonRecord_of_historyWidth_of_scalarLowerBound
     (H : ObservedHistory.{u})
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
-      SimplyConnectedSpace ((H.stage 0).component c).toClosedOrientedManifold.Carrier)
+      SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier)
     {c A : ℝ} (hc : 0 < c) (hHpos : 0 < H.horizon)
     (hscalar : HistoryScalarLowerBound H c)

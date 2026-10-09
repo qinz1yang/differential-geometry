@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Connected.Separation.NestedCompactSides
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.DisjointCompactSides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckBusemannOutward
 
 set_option autoImplicit false
@@ -54,7 +54,7 @@ theorem compact_sides_nested (hcores : Disjoint W1.core W2.core)
   have hS2 : IsPreconnected W2.centralSphere := by
     rw [W2.centralSphere_eq_range]
     exact (isConnected_range hcentral).isPreconnected
-  exact DifferentialGeometry.Topology.compact_sides_nested_of_disjoint_frontiers
+  exact compact_sides_nested_of_disjoint_slices
     (D1.lower 0) (D1.upper 0) W1.centralSphere (D2.lower 0) (D2.upper 0) W2.centralSphere
     hB1.isPreconnected hU1.isPreconnected hS2 hB1op hU1op hB2op hU2op hdis1 hdis2
     hcover1 hcover2 (D1.closure_lower_eq_compl_upper 0 hzero)

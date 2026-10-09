@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.TestFunction.Sobolev
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.LocalBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DiffQuotLocal
 
 noncomputable section
 

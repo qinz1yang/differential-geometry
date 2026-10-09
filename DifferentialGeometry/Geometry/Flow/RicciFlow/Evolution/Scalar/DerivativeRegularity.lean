@@ -22,7 +22,7 @@ theorem scalar_time_deriv_contMDiffOn (S : SolutionOn (I := I) (M := M) D)
       (fun z : ℝ × M => deriv (fun t => S.scalar t z.2) z.1)
       (D.regular ×ˢ (univ : Set M)) := by
   intro z hz
-  exact (contMDiffAt_partial_deriv_fst
+  exact (timeDeriv_smoothAt
     ((scalar_joint S hS).contMDiffAt
       ((D.regular_isOpen.prod isOpen_univ).mem_nhds hz)) (by simp)).contMDiffWithinAt
 

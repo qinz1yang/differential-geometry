@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.ForwardScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorChartFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
@@ -58,7 +58,7 @@ private theorem incoming_extended_riemannNorm_le_of_initial_scalar_bound
   rcases lt_or_eq_of_le ht.2 with hlt | rfl
   · rw [L.extendedMetric_before hlt, rmNormSq_restrictOpen]
     exact hpast t ⟨ht.1, hlt⟩
-  · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+  · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
     apply le_of_tendsto (L.tendsto_riemannNorm x)
     filter_upwards [Ioo_mem_nhdsLT G.lt] with t ht
     exact hpast t ⟨ht.1.le, ht.2⟩
@@ -869,7 +869,7 @@ theorem riemannNorm_backwardSurvivorIncoming_le_of_scalar_bound_at_time
     rcases lt_or_eq_of_le ht.2 with hlt | rfl
     · rw [L.extendedMetric_before hlt,rmNormSq_restrictOpen]
       exact hlate t ⟨hlasttime,hlt⟩
-    · rw [DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
       apply le_of_tendsto (L.tendsto_riemannNorm (H.backwardSurvivorIncomingMap first last hle G z))
       filter_upwards [Ioo_mem_nhdsLT G.lt] with t ht
       exact hlate t ⟨ht.1.le,ht.2⟩
@@ -1113,7 +1113,7 @@ theorem curvature_bound_normalized_backwardSurvivorIncoming_chart_of_final_scala
     · have := (div_le_iff₀ hq).mpr (show t ≤ (s-H.time first)*q by nlinarith [ht.2])
       linarith
   have ht0 : 2 * C * (s-τ) * (C₀*q) ≤ 1 := by nlinarith [htime]
-  have hb := DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.riemannNorm_extendedMetric_le_of_scalar_bound_at_time
+  have hb := OrientedThreeStage.IncomingSlab.TerminalLimitMetric.riemannNorm_extendedMetric_le_of_scalar_bound_at_time
     G L (H.backwardSurvivorIncomingMap first last hle G (Ξ x)) (mul_pos hC₀ hq)
     hrQ ha₀ hτ (hbound x) (hscalar x) (hpinch x) ht0 _ htG
   have hb' : Real.sqrt (normSq0S (gflow (H.time first+t/q)) (Ξ x) 4

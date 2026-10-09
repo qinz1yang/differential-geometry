@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.ExteriorPowerPullback
 import DifferentialGeometry.Geometry.Connection.PullbackHom
-import DifferentialGeometry.Geometry.Connection.HomBundle.Composition
 
 noncomputable section
 
@@ -39,7 +38,7 @@ theorem homBundleCovariantDerivativeGen_exteriorPower_map
     letI := Bundle.ExteriorPower.vector_bundle F₂ V₂ k
     letI := Bundle.ExteriorPower.contMDiffVectorBundle (IB := I) (n := ∞) F₂ V₂ k
     let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
-    _root_.CovariantDerivative.hom I M _ _ _ _ D (cov.exteriorPower k)
+    homBundleCovariantDerivativeGen I M _ _ _ _ D (cov.exteriorPower k)
       (fun y => _root_.exteriorPower.mapContinuousLinearMap k (φ y).toContinuousLinearMap) = 0 := by
   let : ∀ z, FiniteDimensional ℝ (V₁ z) := fun z => VectorBundle.finiteDimensional ℝ F₁ V₁ z
   let : ∀ z, FiniteDimensional ℝ (V₂ z) := fun z => VectorBundle.finiteDimensional ℝ F₂ V₂ z
@@ -64,7 +63,7 @@ theorem homBundleCovariantDerivativeGen_exteriorPower_map
   have hQ := Bundle.ExteriorPower.contMDiff_mapContinuousLinearMap k 1
     (fun y => (φ y).toContinuousLinearMap) hφ
   rw [← hY, ← hZ]
-  rw [_root_.CovariantDerivative.hom_apply_of_mdifferentiableAt I M _ _ _ _ _ _ _
+  rw [homBundleCovariantDerivativeGen_apply_of_mdifferentiableAt I M _ _ _ _ _ _ _
     ((hQ x).mdifferentiableAt one_ne_zero) Z.mdifferentiableAt Y.mdifferentiableAt]
   change cov.exteriorPower k
       (fun y => _root_.exteriorPower.map k (φ y).toLinearEquiv.toLinearMap (Y y)) x (Z x) -
@@ -98,10 +97,10 @@ theorem map_homBundleCovariantDerivativeGen_exteriorPower_conjugate
       let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
       let C := cov.exteriorPower k
       (Q x).toContinuousLinearMap.comp
-          (_root_.CovariantDerivative.hom I M _ _ _ _ D D
+          (homBundleCovariantDerivativeGen I M _ _ _ _ D D
             (fun y => (Q y).symm.toContinuousLinearMap.comp
               ((A y).comp (Q y).toContinuousLinearMap)) x X) =
-        (_root_.CovariantDerivative.hom I M _ _ _ _ C C A x X).comp
+        (homBundleCovariantDerivativeGen I M _ _ _ _ C C A x X).comp
           (Q x).toContinuousLinearMap := by
   let : ∀ z, FiniteDimensional ℝ (V₁ z) := fun z => VectorBundle.finiteDimensional ℝ F₁ V₁ z
   let : ∀ z, FiniteDimensional ℝ (V₂ z) := fun z => VectorBundle.finiteDimensional ℝ F₂ V₂ z
@@ -132,23 +131,23 @@ theorem map_homBundleCovariantDerivativeGen_exteriorPower_conjugate
   have hBx := ((hQinv x).mdifferentiableAt one_ne_zero).clm_bundle_comp
     (hA.clm_bundle_comp hQx)
   have hp := homBundleCovariantDerivativeGen_exteriorPower_map φ hφ cov k
-  have hl := _root_.CovariantDerivative.hom_comp D D C hBx hQx X
-  have hr := _root_.CovariantDerivative.hom_comp D C C hQx hA X
+  have hl := homBundleCovariantDerivativeGen_comp D D C hBx hQx X
+  have hr := homBundleCovariantDerivativeGen_comp D C C hQx hA X
   have heq : (fun y => (Q y).toContinuousLinearMap.comp (B y)) =
       (fun y => (A y).comp (Q y).toContinuousLinearMap) := by
     funext y
     apply ContinuousLinearMap.ext
     intro w
     exact (Q y).apply_symm_apply (A y (Q y w))
-  change _root_.CovariantDerivative.hom I M _ _ _ _ D C
+  change homBundleCovariantDerivativeGen I M _ _ _ _ D C
     (fun y => (Q y).toContinuousLinearMap.comp (B y)) x X = _ at hl
   rw [hp] at hl hr
   simp only [Pi.zero_apply, zero_apply, ContinuousLinearMap.zero_comp, zero_add,
     ContinuousLinearMap.comp_zero, add_zero] at hl hr
   change (Q x).toContinuousLinearMap.comp
-    (_root_.CovariantDerivative.hom I M _ _ _ _ D D B x X) = _
+    (homBundleCovariantDerivativeGen I M _ _ _ _ D D B x X) = _
   exact hl.symm.trans
-    ((congrArg (fun s => _root_.CovariantDerivative.hom I M _ _ _ _ D C s x X) heq).trans hr)
+    ((congrArg (fun s => homBundleCovariantDerivativeGen I M _ _ _ _ D C s x X) heq).trans hr)
 
 theorem homBundleCovariantDerivativeGen_exteriorPower_conjugate
     (φ : ∀ x, V₁ x ≃L[ℝ] V₂ x)
@@ -174,11 +173,11 @@ theorem homBundleCovariantDerivativeGen_exteriorPower_conjugate
       let Q := fun y => _root_.exteriorPower.mapContinuousLinearEquiv k (φ y)
       let D := (pullbackFiberwiseLinearEquiv (fun y => (φ y).toLinearEquiv) hφ.clm_bundle_map cov).exteriorPower k
       let C := cov.exteriorPower k
-      _root_.CovariantDerivative.hom I M _ _ _ _ D D
+      homBundleCovariantDerivativeGen I M _ _ _ _ D D
           (fun y => (Q y).symm.toContinuousLinearMap.comp
             ((A y).comp (Q y).toContinuousLinearMap)) x X =
         (Q x).symm.toContinuousLinearMap.comp
-          ((_root_.CovariantDerivative.hom I M _ _ _ _ C C A x X).comp
+          ((homBundleCovariantDerivativeGen I M _ _ _ _ C C A x X).comp
             (Q x).toContinuousLinearMap) := by
   let : ∀ z, FiniteDimensional ℝ (V₁ z) := fun z => VectorBundle.finiteDimensional ℝ F₁ V₁ z
   let : ∀ z, FiniteDimensional ℝ (V₂ z) := fun z => VectorBundle.finiteDimensional ℝ F₂ V₂ z

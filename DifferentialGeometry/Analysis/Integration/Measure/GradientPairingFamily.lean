@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.GradientPairing
-import DifferentialGeometry.Analysis.Calculus.Derivative.Measurable
+import DifferentialGeometry.Analysis.Calculus.FDeriv.ParametricMeasurability
 import Mathlib.Topology.Instances.Matrix
 import Mathlib.MeasureTheory.MeasurableSpace.Prod
 
@@ -54,7 +54,7 @@ private theorem measurable_inner_gradientFun_family_on_chart
       exact hu.comp_continuousOn (continuousOn_fst.prodMk
         ((continuousOn_extChartAt_symm alpha).comp continuousOn_snd (fun _ hz => hz.2)))
     exact (ContinuousLinearMap.measurable_apply (chartModelBasis E i)).comp
-      ((DifferentialGeometry.Analysis.measurable_fderiv_with_param_of_continuousOn
+      ((DifferentialGeometry.Analysis.Calculus.measurable_fderiv_with_param_on_open
         (isOpen_extChartAt_target (I := I) alpha) hc).comp hcoord)
   have hmatrix : Continuous (fun z : T × (chartAt H alpha).source =>
       chartGramMatrix (g z.1) alpha z.2) := by

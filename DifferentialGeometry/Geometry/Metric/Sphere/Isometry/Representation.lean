@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Rigidity
 import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.Extension
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Analysis.Normed.Module.Connected
 
 open DifferentialGeometry.Geometry.Curvature

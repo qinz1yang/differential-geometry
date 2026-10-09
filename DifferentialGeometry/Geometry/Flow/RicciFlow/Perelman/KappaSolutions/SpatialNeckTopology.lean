@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.EqualDimensionImmersion
 import DifferentialGeometry.Topology.SphereSeparation.BicollarLineReparametrization
-import DifferentialGeometry.Topology.Collar.TwoSided.CompactSides
+import DifferentialGeometry.Topology.SphereSeparation.BicollarCompactSides
 
 set_option autoImplicit false
 

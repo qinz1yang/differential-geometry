@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBoundStrict
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartIdentity
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.SobolevComposition
+import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.TransitionDiffeo
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.ChartSobolevDensity
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.FirstOrderBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 
 noncomputable section
 

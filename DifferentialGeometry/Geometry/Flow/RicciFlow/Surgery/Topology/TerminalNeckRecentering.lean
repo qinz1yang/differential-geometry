@@ -8,13 +8,10 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_spatial_neck_near_high_point_of_canonical_neighborhoods
+theorem TerminalLimitMetric.exists_spatial_neck_near_high_point_of_canonical_neighborhoods
     (L : G.TerminalLimitMetric) {eps δ q C1 C2 : ℝ}
     (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
     (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q)
@@ -104,7 +101,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
         ring
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_neck_centers_of_terminal_scalar_divergence
+theorem exists_spatial_neck_centers_of_terminal_scalar_divergence
     (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
     (G : ∀ n, (P n).IncomingSlab (a n) (s n))
     (L : ∀ n, (G n).TerminalLimitMetric)
@@ -163,7 +160,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (fun n => bot_le) hbound
 
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.metric_distance_limit_of_nearby_points
+private theorem metric_distance_limit_of_nearby_points
     {M : ℕ → Type*} [∀ n, TopologicalSpace (M n)] [∀ n, ChartedSpace ThreeSpace (M n)] [∀ n, IsManifold ThreeModel ∞ (M n)]
     (g : ∀ n, SmoothRiemannianMetric ThreeModel (M n)) (p x v : ∀ n, M n)
     (hfinite : ∀ n, riemannianEDistOf (g n) (p n) (x n) ≠ ⊤)
@@ -203,7 +200,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   simpa only [sub_add_cancel, zero_add] using hh
 
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_spatial_neck_centers_at_escape_radius
+theorem exists_spatial_neck_centers_at_escape_radius
     (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
     (G : ∀ n, (P n).IncomingSlab (a n) (s n))
     (L : ∀ n, (G n).TerminalLimitMetric)

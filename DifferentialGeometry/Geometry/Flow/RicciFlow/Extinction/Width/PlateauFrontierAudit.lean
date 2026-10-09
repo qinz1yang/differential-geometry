@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 def PlateauSmoothLoopDiskDensity (g : SmoothRiemannianMetric I Q) : Prop :=
-  ∀ γ : DifferentialGeometry.Topology.freeLoop Q, ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ) →
+  ∀ γ : Surgery.Topology.ContinuousFreeLoop Q, ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ) →
     PlateauDiskDensity (I := I) (Q := Q) g γ
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
@@ -59,7 +59,7 @@ theorem conformal_disk_producer_of_plateauSpanningFrontier
 
 omit [FiniteDimensional ℝ E] hT2 hCompact hBoundary hSigma in
 theorem not_forall_plateauDiskDensity_standardEuclideanLine :
-    ¬ ∀ γ : DifferentialGeometry.Topology.freeLoop ℝ,
+    ¬ ∀ γ : Surgery.Topology.ContinuousFreeLoop ℝ,
       PlateauDiskDensity (I := 𝓘(ℝ, ℝ)) (Q := ℝ)
         (Geometry.standardEuclideanMetric ℝ) γ :=
   fun h => not_plateauDiskDensity_chordLengthLoop (h chordLengthLoop)
@@ -77,7 +77,7 @@ theorem SmoothDisk.const_isHarmonic (g : SmoothRiemannianMetric 𝓘(ℝ, F) M) 
 
 theorem plateauSpanningFrontier_constLoops (g : SmoothRiemannianMetric 𝓘(ℝ, F) M) (q : M) :
     Nonempty (PlateauSpanningFrontier (I := 𝓘(ℝ, F)) (Q := M) g
-      (DifferentialGeometry.Topology.FreeLoop.constants q)) :=
+      (Surgery.Topology.constantLoops q)) :=
   ⟨{ disk := SmoothDisk.const q
      sigma := SmoothWeaklyMonotoneCircleMap.id
      trace := SmoothDisk.const_trace q SmoothWeaklyMonotoneCircleMap.id
@@ -95,7 +95,7 @@ theorem rfs_plateau_upper_comparison_of_diskCompetitorMinimizer_and_firstVariati
       (I := I) (Icc a b))
     (hemb : ∀ t ∈ Icc a b, Topology.IsEmbedding (gamma t : Surgery.Topology.Circle → Q))
     (himm : ∀ t ∈ Icc a b, ∀ x, loopVelocity (I := I) (gamma t).toContinuousLoop x ≠ 0)
-    (hctr : ContinuousMap.Nullhomotopic (gamma t₀).toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop (gamma t₀).toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = gamma t₀ (sigma.map theta))
     (hconformal : u.IsConformal (W.family.metric t₀))

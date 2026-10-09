@@ -1,7 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.PartialAtlas
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Order.CompleteLattice.Finset
-
 open Set
 
 namespace DifferentialGeometry.Topology.Manifold.AtlasOn

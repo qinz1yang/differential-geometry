@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.UniversalCoverSplitNoncollapse
-import DifferentialGeometry.Geometry.Metric.Product.UniversalCoverScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalProductScalar
 import DifferentialGeometry.Geometry.Curvature.PositiveSectional
 
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34DiskContactControl
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.SheetSupport
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34InnerSheetSupport
 
 open Set Topology
 
@@ -112,7 +112,7 @@ theorem exists_section34_disk_filling_second_contact_support
     hC.inter_subset_interior_of_boundary_inter_subset hCT (hDT.trans inter_subset_right)
       (fun x hx => (hcross e
         ⟨image_mono ((hAa e).1 ▸ inter_subset_left) (hFA hx.1), hx.2⟩).2)
-  exact exists_compact_support_neighborhood_of_inner_sheet hprep hpack e (hC.isCompact.inter_right hBclosed)
+  exact exists_section34_inner_sheet_support hprep hpack e (hC.isCompact.inter_right hBclosed)
     (subset_inter hcontact hinner)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.SubcriticalSmallTime
-import DifferentialGeometry.Analysis.Sobolev.Time.Operator.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Operator.Basic
 
 noncomputable section
 

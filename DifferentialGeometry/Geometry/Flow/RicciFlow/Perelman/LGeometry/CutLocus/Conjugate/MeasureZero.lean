@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Conjugate.Sard
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Null
+import DifferentialGeometry.Geometry.Measure.ChartNull
 
 set_option autoImplicit false
 

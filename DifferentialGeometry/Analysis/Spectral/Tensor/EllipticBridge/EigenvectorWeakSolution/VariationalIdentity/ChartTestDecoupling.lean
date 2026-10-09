@@ -110,9 +110,9 @@ theorem tensorChartComponentRaw_prependCovGradSlot
         (fun y : M => TensorRSSpace r (s + 1) I y) α).coe_linearMapAt_of_mem
       (R := ℝ) hb_baseS1]
   beta_reduce
-  rw [covariantSlotBundleEquiv_trivializationAt_eq (I := I) (M := M) r s α hb_base Φ]
+  rw [covGradBundleEquiv_trivializationAt_eq (I := I) (M := M) r s α hb_base Φ]
   rw [tensorChartComponentProjection_apply,
-    covariantSlotModelEquiv_apply (E := E) r s]
+    covGradModelEquiv_apply (E := E) r s]
   rw [covGradBundle_trivFibre_eq (I := I) (M := M) r s α b Φ]
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   have hsymmL : (trivializationAt E (TangentSpace I) α).symmL ℝ b

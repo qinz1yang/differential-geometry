@@ -2,16 +2,16 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Neck.Spatial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderAxialNormalization
-import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalDiffeomorphEmbedding
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.CrossTensorPullback
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.OpenTensorJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Cylinder.ReferenceMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CylinderReferenceModel
 import DifferentialGeometry.Geometry.Metric.Construction.TensorOpenExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Locality
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
-import DifferentialGeometry.Geometry.Metric.Pullback.Scaling
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 

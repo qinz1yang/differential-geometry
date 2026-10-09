@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.WeakConvergence
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Compactness.Basic
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Basic
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 
 set_option autoImplicit false

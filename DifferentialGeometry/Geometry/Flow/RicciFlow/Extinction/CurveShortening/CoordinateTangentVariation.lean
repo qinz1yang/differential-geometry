@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curve.TangentVariation
+import DifferentialGeometry.Geometry.Comparison.Variation.Curve.TangentVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.PhysicalLift
 import Mathlib.Tactic.FieldSimp
 

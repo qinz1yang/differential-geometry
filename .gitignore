@@ -2,20 +2,22 @@
 
 # whitelist
 !/DifferentialGeometry/
-!/.github
-!/Examples/
-!/canonical-topology/
+!/.github/
 !/DifferentialGeometry.lean
 !/lakefile.toml
 !/lake-manifest.json
 !/lean-toolchain
 !/README.md
-!/docs/
 !/LICENSE
 !/NOTICE
-!/TAU_CETI_REUSE.md
 !/.gitignore
 # end of whitelist
+
+# Keep project sources Lean-only; preserve vendored source and license metadata.
+/DifferentialGeometry/**
+!/DifferentialGeometry/**/
+!/DifferentialGeometry/**/*.lean
+!/DifferentialGeometry/External/**
 
 .lake/
 

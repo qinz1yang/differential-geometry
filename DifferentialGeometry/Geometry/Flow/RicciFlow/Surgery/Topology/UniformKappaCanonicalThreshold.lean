@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicBallOfCylinder
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Pullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 
 set_option autoImplicit false
@@ -14,12 +14,9 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.curvatureOperatorLowerBoundAt_mono_three {M : Type u} [TopologicalSpace M]
+private theorem curvatureOperatorLowerBoundAt_mono_three {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     (g : SmoothRiemannianMetric I3 M) (x : M)
     (A : algebraicCurvatureTensorSubmodule (I := I3) (M := M) x) {K K' : ℝ}
@@ -34,7 +31,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
   have h3 := mul_le_mul_of_nonneg_right hK h2
   linarith
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.rescalePinchingFunction_antitone_scale {Phi : ℝ → ℝ}
+private theorem rescalePinchingFunction_antitone_scale {Phi : ℝ → ℝ}
     (hPhi : Perelman.AdmissiblePinchingFunction Phi) {A₀ A : ℝ} (hA₀ : 0 < A₀)
     (hA : A₀ ≤ A) (v : ℝ) :
     Perelman.rescalePinchingFunction A Phi v ≤ Perelman.rescalePinchingFunction A₀ Phi v := by
@@ -55,7 +52,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
     rw [e1, e2]
     exact mul_le_mul_of_nonneg_left hq hv.le
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_canonical_threshold_of_parabolically_noncollapsed
+theorem exists_uniform_canonical_threshold_of_parabolically_noncollapsed
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       (∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s), ∃ Q : ℝ, 0 < Q ∧

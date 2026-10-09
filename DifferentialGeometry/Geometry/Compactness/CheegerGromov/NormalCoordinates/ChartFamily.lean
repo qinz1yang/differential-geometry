@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
-import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Smoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Chart
 
 open DifferentialGeometry.Geometry.Curvature

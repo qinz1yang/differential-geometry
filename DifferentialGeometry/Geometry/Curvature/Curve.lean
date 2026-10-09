@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Metric.CurveSpeed.UnitTangent
+import DifferentialGeometry.Geometry.Metric.CurveUnitTangent
 import DifferentialGeometry.Geometry.Connection.SectionAlongRegularity
 import DifferentialGeometry.Geometry.Connection.SectionAlongSmooth
-import DifferentialGeometry.Geometry.Variation.FirstVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 
 
 

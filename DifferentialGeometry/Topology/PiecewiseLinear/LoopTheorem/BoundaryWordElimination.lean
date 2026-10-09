@@ -1,5 +1,10 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Tactic.Group
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryWord.EmbeddedDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskBoundaryWord
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordElimination
 

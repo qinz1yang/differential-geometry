@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Mollification.Local
+import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Local
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Basic
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.Witnesses
 import Mathlib.Analysis.Calculus.UniformLimitsDeriv

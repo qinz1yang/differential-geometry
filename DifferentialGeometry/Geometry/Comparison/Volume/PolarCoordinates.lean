@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.MinimizingDomain.CutTime
+import DifferentialGeometry.Geometry.Comparison.Volume.CutTime
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 
 set_option autoImplicit false

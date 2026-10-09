@@ -157,7 +157,7 @@ theorem lowerKyFanSum_first_contact_impossible
       deriv (fun q ↦ A q x) t =
         rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
             (fun y ↦ A t y) x +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V cov cov (fun y ↦ A t y) x (X t x) +
           reaction (A t x))
     (htheta_nonneg :
@@ -333,7 +333,7 @@ theorem lowerKyFanSum_first_contact_impossible
       deriv (fun q ↦ A q x) t -
             rawBundleEndomorphismConnLap (I := I) (G.metric t) cov
               (fun y ↦ A t y) x -
-            _root_.CovariantDerivative.hom
+            HomConnectionGen.homBundleCovariantDerivativeGen
               I M F V F V cov cov (fun y ↦ A t y) x (X t x) =
         reaction (A t x) := by
     rw [hevolution]
@@ -429,7 +429,7 @@ private theorem lowerKyFanSum_barrier_pos_on_compact_set_of_subsolution
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ q ∈ Icc s t, ∀ y ∈ Kset,
@@ -620,7 +620,7 @@ theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ q ∈ Icc s t, ∀ y ∈ Kset,
@@ -700,7 +700,7 @@ theorem mul_le_lowerKyFanSum_on_compact_set_of_subsolution_on_Ioo
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ q ∈ Icc s t, ∀ y ∈ Kset,
@@ -799,7 +799,7 @@ theorem lowerKyFanSum_dirichlet_barrier_pos_on_compact_set
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ q ∈ Icc s t, ∀ y ∈ Kset,
@@ -872,7 +872,7 @@ theorem lowerKyFanSum_pos_on_compact_set_of_dirichlet_solution
       deriv (fun r ↦ A r y) q =
         rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
             (fun z ↦ A q z) y +
-          _root_.CovariantDerivative.hom
+          HomConnectionGen.homBundleCovariantDerivativeGen
             I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
           reaction q y (A q y)) :
     ∀ q ∈ Ioc s t, ∀ y ∈ interior Kset,

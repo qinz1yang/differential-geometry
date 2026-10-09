@@ -2,7 +2,7 @@ import DifferentialGeometry.Bundle.Orientation.CompatibleSection
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.DeckIsometry
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
-import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
 
 noncomputable section
 open Bundle Manifold Set Filter

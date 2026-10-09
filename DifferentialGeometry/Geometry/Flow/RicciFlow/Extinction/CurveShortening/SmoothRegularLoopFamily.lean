@@ -78,7 +78,7 @@ theorem continuous_circleParameter_of_smoothOn {a b : ℝ} {c : CurveMap M}
   exact Topology.IsQuotientMap.continuous_lift_prod_left hq hjoint
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] in
-theorem continuousOn_loopFamily_of_smoothOn {a b : ℝ} (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+theorem continuousOn_loopFamily_of_smoothOn {a b : ℝ} (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) :
     ContinuousOn γ (Icc a b) := by
   rw [continuousOn_iff_continuous_domRestrict]
@@ -110,9 +110,9 @@ theorem continuousOn_loopLiftVelocity_of_smoothOn {a b : ℝ} (hab : a < b)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem exists_continuousOn_contractibleRegularLoop_family_of_smoothOn {a b : ℝ}
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     ∃ Γ : ℝ → Width.ContractibleRegularLoop (I := I) (Q := M),
       ContinuousOn Γ (Icc a b) ∧ ∀ t ∈ Icc a b, (Γ t).1.toContinuousLoop = γ t := by
   by_cases hab : a < b
@@ -164,9 +164,9 @@ theorem exists_continuousOn_contractibleRegularLoop_family_of_smoothOn {a b : �
 theorem continuousOn_loopFamilyLeastArea_of_smoothOn
     [T2Space M] [CompactSpace M] [Nonempty M] [I.Boundaryless]
     {D : RealTimeInterval} {a b : ℝ}
-    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (B : RicciBackground (I := I) (M := M) D a b) (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) :
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t)) :
     ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) := by
   obtain ⟨Γ, hΓ, hagree⟩ :=
     exists_continuousOn_contractibleRegularLoop_family_of_smoothOn γ hγ hctr

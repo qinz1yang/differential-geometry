@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.HalfLineWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Locality
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Compactness.TerminalLimit.Solution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardExtension.MetricComparisons
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.TerminalWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FlowConvergenceAssembly
 
 set_option autoImplicit false
 

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.Connected.SeparatorLocation
 import DifferentialGeometry.Topology.FundamentalGroup.Circle
@@ -5,7 +10,7 @@ import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 import DifferentialGeometry.Topology.FundamentalGroup.Nullhomotopy
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.Homotopy.ConvexProduct
-import DifferentialGeometry.Topology.SolidTorus.Shell
+import DifferentialGeometry.Topology.PiecewiseLinear.Moise308NestedShell
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.ToroidalShell
@@ -250,7 +255,7 @@ theorem not_nullhomotopic_inclusion_of_nested_tori
   let i₁₂ : C(S₁, S₂) :=
     ⟨Set.inclusion (h₁₂.trans interior_subset), continuous_inclusion _⟩
   obtain ⟨eShell, heShell⟩ :=
-    exists_homotopyEquiv_leftInverse_inclusion_of_isToroidalShell hclosed₁ hclosed₂ h₁₂ hshell
+    homotopyEquiv_inclusion_of_isToroidalShell hclosed₁ hclosed₂ h₁₂ hshell
   obtain ⟨x⟩ := (isConnected_of_isTopologicalSolidTorus hS₁).nonempty.to_subtype
   have hi₁₂ : Function.Injective (FundamentalGroup.map i₁₂ x) :=
     (DifferentialGeometry.Topology.bijective_fundamentalGroup_map_of_homotopyEquiv_leftInverse

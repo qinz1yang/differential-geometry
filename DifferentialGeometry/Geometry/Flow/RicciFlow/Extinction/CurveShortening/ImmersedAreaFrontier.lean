@@ -21,15 +21,15 @@ theorem rfs_csf_immersed_area_of_embedded_area_of_generic_curves
     (B : RicciBackground (I := I) (M := M) D a b)
     (hdim : Module.finrank ℝ E = 3) {N : ℕ}
     (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
     (hi : (curveOfLoopFamily γ).ImmersedOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hEmbedded : ∀ {a b : ℝ} (B' : RicciBackground (I := I) (M := M) D a b)
-        (_ : Module.finrank ℝ E = 3) (γ' : ℝ → DifferentialGeometry.Topology.freeLoop M),
+        (_ : Module.finrank ℝ E = 3) (γ' : ℝ → ContinuousFreeLoop M),
       (curveOfLoopFamily γ').SmoothOn (I := I) (Icc a b) →
       (curveOfLoopFamily γ').ImmersedOn (I := I) (Icc a b) →
-      (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ' t)) →
+      (∀ t ∈ Icc a b, IsContractibleLoop (γ' t)) →
       (∀ t ∈ Icc a b, Topology.IsEmbedding (γ' t)) →
       ∀ t ∈ Ico a b, ∀ ε > 0, ∃ δ > 0, ∀ h ∈ Ioo (0 : ℝ) δ, t + h ≤ b →
         (loopFamilyLeastArea B'.family.metric γ' (t + h) -
@@ -37,7 +37,7 @@ theorem rfs_csf_immersed_area_of_embedded_area_of_generic_curves
           -2 * Real.pi - scalarMinimum B'.family t *
               loopFamilyLeastArea B'.family.metric γ' t / 2 +
             (curveOfLoopFamily γ').areaError B'.family.metric (Icc a b) t + ε)
-    (hGeneric : ∃ approximants : ℕ → ℝ → DifferentialGeometry.Topology.freeLoop M,
+    (hGeneric : ∃ approximants : ℕ → ℝ → ContinuousFreeLoop M,
       (∀ j, (curveOfLoopFamily (approximants j)).SmoothOn (I := I) (Icc a b) ∧
         (curveOfLoopFamily (approximants j)).ImmersedOn (I := I) (Icc a b) ∧
         ∃ exceptional : Finset ℝ, ∀ t ∈ Icc a b,
@@ -53,8 +53,8 @@ theorem rfs_csf_immersed_area_of_embedded_area_of_generic_curves
       (∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
         |(curveOfLoopFamily (approximants j)).areaError B.family.metric (Icc a b) t -
           (curveOfLoopFamily γ).areaError B.family.metric (Icc a b) t| < ε) ∧
-      ((∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
-        (∀ j t, t ∈ Icc a b → ContinuousMap.Nullhomotopic (approximants j t)) ∧
+      ((∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
+        (∀ j t, t ∈ Icc a b → IsContractibleLoop (approximants j t)) ∧
         ∀ ε > 0, ∃ j₀ : ℕ, ∀ j ≥ j₀, ∀ t ∈ Icc a b,
           |loopFamilyLeastArea B.family.metric (approximants j) t -
             loopFamilyLeastArea B.family.metric γ t| < ε)) :
@@ -135,7 +135,7 @@ theorem rfs_csf_immersed_area_of_embedded_area_of_generic_curves
       (happ j).1.mono (Set.prod_mono (subset_univ _) hsub)
     have hi' : (curveOfLoopFamily (app j)).ImmersedOn (I := I) (Icc a' b') :=
       fun x t ht => (happ j).2.1 x t (hsub ht)
-    have hctr' : ∀ t ∈ Icc a' b', ContinuousMap.Nullhomotopic (app j t) :=
+    have hctr' : ∀ t ∈ Icc a' b', IsContractibleLoop (app j t) :=
       fun t ht => hctrApp j t (hsub ht)
     have hvel : ∀ x : ℝ, (curveOfLoopFamily (app j)).velocity (I := I) (Icc a' b') x v =
         (curveOfLoopFamily (app j)).velocity (I := I) (Icc a b) x v := by

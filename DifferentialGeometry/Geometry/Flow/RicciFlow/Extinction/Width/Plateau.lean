@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.AreaTransport
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SmoothDensity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
-import DifferentialGeometry.Analysis.Calculus.Manifold.ImmersionLiftRegularity
+import DifferentialGeometry.Geometry.MinimalSurface.Plateau.ImmersionTraceLift
 
 noncomputable section
 
@@ -559,7 +559,7 @@ theorem smooth_exact_disk_density (g : SmoothRiemannianMetric I Q)
   let g' : SmoothRiemannianMetric 𝓘(ℝ, E) c.Q :=
     Diffeomorph.pullbackMetricCross g c.equiv.symm
   let fc : C(Q, c.Q) := ⟨c.equiv, c.equiv.continuous⟩
-  let γ' : DifferentialGeometry.Topology.freeLoop c.Q := fc.comp γ.toContinuousLoop
+  let γ' : Surgery.Topology.ContinuousFreeLoop c.Q := fc.comp γ.toContinuousLoop
   let v' : C(Disk, c.Q) := fc.comp v.1.map
   have hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
       (fun t : ℝ => γ' (t : Surgery.Topology.Circle)) :=
@@ -605,7 +605,7 @@ theorem smooth_exact_disk_density (g : SmoothRiemannianMetric I Q)
     simpa only [hw, hlim] using htend
 
 
-def IsSignedWeaklyMonotoneTrace (u : Disk → Q) (γ : DifferentialGeometry.Topology.freeLoop Q) : Prop :=
+def IsSignedWeaklyMonotoneTrace (u : Disk → Q) (γ : Surgery.Topology.ContinuousFreeLoop Q) : Prop :=
   ∃ φ : ℝ → ℝ, Continuous φ ∧
     ((Monotone φ ∧ ∀ t, φ (t + 1) = φ t + 1) ∨
       (Antitone φ ∧ ∀ t, φ (t + 1) = φ t - 1)) ∧
@@ -1179,7 +1179,7 @@ theorem smooth_monotone_trace (g : SmoothRiemannianMetric I Q)
 theorem conformal_disk_attains_exact_area (g : SmoothRiemannianMetric I Q)
     (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ (σ.map θ))
     (hmin : ∀ v : SmoothDisk (I := I) (Q := Q),

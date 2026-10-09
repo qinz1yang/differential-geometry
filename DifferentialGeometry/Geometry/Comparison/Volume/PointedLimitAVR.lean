@@ -1,13 +1,13 @@
 import DifferentialGeometry.Geometry.Comparison.Volume.AsymptoticVolumeRatio
 import DifferentialGeometry.Geometry.Comparison.Volume.CompactAVR
-import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Naturality
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.CanonicalSource
+import DifferentialGeometry.Geometry.Comparison.Volume.DiffeomorphVolume
+import DifferentialGeometry.Geometry.Comparison.Volume.PointedConvergence
 import DifferentialGeometry.Geometry.Comparison.Volume.VolumeNaturality
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import Mathlib.Geometry.Manifold.Instances.Icc

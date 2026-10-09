@@ -281,11 +281,11 @@ private theorem exists_normalized_parameterDerivative_forcing_lift
     exact (norm_normalizedPrincipalOperator_le g (J (a₂ t))).trans ht
   have hc := tensorResolventL2_isCompactOperator
     (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ)) g 0 0
-  with_reducible_and_instances refine (exists_heat_vector_forcing_lift_of_l2_coefficients
+  refine exists_heat_vector_forcing_lift_of_l2_coefficients
     (ι := ι) (E := ℝ) (H := ℝ) (I := 𝓘(ℝ, ℝ)) (M := AddCircle (1 : ℝ))
     (g := g) (r := 0) (s := 0) (a := ((0 : ℕ) : ℝ)) (b := ((1 : ℕ) : ℝ))
     (by norm_num) hT hc 0 G A2h hA2h C2h hC2h A1h hA1h R
-    A2l hA2l C2l hC2l' A1l hA1l R₀ ?_ ?_ rfl hfLeq hC2hlt hC2llt 0 ?_)
+    A2l hA2l C2l hC2l' A1l hA1l R₀ ?_ ?_ rfl hfLeq hC2hlt hC2llt 0 ?_
   · exact Eventually.of_forall fun t x =>
       tensorHsInclusion_parameterPrincipalOperatorHsPi_normalized g (J (a₂ t)) x
   · exact Eventually.of_forall fun t x =>
@@ -732,7 +732,32 @@ private abbrev circleResidualLow :=
     (fun t => normalizedDriftOperator (ι := ι) g (b t))
     (memLp_normalizedDriftOperator (ι := ι) g hb)
 
+private abbrev circleResidualInclusionHigh :=
+  circleResidualInclusionCore (ι := ι) g hT
+    (fun t => AddCircle.parameterPrincipalOperatorHsPi (ι := ι) g (a t))
+    (AddCircle.memLp_parameterPrincipalOperatorHsPi (ι := ι) g ha).aestronglyMeasurable
+    Ch hCh (fun t => AddCircle.parameterDriftOperatorHsPi (ι := ι) g (b t))
+    (AddCircle.memLp_parameterDriftOperatorHsPi (ι := ι) g hb)
+
+private abbrev circleResidualInclusionLow :=
+  circleResidualInclusionHigh g hT a b ha hb Ch hCh
+    (fun t => normalizedPrincipalOperator (ι := ι) g (a t))
+    (memLp_normalizedPrincipalOperator (ι := ι) g ha).aestronglyMeasurable
+    Cl (normalized_principal_bound g a Cl hCl)
+    (fun t => normalizedDriftOperator (ι := ι) g (b t))
+    (memLp_normalizedDriftOperator (ι := ι) g hb)
+
+private abbrev circleResidualInclusionCompatibility :=
+  circleResidualInclusionLow g hT a b ha hb Ch Cl hCh hCl
+    (Eventually.of_forall fun t v =>
+      tensorHsInclusion_parameterPrincipalOperatorHsPi_normalized g (a t) v)
+    (Eventually.of_forall fun t v =>
+      tensorHsInclusion_parameterDriftOperatorHsPi_normalized g (b t) v)
+
 variable (FH R : timeL2 (PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ))) T)
+
+private abbrev circleResidualInclusionAt :=
+  circleResidualInclusionCompatibility g hT a b ha hb Ch Cl hCh hCl FH R
 
 private theorem parameterDerivative_forcing_residual_eq_iff_inclusion :
     let Z := tensorHsInclusion (g := g) (r := 0) (s := 0)
@@ -740,21 +765,7 @@ private theorem parameterDerivative_forcing_residual_eq_iff_inclusion :
     let J := (ContinuousLinearMap.piLpMap 2 (fun _ : ι => Z)).compLpL 2 (timeMeasure T)
     circleResidualHigh g hT a b ha hb Ch hCh FH = R ↔
       circleResidualLow g hT a b ha hb Cl hCl (J FH) = J R := by
-  with_reducible_and_instances exact (circleResidualInclusionCore (ι := ι) g hT
-    (fun t => AddCircle.parameterPrincipalOperatorHsPi (ι := ι) g (a t))
-    (AddCircle.memLp_parameterPrincipalOperatorHsPi (ι := ι) g ha).aestronglyMeasurable
-    Ch hCh (fun t => AddCircle.parameterDriftOperatorHsPi (ι := ι) g (b t))
-    (AddCircle.memLp_parameterDriftOperatorHsPi (ι := ι) g hb)
-    (fun t => normalizedPrincipalOperator (ι := ι) g (a t))
-    (memLp_normalizedPrincipalOperator (ι := ι) g ha).aestronglyMeasurable
-    Cl (normalized_principal_bound g a Cl hCl)
-    (fun t => normalizedDriftOperator (ι := ι) g (b t))
-    (memLp_normalizedDriftOperator (ι := ι) g hb)
-    (Eventually.of_forall fun t v =>
-      tensorHsInclusion_parameterPrincipalOperatorHsPi_normalized g (a t) v)
-    (Eventually.of_forall fun t v =>
-      tensorHsInclusion_parameterDriftOperatorHsPi_normalized g (b t) v)
-    FH R)
+  with_reducible exact circleResidualInclusionAt g hT a b ha hb Ch Cl hCh hCl FH R
 
 end ResidualInclusion
 
@@ -1026,6 +1037,14 @@ private abbrev referenceStabilityCompatibility :=
       tensorHsInclusion_parameterDriftOperatorHsPi_normalized g (b x₀ t) v)
     hChlt hCllt
 
+private abbrev referenceStabilityFamily :=
+  referenceStabilityCompatibility (l := l) g hT x₀ a b ha hb Ch Cl hCh hCl hChlt hCllt
+    (fun x t => parameterPrincipalOperatorHsPi g (a x t))
+    (fun x => (memLp_parameterPrincipalOperatorHsPi g (ha x)).aestronglyMeasurable)
+    Ch hCh (fun x t => parameterDriftOperatorHsPi g (b x t))
+    (fun x => memLp_parameterDriftOperatorHsPi g (hb x))
+    (FH x₀) FH
+
 include hCl hChlt hCllt in
 private theorem reference_forcing_tendsto_of_residual :
     let J₀ := ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
@@ -1037,12 +1056,7 @@ private theorem reference_forcing_tendsto_of_residual :
     Tendsto (fun x => Q x (FH x)) l (𝓝 (Q x₀ (FH x₀))) →
     Tendsto FH l (𝓝 (FH x₀)) := by
   intro J₀ Q hQ hF hR
-  with_reducible_and_instances exact (referenceStabilityCompatibility (l := l) g hT x₀ a b ha hb Ch Cl hCh hCl hChlt hCllt
-    (fun x t => parameterPrincipalOperatorHsPi g (a x t))
-    (fun x => (memLp_parameterPrincipalOperatorHsPi g (ha x)).aestronglyMeasurable)
-    Ch hCh (fun x t => parameterDriftOperatorHsPi g (b x t))
-    (fun x => memLp_parameterDriftOperatorHsPi g (hb x))
-    (FH x₀) FH hQ hF hR)
+  exact referenceStabilityFamily (l := l) g hT x₀ a b ha hb Ch Cl hCh hCl hChlt hCllt FH hQ hF hR
 
 end
 
@@ -1099,22 +1113,31 @@ variable (hC₂ : ∀ᵐ t ∂timeMeasure T,
   ‖parameterPrincipalOperatorHsPi (ι := ι) g (a₂ t)‖ ≤ C₂)
 variable (hae : a₁ =ᵐ[timeMeasure T] a₂) (hbe : b₁ =ᵐ[timeMeasure T] b₂)
 
-include hae hbe in
-private theorem reference_residual_congr_ae :
-    circleResidualHigh (ι := ι) g hT a₁ b₁ ha₁ hb₁ C₁ hC₁ =
-      circleResidualHigh (ι := ι) g hT a₂ b₂ ha₂ hb₂ C₂ hC₂ := by
-  with_reducible_and_instances exact (referenceResidualCongrCore (ι := ι) g hT
+private abbrev referenceResidualCongrPrincipal :=
+  referenceResidualCongrCore (ι := ι) g hT
     (fun t => parameterPrincipalOperatorHsPi (ι := ι) g (a₁ t))
     (fun t => parameterPrincipalOperatorHsPi (ι := ι) g (a₂ t))
     (memLp_parameterPrincipalOperatorHsPi (ι := ι) g ha₁).aestronglyMeasurable
     (memLp_parameterPrincipalOperatorHsPi (ι := ι) g ha₂).aestronglyMeasurable
     C₁ C₂ hC₁ hC₂
+
+private abbrev referenceResidualCongrDrift :=
+  referenceResidualCongrPrincipal g hT a₁ a₂ ha₁ ha₂ C₁ C₂ hC₁ hC₂
     (fun t => parameterDriftOperatorHsPi (ι := ι) g (b₁ t))
     (fun t => parameterDriftOperatorHsPi (ι := ι) g (b₂ t))
     (memLp_parameterDriftOperatorHsPi (ι := ι) g hb₁)
     (memLp_parameterDriftOperatorHsPi (ι := ι) g hb₂)
-    (by simpa only [Function.comp_def] using hae.fun_comp (parameterPrincipalOperatorHsPi (ι := ι) g))
-    (by simpa only [Function.comp_def] using hbe.fun_comp (parameterDriftOperatorHsPi (ι := ι) g)))
+
+private abbrev referenceResidualCongrValue :=
+  referenceResidualCongrDrift g hT a₁ a₂ b₁ b₂ ha₁ ha₂ hb₁ hb₂ C₁ C₂ hC₁ hC₂
+    (hae.fun_comp (parameterPrincipalOperatorHsPi (ι := ι) g))
+    (hbe.fun_comp (parameterDriftOperatorHsPi (ι := ι) g))
+
+include hae hbe in
+private theorem reference_residual_congr_ae :
+    circleResidualHigh (ι := ι) g hT a₁ b₁ ha₁ hb₁ C₁ hC₁ =
+      circleResidualHigh (ι := ι) g hT a₂ b₂ ha₂ hb₂ C₂ hC₂ := by
+  exact referenceResidualCongrValue g hT a₁ a₂ b₁ b₂ ha₁ ha₂ hb₁ hb₂ C₁ C₂ hC₁ hC₂ hae hbe
 
 end ResidualCongruence
 
@@ -1463,16 +1486,11 @@ theorem exists_parameterDerivative_forcing_lift_of_principal_norm_lt_one
   let N' := tensorHsInclusion (g := g) (r := 0) (s := 0)
     (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
   have hJN (v : TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) : J' (N v) = J v := by
-    exact (tensorHsInclusion_trans_apply
-      (by norm_num : ((1 : ℕ) : ℝ) ≤ ((2 : ℕ) : ℝ))
-      (by norm_num : ((2 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) v).symm
+    apply TensorHs.ext
+    rfl
   have hNN (v : TensorHs g 0 0 (((1 : ℕ) : ℝ) + 1)) : N' (N v) = v := by
-    calc
-      N' (N v) = tensorHsInclusion (le_refl (((1 : ℕ) : ℝ) + 1)) v :=
-        (tensorHsInclusion_trans_apply
-          (by norm_num : ((1 : ℕ) : ℝ) + 1 ≤ ((2 : ℕ) : ℝ))
-          (by norm_num : ((2 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 1) v).symm
-      _ = v := tensorHsInclusion_refl_apply v
+    apply TensorHs.ext
+    rfl
   refine exists_normalized_parameterDerivative_forcing_lift g 1 hT
     (fun t => N (a₂ t)) ((Lp.memLp a₂).continuousLinearMap_comp N) C2h C2l
     (parameterDerivativeDuhamelForcing g 0 hT F)
@@ -1729,17 +1747,16 @@ private theorem exists_tendsto_forcing_successor_of_coefficient_lift :
       Tendsto Vnext l (𝓝 (Vnext x₀)) ∧
       TendstoUniformlyOn Wnext (Wnext x₀) l (Icc 0 T) := by
   intro J A P K U hWU hPDE haTop hCh hCl hChlt hCllt
-  classical
-  choose Vnext Wnext hs using
+  obtain ⟨Vnext, Wnext, hs⟩ :=
     exists_tendsto_duhamel_states_of_principal_norm_lt_one
       (X := X) (ι := ι) (l := l) (T := T) g k hT x₀ F f W hW a b aTop Ch Cl hF hf ha hb hWlim haToplim
       hWU hPDE haTop hCh hCl hChlt hCllt
-  choose aHighTop haHighTop haHighToplim using hcoeffLift Wnext (hs.2.1) (hs.2.2.1) (hs.2.2.2.2.2)
-  dsimp only [scalarSobolevPiInclusion]
-  with_reducible_and_instances exact (exists_tendsto_forcing_with_representative
+  obtain ⟨aHighTop, haHighTop, haHighToplim⟩ := hcoeffLift Wnext (hs.2.1) (hs.2.2.1) (hs.2.2.2.2.2)
+  have hout := exists_tendsto_forcing_with_representative
     (X := X) (ι := ι) (l := l) (T := T) g k hT x₀ f Vnext F a aHighTop b W Wnext
     hs.2.1 hs.2.2.2.2.2 hf hs.2.2.2.2.1 haHighToplim hb haHighTop
-    hs.1 hPDE hs.2.2.1 hs.2.2.2.1)
+    hs.1 hPDE hs.2.2.1 hs.2.2.2.1
+  exact hout
 
 end
 

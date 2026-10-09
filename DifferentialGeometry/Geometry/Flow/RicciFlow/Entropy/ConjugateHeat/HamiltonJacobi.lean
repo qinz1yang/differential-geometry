@@ -44,7 +44,7 @@ theorem perelman_bracket_eq_zero_of_conjugate_density_and_hamilton_jacobi
     (D : RealTimeInterval) (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (R f : ℝ → M → ℝ)
     (hu : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn D G (fun s x => -R s x)
-      (fun s => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) s (f s)))
+      (fun s => perelmanDensity (Module.finrank ℝ E) s (f s)))
     {s : ℝ} (hs : s ∈ D.regular) (hspos : 0 < s) (x : M)
     (hHJ : 2 * deriv (fun r => f r x) s +
       (G.metric s).inner x (gradientFun (I := I) (G.metric s) (f s) x)
@@ -54,17 +54,17 @@ theorem perelman_bracket_eq_zero_of_conjugate_density_and_hamilton_jacobi
       (G.metric s).inner x (gradientFun (I := I) (G.metric s) (f s) x)
         (gradientFun (I := I) (G.metric s) (f s) x) + R s x) + f s x -
         (Module.finrank ℝ E : ℝ) = 0 := by
-  have hpos : ∀ y : M, 0 < DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) s (f s) y := by
+  have hpos : ∀ y : M, 0 < perelmanDensity (Module.finrank ℝ E) s (f s) y := by
     intro y
     exact mul_pos (prefactor_pos (Module.finrank ℝ E) hspos) (Real.exp_pos _)
   have hsame :
       (fun r => perelmanPotential (Module.finrank ℝ E) r
-        (DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (f r)) x) =ᶠ[nhds s] (fun r => f r x) := by
+        (perelmanDensity (Module.finrank ℝ E) r (f r)) x) =ᶠ[nhds s] (fun r => f r x) := by
     filter_upwards [eventually_gt_nhds hspos] with r hr
     rw [potential_density (Module.finrank ℝ E) hr]
   have hd := hsame.deriv_eq
   have h := perelman_bracket_eq_zero_of_hamilton_jacobi D G R
-    (fun r => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity (Module.finrank ℝ E) r (f r)) hu hs hspos hpos x
+    (fun r => perelmanDensity (Module.finrank ℝ E) r (f r)) hu hs hspos hpos x
   simp only [potential_density (Module.finrank ℝ E) hspos, hd] at h
   exact h hHJ
 

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.ChainRule
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
-import DifferentialGeometry.Geometry.Connection.CovariantDerivative.Variation.CurvatureCommutation
+import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.CurvatureCommutation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Minimizer
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

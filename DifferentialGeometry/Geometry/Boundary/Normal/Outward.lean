@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Boundary.Metric.Induced
 import DifferentialGeometry.Geometry.Boundary.Metric.GramMatrix
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Tensor.BilinearForm.Determinant
+import DifferentialGeometry.Tensor.BilinearForm
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

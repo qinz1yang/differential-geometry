@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.Distance.Ball

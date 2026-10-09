@@ -359,14 +359,14 @@ private lemma termResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric 
   · rw [tensorCovDerivAt_slotInsertEndoCc_eq (I := I) (M := M) g₀ 2 Λf b
       (tangentSpaceModelContinuousLinearEquiv (I := I) b ei),
       ContinuousLinearEquiv.symm_apply_apply]
-    rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) (2 + 1) 0 b
+    rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b
       ((endoCovariantDerivative (I := I) (M := M) g₀) Λf b ei)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from Du.toSection b) D)
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b ei) m)]
     rw [Fin.cons_zero, tangentLinearMapToModel_apply,
       ContinuousLinearEquiv.symm_apply_apply, Fin.update_cons_zero]
   · rw [slotInsertEndoCc_toSection (I := I) (M := M) g₀ 2 Λf b]
-    rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) (2 + 1) 0 b (Λf b)
+    rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b (Λf b)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (2 + 1) I b from
         tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) Du b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b ei)) D)
@@ -406,17 +406,17 @@ private lemma termResidual_term_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I
           (iteratedCovGrad (I := I) g₀ 0 2 2 u₀)).toSection b) D) m =
     Tensor0SSpace.toModel
       (DeTurck.cometricDoubleTraceFib (I := I) g₀ 2 b
-        (slotInsertEndomorphism (I := I) (M := M) (3 + 1) 0 b
+        (slotInsertEndoFib (I := I) (M := M) (3 + 1) 0 b
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
           ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
             (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D))) m from rfl]
   rw [termResidual_toModel_doubleTraceFib (I := I) (M := M) g₀ b
-    (slotInsertEndomorphism (I := I) (M := M) (3 + 1) 0 b
+    (slotInsertEndoFib (I := I) (M := M) (3 + 1) 0 b
       (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
         (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D)) m]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [slotInsertEndomorphism_apply_eval (I := I) (M := M) (3 + 1) 0 b
+  rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (3 + 1) 0 b
     (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ b)
     ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 4 I b from
       (iteratedCovGrad (I := I) g₀ 0 2 2 u₀).toSection b) D)
@@ -488,7 +488,7 @@ private lemma termResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric 
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
           (smoothOrthoFrame (I := I) g₀ b i b)) m)) =
       Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (2 + 1) 0 b
+        (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
           ((endoCovariantDerivative (I := I) (M := M) g₀)
             (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
             (smoothOrthoFrame (I := I) g₀ b i b))
@@ -516,7 +516,7 @@ private lemma termResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric 
       · rfl
     exact h.trans (congrArg (fun w : Fin (2 + 1) → E =>
       Tensor0SSpace.toModel
-        (slotInsertEndomorphism (I := I) (M := M) (2 + 1) 0 b
+        (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
           ((endoCovariantDerivative (I := I) (M := M) g₀)
             (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
             (smoothOrthoFrame (I := I) g₀ b i b))
@@ -524,7 +524,7 @@ private lemma termResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric 
             (covGrad (I := I) (M := M) g₀ 0 2 u₀).toSection b) D)) w) ht)
   rw [hstep]
   have happ : Tensor0SSpace.toModel
-      (slotInsertEndomorphism (I := I) (M := M) (2 + 1) 0 b
+      (slotInsertEndoFib (I := I) (M := M) (2 + 1) 0 b
         ((endoCovariantDerivative (I := I) (M := M) g₀)
           (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) b
           (smoothOrthoFrame (I := I) g₀ b i b))
@@ -545,7 +545,7 @@ private lemma termResidual_gTerm_toModel_eq (g₀ g₁ : SmoothRiemannianMetric 
               ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
                 (smoothOrthoFrame (I := I) g₀ b i b)) m :
                 Fin (2 + 1) → E) 0))) :=
-    slotInsertEndomorphism_apply_eval (I := I) (M := M) (2 + 1) 0 b _ _ _
+    slotInsertEndoFib_apply_eval (I := I) (M := M) (2 + 1) 0 b _ _ _
   rw [happ]
   rw [show ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b
       (smoothOrthoFrame (I := I) g₀ b i b)) m : Fin (2 + 1) → E) 0) =

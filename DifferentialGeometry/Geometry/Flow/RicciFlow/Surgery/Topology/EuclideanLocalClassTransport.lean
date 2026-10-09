@@ -16,9 +16,10 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 private theorem euclideanTangentChartEquiv_eq_refl (p y : ThreeSpace)
     (hy : y ∈ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet) :
-    DifferentialGeometry.tangentChartEquiv ThreeModel ThreeSpace p y hy =
-      LinearEquiv.refl ℝ (TangentSpace ThreeModel y) := by
+    tangentChartEquiv ThreeSpace p y hy = LinearEquiv.refl ℝ (TangentSpace ThreeModel y) := by
   have hyS : y ∈ (chartAt ThreeSpace p).source := hy
+  rw [show tangentChartEquiv ThreeSpace p y hy =
+      DifferentialGeometry.tangentChartEquiv ThreeModel ThreeSpace p y hyS from rfl]
   rw [DifferentialGeometry.Topology.Manifold.tangentChartEquiv_eq_preferredChartTangentEquiv
       ThreeModel p y hyS,
     DifferentialGeometry.Topology.Manifold.preferredChartTangentEquiv_model ThreeSpace p y hyS]

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerWindowSurface
 import DifferentialGeometry.Topology.PiecewiseLinear.SeparatingSurfaceNullSeams
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerInnermostSeam
@@ -16,7 +21,9 @@ variable {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set
 
 open Classical in
 theorem exists_initialSurface_orientable_nullTraceCount_eq_zero
-    [d : DecidableEq E3]
+    [d : DecidableEq E3] (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
@@ -26,7 +33,7 @@ theorem exists_initialSurface_orientable_nullTraceCount_eq_zero
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (i : ℤ) :
+    (h303 : Moise303) (i : ℤ) :
     ∃ (M : Set E3) (Q : Geometry.SimplicialComplex ℝ E3) (hQfin : Q.faces.Finite),
       letI := hQfin.to_subtype
       IsCombinatorialManifoldWithBoundary 2 Q ∧ IsOrientable 2 Q ∧
@@ -117,10 +124,23 @@ theorem exists_initialSurface_orientable_nullTraceCount_eq_zero
     intro x hxO hxV
     exact disjoint_left.mp (havoid (2 * i)) (interior_subset hxO)
       (by simpa only [mem_union, mem_insert_iff, mem_singleton_iff] using hxV)
+  have huI : h u ∈ I := interior_mono subset_union_left (ht.mem_interior_image_dualCell hu)
+  have hvI : h v ∈ I := interior_mono subset_union_right (ht.mem_interior_image_dualCell hv)
+  have huv' : h u ≠ h v := fun heq => huv (ht.injOn
+    (ht.dualCell_subset hu (interior_subset (ht.mem_interior_dualCell hu)))
+    (ht.dualCell_subset hv (interior_subset (ht.mem_interior_dualCell hv))) heq)
   obtain ⟨Q, hQfin, -, hQ, hQo, hstate', hsep', hMI, hprot, hout, hsub, hzero,
       hQboundary, hBsub, hBout, -, -⟩ :=
     hX.exists_separating_nullTraceCount_eq_zero X hXo hstateX
-      (htw.boundary_isPLTorus (2 * i)) isOpen_interior
+      (htw.boundary_isPLTorus (2 * i)) h303 isOpen_interior
+      (ht.isConnected_interior_image_pair hu hv huv (by
+        exact (congrArg (fun d : DecidableEq E3 =>
+          @insert E3 (Finset E3) (@Finset.instInsert E3 d) u {v} ∈ K.faces)
+            (Subsingleton.elim _ _)).mp he))
+      (singleton_subset_iff.mpr huI) (singleton_subset_iff.mpr hvI)
+      (by simpa only [disjoint_singleton_left, mem_singleton_iff] using huv')
+      (isClosed_singleton.preimage continuous_subtype_val)
+      (isClosed_singleton.preimage continuous_subtype_val)
       (by rw [hXspace, hCeq]; exact hM₀I) (by rw [hXspace, hCeq]; exact ⟨hcl, hsep⟩)
       isOpen_interior hTO (interior_subset.trans (htw.subsetInterior _)) hOHK hRO hFO hBoundary
   let _ : Finite Q.faces := hQfin.to_subtype
@@ -153,7 +173,9 @@ theorem exists_initialSurface_orientable_nullTraceCount_eq_zero
     exact hBout
 
 open Classical in
-theorem exists_initialSurface_nullTraceCount_eq_zero
+theorem exists_initialSurface_nullTraceCount_eq_zero (ht : IsTube K N C D Dbd h N')
+    (hu : u ∈ K.vertices) (hv : v ∈ K.vertices) (huv : u ≠ v)
+    (he : ({u, v} : Finset E3) ∈ K.faces)
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' (h '' D {u, v}) (h '' Dbd {u, v}) W
       (interior (h '' C u ∪ h '' C v)) P')
     (havoid : ∀ k : ℤ, Disjoint (φ '' S k) ({h u, h v} : Set E3))
@@ -163,7 +185,7 @@ theorem exists_initialSurface_nullTraceCount_eq_zero
         initialSurface S'' T'' P')
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h u})
       (((↑) : interior (h '' C u ∪ h '' C v) → E3) ⁻¹' {h v}))
-    (i : ℤ) :
+    (h303 : Moise303) (i : ℤ) :
     ∃ M L' : Set E3, HasFiniteCollaredTrace L' (T'' (2 * i)) ∧
       nullTraceCount L' (T'' (2 * i)) = 0 ∧
       IsSeparatorIn (interior (h '' C u ∪ h '' C v)) M {h u} {h v} ∧
@@ -179,9 +201,8 @@ theorem exists_initialSurface_nullTraceCount_eq_zero
       traceCircles L' (T'' (2 * i)) ⊆ evenTorusSeams T'' i := by
   obtain ⟨M, Q, -, -, -, hstate, hzero, hsep', hP, hMI, hout, heq,
       hcarrier, hLout, htrace, -, -, -⟩ :=
-    exists_initialSurface_orientable_nullTraceCount_eq_zero
-      (C := C) (D := D) (Dbd := Dbd) (h := h) (u := u) (v := v)
-      htw havoid hcl hsep i
+    exists_initialSurface_orientable_nullTraceCount_eq_zero ht hu hv huv he htw havoid hcl
+      hsep h303 i
   exact ⟨M, Q.space, hstate, hzero, hsep', hP, hMI, hout, heq, hcarrier, hLout, htrace⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

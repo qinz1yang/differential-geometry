@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalIterCov
-import DifferentialGeometry.Geometry.Operator.GradientPullback
+import DifferentialGeometry.Geometry.Operator.Gradient.PullbackAt
 import DifferentialGeometry.Geometry.Operator.Hessian.IteratedCovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobian.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized

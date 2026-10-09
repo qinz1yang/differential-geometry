@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.Chart
-import DifferentialGeometry.Topology.Manifold.Boundary.Parametrization.ProductChart
+import DifferentialGeometry.Geometry.Boundary.ChartCrossSection
 
 noncomputable section
 open Set Topology

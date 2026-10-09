@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.Constant
-import DifferentialGeometry.Analysis.Sobolev.Time.H1.Affine
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Affine
 
 noncomputable section
 

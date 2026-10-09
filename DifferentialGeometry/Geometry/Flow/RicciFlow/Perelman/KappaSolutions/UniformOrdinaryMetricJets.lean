@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.UniformTimeJetConvergence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.MetricConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.OrdinaryMetricJetConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 
 set_option autoImplicit false

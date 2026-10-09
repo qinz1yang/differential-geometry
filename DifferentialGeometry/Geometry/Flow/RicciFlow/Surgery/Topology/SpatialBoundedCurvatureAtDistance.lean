@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
-import DifferentialGeometry.Geometry.Metric.Distance.Continuity
+import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false
@@ -301,16 +301,13 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 universe u
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.scalar_bounds_of_riemannianEDistOf_lt_of_spatiallyCanonicalBefore
+theorem scalar_bounds_of_riemannianEDistOf_lt_of_spatiallyCanonicalBefore
     {ε C1 C2 q t₀ t : ℝ} (ht : t ∈ Ioo a t₀) (hq : 0 ≤ q) (hC2 : 1 ≤ C2)
     (hG : G.SpatiallyCanonicalBefore ε C1 C2 q t₀) (n : ℕ) {y z : P.Carrier}
     (hy : C2 ^ n * q < G.flow.scalar t y)

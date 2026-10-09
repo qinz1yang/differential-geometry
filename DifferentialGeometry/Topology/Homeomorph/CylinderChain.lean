@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ContinuousMap.ClosedCover
+import DifferentialGeometry.Topology.ClosedCover
 import DifferentialGeometry.Topology.LocallyFinite.Superlevel
 import Mathlib.Topology.Homeomorph.Lemmas
 import Mathlib.Topology.Semicontinuity.Basic

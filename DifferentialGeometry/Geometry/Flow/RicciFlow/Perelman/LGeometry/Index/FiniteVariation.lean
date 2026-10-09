@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Variation.EndpointAccelerationGerm
+import DifferentialGeometry.Geometry.Comparison.Variation.EndpointAccelerationGerm
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FirstVariation
@@ -10,9 +10,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Ada
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativity
-import DifferentialGeometry.Geometry.Variation.EndpointAccelerationSum
-import DifferentialGeometry.Geometry.Variation.Field.PrescribedEndpoints
+import DifferentialGeometry.Geometry.Comparison.Variation.EndpointAccelerationSum
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.PrescribedEndpoints
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.LagrangianRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.ExistenceIcc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.TraceIntegralGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.MinimizerNonnegativitySum
 noncomputable section

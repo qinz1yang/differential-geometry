@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralManifold
@@ -157,7 +162,8 @@ theorem exists_exhaustion {m : ℕ} {X : Type u} [TopologicalSpace X]
       IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) (N i) ∧
       N i ⊆ interior (N (i + 1))) ∧ ⋃ i, N i = U := by
   classical
-  obtain ⟨T, hT⟩ := exists_plTriangulation_isCombinatorialManifold (n := m + 1) (X := X)
+  obtain ⟨T, hT⟩ := plManifoldTriangulation (m + 1)
+    (inferInstance : ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X) inferInstance
   have := hU.locallyCompactSpace
   let C : ℕ → Set X := fun i => ((↑) : U → X) '' compactCovering U i
   have hC : ∀ i, IsCompact (C i) := fun i =>

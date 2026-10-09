@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative
 
 
 noncomputable section

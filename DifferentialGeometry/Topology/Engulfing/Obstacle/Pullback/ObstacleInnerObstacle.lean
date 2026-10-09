@@ -9,6 +9,7 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
@@ -20,7 +21,6 @@ variable {E : Type*} [DecidableEq E]
 namespace RelativeGeneralPositionApproximation
 
 variable (a : RelativeGeneralPositionApproximation K L T f d p ε)
-omit [FiniteDimensional ℝ E] in
 theorem correction_preimage_obstacle : a.correction ⁻¹' T.space =
     ⋃ t ∈ a.augmentation.obstacleImage.faces,
       convexHull ℝ (a.vertices ''
@@ -35,7 +35,6 @@ theorem correction_preimage_obstacle : a.correction ⁻¹' T.space =
     obtain ⟨t, ht, hyt⟩ := mem_iUnion₂.mp hy
     exact a.obstacle_image.symm.subset (mem_iUnion₂.mpr ⟨t, ht, y, hyt, rfl⟩)
 
-omit [FiniteDimensional ℝ E] in
 theorem jointObstacle_contains_of_corrected_chart
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (X C : Set M) (Y : Set E)
@@ -65,11 +64,9 @@ def sourceJointFace (s : m.source.faces) :
     Finset (EuclideanSpace ℝ (Fin a.augmentation.ambientDimension)) :=
   Classical.choose (m.face_image s.val s.property)
 
-omit [FiniteDimensional ℝ E] in
 @[simp] theorem sourceJointFace_eq (s : m.source.faces) :
     m.sourceJointFace s = (m.toFiniteGPFaceModel.face s).val := rfl
 
-omit [FiniteDimensional ℝ E] in
 theorem shared_avoids_of_fixed_avoidance
     (e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n)))
     (g : K.space → M) (X : Set M) (Y : Set E)

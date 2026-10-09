@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Measure.Area.ExtendedGeodesicStrip
-import DifferentialGeometry.Geometry.Metric.CurveLength.Basic
+import DifferentialGeometry.Geometry.Metric.CurveLength
 import DifferentialGeometry.Analysis.Integration.Integral.ComplexSquare
 
 

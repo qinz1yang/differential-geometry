@@ -8,12 +8,13 @@ open Set _root_.Geometry _root_.Topology
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
+set_option linter.style.haveILetI false
 
 variable {E : Type*} [DecidableEq E]
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {n d p : ℕ}
 
-omit [FiniteDimensional ℝ E] in
 theorem geometricUnionLeft_mem_space_iff
     (L : SimplicialComplex ℝ E) (T : SimplicialComplex ℝ (EuclideanSpace ℝ (Fin n))) (x : E) :
     geometricUnionLeft x ∈ (geometricDisjointUnion L T).space ↔ x ∈ L.space := by
@@ -137,8 +138,8 @@ theorem exists_obstacleAugmentation
   have hqTi : Function.Injective qT := by
     intro x y he
     exact Subtype.ext ((hqT x).symm.trans ((congrArg G he).trans (hqT y)))
-  let : CompactSpace K.space := isCompact_iff_compactSpace.mp (isCompact_space_of_finite_faces K hK)
-  let : CompactSpace T.space := isCompact_iff_compactSpace.mp (isCompact_space_of_finite_faces T hT)
+  letI : CompactSpace K.space := isCompact_iff_compactSpace.mp (isCompact_space_of_finite_faces K hK)
+  letI : CompactSpace T.space := isCompact_iff_compactSpace.mp (isCompact_space_of_finite_faces T hT)
   have hleftU : (geometricUnionLeftComplex (F := F) K).faces ⊆ U.faces := fun _ hs => Or.inl hs
   have hrightU : (geometricUnionRightComplex (E := E) T).faces ⊆ U.faces := fun _ hs => Or.inr hs
   obtain ⟨QK, hQK, hQKspace, hQKdim, hQKsections⟩ := himages (geometricUnionLeftComplex (F := F) K) hleftU

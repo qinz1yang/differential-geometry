@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Metric.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
 import Mathlib.Topology.Sequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.ScalarPerturbation
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Extended
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Geometry.Metric.DerivativeENorm
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 set_option autoImplicit false
 noncomputable section

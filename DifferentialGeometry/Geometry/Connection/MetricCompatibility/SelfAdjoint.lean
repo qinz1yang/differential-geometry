@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Subbundle
 import DifferentialGeometry.Geometry.Connection.SelfAdjointRestriction
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Hom
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.HomSelfAdjoint
 
 set_option autoImplicit false
 
@@ -58,7 +57,7 @@ theorem IsMetricCompatible.selfAdjoint
   let _ := S.isContMDiffRiemannianBundle (by simp : (1 : WithTop ℕ∞) ≤ ∞)
   exact (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isMetricCompatible
     cov hcov cov hcov).restrict S
-      (_root_.CovariantDerivative.hom_isCovariantlyInvariant_selfAdjoint
+      (DifferentialGeometry.HomConnectionGen.homBundleCovariantDerivativeGen_isCovariantlyInvariant_selfAdjoint
         cov hcov)
 
 end CovariantDerivative

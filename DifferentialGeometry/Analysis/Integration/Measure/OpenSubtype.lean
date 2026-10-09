@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
-import DifferentialGeometry.Topology.Manifold.SigmaCompact
+import DifferentialGeometry.Topology.SigmaCompactOpen
 
 namespace DifferentialGeometry.Integral.Measure
 

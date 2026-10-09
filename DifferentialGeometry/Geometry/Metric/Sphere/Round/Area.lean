@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.GraphParametrization
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Metric
-import DifferentialGeometry.Analysis.SpecialFunctions.JacobiModel.Volume
+import DifferentialGeometry.Geometry.Comparison.Volume.Model
 import Mathlib.MeasureTheory.Constructions.HaarToSphere
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic

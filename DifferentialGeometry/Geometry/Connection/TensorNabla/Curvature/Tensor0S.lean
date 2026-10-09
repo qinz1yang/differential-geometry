@@ -128,7 +128,7 @@ def baseSlotCurv
 noncomputable def tangentHomTensorCovariantDerivative (g : SmoothRiemannianMetric I M) (s : ℕ) :
     CovariantDerivative I (E →L[ℝ] Tensor0SModel s ℝ E)
       (fun x : M => TangentSpace I x →L[ℝ] Tensor0SSpace s I x) :=
-  _root_.CovariantDerivative.hom I M E
+  HomConnection.homBundleCovariantDerivative I M E
     (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
     (LeviCivita (I := I) g)
@@ -162,7 +162,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative
   have hYat : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  have hgen := _root_.CovariantDerivative.hom_apply_of_mdifferentiableAt
+  have hgen := HomConnection.homBundleCovariantDerivative_apply_of_mdifferentiableAt
     I M E (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
     (fun x : M => Tensor0SSpace s I x)
     (LeviCivita (I := I) g)
@@ -176,7 +176,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_tangentHomTensorCovariantDerivative
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) S x
           ((Vext : Π b : M, TangentSpace I b) x))
         ((Y : Π b : M, TangentSpace I b) x) =
-      (_root_.CovariantDerivative.hom I M E
+      (HomConnection.homBundleCovariantDerivative I M E
           (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
           (fun x : M => Tensor0SSpace s I x)
           (LeviCivita (I := I) g)
@@ -269,7 +269,7 @@ theorem riemannSec_tensor0SCov_succ_consEval
   rw [show (u₀ : TangentSpace I x) = (Y : Π b : M, TangentSpace I b) x from hYx.symm]
   rw [show riemannSec (tangentHomTensorCovariantDerivative (I := I) (M := M) g s) (fun b => X b) (fun b => W b)
         (curriedSection I M A) x =
-      riemannSec (_root_.CovariantDerivative.hom I M E
+      riemannSec (HomConnection.homBundleCovariantDerivative I M E
           (TangentSpace I : M → Type _) (Tensor0SModel s ℝ E)
           (fun x : M => Tensor0SSpace s I x)
           (LeviCivita (I := I) g)

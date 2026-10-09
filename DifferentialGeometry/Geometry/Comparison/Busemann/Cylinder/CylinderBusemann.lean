@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.MetricSpace.Busemann.Line
+import DifferentialGeometry.Geometry.Comparison.Busemann.Ray.Busemann
 import DifferentialGeometry.Geometry.Comparison.Busemann.Cylinder.CylinderMinimizingLine
 
 set_option autoImplicit false

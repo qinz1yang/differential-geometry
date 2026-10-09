@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Crossing.CellChain
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCellChain
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34InteriorCrossingChartsCells
 
 open Set Topology
@@ -22,7 +22,7 @@ theorem exists_interior_crossing_cell_chain
     (hN : IsOpen N) (hJN : J ⊆ N) (htrace : (A ∩ B) ∩ N ⊆ J) :
     ∃ R : Geometry.SimplicialComplex ℝ E, IsSubdivision R K ∧ R.faces.Finite ∧
       (PiecewiseLinear.restrict R J).space = J ∧
-      Nonempty (CrossingCellChain R (PiecewiseLinear.restrict R J) A B N) := by
+      Nonempty (Section34CrossingCellChain R (PiecewiseLinear.restrict R J) A B N) := by
   obtain ⟨t, R, ψ, V, Ω, W, P, q, hRK, hRfin, hJR, hcharts, hcover⟩ :=
     exists_subdivision_isolated_crossing_circle_disks_of_local_ball_charts K
       hJ hJA hJK hcross hA hB hN hJN htrace

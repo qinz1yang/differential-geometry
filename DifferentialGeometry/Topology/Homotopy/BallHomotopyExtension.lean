@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homotopy.BallPrism
-import DifferentialGeometry.Topology.ContinuousMap.ClosedCover
+import DifferentialGeometry.Topology.ClosedCover
 
 noncomputable section
 

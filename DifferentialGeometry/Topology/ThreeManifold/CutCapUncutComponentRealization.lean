@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.ComponentDiffeomorph
-import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
+import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 
 noncomputable section
@@ -273,15 +273,15 @@ theorem noTubeRealization_of_uncutCappingRealization_of_retained_of_discarded
   E.noTubeRealization_of_uncutCappingRealization_of_cappedPresentationRealization h₀
     (E.cappedPresentationRealization_of_retained_of_discarded h₁ h₂)
 
-theorem isStandardConnectedSum_of_capped_of_uncutCappingRealization
+theorem isPoincareStandard_of_capped_of_uncutCappingRealization
     (h : E.UncutCappingRealization) (C : ConnectedComponents M.Carrier)
     (hC : E.cutIndices C = ∅) (x : E.tubes.core) (hx : x ∈ E.coreComponentSet C)
-    (hstd : isStandardConnectedSum
+    (hstd : isPoincareStandard
       ((E.capped.component
         (ConnectedComponents.mk (E.capping.coreInclusion x))).toClosedOrientedManifold).Carrier) :
-    isStandardConnectedSum (M.component C).Carrier := by
+    isPoincareStandard (M.component C).Carrier := by
   obtain ⟨ρ⟩ := h C hC x hx
-  exact isStandardConnectedSum_of_diffeomorph ρ.1 hstd
+  exact isPoincareStandard_of_diffeomorph ρ.1 hstd
 
 end SphericalCutCapTransition
 

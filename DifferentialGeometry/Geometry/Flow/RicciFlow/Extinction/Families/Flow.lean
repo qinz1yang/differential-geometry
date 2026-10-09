@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.RampDeformation.GlobalExistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.PreparedGlobalFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedFamilies
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Area.ProjectionBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProjectedAreaBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAnnulus
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.LoopFamilyContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ProductLengthEvolution
@@ -50,8 +50,8 @@ theorem rfs_prepared_family_flow (B : RicciBackground (I := I) (M := Q) D a b)
         projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
         (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
         ∀ t : Icc a b,
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
   obtain ⟨solutions, hcont, hsol⟩ :=
     exists_continuous_prepared_ramp_family_on_Icc B lambda hlambda e prepared hsmooth
   obtain ⟨projected, hproj, hstart, hsmooth', hclass⟩ :=
@@ -94,9 +94,9 @@ theorem rfs_ramp_uniform_bounds_of_product_bounds
           Real.exp ((B.C + B.B₀) * (t - a)) * (Theta₀ + L₀))
     (harea : ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
@@ -115,9 +115,9 @@ theorem rfs_ramp_uniform_bounds_of_product_bounds
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
@@ -394,7 +394,7 @@ omit hCompact hConnected hBoundary in
 def RampProjectedLength (B : RicciBackground (I := I) (M := Q) D a b) : Prop :=
   ∀ (lambda : ℝ), 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
     c.IsSolutionOn B.family.metric lambda (Icc a b) →
-    ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q, (∀ z, γ b z = c.projection z b) →
+    ∀ γ : ℝ → ContinuousFreeLoop Q, (∀ z, γ b z = c.projection z b) →
       loopLength (B.family.metric b) (γ b) ≤ c.length B.family.metric lambda b
 
 omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
@@ -428,9 +428,9 @@ def RampAreaBounds (B : RicciBackground (I := I) (M := Q) D a b) (Ainit : ℝ) :
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.length B.family.metric lambda a ≤ L →
       c.totalCurvature B.family.metric lambda a ≤ Theta →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
         ContinuousOn (loopFamilyLeastArea B.family.metric γ) (Icc a b) ∧
         (∀ t ∈ Icc a b, 0 ≤ loopFamilyLeastArea B.family.metric γ t ∧
@@ -458,9 +458,9 @@ theorem rfs_ramp_uniform_bounds_of_frontier
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →
@@ -512,8 +512,8 @@ def RampFamilyProjectedDeformation (B : RicciBackground (I := I) (M := Q) D a b)
       projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
       (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
       ∀ t : Icc a b,
-        DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
+        FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared)
 
 omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem rfs_prepared_family_flow_of_frontier (B : RicciBackground (I := I) (M := Q) D a b)
@@ -538,8 +538,8 @@ theorem rfs_prepared_family_flow_of_frontier (B : RicciBackground (I := I) (M :=
         projected ⟨a, le_rfl, B.lt.le⟩ = prepared ∧
         (∀ t : Icc a b, HasContinuousSmoothLoopJets e (projected t)) ∧
         ∀ t : Icc a b,
-          DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
+          FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (projected t)) =
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp prepared) := by
   let _ := hsmooth
   let _ := hlambda
   let _ := hlambda_one
@@ -557,9 +557,9 @@ theorem rfs_ramp_uniform_bounds (B : RicciBackground (I := I) (M := Q) D a b)
     ∀ lambda : ℝ, 0 < lambda → lambda ≤ 1 → ∀ c : ProductCurve Q,
       c.IsSolutionOn B.family.metric lambda (Icc a b) →
       c.IsRampOn B.family.metric lambda (Icc a b) → c.degree = 1 →
-      ∀ γ : ℝ → DifferentialGeometry.Topology.freeLoop Q,
+      ∀ γ : ℝ → ContinuousFreeLoop Q,
         (∀ t ∈ Icc a b, ∀ z, γ t z = c.projection z t) →
-        (∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t)) →
+        (∀ t ∈ Icc a b, IsContractibleLoop (γ t)) →
         c.length B.family.metric lambda a ≤ L₀ →
         c.totalCurvature B.family.metric lambda a ≤ Theta₀ →
         loopFamilyLeastArea B.family.metric γ a ≤ Ainit →

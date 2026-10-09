@@ -15,8 +15,11 @@ section Orientation
 
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
 
-private def negOrientation (o : TangentOrientationSection M) : TangentOrientationSection M :=
-  o.opposite
+private def negOrientation (o : TangentOrientationSection M) : TangentOrientationSection M where
+  orientation x := -o.orientation x
+  locally_constant p x hx := by
+    obtain ⟨U, hU, hxU, hsub, h⟩ := o.locally_constant p x hx
+    exact ⟨U, hU, hxU, hsub, fun y hy => by simp only [Orientation.map_neg, h y hy]⟩
 
 private theorem isOpen_setOf_orientation_eq (o₁ o₂ : TangentOrientationSection M) :
     IsOpen {x | o₁.orientation x = o₂.orientation x} := by

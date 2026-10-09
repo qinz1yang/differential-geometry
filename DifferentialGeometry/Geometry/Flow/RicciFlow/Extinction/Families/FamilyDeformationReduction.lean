@@ -330,8 +330,8 @@ theorem rfs_family_deformation_of_windowExtension
           (∀ t : Icc a b, ∀ p z,
             ((deformed t) p).1 z = (solutions p).projection z t) ∧
           (∀ t : Icc a b, HasContinuousSmoothLoopJets e (deformed t) ∧
-            DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
-              DifferentialGeometry.Topology.FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
+            FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp (deformed t)) =
+              FreeHomotopyClass.mk (contractibleRegularLoopInclusion.comp Γ)) ∧
           (∀ p, |regularLeastArea (B.family.metric a) ((deformed ⟨a, le_rfl, B.lt.le⟩) p) -
             regularLeastArea (B.family.metric a) (Γ p)| < epsilon) ∧
           ∀ p,

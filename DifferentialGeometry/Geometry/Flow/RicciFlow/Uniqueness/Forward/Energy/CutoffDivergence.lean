@@ -36,7 +36,7 @@ theorem forward_uniqueness_integral_cutoff_divergence_le
     let S := forwardUniquenessSfield (I := I) g₁ g₂ t
     let U := forwardUniquenessUflux (I := I) g₁ g₂ t
     let A := metricNabla0S (I := I) (g₁ t) S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)
@@ -91,7 +91,7 @@ theorem forward_uniqueness_integral_corrected_cutoff_divergence_le
     let U := forwardUniquenessUflux (I := I) g₁ g₂ t -
       forwardUniquenessReloweringFlux (I := I) g₁ g₂ t
     let A := metricNabla0S (I := I) (g₁ t) S
-    let B := fun x => (covariantSlotBundleEquiv (I := I) (M := M) 0 4 x
+    let B := fun x => (covGradBundleEquiv (I := I) (M := M) 0 4 x
       ((mvfderiv (I := I) (χ : M → ℝ) x).smulRight
         (unitScalarRSLiftSection (I := I) (M := M) (fun y => S y) x)))
       (unitZeroSec (I := I) (M := M) x)

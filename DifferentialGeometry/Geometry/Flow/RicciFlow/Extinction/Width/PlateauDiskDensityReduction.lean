@@ -81,7 +81,7 @@ omit hSigma in
 theorem exists_smoothDisk_sequence_tendsto_area_of_diskArea_eq_leastArea
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (hupper : PlateauDiskDensityAreaUpperApproximation (I := I) (Q := Q) g γ.toContinuousLoop)
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (v : DiskCompetitor g γ.toContinuousLoop)
     (hv : diskArea g v.1.map = leastArea g γ.toContinuousLoop hctr (γ.isLipschitz g)) :
     ∃ w : ℕ → SmoothDisk (I := I) (Q := Q),
@@ -99,7 +99,7 @@ omit hSigma in
 theorem diskArea_eq_leastArea_of_minimizingSmoothDisk_and_areaUpperApproximation
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (hupper : PlateauDiskDensityAreaUpperApproximation (I := I) (Q := Q) g γ.toContinuousLoop)
     (u : SmoothDisk (I := I) (Q := Q)) (sigma : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta, u.map (diskBoundary theta) = γ (sigma.map theta))
@@ -177,7 +177,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem diskArea_eq_leastArea_of_minimizingSmoothDisk_of_areaUpperApproximation
     (g : SmoothRiemannianMetric I M) (γ : Width.RegularLoop I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (Width.loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (u : Width.SmoothDisk (I := I) (Q := M)) (sigma : Width.SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta : Surgery.Topology.Circle,
       u.map (Width.diskBoundary theta) = γ.toContinuousLoop (sigma.map theta))
@@ -209,7 +209,7 @@ theorem diskArea_eq_leastArea_of_minimizingSmoothDisk_of_areaUpperApproximation
 theorem exists_diskCompetitor_area_eq_leastArea_of_minimizingSmoothDisk_and_areaUpperApproximation
     (g : SmoothRiemannianMetric I M) (γ : Width.RegularLoop I M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (Width.loopLift γ.toContinuousLoop))
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : IsContractibleLoop γ.toContinuousLoop)
     (u : Width.SmoothDisk (I := I) (Q := M)) (sigma : Width.SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ theta : Surgery.Topology.Circle,
       u.map (Width.diskBoundary theta) = γ.toContinuousLoop (sigma.map theta))
@@ -243,9 +243,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_diskCompetitor_diskArea_eq_loopFamilyLeastArea_of_areaUpperApproximation
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hslice : ∀ t ∈ Ico a b, ∃ (u : Width.SmoothDisk (I := I) (Q := M))
         (sigma : Width.SmoothWeaklyMonotoneCircleMap),
       (∀ θ : Surgery.Topology.Circle,
@@ -273,9 +273,9 @@ theorem exists_diskCompetitor_diskArea_eq_loopFamilyLeastArea_of_areaUpperApprox
 
 theorem curveShorteningLeastAreaAttainment_of_areaUpperApproximation
     (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b))
-    (hctr : ∀ t ∈ Icc a b, ContinuousMap.Nullhomotopic (γ t))
+    (hctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t))
     (hslice : ∀ t ∈ Ico a b, ∃ (u : Width.SmoothDisk (I := I) (Q := M))
         (sigma : Width.SmoothWeaklyMonotoneCircleMap),
       (∀ θ : Surgery.Topology.Circle,

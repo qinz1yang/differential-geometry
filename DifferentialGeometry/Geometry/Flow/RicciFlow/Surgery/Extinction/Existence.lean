@@ -17,12 +17,12 @@ theorem exists_poincare_controlled_extinction
     [SimplyConnectedSpace M.Carrier]
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) :
     Nonempty (PoincareControlledExtinction M g) := by
-  have : SimplyConnectedSpace (M).Carrier :=
+  have : SimplyConnectedSpace (OrientedThreeStage.ofClosedOrientedManifold M).Carrier :=
     inferInstanceAs (SimplyConnectedSpace M.Carrier)
   exact exists_poincare_controlled_extinction_of_uniformDebitSurgeryStepStrong
-    (M) g
-    (uniform_debit_surgery_step (M) g)
-    (canonical_neighborhoods_through_surgery (M) g)
+    (OrientedThreeStage.ofClosedOrientedManifold M) g
+    (uniform_debit_surgery_step (OrientedThreeStage.ofClosedOrientedManifold M) g)
+    (canonical_neighborhoods_through_surgery (OrientedThreeStage.ofClosedOrientedManifold M) g)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Isotopy.CompactAmbient
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Width.PlateauFrontierReduction
 
 noncomputable section
@@ -36,7 +36,7 @@ omit [IsManifold I ∞ Q] in
 theorem SmoothDisk.isotopyVelocity_diskBoundary_eq_curveVelocity
     (u : SmoothDisk (I := I) (Q := Q)) (Phi : ℝ → Diffeomorph I I Q Q ∞)
     (J : Set ℝ) (t₀ : ℝ) (hid : ∀ q, Phi t₀ q = q)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q)
+    (γ : ℝ → ContinuousFreeLoop Q)
     (hbdy : ∀ t ∈ J, ∀ z : Surgery.Topology.Circle, Phi t (γ t₀ z) = γ t z)
     (htrace : ∀ z : Surgery.Topology.Circle, u.map (diskBoundary z) = γ t₀ z)
     (x : ℝ) :
@@ -146,7 +146,7 @@ theorem transportedAreaFirstVariation_of_isotopy_smoothOn_nhds
 
 theorem exists_diskBoundaryVelocityExtension_of_loopFamilyVelocityExtension
     [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q] [SigmaCompactSpace Q]
-    {a b : ℝ} (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q) (t₀ : ℝ) (ht₀ : t₀ ∈ Ioo a b)
+    {a b : ℝ} (γ : ℝ → ContinuousFreeLoop Q) (t₀ : ℝ) (ht₀ : t₀ ∈ Ioo a b)
     (hvel : LoopFamilyVelocityExtension (I := I) a b γ)
     (u : SmoothDisk (I := I) (Q := Q))
     (htrace : ∀ z : Surgery.Topology.Circle, u.map (diskBoundary z) = γ t₀ z) :
@@ -174,7 +174,7 @@ theorem exists_diskBoundaryVelocityExtension_of_loopFamilyVelocityExtension
 theorem exists_transportedAreaFirstVariation_of_loopFamilyVelocityExtension
     [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space Q] [CompactSpace Q] [SigmaCompactSpace Q]
     {D : RealTimeInterval} {a b : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop Q) (t₀ : ℝ) (ht₀ : t₀ ∈ Ioo a b)
+    (γ : ℝ → ContinuousFreeLoop Q) (t₀ : ℝ) (ht₀ : t₀ ∈ Ioo a b)
     (hvel : LoopFamilyVelocityExtension (I := I) a b γ)
     (u : SmoothDisk (I := I) (Q := Q)) (hconformal : u.IsConformal (W.family.metric t₀))
     (hharmonic : u.IsHarmonic (W.family.metric t₀)) :

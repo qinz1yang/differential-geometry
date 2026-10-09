@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Soul.SoulConvexCore
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.Cone
+import DifferentialGeometry.Geometry.Comparison.Soul.ConeSlice
 import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric

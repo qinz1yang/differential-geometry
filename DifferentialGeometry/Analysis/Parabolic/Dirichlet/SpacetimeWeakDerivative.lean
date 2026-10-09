@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Dirichlet.WeakEquationLocal
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivativeProduct
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.DifferenceQuotient.ProductMeasureBound
+import DifferentialGeometry.Analysis.Sobolev.Tools.DifferenceQuotientProduct
 
 noncomputable section
 

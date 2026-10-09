@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.CyclicGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CyclicCellGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34UntwistedCrossingDiagram
 
 open Set

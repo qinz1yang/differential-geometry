@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Defs
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 
 set_option autoImplicit false

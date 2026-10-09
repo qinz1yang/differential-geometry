@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Equa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Completeness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.BumpFamilyChange
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowRestriction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Compactness.TerminalLimit.Construction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Compactness.TerminalLimit.Convergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TerminalWindow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.TerminalWindowConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.PointedPullbackExtensions
 
 section

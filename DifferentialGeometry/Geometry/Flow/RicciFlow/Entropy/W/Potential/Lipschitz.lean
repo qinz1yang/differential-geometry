@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Entropy.Perelman.W.Functional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Functional
 import DifferentialGeometry.Geometry.Metric.ChartLipschitz.Spacetime
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 
@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Entropy
 
 private theorem locallyLipschitzOn_density_core (n : ℕ) :
     LocallyLipschitzOn (Ioi (0 : ℝ) ×ˢ (univ : Set ℝ))
-      (fun q : ℝ × ℝ => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensityPrefactor n q.1 * Real.exp (-q.2)) := by
+      (fun q : ℝ × ℝ => perelmanDensityPrefactor n q.1 * Real.exp (-q.2)) := by
   apply ContDiffOn.locallyLipschitzOn ((convex_Ioi 0).prod convex_univ)
   intro q hq
   apply ContDiffAt.contDiffWithinAt
@@ -24,7 +24,7 @@ theorem locallyLipschitzOn_perelmanDensity
     {X : Type*} [PseudoEMetricSpace X] {s : Set X} {t f : X → ℝ}
     (ht : LocallyLipschitzOn s t) (hf : LocallyLipschitzOn s f)
     (hpos : ∀ x ∈ s, 0 < t x) (n : ℕ) :
-    LocallyLipschitzOn s (fun x => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n (t x) f x) :=
+    LocallyLipschitzOn s (fun x => perelmanDensity n (t x) f x) :=
   (locallyLipschitzOn_density_core n).comp (ht.prodMk hf) (fun x hx => ⟨hpos x hx, mem_univ _⟩)
 
 theorem locallyLipschitzOn_perelmanDensity_in_chart_of_spacetime_bounds
@@ -40,7 +40,7 @@ theorem locallyLipschitzOn_perelmanDensity_in_chart_of_spacetime_bounds
         (K : ℝ) * ((riemannianEDistOf g x y).toReal + |(s : ℝ) - t|))
     (α : M) (n : ℕ) :
     LocallyLipschitzOn (Ioi (0 : ℝ) ×ˢ (extChartAt I α).target)
-      (fun q : ℝ × E => DifferentialGeometry.Analysis.Entropy.Perelman.perelmanDensity n q.1
+      (fun q : ℝ × E => perelmanDensity n q.1
         (fun x => ell (x, projIcc a b hab q.1)) ((extChartAt I α).symm q.2)) := by
   have h := Geometry.Riemannian.locallyLipschitzOn_comp_extChartAt_symm_of_spacetime_bounds g p hab ell hell α
   exact locallyLipschitzOn_perelmanDensity LipschitzWith.prod_fst.locallyLipschitz.locallyLipschitzOn

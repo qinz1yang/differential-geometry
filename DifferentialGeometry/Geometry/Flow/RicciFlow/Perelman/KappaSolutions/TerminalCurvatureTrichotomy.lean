@@ -1,17 +1,17 @@
 import DifferentialGeometry.Geometry.Metric.Family.ProductSlice
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureRank.Ancient.NullRank
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.AncientNullRank
 import DifferentialGeometry.Geometry.Metric.Product.Completeness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.Splitting.GlobalPositiveSurface
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.GlobalCurvatureSurface
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Complete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProductEuclidean
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.UniversalCover
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.UniversalCover
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankNaturality
 import DifferentialGeometry.Topology.Manifold.SmallDiffeomorph
 import DifferentialGeometry.Topology.Manifold.ULift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProduct
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackLimit.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.HarnackLimit
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Positivity
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 

@@ -45,7 +45,7 @@ theorem conformal_disk_attains_exact_area_of_smoothDiskAreaDensity
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) Q) (γ : RegularLoop 𝓘(ℝ, E) Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (loopLift γ.toContinuousLoop))
     (hdensity : SmoothDiskAreaDensity (E := E) g γ.toContinuousLoop)
-    (hctr : ContinuousMap.Nullhomotopic γ.toContinuousLoop)
+    (hctr : Surgery.Topology.IsContractibleLoop γ.toContinuousLoop)
     (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q)) (σ : SmoothWeaklyMonotoneCircleMap)
     (htrace : ∀ θ, u.map (diskBoundary θ) = γ (σ.map θ))
     (hmin : ∀ v : SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q),

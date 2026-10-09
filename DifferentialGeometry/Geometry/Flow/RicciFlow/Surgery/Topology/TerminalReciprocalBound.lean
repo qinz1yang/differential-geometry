@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Incoming.BackwardScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardScalar
 
 set_option autoImplicit false
 noncomputable section
@@ -8,13 +8,10 @@ open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inv_max_scalar_sub_terminal_le_on_time_window
+theorem TerminalLimitMetric.inv_max_scalar_sub_terminal_le_on_time_window
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : G.terminalRegularOpen) {c : ℝ} (hac : a ≤ c) (hcs : c < s)
     (hbound : ∀ t ∈ Ioo c s, q < G.flow.scalar t x.val →
@@ -68,7 +65,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     exact hpoint t ht
   · exact hpoint t ⟨hta, ht.2⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inv_max_scalar_sub_terminal_le
+theorem TerminalLimitMetric.inv_max_scalar_sub_terminal_le
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : G.terminalRegularOpen)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
@@ -78,7 +75,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
       C * (s - t) := by
   exact L.inv_max_scalar_sub_terminal_le_on_time_window G hq x le_rfl G.lt hbound ht
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.inv_max_scalar_initial_sub_terminal_le
+theorem TerminalLimitMetric.inv_max_scalar_initial_sub_terminal_le
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (x : G.terminalRegularOpen)
     (hbound : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →

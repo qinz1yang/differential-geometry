@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.BasedCircle
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedBranchOrientability
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ClosedBranch.TwoSidedCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneSource
 
 open Set Topology

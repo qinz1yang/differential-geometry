@@ -1,17 +1,22 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopClassReparametrization
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.SourceBoundaryCover
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.RelativeDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ClosedBranch.NestedDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ComplexityInduction
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.OrientableCoverDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.QuarterTurn
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromReading
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromTube
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchNestedDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoOrientable
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossQuarterTurn
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryNeighborhoodRealization
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ClosedBranch.DisjointCapDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.SourceCoordinates
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchDisjointDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedCellReading
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryTubeProducerDouble
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Cap.Existence
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ClosedBranch.ConnectedPreimageObstruction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.AdaptedCleanCap
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOne
 
 open Set Topology
 
@@ -204,35 +209,9 @@ theorem exists_descendingSurgery_of_crossSeamReading [T2Space M] {U W : Set M}
 end NormalSingularCellData
 
 open Classical in
-theorem NormalSystem.exists_descending_surgery_in_double
-    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (S : NormalSystem E) (hor : S.IsOrientableManifold) :
-  let K := S.manifoldComplex
-  letI : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
-  letI := combinatorialChartedSpace (double 3 K)
-    (isCombinatorialManifold_double_succ_succ K S.isManifold)
-  let ι := simplicialMap K (glueEmbed₂ (PiecewiseLinear.boundaryComplex 3 K) id)
-  let C := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹' (ι '' K.space)
-  let Bd := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-    (ι '' (PiecewiseLinear.boundaryComplex 3 K).space)
-  let B := ((↑) : (double 3 K).space → E × E × ℝ) ⁻¹'
-    (ι '' S.boundaryNeighborhood.space)
-  ∀ (D₀ : SingularTwoCell (double 3 K).space) (hD₀ : NormalSingularCellData D₀ Bd B),
-    hD₀.singularSet.complexity ≠ 0 →
-    MapsTo D₀ D₀.domain C →
-    (∀ z ∈ Set.range D₀.boundary, B ∈ 𝓝[Bd] z) →
-    (∃ (c : loopCircle ≃ₜ frontier D₀.domain) (δ : freeLoop S.boundaryNeighborhoodSpace),
-      (∀ θ, ((D₀ (c θ) : (double 3 K).space) : E × E × ℝ) = ι (δ θ)) ∧
-        ¬loopClassMeets δ S.basepoint S.normalSubgroup) →
-    ∃ Sg : hD₀.DescendingSurgery,
-      MapsTo Sg.cell Sg.cell.domain C ∧
-      (∀ z ∈ Set.range Sg.cell.boundary, B ∈ 𝓝[Bd] z) ∧
-      ∃ (c : loopCircle ≃ₜ frontier Sg.cell.domain)
-        (δ : freeLoop S.boundaryNeighborhoodSpace),
-        (∀ θ, ((Sg.cell (c θ) : (double 3 K).space) : E × E × ℝ) = ι (δ θ)) ∧
-          ¬loopClassMeets δ S.basepoint S.normalSubgroup := by
+theorem descentStepOrientableStatement : DescentStepOrientableStatement := by
   classical
-  intro K
+  intro E _ _ _ S hor K
   let _ : Finite K.faces := S.manifoldComplex_faces_finite.to_subtype
   let _ := combinatorialChartedSpace (double 3 K)
     (isCombinatorialManifold_double_succ_succ K S.isManifold)

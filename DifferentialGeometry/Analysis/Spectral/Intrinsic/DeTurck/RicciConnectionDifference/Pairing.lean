@@ -394,7 +394,7 @@ theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
             (metricComparisonEndomorphismField (I := I) (M := M) g gm)) Z).toSection x)
         (unitTensor (I := I) (M := M) x))) =
       cometricDoubleTraceFib (I := I) g 2 x
-        (slotInsertEndomorphism (I := I) (M := M) 4 0 x
+        (slotInsertEndoFib (I := I) (M := M) 4 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g gm x)
           ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace 4 I x from
             Z.toSection x) (unitTensor (I := I) (M := M) x))) from by
@@ -405,7 +405,7 @@ theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
     (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [slotInsertEndomorphism_apply_eval, Fin.update_cons_zero]
+  rw [slotInsertEndoFib_apply_eval, Fin.update_cons_zero]
   rw [unitModel]
   congr 1
   funext k

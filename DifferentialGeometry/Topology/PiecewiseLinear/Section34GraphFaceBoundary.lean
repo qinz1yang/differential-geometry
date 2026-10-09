@@ -1,7 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplementCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualCover
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphArcSeparation
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.ResidualCells.Order
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualSeparation
 
 open Set Topology
 
@@ -53,7 +58,7 @@ theorem exists_isPLCellOn_section34GraphResidualTriangle_boundary
     (s : Section34SimplexIndex 𝒦 3) :
     ∃ B, IsPLCellOn 2 (section34GraphResidualCell 𝒦 𝒦' s.1) B ∧
       B = section34GraphResidualCell 𝒦 𝒦' s.1 ∩
-        ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w := by
+        ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w := by
   classical
   let S₀ := simplexComplex s.1 (𝒦.complex.indep s.2.1)
   let B₀ := simplexBoundary s.1 (𝒦.complex.indep s.2.1)
@@ -117,48 +122,48 @@ theorem exists_isPLCellOn_section34GraphResidualTriangle_boundary
   refine ⟨𝒦'.map '' (boundaryComplex 2 R).space, himage ▸ hcell, ?_⟩
   rw [hRbd, hNlocal, ← inter_assoc, inter_eq_left.mpr (inter_subset_left.trans hRS),
     𝒦'.bijOn.injOn.image_inter hRK (derivedNeighborhood_space_subset 𝒦'.complex L), himage,
-    iUnion_graphVertexCell]
+    iUnion_section34GraphVertexCell]
 
 theorem isPLCellOn_section34GraphResidualTriangle_proper_faces
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s : Section34SimplexIndex 𝒦 3) :
     IsPLCellOn 2 (section34GraphResidualCell 𝒦 𝒦' s.1)
-      (⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.faceDisk s) \ {.faceDisk s},
-        graphCutCell 𝒦 𝒦' m) := by
+      (⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.faceDisk s) \ {.faceDisk s},
+        section34GraphCutFamily 𝒦 𝒦' m) := by
   classical
   obtain ⟨B, hB, hBeq⟩ := exists_isPLCellOn_section34GraphResidualTriangle_boundary hsub hmap s
-  have hE : ∀ e : Section34EdgeIndex 𝒦 𝒦', graphSplittingDisk 𝒦 𝒦' e ⊆
-      ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w := by
+  have hE : ∀ e : Section34EdgeIndex 𝒦 𝒦', section34GraphSplitCell 𝒦 𝒦' e ⊆
+      ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w := by
     intro e
-    obtain ⟨w, z, -, -, heq⟩ := exists_graphSplittingDisk_endpoints hsub hmap e
+    obtain ⟨w, z, -, -, heq⟩ := exists_section34GraphSplitCell_endpoints hsub hmap e
     exact (heq.subset.trans inter_subset_left).trans
-      (subset_iUnion (graphVertexCell 𝒦 𝒦') w)
-  suffices B = ⋃ m ∈ section34Face (graphCutCell 𝒦 𝒦') (.faceDisk s) \ {.faceDisk s},
-      graphCutCell 𝒦 𝒦' m by rw [← this]; exact hB
+      (subset_iUnion (section34GraphVertexCell 𝒦 𝒦') w)
+  suffices B = ⋃ m ∈ section34Face (section34GraphCutFamily 𝒦 𝒦') (.faceDisk s) \ {.faceDisk s},
+      section34GraphCutFamily 𝒦 𝒦' m by rw [← this]; exact hB
   rw [hBeq]
   apply Subset.antisymm
   · rintro x ⟨hxR, hxN⟩
     obtain ⟨w, hxw⟩ := mem_iUnion.mp hxN
-    have hws := (graphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w s.2.1).mp
+    have hws := (section34GraphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w s.2.1).mp
       ⟨x, hxw, section34GraphResidualCell_subset_simplexBody s.2.1 hxR⟩
     let a : Section34ArcIndex 𝒦 𝒦' := ⟨(s, w), hws⟩
     exact mem_iUnion₂.mpr ⟨.faceArc a, ⟨inter_subset_right, by simp⟩, hxw, hxR⟩
   · refine iUnion₂_subset fun l hl => ?_
-    have hsubR : graphCutCell 𝒦 𝒦' l ⊆ section34GraphResidualCell 𝒦 𝒦' s.1 := hl.1
+    have hsubR : section34GraphCutFamily 𝒦 𝒦' l ⊆ section34GraphResidualCell 𝒦 𝒦' s.1 := hl.1
     have hne : l ≠ .faceDisk s := hl.2
     refine subset_inter hsubR ?_
     cases l with
-    | vertexBall w => exact subset_iUnion (graphVertexCell 𝒦 𝒦') w
+    | vertexBall w => exact subset_iUnion (section34GraphVertexCell 𝒦 𝒦') w
     | tetraBall t =>
-        cases graphCutCell_eq_of_tetrahedron_subset hsub hmap t (.faceDisk s) hsubR
+        cases section34GraphCutFamily_subset_strict_on_tetrahedra hsub hmap t (.faceDisk s) hsubR
     | splitDisk e => exact hE e
     | faceDisk t =>
         exact (hne (congrArg Section34Label.faceDisk
           ((section34GraphResidualTriangle_subset_iff hsub hmap t s).mp hsubR))).elim
     | patch p =>
-        exact inter_subset_right.trans (subset_iUnion (graphVertexCell 𝒦 𝒦') p.1.2)
+        exact inter_subset_right.trans (subset_iUnion (section34GraphVertexCell 𝒦 𝒦') p.1.2)
     | faceArc a =>
-        exact inter_subset_left.trans (subset_iUnion (graphVertexCell 𝒦 𝒦') a.1.2)
+        exact inter_subset_left.trans (subset_iUnion (section34GraphVertexCell 𝒦 𝒦') a.1.2)
     | edgeArc i => exact inter_subset_right.trans (hE i.1.2)
     | markedPoint p => exact inter_subset_left.trans (hE p.1.2)
 

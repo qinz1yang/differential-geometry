@@ -192,15 +192,15 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwiseRoundOrSpher
     (h : ∀ C : ConnectedComponents E.discarded.Carrier,
       (∃ (D' : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
           (S : SolutionOn (I := ThreeModel)
-            (M := (E.discarded.component C).Carrier) D')
-          (eps : ℝ) (x : (E.discarded.component C).Carrier) (t : ℝ),
+            (M := (E.discarded.toClosedOrientedManifold.component C).Carrier) D')
+          (eps : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
         Nonempty (RoundComponent S eps x t Set.univ)) ∨
-      isSphereTwoTimesCircleFactor (E.discarded.component C)) :
+      isSphereTwoTimesCircleFactor (E.discarded.toClosedOrientedManifold.component C)) :
     E.poincareStandardDiscarded :=
   MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
     E
     (componentwisePositiveCurvatureOrSphereProduct_of_componentwiseRoundOrSphereProduct
-      E.discarded h)
+      E.discarded.toClosedOrientedManifold h)
 
 theorem admitsConstantPositiveSectionalCurvature_of_diffeomorph
     {M N : ConnectedClosedOrientedManifold.{u} 3}

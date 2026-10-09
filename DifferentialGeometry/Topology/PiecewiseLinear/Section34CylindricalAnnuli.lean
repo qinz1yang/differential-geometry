@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.Motion
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CylindricalMotion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34AnnularBandComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusCylinder
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Family.Regularity.SectionPairing
+import DifferentialGeometry.Geometry.Metric.FamilySectionPairing
 import DifferentialGeometry.Geometry.Connection.SourceSectionPairing
 import DifferentialGeometry.Analysis.Calculus.Derivative.Diagonal
 

@@ -2,8 +2,8 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pul
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Product
 import DifferentialGeometry.Geometry.Metric.UniversalCover.CurvatureDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProduct
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Estimates.SpatialDerivatives
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Rescaling.Harnack
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedKLimSpatialJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CrossModelBallTransport
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 

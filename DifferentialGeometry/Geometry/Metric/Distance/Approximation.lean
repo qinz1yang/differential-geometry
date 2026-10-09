@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Metric.Approximation.Lipschitz
+import DifferentialGeometry.Geometry.Metric.LipschitzApproximation
 import DifferentialGeometry.Geometry.Metric.Approximation.LocalLipschitz
 import DifferentialGeometry.Geometry.Metric.Distance.Lipschitz
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Topology.FiberBundle.Separation
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 noncomputable section
 

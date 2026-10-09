@@ -228,7 +228,7 @@ theorem exists_horn_centralSphere_side_points_of_frontier_scalar_lt :
       exact (hmap _).symm
   · exact Or.inl hcl
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab in
+open OrientedThreeStage.IncomingSlab in
 theorem exists_strongNeck_threshold_of_horn_point_at_slice_of_frontier_scalar_lt :
     ∃ eta : ℝ, 0 < eta ∧
     ∀ {delta : ℝ}, 0 < delta → delta < 1 / 11 → ∀ {kappa : ℝ}, 0 < kappa →

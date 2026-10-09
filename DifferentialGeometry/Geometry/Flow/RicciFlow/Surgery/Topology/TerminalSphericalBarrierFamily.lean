@@ -10,14 +10,11 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
-
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
 set_option backward.isDefEq.respectTransparency false in
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.boundary_pair_of_neck_or_cap
+private theorem boundary_pair_of_neck_or_cap
     {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
     {g : SmoothRiemannianMetric I3 M} {δ : ℝ} {v : M}
     (K : CompactDomain M) (nk : SpatialNeck g δ v)
@@ -79,7 +76,7 @@ private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.Inco
       exact ⟨by norm_num, Or.inl rfl, hs, by linarith, fun q =>
         ⟨by simpa only [one_mul] using (hm q).1, (hm q).2⟩⟩
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_finite_recorded_spherical_barriers_of_canonical
+theorem TerminalLimitMetric.exists_finite_recorded_spherical_barriers_of_canonical
     (L : G.TerminalLimitMetric) {δ C1 C2 q : ℝ}
     (hδsmall : δ < 1 / 20000)
     (hcanonical : ∀ (x : P.Carrier) (t : ℝ), t ∈ Ioo a s → q < G.flow.scalar t x →
@@ -160,7 +157,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     nlinarith [(neck p).Q_pos]
 
 set_option backward.isDefEq.respectTransparency false in
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.exists_uniform_finite_recorded_spherical_barriers
+theorem exists_uniform_finite_recorded_spherical_barriers
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
     ∃ C2 : ℝ, 1 ≤ C2 ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
       (G : P.IncomingSlab a s), ∃ q : ℝ, 0 < q ∧
@@ -214,7 +211,7 @@ theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
     (fun x t ht hx => hcanonical x t ⟨ht.1.le, ht.2⟩ hx.le)
     A y hA hqA hyA hnoncompact
 
-theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_finite_recorded_spherical_barriers
+theorem TerminalLimitMetric.exists_finite_recorded_spherical_barriers
     (L : G.TerminalLimitMetric) {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
     ∃ C2 q : ℝ, 1 ≤ C2 ∧ 0 < q ∧
       ∀ (A : ℝ) (y : G.terminalRegularOpen), 0 < A → q < 4 * C2 * A →

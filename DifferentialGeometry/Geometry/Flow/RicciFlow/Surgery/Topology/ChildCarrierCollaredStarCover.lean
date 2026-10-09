@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrie
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
-import DifferentialGeometry.Topology.Homotopy.Retraction
+import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
 
 set_option autoImplicit false
 
@@ -179,7 +179,7 @@ theorem simplyConnectedSpace_childCarrier_of_collaredStarCover (c : ConnectedCom
 
 def childCollaredStarCoverProducer : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       Nonempty (E.ChildCarrierCollaredStarCover c)
 
 def ChildCoreSimplyConnected : Prop :=
@@ -191,12 +191,12 @@ def ComponentwisePuncturedCoreSimplyConnected : Prop :=
 
 def childCoreSimplyConnectedOfParent : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       SimplyConnectedSpace (E.ChildCore c)
 
 def ComponentwisePuncturedCoreOfParent : Prop :=
   ∀ c : ConnectedComponents Q.Carrier,
-    SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+    SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
       SimplyConnectedSpace ↥(E.trace.tubes.puncturedCoreComponent (E.childCoreComponent c))
 
 theorem simplyConnectedSpace_puncturedCoreComponent_iff_childCore
@@ -222,23 +222,23 @@ theorem childCoreSimplyConnectedOfParent_of_childCoreSimplyConnected
 
 theorem child_simplyConnected_of_producers (hcover : E.childCollaredStarCoverProducer)
     (hcore : E.childCoreSimplyConnectedOfParent) (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.simplyConnectedSpace_childCarrier_of_collaredStarCover c (hcore c inferInstance)
     (hcover c inferInstance).some
 
 theorem child_simplyConnected_of_puncturedCoreProducer
     (hcover : E.childCollaredStarCoverProducer)
     (hpc : E.ComponentwisePuncturedCoreOfParent) (c : ConnectedComponents Q.Carrier)
-    [SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier] :
-    SimplyConnectedSpace (Q.component c).toClosedOrientedManifold.Carrier :=
+    [SimplyConnectedSpace (P.component (E.childParent c)).Carrier] :
+    SimplyConnectedSpace (Q.component c).Carrier :=
   E.child_simplyConnected_of_producers hcover
     ((E.componentwisePuncturedCoreOfParent_iff_childCoreSimplyConnectedOfParent).mp hpc) c
 
 theorem childCoreSimplyConnectedOfParent_of_childCarrierSimplyConnected
     (hhe : ∀ c : ConnectedComponents Q.Carrier, Nonempty (E.ChildCore c ≃ₕ E.ChildCarrier c))
     (hcar : ∀ c : ConnectedComponents Q.Carrier,
-      SimplyConnectedSpace (P.component (E.childParent c)).toClosedOrientedManifold.Carrier →
+      SimplyConnectedSpace (P.component (E.childParent c)).Carrier →
         SimplyConnectedSpace (E.ChildCarrier c)) :
     E.childCoreSimplyConnectedOfParent :=
   fun c h => @ContinuousMap.HomotopyEquiv.simplyConnectedSpace _ (E.ChildCarrier c) _ _

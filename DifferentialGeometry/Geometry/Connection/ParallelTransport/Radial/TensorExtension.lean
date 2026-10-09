@@ -1666,7 +1666,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     · simp [Function.update_of_ne hbj]
   have hsumqmd : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun y => ∑ j : Fin 4, q j y) p := by
     change MDifferentiableAt I 𝓘(ℝ, ℝ) (Finset.univ.sum q) p
-    apply MDifferentiableAt.sum (I := I) (t := Finset.univ) (f := q)
+    apply DifferentialGeometry.mdiffAt_finset_sum
     intro j _
     exact (hqsm j).contMDiffAt.mdifferentiableAt (by simp)
   have hGderiv : mvfderiv (I := I) G p (X p) = 0 := by

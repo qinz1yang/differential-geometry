@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.TerminalDistortion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortionTerminal
 
 set_option autoImplicit false
 
@@ -19,11 +19,11 @@ open private ObservedHistory.activeStage_eq_of_time_mem
   ObservedHistory.initialMetric_inner_le_exp_of_normSq_le
   BackwardPointTrace.apply_point_eq_of_stage_eq
   RetainedCoreHistory.exists_window_point_of_edist_le from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.Distortion
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortion
 
 open private ObservedHistory.initialMetric_inner_le_exp_of_normSq_le_of_eq_last
   RetainedCoreHistory.normSq_stageMetric_le_of_backwardPointTrace_of_final from
-  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.History.Trace.TerminalDistortion
+  DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortionTerminal
 
 section Chain
 

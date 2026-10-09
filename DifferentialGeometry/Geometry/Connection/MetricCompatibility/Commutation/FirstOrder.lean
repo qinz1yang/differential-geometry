@@ -58,7 +58,7 @@ lemma tensor0S_curry_covGradBundleEquiv_unit
     (v : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ v)
         (unitZeroSec (I := I) (M := M) x) := by
@@ -68,20 +68,20 @@ lemma tensor0S_curry_covGradBundleEquiv_unit
   rw [show Tensor0SSpace.toModel
       (tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m) by
     simpa only [ContinuousLinearEquiv.symm_apply_apply] using
       TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x Φ)
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x))
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m]
-  rw [covariantSlotBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
     (unitZeroSec (I := I) (M := M) x)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m)]
   simp only [Fin.cons_zero, Matrix.vecTail, ContinuousLinearEquiv.symm_apply_apply]
@@ -214,7 +214,7 @@ lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) (x : M) (w : TangentSpace I x) :
     tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (covApply (tensorCov (I := I) g 0 s) Y (fun z : M => S.toSection z)) x))
           (unitZeroSec (I := I) (M := M) x)) w =
@@ -270,7 +270,7 @@ theorem covGrad_covDeriv_leadingSlot_commutation
           (unitZeroSec (I := I) (M := M) x)) (Z x) -
       tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covariantSlotBundleEquiv (I := I) (M := M) 0 s x
+          covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
               (covApply (tensorCov (I := I) g 0 s) Y (fun z : M => S.toSection z)) x))
           (unitZeroSec (I := I) (M := M) x)) (Z x) =

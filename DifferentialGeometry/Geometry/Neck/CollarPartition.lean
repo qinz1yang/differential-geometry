@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.Chart
-import DifferentialGeometry.Topology.Handle.BoundaryCollar.EmbeddedPartition
+import DifferentialGeometry.Geometry.Boundary.EmbeddedCollarPartition
 import DifferentialGeometry.Topology.Manifold.OrientedProductChart
 
 noncomputable section

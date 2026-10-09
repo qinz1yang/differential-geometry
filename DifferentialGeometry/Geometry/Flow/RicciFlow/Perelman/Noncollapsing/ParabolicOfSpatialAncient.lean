@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
-import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.Trace.TerminalScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
 import DifferentialGeometry.Geometry.Curvature.ScalarControlsRm
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciUpper
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm

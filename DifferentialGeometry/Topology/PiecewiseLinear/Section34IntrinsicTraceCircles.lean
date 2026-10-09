@@ -1,9 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ModelLineCharts
 import DifferentialGeometry.Topology.PiecewiseLinear.PLModelIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralSphereImage
 import DifferentialGeometry.Topology.PiecewiseLinear.RegularFrontierLineChart
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusFrontier
-import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.FaceTori.Model
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34IntrinsicFaceTorusModel
 
 open Set Topology
 
@@ -137,7 +142,7 @@ theorem exists_finite_section34Trace_circles_of_crossings
       fblBd s ∩ frontier
         (section34FaceTorus (section34VertexBallImage src f₁) s) = ⋃ i, J i := by
   obtain ⟨P, u, hP, hu, himage, hfront⟩ :=
-    exists_PL_solid_torus_model_of_faceTorus hcut hgraph s
+    exists_section34FaceTorus_intrinsic_model hcut hgraph s
   obtain ⟨ι, hι, J, -, -, -, hJ, hdis, hN, hT⟩ :=
     exists_finite_section34Trace_model_circles hcut hgraph.2.2.1 hinv s hP hu himage hfront
   exact ⟨ι, hι, fun i => u '' J i, hJ, hdis, hN, hT⟩

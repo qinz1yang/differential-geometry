@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.ConnectedSumCommutation
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Sphere.PositiveModel
 import DifferentialGeometry.Topology.Manifold.OrientedChartInOpen
-import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Map
+import DifferentialGeometry.Topology.Manifold.OrientedBallChartMap
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
 
@@ -30,7 +30,7 @@ theorem nonempty_orientedDiffeomorph_smoothConnectedSum_sphere_right
     e (orientedBallChart standardThreeSphere) boundaryAttachment
   have hsphere : Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (connectedSum M standardThreeSphere).toClosedOrientedManifold M.toClosedOrientedManifold) := by
-    obtain ⟨h⟩ := connectedSum_sphere_right M
+    obtain ⟨h⟩ := nonempty_orientedDiffeomorph_connectedSum_sphere_right_unit M
     let eLift : ClosedOrientedManifold.OrientedDiffeomorph standardThreeSphere.toClosedOrientedManifold
         standardThreeSphereLift.{u}.toClosedOrientedManifold :=
       ClosedOrientedManifold.uliftOrientedDiffeomorph standardThreeSphere.toClosedOrientedManifold

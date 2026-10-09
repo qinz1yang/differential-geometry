@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.DistanceUpper
-import DifferentialGeometry.Geometry.Metric.Perturbation.Bilinear
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Analysis.FunctionalAnalysis.SeminormBounds
-import DifferentialGeometry.Geometry.Metric.Lipschitz.Local
+import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv

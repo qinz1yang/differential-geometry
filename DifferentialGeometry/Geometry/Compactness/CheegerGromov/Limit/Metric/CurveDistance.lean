@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphCurves
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Topology.MetricSpace.Geodesic.SegmentTail
+import DifferentialGeometry.Geometry.Compactness.SegmentTail
 
 set_option autoImplicit false
 

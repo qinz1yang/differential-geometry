@@ -126,13 +126,10 @@ private theorem exists_regularizedC1ActionValues_of_first_stage_replacement
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
-
-open DifferentialGeometry.Topology.ClosedOrientedManifold
-open DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem _root_.DifferentialGeometry.Topology.ClosedOrientedManifold.IncomingSlab.TerminalLimitMetric.exists_contMDiff_action_join_lt
+private theorem TerminalLimitMetric.exists_contMDiff_action_join_lt
     (L : G.TerminalLimitMetric) {T u w v : ℝ} (hu : 0 ≤ u) (huw : u ≤ w) (hwv : w < v)
     (hupper : T - u ^ 2 ≤ s) (hlower : a ≤ T - v ^ 2)
     (α β : ℝ → P.Carrier) (hα : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α)

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCapMaps
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
-import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
+import DifferentialGeometry.Bundle.Orientation.Map
 
 noncomputable section
 open Set Manifold
@@ -78,7 +78,7 @@ theorem discardedCap_positive (b : E.trace.tubes.Boundary) (hb : E.trace.capDisc
   change Orientation.map (Fin 3) (A.symm.trans J) _ = _
   rw [hJ]
   change Orientation.map (Fin 3) ((A.symm.trans B).trans C) _ = _
-  rw [DifferentialGeometry.orientation_map_trans, hcap']
+  rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hcap']
   cases hside : b.2
   · simp only [Bool.false_eq_true, ite_false, Module.Ray.neg_units_smul, one_smul]
     exact (Orientation.map_neg C (N.orientation.orientation (E.trace.capping.cap b x))).trans

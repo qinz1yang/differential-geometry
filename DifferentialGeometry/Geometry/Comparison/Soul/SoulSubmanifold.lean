@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Submanifold.EmbeddedSlice.NormalSplitting
+import DifferentialGeometry.Geometry.Comparison.Soul.NormalSplitting
 import DifferentialGeometry.Geometry.Comparison.Nonnegative.ParallelVariationRegularity
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 

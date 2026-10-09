@@ -117,7 +117,7 @@ theorem CurveMap.continuousOn_sweptIntegrand
 
 omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 theorem continuousOn_sweptDensity (B : RicciBackground (I := I) (M := M) D a b)
-    (γ : ℝ → DifferentialGeometry.Topology.freeLoop M)
+    (γ : ℝ → ContinuousFreeLoop M)
     (hγ : (curveOfLoopFamily γ).SmoothOn (I := I) (Icc a b)) :
     ContinuousOn (fun t => (curveOfLoopFamily γ).sweptDensity B.family.metric (Icc a b) t)
       (Icc a b) := by

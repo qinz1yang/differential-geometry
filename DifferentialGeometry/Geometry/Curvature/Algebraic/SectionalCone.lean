@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Cones.SectionalNonnegative
+import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
 
 set_option autoImplicit false

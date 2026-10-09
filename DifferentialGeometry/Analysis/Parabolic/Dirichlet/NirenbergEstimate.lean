@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.MetricExtension.Family.DifferenceQuotientBounds
+import DifferentialGeometry.Analysis.Parabolic.Dirichlet.LocalCoefficientBounds
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergCoercivity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletNirenbergEstimate
 

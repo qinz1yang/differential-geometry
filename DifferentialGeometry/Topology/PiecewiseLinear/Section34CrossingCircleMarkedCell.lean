@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingCircleMarkedCellHits
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.MarkedCell
-import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.CellChain
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeMarkedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeChain
 
 open Set
 

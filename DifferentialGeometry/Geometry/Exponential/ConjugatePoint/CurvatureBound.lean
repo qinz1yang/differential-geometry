@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Gronwall
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial.Frame
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Framed
 import DifferentialGeometry.Geometry.Exponential.Variation.Radial
-import DifferentialGeometry.Geometry.Geodesic.Jacobi.BoundaryValue
+import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.BoundaryValue
 
 open Set
 open scoped Manifold ContDiff

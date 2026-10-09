@@ -9,6 +9,7 @@ open scoped BigOperators
 
 noncomputable section
 
+set_option linter.unusedSectionVars false
 
 variable {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] [DecidableEq κ]
 

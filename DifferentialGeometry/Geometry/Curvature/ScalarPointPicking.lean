@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.PointPicking.Sequence
+import DifferentialGeometry.Geometry.Metric.PointPickingSequence
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Topology.Manifold.LocalCompactness
 

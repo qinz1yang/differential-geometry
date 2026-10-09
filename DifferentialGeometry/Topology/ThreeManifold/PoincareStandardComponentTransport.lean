@@ -10,14 +10,14 @@ namespace DifferentialGeometry.Topology.ClosedOrientedManifold
 universe u
 variable {M N : ClosedOrientedManifold.{u} 3}
 
-theorem componentwise_isStandardConnectedSum_iff_of_diffeomorph
+theorem componentwise_isPoincareStandard_iff_of_diffeomorph
     (e : M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ N.Carrier) :
-    (∀ C : ConnectedComponents M.Carrier, isStandardConnectedSum (M.component C).Carrier) ↔
-      ∀ C : ConnectedComponents N.Carrier, isStandardConnectedSum (N.component C).Carrier := by
+    (∀ C : ConnectedComponents M.Carrier, isPoincareStandard (M.component C).Carrier) ↔
+      ∀ C : ConnectedComponents N.Carrier, isPoincareStandard (N.component C).Carrier := by
   constructor
   · intro h C
-    exact isStandardConnectedSum_of_diffeomorph (diffeomorphComponent e.symm C) (h _)
+    exact isPoincareStandard_of_diffeomorph (diffeomorphComponent e.symm C) (h _)
   · intro h C
-    exact isStandardConnectedSum_of_diffeomorph (diffeomorphComponent e C) (h _)
+    exact isPoincareStandard_of_diffeomorph (diffeomorphComponent e C) (h _)
 
 end DifferentialGeometry.Topology.ClosedOrientedManifold

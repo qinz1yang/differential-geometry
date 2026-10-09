@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.JointVolumeDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.GradientCoefficients
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceScalarContinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AsymptoticShrinker.PoleRescaling
-import DifferentialGeometry.Analysis.Calculus.Rademacher
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.RegularPoleRescalings
+import DifferentialGeometry.Analysis.Calculus.Derivative.LocallyLipschitz
 import DifferentialGeometry.Analysis.Calculus.Derivative.WeakIdentification
 import DifferentialGeometry.Geometry.Coordinates.Fields.ScalarDifferentiability
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared

@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RefinedResidualCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualCover
@@ -164,12 +169,12 @@ theorem section34GraphResidualCell_eq_empty_of_card_le_two
   have hbody : simplexBody 𝒦 t ⊆ graphSkeletonSpace 𝒦 :=
     fun x hx => mem_iUnion₂.mpr ⟨t, ⟨ht, hcard⟩, hx⟩
   have hN : graphSkeletonSpace 𝒦 ⊆
-      ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w := by
+      ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w := by
     calc
       graphSkeletonSpace 𝒦 = 𝒦'.map '' L.space := hcore.symm
       _ ⊆ 𝒦'.map '' (derivedNeighborhood 𝒦'.complex L).space := image_mono hLN
-      _ = ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w :=
-        (iUnion_graphVertexCell 𝒦 𝒦').symm
+      _ = ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w :=
+        (iUnion_section34GraphVertexCell 𝒦 𝒦').symm
   rw [section34GraphResidualCell, sdiff_eq_empty.mpr (hbody.trans hN), closure_empty]
 
 theorem pairwiseDisjoint_section34GraphResidualTriangle
