@@ -29037,3 +29037,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6GapProdFinal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HgwResJFOpenEngFS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6HP6bAssemblyV7LocFin0FS
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.P6A12V11Fin0FS
+
+-- chapter 8 (gc/liao/ch8-20261006): root registration #144
