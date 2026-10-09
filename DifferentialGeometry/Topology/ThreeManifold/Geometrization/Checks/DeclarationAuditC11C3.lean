@@ -203,8 +203,8 @@ set_option autoImplicit false
 `owned` = root #32 起登记的模块 + 已 commit 未登记的模块（donor 派生的 verbatim / patched-at-path /
 `PortC11P` / shim，以及 own 的 `Ch11/` 模块：P6A3 / P6C2 / P6D / P6D2 / P6CON / PRE841 / ASM …）。规则：
 * 任何 axiomInfo / unsafe / 类型里的 `sorryAx` / 非 standard 公理都 throw；
-* 直接 admission（值里直接用 `sorryAx`）只允许 `expectedDirect`（= A12′
-  `exists_surgery_with_decaying_accuracy_enhanced`，REPOINT 2a）；
+* 直接 admission（值里直接用 `sorryAx`）只允许 `expectedDirect`（原为 A12′
+  `exists_surgery_with_decaying_accuracy_enhanced`，REPOINT 2a；admission 改接候选 D 后为空，期望 0）；
 * 经由别的声明带入 `sorryAx` 的下游声明必须登记在 `downstream`（目前为空），且到直接 admission 的
   BFS 最短路径终点必须在 `knownAdmissions`（A09 `exists_late_cut_family`、A12、A12′、A13
   `late_derivative_tests_of_flow`）里；
@@ -1186,7 +1186,9 @@ run_cmd do
       exists_uniform_scaffold_surgery_step_with_radial_coordinates_with_distance_scalars"]
   for s in authored do
     unless (env.find? s.toName).isSome do throwError "Missing declaration {s}"
-  let expectedDirect : List Name := [`GC.LongTime.exists_surgery_with_decaying_accuracy_enhanced]
+  -- admission swap (INT-CH8, lead release 2026-10-08): A12′ is now proved by candidate D
+  -- (`a12EnhancedFull_v11fin0_FS`), so no declaration in `owned` is a direct admission any more.
+  let expectedDirect : List Name := []
   let downstream : List Name := []
   let knownAdmissions : List Name := [`GC.LongTime.exists_late_cut_family,
     `GC.LongTime.exists_surgery_with_decaying_accuracy,
