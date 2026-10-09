@@ -31,9 +31,9 @@ example (K : ℕ) (hK : staticDerivativeOrder ≤ K) (A : ℝ → ℝ)
   (exists_closed_graph_threshold_disj_END0 K hK A :
     type_of% (exists_closed_graph_threshold_disj.{0} K hK A hA))
 
-/-- The endpoint: same type as `geometrization.{0}`. -/
+/-- The endpoint: same type as `geometrization_certificate.{0}`. -/
 example (M : ConnectedClosedOrientedManifold.{0} 3) :=
-  (geometrization_zero_END0 M : type_of% (geometrization.{0} M))
+  (geometrization_zero_END0 M : type_of% (geometrization_certificate.{0} M))
 
 /-- The conjecture at universe 0: same type as `geometrization_conjecture.{0}`. -/
 example : type_of% geometrization_conjecture.{0} := geometrization_conjecture_zero_END0

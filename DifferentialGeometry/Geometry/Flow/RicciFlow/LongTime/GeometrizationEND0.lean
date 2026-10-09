@@ -5,28 +5,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.RouteWLateSequ
 import DifferentialGeometry.Geometry.Flow.RicciFlow.LongTime.Ch11.A12Enhanced
 
 /-!
-# The geometrization endpoint at universe 0 without the two threshold admissions
+# A universe-zero geometrization certificate
 
-Lane S-ENDPOINT0, G1 (suffix `_END0`). The public endpoint `GC.Endpoint.geometrization.{u}`
-(`LongTime/Geometrization.lean`) reaches the static thresholds through
-`GC.LongTime.geometrizes_of_metric` -> `components_geometrize_of_late_sequence_tests` ->
-`Collapse.exists_graph_threshold_disj`, whose two direct admissions are the closed and the boundary
-threshold (A02, A01 of the X132 ledger). Here the chain is restated at universe `0` with
-`exists_graph_threshold_disj_END0` (`GraphThresholdDisjEND0.lean`) as the threshold:
-
-* `components_geometrize_of_late_sequence_tests` is replaced by the tree's already
-  parameterised form `components_geometrize_of_late_sequence_tests_of_static_disj`
-  (`ThresholdDisjunctiveApplications.lean`, universe-polymorphic, same proof) applied at
-  `exists_graph_threshold_disj_END0`;
-* `geometrizes_of_metric_END0` and `geometrization_zero_END0` repeat the five lines of
-  `geometrizes_of_metric` and the three lines of `geometrization` at universe 0.
-
-This endpoint uses the A12' late-sequence consumer
-(`Ch11.exists_surgery_with_late_sequence_tests_C11R` fed with
-`exists_surgery_with_decaying_accuracy_enhanced`, re-point of 2026-10-07 on top of the Route W
-re-point of 2026-10-06). The recorded reachable late-time direct admissions are A09, A12' and A13;
-the old A08/A10/A11/A14 skeleton declarations and A12 remain present but are not used by this
-endpoint. The universe-`u` statement is not claimed for `u > 0`.
+The S-ENDPOINT0 construction uses `exists_graph_threshold_disj_END0` and the parameterised
+late-sequence consumer to obtain a geometrization certificate at universe `0`. Its endpoint
+has the certificate type of `GC.Endpoint.geometrization_certificate.{0}`. The public theorem
+`GC.Endpoint.geometrization` in `LongTime/Geometrization.lean` exposes the prime connected sum,
+actual incompressible torus cuts and geometric piece interiors directly.
 -/
 
 set_option autoImplicit false
@@ -60,8 +45,8 @@ end GC.LongTime
 
 namespace GC.Endpoint
 
-/-- **Geometrization at universe 0 without the two threshold admissions** (A01, A02 of the X132
-ledger): the statement of `geometrization.{0}`. The late-time admissions A08-A14 remain. -/
+/-- The universe-zero construction certificate, with the same conclusion as
+`geometrization_certificate.{0}`. -/
 theorem geometrization_zero_END0 (M : ConnectedClosedOrientedManifold.{0} 3) : Geometrizes M := by
   obtain ⟨g⟩ := Geometry.nonempty_smoothRiemannianMetric_of_compact (𝓡 3) (M := M.Carrier)
   exact GC.LongTime.geometrizes_of_metric_END0 M g
