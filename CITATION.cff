@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: differential-geometry
+message: Differential Geometry in Lean 4
+type: software
+authors:
+  - given-names: Yuan
+    family-names: Liao
+  - given-names: Ziyang
+    family-names: Qin
+    email: zq38@cornell.edu
+  - given-names: Jui-Hui
+    family-names: Chung
+  - given-names: Ayush
+    family-names: Khaitan
+  - given-names: Zhengyang
+    family-names: Zhang
+  - given-names: Hongzhou
+    family-names: Lin
+  - given-names: Zijian
+    family-names: Zhang
+  - given-names: Ligeng
+    family-names: Zhu
+  - given-names: Peng
+    family-names: Lu
+  - given-names: Bennett
+    family-names: Chow
+repository-code: 'https://github.com/qinz1yang/differential-geometry'
+license: Apache-2.0
+version: 0.1.5
