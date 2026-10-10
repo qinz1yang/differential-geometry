@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: differential-geometry
+message: Differential Geometry in Lean 4
+type: software
+authors:
+  - given-names: Ziyang
+    family-names: Qin
+    email: zq38@cornell.edu
+repository-code: 'https://github.com/qinz1yang/differential-geometry'
+license: Apache-2.0
+version: 0.1.5
