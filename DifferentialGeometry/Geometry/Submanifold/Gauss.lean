@@ -184,8 +184,6 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open private chartConnectionBilin chartConnectionBilin_apply
   from DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Koszul
-open private gaussDefectModelValue secondFundamentalFormAmbientAt_apply
-  from DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Pointwise
 
 variable {EN HN N E H M : Type*}
   [NormedAddCommGroup EN] [NormedSpace ℝ EN] [FiniteDimensional ℝ EN]
@@ -304,9 +302,9 @@ theorem gauss_equation_of_inner_map [T2Space N] [T2Space M]
   have hB (u v : TangentSpace IN a) :
       B (eN u) (eN v) = eM (secondFundamentalFormAmbientAt gN gM f a u v) := by
     rw [secondFundamentalFormAmbientAt_apply]
-    change B (eN u) (eN v) = gaussDefectModelValue gN gM f a (eN u) (eN v)
+    change B (eN u) (eN v) = secondFundamentalFormModelValue gN gM f a (eN u) (eN v)
     simp only [B, bundleMapCovDeriv, pullbackConnectionForm, ContinuousLinearMap.comp_apply,
-      gaussDefectModelValue, hdf, F, z, A, C, chartConnectionBilin_apply]
+      secondFundamentalFormModelValue, hdf, F, z, A, C, chartConnectionBilin_apply]
     rw [show writtenInExtChartAt IN I a f (extChartAt IN a a) =
       extChartAt I (f a) (f a) from hFz]
   have hgauss := chart_gauss_equation_of_inner_map hf hmetric a (eN X) (eN Y) (eN Z) (eN W)

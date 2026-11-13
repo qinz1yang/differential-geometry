@@ -1200,6 +1200,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Family.DominatedIntegra
 import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Metric
 import DifferentialGeometry.Analysis.Integration.Measure.Family.ParametricContinuity
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Regularity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
 import DifferentialGeometry.Analysis.Integration.Measure.Gradient
 import DifferentialGeometry.Analysis.Integration.Measure.GradientPairing
@@ -11627,6 +11628,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.VossWeyl
 import DifferentialGeometry.Geometry.Submanifold.Gauss
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersion
 import DifferentialGeometry.Geometry.Submanifold.IsometricImmersionGauss
+import DifferentialGeometry.Geometry.Submanifold.MeanCurvature
 import DifferentialGeometry.Geometry.Submanifold.NormalBundle.Defs
 import DifferentialGeometry.Geometry.Submanifold.NormalBundle.Point
 import DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.AlongCurve
