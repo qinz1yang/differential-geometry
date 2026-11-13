@@ -307,9 +307,6 @@ end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
 namespace DifferentialGeometry.Geometry
 
-open private gaussDefectModelValue secondFundamentalFormAmbientAt_apply
-  from DifferentialGeometry.Geometry.Submanifold.SecondFundamentalForm.Pointwise
-
 section ModelCoordinateFormula
 
 variable {EN HN N E H M : Type*}
@@ -340,7 +337,7 @@ private theorem secondFundamentalFormAmbientAt_modelCoord
             (tangentSpaceModelContinuousLinearEquiv (I := IN) x v)
             (extChartAt IN x x)) := by
   rw [secondFundamentalFormAmbientAt_apply, ContinuousLinearEquiv.apply_symm_apply]
-  simp only [gaussDefectModelValue]
+  simp only [secondFundamentalFormModelValue]
 
 end ModelCoordinateFormula
 

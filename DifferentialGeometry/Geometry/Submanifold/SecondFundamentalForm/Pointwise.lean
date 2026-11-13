@@ -147,7 +147,10 @@ private theorem deriv_deriv_comp
   simpa only [Function.iterate_succ_apply, Function.iterate_zero_apply,
     iteratedFDeriv_two_apply] using hchain
 
-private def gaussDefectModelValue
+/-- The ambient second fundamental form in the charts at `x` and `iota x`:
+`D²F(u, v) + Γ_M(diota u, diota v) - diota(Γ_N(u, v))`, where `F` is `iota` written in
+those charts. -/
+def secondFundamentalFormModelValue
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (u v : EN) : E :=
@@ -163,51 +166,51 @@ private def gaussDefectModelValue
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
-private theorem gaussDefectModelValue_add_left
+private theorem secondFundamentalFormModelValue_add_left
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (u₁ u₂ v : EN) :
-    gaussDefectModelValue gN gM iota x (u₁ + u₂) v =
-      gaussDefectModelValue gN gM iota x u₁ v +
-        gaussDefectModelValue gN gM iota x u₂ v := by
-  simp only [gaussDefectModelValue, map_add, add_apply,
+    secondFundamentalFormModelValue gN gM iota x (u₁ + u₂) v =
+      secondFundamentalFormModelValue gN gM iota x u₁ v +
+        secondFundamentalFormModelValue gN gM iota x u₂ v := by
+  simp only [secondFundamentalFormModelValue, map_add, add_apply,
     ChartChristoffel.contraction_add_left]
   abel
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
-private theorem gaussDefectModelValue_smul_left
+private theorem secondFundamentalFormModelValue_smul_left
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (a : ℝ) (u v : EN) :
-    gaussDefectModelValue gN gM iota x (a • u) v =
-      a • gaussDefectModelValue gN gM iota x u v := by
-  simp only [gaussDefectModelValue, map_smul,
+    secondFundamentalFormModelValue gN gM iota x (a • u) v =
+      a • secondFundamentalFormModelValue gN gM iota x u v := by
+  simp only [secondFundamentalFormModelValue, map_smul,
     ChartChristoffel.contraction_smul_left, smul_add, smul_sub]
   rfl
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
-private theorem gaussDefectModelValue_add_right
+private theorem secondFundamentalFormModelValue_add_right
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (u v₁ v₂ : EN) :
-    gaussDefectModelValue gN gM iota x u (v₁ + v₂) =
-      gaussDefectModelValue gN gM iota x u v₁ +
-        gaussDefectModelValue gN gM iota x u v₂ := by
-  simp only [gaussDefectModelValue, map_add,
+    secondFundamentalFormModelValue gN gM iota x u (v₁ + v₂) =
+      secondFundamentalFormModelValue gN gM iota x u v₁ +
+        secondFundamentalFormModelValue gN gM iota x u v₂ := by
+  simp only [secondFundamentalFormModelValue, map_add,
     ChartChristoffel.contraction_add_right]
   abel
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
-private theorem gaussDefectModelValue_smul_right
+private theorem secondFundamentalFormModelValue_smul_right
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (a : ℝ) (u v : EN) :
-    gaussDefectModelValue gN gM iota x u (a • v) =
-      a • gaussDefectModelValue gN gM iota x u v := by
-  simp only [gaussDefectModelValue, map_smul,
+    secondFundamentalFormModelValue gN gM iota x u (a • v) =
+      a • secondFundamentalFormModelValue gN gM iota x u v := by
+  simp only [secondFundamentalFormModelValue, map_smul,
     ChartChristoffel.contraction_smul_right, smul_add, smul_sub]
 
 private def gaussDefectModel
@@ -216,19 +219,19 @@ private def gaussDefectModel
     EN →L[ℝ] EN →L[ℝ] E :=
   LinearMap.toContinuousLinearMap
     { toFun := fun u ↦ LinearMap.toContinuousLinearMap
-        { toFun := fun v ↦ gaussDefectModelValue gN gM iota x u v
-          map_add' := gaussDefectModelValue_add_right gN gM iota x u
+        { toFun := fun v ↦ secondFundamentalFormModelValue gN gM iota x u v
+          map_add' := secondFundamentalFormModelValue_add_right gN gM iota x u
           map_smul' := by
             intro a v
-            simpa using gaussDefectModelValue_smul_right gN gM iota x a u v }
+            simpa using secondFundamentalFormModelValue_smul_right gN gM iota x a u v }
       map_add' := by
         intro u₁ u₂
         ext v
-        exact gaussDefectModelValue_add_left gN gM iota x u₁ u₂ v
+        exact secondFundamentalFormModelValue_add_left gN gM iota x u₁ u₂ v
       map_smul' := by
         intro a u
         ext v
-        simpa using gaussDefectModelValue_smul_left gN gM iota x a u v }
+        simpa using secondFundamentalFormModelValue_smul_left gN gM iota x a u v }
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
@@ -238,7 +241,7 @@ private theorem gaussDefectModel_apply
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (u v : EN) :
     gaussDefectModel gN gM iota x u v =
-      gaussDefectModelValue gN gM iota x u v :=
+      secondFundamentalFormModelValue gN gM iota x u v :=
   rfl
 
 def secondFundamentalFormAmbientAt
@@ -263,14 +266,16 @@ def secondFundamentalFormAmbientAt
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)]
     [IN.Boundaryless] [I.Boundaryless] in
+/-- The ambient second fundamental form is `secondFundamentalFormModelValue`, read through
+the model-space identifications of the tangent spaces. -/
 @[simp]
-private theorem secondFundamentalFormAmbientAt_apply
+theorem secondFundamentalFormAmbientAt_apply
     (gN : SmoothRiemannianMetric IN N)
     (gM : SmoothRiemannianMetric I M) (iota : N → M) (x : N)
     (u v : TangentSpace IN x) :
     secondFundamentalFormAmbientAt gN gM iota x u v =
       (tangentSpaceModelContinuousLinearEquiv (I := I) (iota x)).symm
-        (gaussDefectModelValue gN gM iota x
+        (secondFundamentalFormModelValue gN gM iota x
           (tangentSpaceModelContinuousLinearEquiv (I := IN) x u)
           (tangentSpaceModelContinuousLinearEquiv (I := IN) x v)) :=
   rfl
@@ -300,7 +305,7 @@ theorem secondFundamentalFormAmbientAt_symmetric
       fderiv ℝ (fderiv ℝ F) xE uE vE =
         fderiv ℝ (fderiv ℝ F) xE vE uE :=
     (hF.isSymmSndFDerivAt (by simp)).eq uE vE
-  simp only [gaussDefectModelValue]
+  simp only [secondFundamentalFormModelValue]
   rw [hsecond,
     chartChristoffelContraction_symm (I := I) gM (iota x),
     chartChristoffelContraction_symm (I := IN) gN x]
@@ -398,7 +403,7 @@ theorem secondFundamentalFormAmbientAt_diagonal_along_curve
   simp only [secondFundamentalFormAmbientAt_apply,
     ContinuousLinearEquiv.apply_symm_apply,
     secondFundamentalFormDiagonalAlongCurve_def, map_sub]
-  change gaussDefectModelValue gN gM iota (gamma t)
+  change secondFundamentalFormModelValue gN gM iota (gamma t)
       (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity)
       (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity) =
     tangentSpaceModelContinuousLinearEquiv (I := I) (iota (gamma t))
@@ -412,7 +417,7 @@ theorem secondFundamentalFormAmbientAt_diagonal_along_curve
     (I := I) (IN := IN) (hiota.contMDiffAt.mdifferentiableAt (by simp))]
   dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve] at hsecondEq htargetVelocity
   dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve]
-  simp only [gaussDefectModelValue]
+  simp only [secondFundamentalFormModelValue]
   simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
     (I := I) (IN := IN) (hiota.contMDiffAt.mdifferentiableAt (by simp))]
   rw [hsecondEq]
@@ -421,18 +426,18 @@ theorem secondFundamentalFormAmbientAt_diagonal_along_curve
   abel
 
 omit [NeZero (Module.finrank ℝ EN)] [NeZero (Module.finrank ℝ E)] in
-private theorem gaussDefectModelValue_pair_sum
+private theorem secondFundamentalFormModelValue_pair_sum
     {gN : SmoothRiemannianMetric IN N}
     {gM : SmoothRiemannianMetric I M} {iota : N → M}
     (hiota : ContMDiff IN I ∞ iota)
     (hmetric : ∀ (x : N) (u v : TangentSpace IN x),
       gM.inner (iota x) (mfderiv IN I iota x u) (mfderiv IN I iota x v) = gN.inner x u v) (x : N) (u v w : EN) :
     chartMetricBilin gM (iota x) (extChartAt I (iota x) (iota x))
-        (gaussDefectModelValue gN gM iota x u v)
+        (secondFundamentalFormModelValue gN gM iota x u v)
         (tangentLinearMapToModel (mfderiv IN I iota x) w) +
       chartMetricBilin gM (iota x) (extChartAt I (iota x) (iota x))
         (tangentLinearMapToModel (mfderiv IN I iota x) v)
-        (gaussDefectModelValue gN gM iota x u w) = 0 := by
+        (secondFundamentalFormModelValue gN gM iota x u w) = 0 := by
   let F : EN → E := writtenInExtChartAt IN I x iota
   let z : EN := extChartAt IN x x
   let c : ℝ → EN := fun s => z + s • u
@@ -479,7 +484,7 @@ private theorem gaussDefectModelValue_pair_sum
         (fderiv ℝ F z a) (fderiv ℝ F z b) = chartMetricBilin gN x z a b := by
     have hself := (chartMetricBilin_pullback_eventually_of_inner_map hiota hmetric x).self_of_nhds a b
     simpa only [← hFz] using hself
-  simp only [gaussDefectModelValue]
+  simp only [secondFundamentalFormModelValue]
   simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
     (hiota.mdifferentiableAt (by simp))]
   rw [← hFz]
@@ -516,7 +521,7 @@ private theorem secondFundamentalFormAmbientAt_pair_sum
     exact chartMetricBilin_trivToE gM (iota x) (iota x) (mem_chart_source H (iota x)) a b
   rw [gM.symm (iota x) (secondFundamentalFormAmbientAt gN gM iota x u w),
     ← hinner, ← hinner]
-  have hm := gaussDefectModelValue_pair_sum hiota hmetric x
+  have hm := secondFundamentalFormModelValue_pair_sum hiota hmetric x
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x u)
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x v)
     (tangentSpaceModelContinuousLinearEquiv (I := IN) x w)
@@ -934,7 +939,7 @@ theorem secondFundamentalFormAmbientAt_diagonal_along_curve_of_contMDiffAt
   simp only [secondFundamentalFormAmbientAt_apply,
     ContinuousLinearEquiv.apply_symm_apply,
     secondFundamentalFormDiagonalAlongCurve_def, map_sub]
-  change gaussDefectModelValue gN gM iota (gamma t)
+  change secondFundamentalFormModelValue gN gM iota (gamma t)
       (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity)
       (tangentSpaceModelContinuousLinearEquiv (I := IN) (gamma t) velocity) =
     tangentSpaceModelContinuousLinearEquiv (I := I) (iota (gamma t))
@@ -948,7 +953,7 @@ theorem secondFundamentalFormAmbientAt_diagonal_along_curve_of_contMDiffAt
     (I := I) (IN := IN) (hiota.mdifferentiableAt (by norm_num))]
   dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve] at hsecondEq htargetVelocity
   dsimp only [F, sourceCoord, targetCoord, targetCurve, chartCurve]
-  simp only [gaussDefectModelValue]
+  simp only [secondFundamentalFormModelValue]
   simp_rw [tangentLinearMapToModel_mfderiv_eq_fderiv_writtenInExtChartAt
     (I := I) (IN := IN) (hiota.mdifferentiableAt (by norm_num))]
   rw [hsecondEq]
